@@ -2,6 +2,7 @@ package org.dora.algorithm;
 
 import org.dora.algorithm.data.ListNode;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -163,24 +164,43 @@ public class OneHundred {
         if (s == null || s.length() == 0) {
             return "";
         }
-        StringBuilder[] stringBuilders = new StringBuilder[numRows];
+        StringBuilder[] sb = new StringBuilder[numRows];
         for (int i = 0; i < numRows; i++) {
-            stringBuilders[i] = new StringBuilder();
+            sb[i] = new StringBuilder();
         }
-        char[] ch = s.toCharArray();
+        char[] chars = s.toCharArray();
         int idx = 0;
-        while (idx < ch.length) {
-            for (int i = 0; i < numRows && idx < ch.length; i++) {
-                stringBuilders[i].append(ch[idx++]);
+        while (idx < chars.length) {
+            for (int i = 0; i < numRows && idx < chars.length; i++) {
+                sb[i].append(chars[idx++]);
             }
-            for (int i = numRows - 2; i >= 1 && idx < ch.length; i--) {
-                stringBuilders[i].append(ch[idx++]);
+            for (int i = numRows - 2; i >= 1 && idx < chars.length; i--) {
+                sb[i].append(chars[idx++]);
             }
         }
         for (int i = 1; i < numRows; i++) {
-            stringBuilders[0].append(stringBuilders[i]);
+            sb[0].append(sb[i]);
         }
-        return stringBuilders[0].toString();
+        return sb[0].toString();
     }
+
+    /**
+     * 7. Reverse Integer
+     * @param x
+     * @return
+     */
+    public int reverse(int x) {
+        int sum = 0;
+        while (x != 0) {
+            if (sum > Integer.MAX_VALUE / 10 || sum < Integer.MIN_VALUE / 10) {
+                return 0;
+            }
+            sum = sum * 10 + x % 10;
+            x /= 10;
+        }
+        return sum;
+    }
+
+
 
 }
