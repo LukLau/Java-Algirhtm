@@ -2,7 +2,6 @@ package org.dora.algorithm;
 
 import org.dora.algorithm.data.ListNode;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -186,6 +185,7 @@ public class OneHundred {
 
     /**
      * 7. Reverse Integer
+     *
      * @param x
      * @return
      */
@@ -201,6 +201,66 @@ public class OneHundred {
         return sum;
     }
 
+    /**
+     * 8. String to Integer (atoi)
+     *
+     * @param str
+     * @return
+     */
+    public int myAtoi(String str) {
+        if (str == null || str.length() == 0) {
+            return 0;
+        }
+        str = str.trim();
+        if (str.length() == 0) {
+            return 0;
+        }
+        int sign = 1, idx = 0;
+        while (str.charAt(idx) == ' ') {
+            idx++;
+        }
+        if (str.charAt(idx) == '-' || str.charAt(idx) == '+') {
+            sign = str.charAt(idx) == '-' ? -1 : 1;
+            idx++;
+        }
+        Long sum = 0L;
+        while (idx < str.length() && Character.isDigit(str.charAt(idx))) {
+
+            int value = str.charAt(idx) - '0';
+            idx++;
+            sum = sum * 10 + value;
+            if (sum > Integer.MAX_VALUE) {
+                return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+            }
+        }
+        return sum.intValue() * sign;
+    }
+
+    /**
+     * 9. Palindrome Number
+     *
+     * @param x
+     * @return
+     */
+    public boolean isPalindrome(int x) {
+        if (x == 0) {
+            return true;
+        }
+        if (x < 0 || x % 10 == 0) {
+            return false;
+        }
+        int sum = 0;
+        while (x > sum) {
+            sum = sum * 10 + x % 10;
+            x /= 10;
+        }
+        return sum == x || sum / 10 == x;
+    }
+
+    public static void main(String[] args) {
+        OneHundred oneHundred = new OneHundred();
+        oneHundred.isPalindrome(0);
+    }
 
 
 }
