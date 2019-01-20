@@ -2,7 +2,7 @@ package org.dora.algorithm;
 
 import org.dora.algorithm.data.ListNode;
 
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * @author liulu
@@ -257,9 +257,320 @@ public class OneHundred {
         return sum == x || sum / 10 == x;
     }
 
+    /**
+     * 10. Regular Expression Matching
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatch(String s, String p) {
+        if (s == null || p == null) {
+            return false;
+        }
+        int m = s.length(), n = p.length();
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int j = 1; j <= n; j++) {
+            if (p.charAt(j - 1) == '*' && dp[0][j - 2]) {
+                dp[0][j] = true;
+            }
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+                if (p.charAt(j - 1) == '*') {
+                    if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
+                        dp[i][j] = dp[i][j - 2];
+                    } else {
+                        dp[i][j] = dp[i][j - 2] || dp[i - 1][j] || dp[i][j - 1];
+                    }
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    /**
+     * 11. Container With Most Water
+     *
+     * @param height
+     * @return
+     */
+    public int maxArea(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int left = 0, right = height.length - 1, max = Integer.MIN_VALUE;
+        while (left < right) {
+            max = Math.max(max, Math.min(height[left], height[right]) * (right - left));
+            if (height[left] <= height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return max;
+    }
+
+    /**
+     * 11.
+     *
+     * @param strs
+     * @return
+     */
+    public String longestCommonPrefix(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return "";
+        }
+        String prefix = strs[0];
+        for (int i = 1; i < strs.length; i++) {
+            while (strs[i].indexOf(prefix) != 0) {
+                prefix = prefix.substring(0, prefix.length() - 1);
+            }
+        }
+        return prefix;
+    }
+
+    /**
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> threeSum(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int left = i + 1, right = nums.length - 1;
+            while (left < right) {
+                int value = nums[i] + nums[left] + nums[right];
+                if (value == 0) {
+                    ans.add(Arrays.asList(nums[i], nums[left], nums[right]));
+                    while (left < right && nums[left] == nums[left + 1]) {
+                        left++;
+                    }
+                    while (left < right && nums[right] == nums[right - 1]) {
+                        right--;
+                    }
+                    left++;
+                    right--;
+                } else if (value < 0) {
+                    left++;
+                } else {
+                    right--;
+                }
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 16.
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int threeSumClosest(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return Integer.MIN_VALUE;
+        }
+        Arrays.sort(nums);
+        int ans = nums[0] + nums[1] + nums[2];
+        for (int i = 0; i < nums.length - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int left = i + 1, right = nums.length - 1;
+            while (left < right) {
+                int value = nums[i] + nums[left] + nums[right];
+                if (value == target) {
+                    return target;
+                }
+                if (value < target) {
+                    left++;
+                } else {
+                    right--;
+                }
+                if (Math.abs(ans - target) > Math.abs(value - target)) {
+                    ans = value;
+                }
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 17.
+     *
+     * @param digits
+     * @return
+     */
+    public List<String> letterCombinations(String digits) {
+        if (digits == null || digits.length() == 0) {
+            return new ArrayList<>();
+        }
+        LinkedList<String> ans = new LinkedList<>();
+        String[] mp = new String[] {"","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+        ans.add("");
+        for (int i = 0; i < digits.length(); i++) {
+            int index = digits.charAt(i) - '0';
+            while (ans.peek().length() == i) {
+                String value = ans.poll();
+                for (char ch : mp[index].toCharArray()) {
+                    ans.add(value + ch);
+                }
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 18.
+     * @param nums
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(nums);
+        List<List<Integer>> ans = new ArrayList<>();
+        for (int i = 0; i < nums.length - 3; i++) {
+            if (i > 0 && nums[i] == nums[i-1]) {
+                continue;
+            }
+            for (int j = i + 1; j < nums.length - 2; j++) {
+                if (j > i + 1 && nums[j] == nums[j-1]) {
+                    continue;
+                }
+                int left = j + 1, right = nums.length - 1;
+                while (left < right) {
+                    int value = nums[i] + nums[j] + nums[left] + nums[right];
+                    if (value == target) {
+                        ans.add(Arrays.asList(nums[i], nums[j], nums[left], nums[right]));
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 19.
+     * @param head
+     * @param n
+     * @return
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        if (head == null) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode fast = root, slow = root;
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+        while (fast.next != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        slow.next = slow.next.next;
+        return root.next;
+    }
+
+    /**
+     * 20.
+     * @param s
+     * @return
+     */
+    public boolean isValid(String s) {
+        if (s == null || s.length() == 0) {
+            return true;
+        }
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                stack.push(')');
+            } else if (s.charAt(i) == '[') {
+                stack.push(']');
+            } else if (s.charAt(i) == '{') {
+                stack.push('}');
+            } else {
+                if (stack.isEmpty() || stack.peek() != s.charAt(i)) {
+                    return false;
+                }
+                stack.pop();
+            }
+        }
+        return stack.isEmpty();
+    }
+
+    /**
+     * 21.
+     * @param l1
+     * @param l2
+     * @return
+     */
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null && l2 == null) {
+            return null;
+        }
+        if (l1 == null) {
+            return l2;
+        }
+        if (l2 == null) {
+            return l1;
+        }
+        if (l1.val <= l2.val) {
+            l1.next = mergeTwoLists(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = mergeTwoLists(l1, l2.next);
+            return l2;
+        }
+    }
+
+    /**
+     * 22.
+     * @param n
+     * @return
+     */
+    public List<String> generateParenthesis(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+        generateParethesis(ans, "", 0, 0, n);
+        return ans;
+    }
+
+    private void generateParethesis(List<String> ans, String s, int open, int close, int n) {
+        if (s.length() == 2 * n) {
+            ans.add(s);
+            return;
+        }
+        if (open < n) {
+            generateParethesis(ans, s + "(", open + 1, close, n);
+        }
+        if (close < open) {
+            generateParethesis(ans, s + ")", open,close + 1, n);
+        }
+    }
+
+
     public static void main(String[] args) {
         OneHundred oneHundred = new OneHundred();
-        oneHundred.isPalindrome(0);
+        oneHundred.isMatch("ab", ".*");
     }
 
 
