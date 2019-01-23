@@ -418,7 +418,7 @@ public class OneHundred {
             return new ArrayList<>();
         }
         LinkedList<String> ans = new LinkedList<>();
-        String[] mp = new String[] {"","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+        String[] mp = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
         ans.add("");
         for (int i = 0; i < digits.length(); i++) {
             int index = digits.charAt(i) - '0';
@@ -434,6 +434,7 @@ public class OneHundred {
 
     /**
      * 18.
+     *
      * @param nums
      * @param target
      * @return
@@ -445,11 +446,11 @@ public class OneHundred {
         Arrays.sort(nums);
         List<List<Integer>> ans = new ArrayList<>();
         for (int i = 0; i < nums.length - 3; i++) {
-            if (i > 0 && nums[i] == nums[i-1]) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
                 continue;
             }
             for (int j = i + 1; j < nums.length - 2; j++) {
-                if (j > i + 1 && nums[j] == nums[j-1]) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) {
                     continue;
                 }
                 int left = j + 1, right = nums.length - 1;
@@ -466,6 +467,7 @@ public class OneHundred {
 
     /**
      * 19.
+     *
      * @param head
      * @param n
      * @return
@@ -490,6 +492,7 @@ public class OneHundred {
 
     /**
      * 20.
+     *
      * @param s
      * @return
      */
@@ -517,6 +520,7 @@ public class OneHundred {
 
     /**
      * 21.
+     *
      * @param l1
      * @param l2
      * @return
@@ -542,6 +546,7 @@ public class OneHundred {
 
     /**
      * 22.
+     *
      * @param n
      * @return
      */
@@ -550,27 +555,222 @@ public class OneHundred {
             return new ArrayList<>();
         }
         List<String> ans = new ArrayList<>();
-        generateParethesis(ans, "", 0, 0, n);
+        generateParenthesis(ans, "", 0, 0, n);
         return ans;
     }
 
-    private void generateParethesis(List<String> ans, String s, int open, int close, int n) {
+    private void generateParenthesis(List<String> ans, String s, int open, int close, int n) {
         if (s.length() == 2 * n) {
             ans.add(s);
             return;
         }
         if (open < n) {
-            generateParethesis(ans, s + "(", open + 1, close, n);
+            generateParenthesis(ans, s + "(", open + 1, close, n);
         }
         if (close < open) {
-            generateParethesis(ans, s + ")", open,close + 1, n);
+            generateParenthesis(ans, s + ")", open, close + 1, n);
         }
+    }
+
+    /**
+     * 23
+     *
+     * @param lists
+     * @return
+     */
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) {
+            return null;
+        }
+        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(lists.length, new Comparator<ListNode>() {
+            @Override
+            public int compare(ListNode o1, ListNode o2) {
+                if (o1.val < o2.val) {
+                    return -1;
+                } else if (o1.val == o2.val) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        });
+        for (ListNode node : lists) {
+            if (node != null) {
+                priorityQueue.add(node);
+            }
+        }
+        ListNode root = new ListNode(0);
+        ListNode dummy = root;
+        while (!priorityQueue.isEmpty()) {
+            ListNode node = priorityQueue.poll();
+            dummy.next = node;
+            if (node.next != null) {
+                priorityQueue.add(node.next);
+            }
+            dummy = dummy.next;
+        }
+        return root.next;
+
+    }
+
+    /**
+     * 24.
+     *
+     * @param head
+     * @return
+     */
+    public ListNode swapPairs(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode dummy = root;
+        while (dummy.next != null && dummy.next.next != null) {
+            ListNode slow = dummy.next;
+            ListNode fast = dummy.next.next;
+
+            slow.next = fast.next;
+            fast.next = slow;
+            dummy.next = fast;
+
+            dummy = dummy.next.next;
+        }
+        return root.next;
+    }
+
+    /**
+     * 25. Reverse Nodes in k-Group
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode reverseKGroup(ListNode head, int k) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode currNode = head;
+        for (int i = 0; i < k; i++) {
+            if (currNode == null) {
+                return head;
+            }
+            currNode = currNode.next;
+        }
+        ListNode newHead = reverseNode(head, currNode);
+        head.next = reverseKGroup(currNode, k);
+        return newHead;
+    }
+
+    private ListNode reverseNode(ListNode first, ListNode last) {
+        ListNode prev = last;
+        while (first != last) {
+            ListNode tmp = first.next;
+            first.next = prev;
+            prev = first;
+            first = tmp;
+        }
+        return prev;
+    }
+
+    /**
+     * 26. Remove Duplicates from Sorted Array
+     *
+     * @param nums
+     * @return
+     */
+    public int removeDuplicates(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int idx = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] != nums[i - 1]) {
+                nums[idx++] = nums[i];
+            }
+        }
+        return idx;
+    }
+
+    /**
+     * 29. Divide Two Integers
+     *
+     * @param dividend
+     * @param divisor
+     * @return
+     */
+    public int divide(int dividend, int divisor) {
+        if (dividend == Integer.MIN_VALUE && divisor == -1) {
+            return Integer.MAX_VALUE;
+        }
+        if (divisor == 0) {
+            return Integer.MAX_VALUE;
+        }
+        int sign = (dividend < 0) ^ (divisor < 0) ? -1 : 1;
+        int dvd = Math.abs(dividend), dvs = Math.abs(divisor);
+        int ans = 0;
+        while (dvd >= dvs) {
+            int tmp = dvs, multi = 1;
+            while (dvd >= (tmp << 1)) {
+                tmp <<= 1;
+                multi <<= 1;
+            }
+            ans += multi;
+            dvd -= tmp;
+        }
+        return sign * ans;
+    }
+
+    /**
+     * 31. Next Permutation
+     * @param nums
+     */
+    public void nextPermutation(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int idx = nums.length -1;
+        while (idx > 0) {
+            if (nums[idx] > nums[idx-1]) {
+                break;
+            }
+            idx--;
+        }
+        if (idx == 0) {
+            reverseArray(nums, idx, nums.length-1);
+            return;
+        } else {
+            int prev = idx - 1, end = nums.length - 1;
+            while (end > prev) {
+                if (nums[end] > nums[prev]) {
+                    break;
+                }
+                end--;
+            }
+            swapNum(nums, prev, end);
+            reverseArray(nums, idx, nums.length-1);
+        }
+    }
+
+    private void reverseArray(int[] nums, int start, int end) {
+        if (start > end) {
+            return;
+        }
+        for (int i = start; i <= (start + end) / 2; i++) {
+            swapNum(nums, i, start + end - i);
+        }
+    }
+
+    private void swapNum(int[] nums, int start, int end) {
+        int tmp = nums[start];
+        nums[start] = nums[end];
+        nums[end] = tmp;
     }
 
 
     public static void main(String[] args) {
         OneHundred oneHundred = new OneHundred();
-        oneHundred.isMatch("ab", ".*");
+        oneHundred.nextPermutation(new int[] {1, 3, 2});
     }
 
 
