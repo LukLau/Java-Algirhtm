@@ -723,21 +723,22 @@ public class OneHundred {
 
     /**
      * 31. Next Permutation
+     *
      * @param nums
      */
     public void nextPermutation(int[] nums) {
         if (nums == null || nums.length == 0) {
             return;
         }
-        int idx = nums.length -1;
+        int idx = nums.length - 1;
         while (idx > 0) {
-            if (nums[idx] > nums[idx-1]) {
+            if (nums[idx] > nums[idx - 1]) {
                 break;
             }
             idx--;
         }
         if (idx == 0) {
-            reverseArray(nums, idx, nums.length-1);
+            reverseArray(nums, idx, nums.length - 1);
             return;
         } else {
             int prev = idx - 1, end = nums.length - 1;
@@ -748,7 +749,7 @@ public class OneHundred {
                 end--;
             }
             swapNum(nums, prev, end);
-            reverseArray(nums, idx, nums.length-1);
+            reverseArray(nums, idx, nums.length - 1);
         }
     }
 
@@ -761,6 +762,129 @@ public class OneHundred {
         }
     }
 
+    /**
+     * Longest Valid Parentheses
+     *
+     * @param s
+     * @return
+     */
+    public int longestValidParentheses(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                stack.push(i);
+            } else {
+                if (stack.isEmpty() || s.charAt(stack.peek()) == ')') {
+                    stack.push(i);
+                } else {
+                    stack.pop();
+                }
+            }
+        }
+        if (stack.isEmpty()) {
+            return s.length();
+        }
+        int longest = 0, a = s.length();
+        while (!stack.isEmpty()) {
+            int prev = stack.pop();
+            longest = Math.max(longest, a - 1 - prev);
+            a = prev;
+        }
+        longest = Math.max(longest, a);
+        return longest;
+    }
+
+    /**
+     * 33. Search in Rotated Sorted Array
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int search(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0, right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) >> 1;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[left] < nums[mid]) {
+                if (nums[mid] < target && nums[left] <= target) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (nums[mid] < target && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 35. Search Insert Position
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int searchInsert(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) >> 1;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                    left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return -1;
+
+    }
+
+    /**
+     * 39. Combination Sum
+     * @param candidates
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        if (candidates == null || candidates.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(candidates);
+        combinationSum(ans,new ArrayList<Integer>(), candidates, 0, target);
+        return ans;
+    }
+
+    private void combinationSum(List<List<Integer>> ans, List<Integer> integers, int[] candidates, int start, int target) {
+        if (target == 0) {
+            ans.add(new ArrayList<>(integers));
+            return;
+        }
+        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
+            integers.add(candidates[i]);
+            combinationSum(ans,integers, candidates, i, target - candidates[i]);
+            integers.remove(integers.size()-1);
+        }
+    }
+
+
     private void swapNum(int[] nums, int start, int end) {
         int tmp = nums[start];
         nums[start] = nums[end];
@@ -769,8 +893,10 @@ public class OneHundred {
 
 
     public static void main(String[] args) {
+        ClassLoader classLoader = OneHundred.class.getClassLoader();
+        classLoader.getParent();
         OneHundred oneHundred = new OneHundred();
-        oneHundred.nextPermutation(new int[] {1, 3, 2});
+        oneHundred.nextPermutation(new int[]{1, 3, 2});
     }
 
 
