@@ -847,7 +847,7 @@ public class OneHundred {
             if (nums[mid] == target) {
                 return mid;
             } else if (nums[mid] < target) {
-                    left = mid + 1;
+                left = mid + 1;
             } else {
                 right = mid - 1;
             }
@@ -858,6 +858,7 @@ public class OneHundred {
 
     /**
      * 39. Combination Sum
+     *
      * @param candidates
      * @param target
      * @return
@@ -868,20 +869,81 @@ public class OneHundred {
         }
         List<List<Integer>> ans = new ArrayList<>();
         Arrays.sort(candidates);
-        combinationSum(ans,new ArrayList<Integer>(), candidates, 0, target);
+        combinationSum(ans, new ArrayList<Integer>(), candidates, 0, target);
         return ans;
     }
 
     private void combinationSum(List<List<Integer>> ans, List<Integer> integers, int[] candidates, int start, int target) {
         if (target == 0) {
             ans.add(new ArrayList<>(integers));
-            return;
         }
         for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
             integers.add(candidates[i]);
-            combinationSum(ans,integers, candidates, i, target - candidates[i]);
-            integers.remove(integers.size()-1);
+            combinationSum(ans, integers, candidates, i, target - candidates[i]);
+            integers.remove(integers.size() - 1);
         }
+    }
+
+    /**
+     * 40. Combination Sum II
+     *
+     * @param candidates
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        if (candidates == null || candidates.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(candidates);
+        boolean[] used = new boolean[candidates.length];
+        combinationSum2(ans, new ArrayList<Integer>(), used, 0, candidates, target);
+        return ans;
+    }
+
+    private void combinationSum2(List<List<Integer>> ans, List<Integer> integers, boolean[] used, int start, int[] candidates, int target) {
+        if (target == 0) {
+            ans.add(new ArrayList<>(integers));
+            return;
+        }
+        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
+            if (i > start && candidates[i] == candidates[i - 1]) {
+                continue;
+            }
+            if (used[i]) {
+                continue;
+            }
+            integers.add(candidates[i]);
+            used[i] = true;
+            combinationSum2(ans, integers, used, i + 1, candidates, target - candidates[i]);
+            used[i] = false;
+            integers.remove(integers.size() - 1);
+        }
+    }
+
+    /**
+     * 41. First Missing Positive
+     *
+     * @param nums
+     * @return
+     */
+    public int firstMissingPositive(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 1;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+                swapNum(nums, i, nums[i] - 1);
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return nums.length + 1;
+
     }
 
 
