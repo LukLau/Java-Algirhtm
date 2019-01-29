@@ -943,7 +943,79 @@ public class OneHundred {
             }
         }
         return nums.length + 1;
+    }
 
+    /**
+     * 42. Trapping Rain Water
+     *
+     * @param height
+     * @return
+     */
+    public int trap(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int left = 0, right = height.length - 1, sum = 0;
+        while (left < right) {
+            while (left < right && height[left] == 0) {
+                left++;
+            }
+            while (left < right && height[right] == 0) {
+                right--;
+            }
+            int min = Math.min(height[left], height[right]);
+            for (int i = left; i <= right; i++) {
+                if (height[i] >= min) {
+                    height[i] -= min;
+                } else {
+                    sum += min - height[i];
+                    height[i] = 0;
+                }
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * 43. Multiply Strings
+     *
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public String multiply(String num1, String num2) {
+        if (num1 == null || num2 == null) {
+            return "";
+        }
+        int m = num1.length(), n = num2.length();
+        int[] pos = new int[m + n];
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                int sum = (num1.charAt(i) - '0') * (num2.charAt(j) - '0') + pos[i + j + 1];
+                int carry = sum / 10;
+                pos[i + j + 1] = sum % 10;
+                pos[i + j] += carry;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int num : pos) {
+            if (sb.length() == 0 && num == 0) {
+                continue;
+            }
+            sb.append(num);
+        }
+        return sb.length() == 0 ? "0" : sb.toString();
+    }
+
+    /**
+     * 44. Wildcard Matching
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatchII(String s, String p) {
+        return false;
     }
 
 
