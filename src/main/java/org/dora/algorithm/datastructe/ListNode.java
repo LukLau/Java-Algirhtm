@@ -1,4 +1,4 @@
-package org.dora.algorithm.data;
+package org.dora.algorithm.datastructe;
 
 /**
  * @author lauluk
