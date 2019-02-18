@@ -361,5 +361,249 @@ public class OneHundrend {
         return ans;
     }
 
+    /**
+     * 16. 3Sum Closest
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int threeSumClosest(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return Integer.MAX_VALUE;
+        }
+        int result = nums[0] + nums[1] + nums[2];
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length - 2; i++) {
+            int left = i + 1;
+            int right = nums.length - 1;
+            while (left < right) {
+                int sum = nums[i] + nums[left] + nums[right];
+                if (sum == target) {
+                    return sum;
+                } else if (Math.abs(sum - target) < Math.abs(result - target)) {
+                    result = sum;
+                }
+                if (sum < target) {
+                    left++;
+                } else {
+                    right--;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 17. Letter Combinations of a Phone Number
+     *
+     * @param digits
+     * @return
+     */
+    public List<String> letterCombinations(String digits) {
+        if (digits == null || digits.length() == 0) {
+            return new ArrayList<>();
+        }
+        String[] mp = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        LinkedList<String> ans = new LinkedList<>();
+        ans.add("");
+        for (int i = 0; i < digits.length(); i++) {
+            int index = digits.charAt(i) - '0';
+            String value = mp[index];
+            while (ans.peek().length() == i) {
+                String peek = ans.poll();
+                for (char c : value.toCharArray()) {
+                    ans.add(peek + c);
+                }
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 18. 4Sum
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length - 3; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            for (int j = i + 1; j < nums.length - 2; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) {
+                    continue;
+                }
+                int left = j + 1, right = nums.length - 1;
+                while (left < right) {
+                    int sum = nums[i] + nums[j] + nums[left] + nums[right];
+                    if (sum == target) {
+                        ans.add(Arrays.asList(nums[i], nums[j], nums[left], nums[right]));
+                        while (left < right && nums[left] == nums[left + 1]) {
+                            left++;
+                        }
+                        while (left < right && nums[right] == nums[right - 1]) {
+                            right--;
+                        }
+                        left++;
+                        right--;
+                    } else if (sum < target) {
+                        left++;
+                    } else {
+                        right--;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 19. Remove Nth Node From End of List
+     *
+     * @param head
+     * @param n
+     * @return
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        if (head == null || n < 0) {
+            return head;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode fast = root;
+        ListNode slow = root;
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+        while (fast.next != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        ListNode node = slow.next;
+        slow.next = node.next;
+        node.next = null;
+        return root.next;
+    }
+
+    /**
+     * 20. Valid Parentheses
+     *
+     * @param s
+     * @return
+     */
+    public boolean isValid(String s) {
+        if (s == null || s.length() == 0) {
+            return true;
+        }
+        Deque<Character> stack = new LinkedList<>();
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                stack.push(')');
+            } else if (s.charAt(i) == '[') {
+                stack.push(']');
+            } else if (s.charAt(i) == '{') {
+                stack.push('}');
+            } else {
+                if (stack.isEmpty() || stack.peek() != s.charAt(i)) {
+                    return false;
+                } else {
+                    stack.pop();
+                }
+            }
+        }
+        return stack.isEmpty();
+    }
+
+    /**
+     * 21. Merge Two Sorted Lists
+     *
+     * @param l1
+     * @param l2
+     * @return
+     */
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null && l2 == null) {
+            return null;
+        }
+        if (l1 == null) {
+            return l2;
+        }
+        if (l2 == null) {
+            return l1;
+        }
+        if (l1.val <= l2.val) {
+            l1.next = mergeTwoLists(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = mergeTwoLists(l1, l2.next);
+            return l2;
+        }
+    }
+
+    /**
+     * 22. Generate Parentheses
+     *
+     * @param n
+     * @return
+     */
+    public List<String> generateParenthesis(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+        generateParenthesis(ans, "", 0, 0, n);
+        return ans;
+    }
+
+    private void generateParenthesis(List<String> ans, String s, int open, int close, int n) {
+        if (s.length() == 2 * n) {
+            ans.add(s);
+        }
+        if (open < n) {
+            generateParenthesis(ans, s + "(", open + 1, close, n);
+        }
+        if (close < open) {
+            generateParenthesis(ans, s + ")", open, close + 1, n);
+        }
+    }
+
+    /**
+     * 23. Merge k Sorted Lists
+     *
+     * @param lists
+     * @return
+     */
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) {
+            return null;
+        }
+
+        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
+        for (ListNode node : lists) {
+            if (node != null) {
+                priorityQueue.add(node);
+            }
+        }
+        ListNode root = new ListNode(0);
+        ListNode dummy = root;
+        while (!priorityQueue.isEmpty()) {
+            ListNode node = priorityQueue.poll();
+            dummy.next = node;
+            dummy = dummy.next;
+            if (node.next != null) {
+                priorityQueue.add(node.next);
+            }
+        }
+        return root.next;
+    }
+
 
 }
