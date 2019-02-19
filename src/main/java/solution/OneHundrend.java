@@ -605,5 +605,95 @@ public class OneHundrend {
         return root.next;
     }
 
+    /**
+     * 24. Swap Nodes in Pairs
+     *
+     * @param head
+     * @return
+     */
+    public ListNode swapPairs(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode dummy = root;
+        while (dummy.next != null && dummy.next.next != null) {
+            ListNode fast = dummy.next.next;
+            ListNode slow = dummy.next;
+
+            dummy.next = fast;
+            slow.next = fast.next;
+            fast.next = slow;
+
+            dummy = dummy.next.next;
+        }
+        return root.next;
+    }
+
+    /**
+     * 25. Reverse Nodes in k-Group
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode reverseKGroup(ListNode head, int k) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode currNode = head;
+        for (int i = 0; i < k; i++) {
+            if (currNode == null) {
+                return head;
+            }
+            currNode = currNode.next;
+        }
+        ListNode newHead = reverseList(head, currNode);
+        head.next = reverseKGroup(currNode, k);
+        return newHead;
+    }
+
+    private ListNode reverseList(ListNode first, ListNode last) {
+        ListNode prev = last;
+        while (first != last) {
+            ListNode tmp = first.next;
+            first.next = prev;
+            prev = first;
+            first = tmp;
+        }
+        return prev;
+    }
+
+    /**
+     * 26. Remove Duplicates from Sorted Array
+     *
+     * @param nums
+     * @return
+     */
+    public int removeDuplicates(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int idx = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] != nums[i - 1]) {
+                nums[idx++] = nums[i];
+            }
+        }
+        return idx;
+    }
+
+    /**
+     * 29. Divide Two Integers
+     *
+     * @param dividend
+     * @param divisor
+     * @return
+     */
+    public int divide(int dividend, int divisor) {
+        return -1;
+    }
+
 
 }
