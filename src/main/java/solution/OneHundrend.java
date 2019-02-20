@@ -692,6 +692,117 @@ public class OneHundrend {
      * @return
      */
     public int divide(int dividend, int divisor) {
+        if (dividend == Integer.MIN_VALUE && divisor == -1) {
+            return Integer.MAX_VALUE;
+        }
+        int sign = (dividend < 0) ^ (divisor < 0) ? -1 : 1;
+        long dvd = Math.abs(dividend);
+        long dvs = Math.abs(divisor);
+        Long result = 0L;
+        while (dvd >= dvs) {
+            long multi = 1;
+            long tmp = dvs;
+            while (dvd >= (tmp << 1)) {
+                multi <<= 1;
+                tmp <<= 1;
+            }
+            result += multi;
+            dvd -= tmp;
+        }
+        return sign * result.intValue();
+    }
+
+    /**
+     * 31. Next Permutation
+     *
+     * @param nums
+     */
+    public void nextPermutation(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int index = nums.length - 1;
+        while (index > 0 && nums[index] < nums[index - 1]) {
+            index--;
+        }
+        if (index == 0) {
+            reverseArray(nums, index, nums.length - 1);
+        } else {
+            int j = nums.length - 1;
+            while (j > index - 1) {
+                if (nums[j] > nums[index - 1]) {
+                    break;
+                }
+                j--;
+            }
+            swap(nums, index - 1, j);
+            reverseArray(nums, index, nums.length - 1);
+        }
+    }
+
+    private void reverseArray(int[] nums, int start, int end) {
+        if (start > end) {
+            return;
+        }
+        for (int i = start; i <= (start + end) / 2; i++) {
+            swap(nums, i, start + end - i);
+        }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+
+    /**
+     * 32. Longest Valid Parentheses
+     *
+     * @param s
+     * @return
+     */
+    public int longestValidParentheses(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        Deque<Integer> stack = new LinkedList<>();
+        int result = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                stack.push(i);
+            } else {
+                if (!stack.isEmpty() && s.charAt(stack.peek()) == '(') {
+                    stack.pop();
+                } else {
+                    stack.push(i);
+                }
+            }
+        }
+        if (stack.isEmpty()) {
+            return s.length();
+        }
+        int a = s.length();
+        while (!stack.isEmpty()) {
+            result = Math.max(result, a - 1 - stack.peek());
+            a = stack.pop();
+        }
+        result = Math.max(result, a);
+        return result;
+    }
+
+    /**
+     * 33. Search in Rotated Sorted Array
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int search(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
         return -1;
     }
 
