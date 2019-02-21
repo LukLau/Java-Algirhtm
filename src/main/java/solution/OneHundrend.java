@@ -259,12 +259,9 @@ public class OneHundrend {
         if (s == null || p == null) {
             return false;
         }
-        int m = s.length(), n = p.length();
-        boolean[][] dp = new boolean[m + 1][n + 1];
-        dp[0][0] = true;
-        for (int j = 1; j <= n; j++) {
-            dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j - 2];
-        }
+        int m = s.length();
+        int n = p.length();
+        boolean[][] dp = initDp(p, m, n);
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
@@ -803,7 +800,194 @@ public class OneHundrend {
         }
         int left = 0;
         int right = nums.length - 1;
+        // todo 待学习
         return -1;
+    }
+
+    /**
+     * 39. Combination Sum
+     * @param candidates
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        if (isEmpty(candidates)) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(candidates);
+        List<List<Integer>> ans = new ArrayList<>();
+        combinationSum(ans, new ArrayList<>(), 0,candidates,target);
+        return ans;
+    }
+
+    private void combinationSum(List<List<Integer>> ans, List<Integer> integers, int index, int[] candidates, int target) {
+        if (target == 0) {
+            ans.add(new ArrayList<>(integers));
+        }
+        for (int i = index; i < candidates.length && candidates[i] <= target; i++) {
+            integers.add(candidates[i]);
+            combinationSum(ans,integers, i, candidates, target - candidates[i]);
+            integers.remove(integers.size()-1);
+        }
+    }
+
+    private boolean isEmpty(int[] array) {
+        return array == null || array.length == 0;
+    }
+
+    /**
+     * 40. Combination Sum II
+     * @param candidates
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        if (isEmpty(candidates)) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(candidates);
+        combinationSum2(ans, new ArrayList<>(), 0, candidates, target);
+        return ans;
+    }
+
+    private void combinationSum2(List<List<Integer>> ans, List<Integer> tmp, int index, int[] candidates, int target) {
+        if (target == 0) {
+            ans.add(new ArrayList<>(tmp));
+        }
+        for (int i = index; i < candidates.length && candidates[i] <= target; i++) {
+            if (i > index && candidates[i] == candidates[i-1]) {
+                continue;
+            }
+            tmp.add(candidates[i]);
+            combinationSum2(ans, tmp, i + 1, candidates, target - candidates[i]);
+            tmp.remove(tmp.size()-1);
+        }
+    }
+
+    /**
+     * 41. First Missing Positive
+     * @param nums
+     * @return
+     */
+    public int firstMissingPositive(int[] nums) {
+        if (isEmpty(nums)) {
+            return 1;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] -1]) {
+                swap(nums, i, nums[i]-1);
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return nums.length + 1;
+    }
+
+    /**
+     * 42. Trapping Rain Water
+     * @param height
+     * @return
+     */
+    public int trap(int[] height) {
+        if (isEmpty(height)) {
+            return 0;
+        }
+        int result = 0;
+        int left = 0;
+        int right = height.length - 1;
+        while (left < right) {
+            while (left < right && height[left] == 0) {
+                left++;
+            }
+            while (left < right && height[right] == 0) {
+                right--;
+            }
+            int min = Math.min(height[left], height[right]);
+            for (int i = left; i <= right; i++) {
+                if (height[i] >= min) {
+                    height[i] -= min;
+                } else {
+                    result += min - height[i];
+                    height[i] = 0;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 43. Multiply Strings
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public String multiply(String num1, String num2) {
+        if (isStringEmpty(num1) || isStringEmpty(num2)) {
+            return "";
+        }
+        int m = num1.length(), n = num2.length();
+        int[] position = new int[m + n];
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                int value = (num1.charAt(i) - '0') * (num2.charAt(j) - '0') + position[i + j + 1];
+                position[i + j + 1] = value % 10;
+                position[i + j] += value / 10;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int num : position) {
+            if (sb.length() == 0 && num == 0) {
+                continue;
+            }
+            sb.append(num);
+        }
+        return sb.length() == 0 ? "0" : sb.toString();
+    }
+
+    private boolean isStringEmpty(String string) {
+        return string == null || string.length() == 0;
+    }
+
+    /**
+     * 44. Wildcard Matching
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatchII(String s, String p) {
+        if (isStringEmpty(s) || isStringEmpty(p)) {
+            return false;
+        }
+        int m = s.length();
+        int n = p.length();
+        boolean[][] dp = initDp(p, m, n);
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s.charAt(i-1) == p.charAt(j-1) || p.charAt(j-1) == '?') {
+                    dp[i][j] = dp[i-1][j-1];
+                } else {
+                    if (s.charAt(i-1) != p.charAt(j-2) && p.charAt(j-2) != '?') {
+                        dp[i][j] = dp[i][j-2];
+                    } else {
+                        dp[i][j] = dp[i][j-1] || dp[i-1][j] || dp[i][j-2];
+                    }
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    private boolean[][] initDp(String p, int m, int n) {
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j - 2];
+        }
+        return dp;
     }
 
 
