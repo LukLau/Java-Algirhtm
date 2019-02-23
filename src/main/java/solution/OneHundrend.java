@@ -806,6 +806,7 @@ public class OneHundrend {
 
     /**
      * 39. Combination Sum
+     *
      * @param candidates
      * @param target
      * @return
@@ -816,7 +817,7 @@ public class OneHundrend {
         }
         Arrays.sort(candidates);
         List<List<Integer>> ans = new ArrayList<>();
-        combinationSum(ans, new ArrayList<>(), 0,candidates,target);
+        combinationSum(ans, new ArrayList<>(), 0, candidates, target);
         return ans;
     }
 
@@ -826,8 +827,8 @@ public class OneHundrend {
         }
         for (int i = index; i < candidates.length && candidates[i] <= target; i++) {
             integers.add(candidates[i]);
-            combinationSum(ans,integers, i, candidates, target - candidates[i]);
-            integers.remove(integers.size()-1);
+            combinationSum(ans, integers, i, candidates, target - candidates[i]);
+            integers.remove(integers.size() - 1);
         }
     }
 
@@ -837,6 +838,7 @@ public class OneHundrend {
 
     /**
      * 40. Combination Sum II
+     *
      * @param candidates
      * @param target
      * @return
@@ -856,17 +858,18 @@ public class OneHundrend {
             ans.add(new ArrayList<>(tmp));
         }
         for (int i = index; i < candidates.length && candidates[i] <= target; i++) {
-            if (i > index && candidates[i] == candidates[i-1]) {
+            if (i > index && candidates[i] == candidates[i - 1]) {
                 continue;
             }
             tmp.add(candidates[i]);
             combinationSum2(ans, tmp, i + 1, candidates, target - candidates[i]);
-            tmp.remove(tmp.size()-1);
+            tmp.remove(tmp.size() - 1);
         }
     }
 
     /**
      * 41. First Missing Positive
+     *
      * @param nums
      * @return
      */
@@ -875,8 +878,8 @@ public class OneHundrend {
             return 1;
         }
         for (int i = 0; i < nums.length; i++) {
-            while (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] -1]) {
-                swap(nums, i, nums[i]-1);
+            while (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+                swap(nums, i, nums[i] - 1);
             }
         }
         for (int i = 0; i < nums.length; i++) {
@@ -889,6 +892,7 @@ public class OneHundrend {
 
     /**
      * 42. Trapping Rain Water
+     *
      * @param height
      * @return
      */
@@ -921,6 +925,7 @@ public class OneHundrend {
 
     /**
      * 43. Multiply Strings
+     *
      * @param num1
      * @param num2
      * @return
@@ -954,6 +959,7 @@ public class OneHundrend {
 
     /**
      * 44. Wildcard Matching
+     *
      * @param s
      * @param p
      * @return
@@ -964,14 +970,14 @@ public class OneHundrend {
         }
         int m = s.length();
         int n = p.length();
-        boolean[][] dp = new boolean[m+1][n+1];
+        boolean[][] dp = new boolean[m + 1][n + 1];
         dp[0][0] = true;
         for (int i = 0; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                if (p.charAt(j-1) == '*') {
-                    dp[i][j] = dp[i][j-1] || (i > 0 && dp[i-1][j]);
-                }  else {
-                    dp[i][j] = match(s, p, i, j) ? dp[i-1][j-1] : false;
+                if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i][j - 1] || (i > 0 && dp[i - 1][j]);
+                } else {
+                    dp[i][j] = match(s, p, i, j) ? dp[i - 1][j - 1] : false;
                 }
             }
         }
@@ -981,12 +987,11 @@ public class OneHundrend {
     private boolean match(String s, String p, int i, int j) {
         if (i == 0) {
             return false;
-        } else if (s.charAt(i-1) == p.charAt(j-1)) {
+        } else if (p.charAt(j - 1) == '?') {
             return true;
-        } else if (p.charAt(j-1) == '?') {
+        } else if (s.charAt(i - 1) == p.charAt(j - 1)) {
             return true;
         }
-
         return false;
     }
 
@@ -1000,4 +1005,95 @@ public class OneHundrend {
     }
 
 
+    /**
+     * 45. Jump Game II
+     *
+     * @param nums
+     * @return
+     */
+    public int jump(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int step = 0;
+        int currEnd = 0;
+        int currFarthest = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            currFarthest = Math.max(currFarthest, i + nums[i]);
+            if (i == currEnd) {
+                currEnd = currFarthest;
+                step++;
+            }
+        }
+        return step;
+    }
+
+    /**
+     * 46. Permutations
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        boolean[] used = new boolean[nums.length];
+        permute(ans, new ArrayList<>(), used, nums);
+        return ans;
+    }
+
+    private void permute(List<List<Integer>> ans, List<Integer> tmp, boolean[] used, int[] nums) {
+        if (tmp.size() == nums.length) {
+            ans.add(new ArrayList<>(tmp));
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            used[i] = true;
+            tmp.add(nums[i]);
+            permute(ans, tmp, used, nums);
+            used[i] = false;
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+
+    /**
+     * 47. Permutations II
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        if (isEmpty(nums)) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(nums);
+        List<List<Integer>> ans = new ArrayList<>();
+        boolean[] used = new boolean[nums.length];
+        permuteUnique(ans, new ArrayList<>(), used, nums);
+        return ans;
+    }
+
+    private void permuteUnique(List<List<Integer>> ans, List<Integer> tmp, boolean[] used, int[] nums) {
+        if (tmp.size() == nums.length) {
+            ans.add(new ArrayList<>(tmp));
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            tmp.add(nums[i]);
+            used[i] = true;
+            permuteUnique(ans, tmp, used, nums);
+            used[i] = false;
+            tmp.remove(tmp.size() - 1);
+        }
+    }
 }
