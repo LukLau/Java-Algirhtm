@@ -1083,17 +1083,121 @@ public class OneHundrend {
             ans.add(new ArrayList<>(tmp));
         }
         for (int i = 0; i < nums.length; i++) {
-            if (used[i]) {
-                continue;
-            }
-            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+            if (used[i] || (i > 0 && nums[i] == nums[i - 1] && !used[i - 1])) {
                 continue;
             }
             tmp.add(nums[i]);
             used[i] = true;
             permuteUnique(ans, tmp, used, nums);
-            used[i] = false;
             tmp.remove(tmp.size() - 1);
+            used[i] = false;
         }
     }
+
+    /**
+     * 48. Rotate Image
+     *
+     * @param matrix
+     */
+    public void rotate(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return;
+        }
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = i; j < matrix[i].length; j++) {
+                swapMatrix(matrix, i, j);
+            }
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length / 2; j++) {
+                swapMatrixRow(matrix, i, j);
+            }
+        }
+    }
+
+    private void swapMatrixRow(int[][] matrix, int i, int j) {
+        int tmp = matrix[i][j];
+        matrix[i][j] = matrix[i][matrix[i].length - 1 - j];
+        matrix[i][matrix[i].length - 1 - j] = tmp;
+    }
+
+    private void swapMatrix(int[][] matrix, int i, int j) {
+        int tmp = matrix[i][j];
+        matrix[i][j] = matrix[j][i];
+        matrix[i][j] = tmp;
+    }
+
+    /**
+     * 49. Group Anagrams
+     *
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return new ArrayList<>();
+        }
+        HashMap<String, List<String>> map = new HashMap<>();
+        for (String tmp : strs) {
+            char[] chars = tmp.toCharArray();
+            Arrays.sort(chars);
+            String key = String.valueOf(chars);
+            if (!map.containsKey(key)) {
+                map.put(key, new ArrayList<>());
+            }
+            map.get(key).add(tmp);
+        }
+        return new ArrayList<>(map.values());
+    }
+
+    /**
+     * 50. Pow(x, n)
+     *
+     * @param x
+     * @param n
+     * @return
+     */
+    public double myPow(double x, int n) {
+        double result = 1;
+        int p = Math.abs(n);
+        while (p != 0) {
+            if ((p % 2) != 0) {
+                result *= x;
+            }
+            x *= x;
+            p /= 2;
+        }
+        if (result > Integer.MAX_VALUE || result < Integer.MIN_VALUE) {
+            return 0;
+        }
+        return (n < 0) ? 1 / result : result;
+    }
+
+    /**
+     * 51. N-Queens
+     *
+     * @param n
+     * @return
+     */
+    public List<List<String>> solveNQueens(int n) {
+        if (n < 4) {
+            return new ArrayList<>();
+        }
+        List<List<String>> ans = new ArrayList<>();
+        solveNQueens(ans, new ArrayList<>(), 0, 0, n);
+        return ans;
+    }
+
+
+    private void solveNQueens(List<List<String>> ans, List<String> tmp, int row, int col, int n) {
+        if (row == n) {
+            ans.add(new ArrayList<>(tmp));
+        }
+        for (int i = 0; i < col; i++) {
+
+        }
+    }
+
+
 }
