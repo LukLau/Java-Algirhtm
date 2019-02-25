@@ -1181,23 +1181,61 @@ public class OneHundrend {
      * @return
      */
     public List<List<String>> solveNQueens(int n) {
-        if (n < 4) {
+        if (n < 0) {
             return new ArrayList<>();
         }
+        char[][] chars = new char[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                chars[i][j] = '.';
+            }
+        }
         List<List<String>> ans = new ArrayList<>();
-        solveNQueens(ans, new ArrayList<>(), 0, 0, n);
+        solveNQueens(ans, chars, 0, n);
         return ans;
     }
 
-
-    private void solveNQueens(List<List<String>> ans, List<String> tmp, int row, int col, int n) {
+    private void solveNQueens(List<List<String>> ans, char[][] chars, int row, int n) {
         if (row == n) {
-            ans.add(new ArrayList<>(tmp));
+            ans.add(construct(chars));
+            return;
         }
-        for (int i = 0; i < col; i++) {
+        for (int column = 0; column < n; column++) {
+            if (!checkExist(chars, column, row, n)) {
+                chars[row][column] = 'Q';
+                solveNQueens(ans, chars, row + 1, n);
+                chars[row][column] = '.';
+            }
+        }
 
-        }
+
     }
 
+    private boolean checkExist(char[][] chars, int column, int row, int n) {
+        for (int i = 0; i < row; i++) {
+            if (chars[i][column] == 'Q') {
+                return true;
+            }
+        }
+        for (int i = row - 1, j = column - 1; i >= 0 && j >= 0; i--, j--) {
+            if (chars[i][j] == 'Q') {
+                return true;
+            }
+        }
+        for (int i = row - 1, j = column + 1; i >= 0 && j < n; i--, j++) {
+            if (chars[i][j] == 'Q') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<String> construct(char[][] chars) {
+        List<String> ans = new ArrayList<>();
+        for (char[] ch : chars) {
+            ans.add(String.valueOf(ch));
+        }
+        return ans;
+    }
 
 }
