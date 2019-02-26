@@ -1184,58 +1184,145 @@ public class OneHundrend {
         if (n < 0) {
             return new ArrayList<>();
         }
-        char[][] chars = new char[n][n];
+        char[][] nQueens = new char[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                chars[i][j] = '.';
+                nQueens[i][j] = '.';
             }
         }
         List<List<String>> ans = new ArrayList<>();
-        solveNQueens(ans, chars, 0, n);
+        solveNQueens(ans, nQueens, 0, n);
         return ans;
+
     }
 
-    private void solveNQueens(List<List<String>> ans, char[][] chars, int row, int n) {
+    private void solveNQueens(List<List<String>> ans, char[][] nQueens, int row, int n) {
         if (row == n) {
-            ans.add(construct(chars));
-            return;
+            ans.add(construct(nQueens));
         }
-        for (int column = 0; column < n; column++) {
-            if (!checkExist(chars, column, row, n)) {
-                chars[row][column] = 'Q';
-                solveNQueens(ans, chars, row + 1, n);
-                chars[row][column] = '.';
+        for (int col = 0; col < n; col++) {
+            if (!checkExist(nQueens, col, row, n)) {
+                nQueens[row][col] = 'Q';
+                solveNQueens(ans, nQueens, row + 1, n);
+                nQueens[row][col] = '.';
             }
         }
-
-
     }
 
-    private boolean checkExist(char[][] chars, int column, int row, int n) {
+    private boolean checkExist(char[][] nQueens, int col, int row, int n) {
         for (int i = 0; i < row; i++) {
-            if (chars[i][column] == 'Q') {
+            if (nQueens[i][col] == 'Q') {
                 return true;
             }
         }
-        for (int i = row - 1, j = column - 1; i >= 0 && j >= 0; i--, j--) {
-            if (chars[i][j] == 'Q') {
+        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+            if (nQueens[i][j] == 'Q') {
                 return true;
             }
         }
-        for (int i = row - 1, j = column + 1; i >= 0 && j < n; i--, j++) {
-            if (chars[i][j] == 'Q') {
+        for (int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
+            if (nQueens[i][j] == 'Q') {
                 return true;
             }
         }
         return false;
     }
 
-    private List<String> construct(char[][] chars) {
+    private List<String> construct(char[][] nQueens) {
         List<String> ans = new ArrayList<>();
-        for (char[] ch : chars) {
-            ans.add(String.valueOf(ch));
+        for (char[] row : nQueens) {
+            String tmp = String.valueOf(row);
+            ans.add(tmp);
         }
         return ans;
     }
 
+    /**
+     * 52. N-Queens II
+     *
+     * @param n
+     * @return
+     */
+    public int totalNQueens(int n) {
+        if (n < 0) {
+            return 0;
+        }
+        int[] dp = new int[n];
+        return totalNQueens(dp, 0, n);
+    }
+
+    private int totalNQueens(int[] dp, int row, int n) {
+        int result = 0;
+        if (row == n) {
+            result++;
+            return result;
+        }
+        for (int col = 0; col < n; col++) {
+            if (!checkExist(dp, row, col)) {
+                dp[row] = col;
+                result += totalNQueens(dp, row + 1, n);
+                dp[row] = -1;
+            }
+        }
+        return result;
+    }
+
+    private boolean checkExist(int[] dp, int row, int col) {
+        for (int i = 0; i < row; i++) {
+            if (dp[i] == col || Math.abs(dp[i] - i) == Math.abs(row - col)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 53. Maximum Subarray
+     *
+     * @param nums
+     * @return
+     */
+    public int maxSubArray(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int local = 0;
+        int global = Integer.MIN_VALUE;
+        for (int num : nums) {
+            local = local > 0 ? local + num : num;
+            global = Math.max(global, local);
+        }
+        return global;
+    }
+
+    /**
+     * 54. Spiral Matrix
+     *
+     * @param matrix
+     * @return
+     */
+    public List<Integer> spiralOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return new ArrayList<>();
+        }
+        List<Integer> ans = new ArrayList<>();
+        int row = matrix.length;
+        int col = matrix[0].length;
+        int i = 0;
+        int j = 0;
+        while (i < row && j < col) {
+            for (int k = j; k < col; k++) {
+                ans.add(matrix[i][k]);
+            }
+            for (int k = i + 1; k < row; k++) {
+                ans.add(matrix[k][j]);
+            }
+            if (i != j) {
+                for (int k = col - 1; k >= 0; k--) {
+                    ans.add(matrix[])
+                }
+            }
+
+        }
+    }
 }
