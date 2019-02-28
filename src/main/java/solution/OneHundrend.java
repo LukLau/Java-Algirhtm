@@ -1,6 +1,7 @@
 package solution;
 
 
+import org.dora.algorithm.datastructe.Interval;
 import org.dora.algorithm.datastructe.ListNode;
 
 import java.util.*;
@@ -1306,23 +1307,236 @@ public class OneHundrend {
             return new ArrayList<>();
         }
         List<Integer> ans = new ArrayList<>();
-        int row = matrix.length;
-        int col = matrix[0].length;
-        int i = 0;
-        int j = 0;
-        while (i < row && j < col) {
-            for (int k = j; k < col; k++) {
-                ans.add(matrix[i][k]);
+        int left = 0;
+        int right = matrix[0].length - 1;
+        int top = 0;
+        int bottom = matrix.length - 1;
+        while (left <= right && top <= bottom) {
+            for (int i = left; i <= right; i++) {
+                ans.add(matrix[top][i]);
             }
-            for (int k = i + 1; k < row; k++) {
-                ans.add(matrix[k][j]);
+            for (int i = top + 1; i <= bottom; i++) {
+                ans.add(matrix[i][right]);
             }
-            if (i != j) {
-                for (int k = col - 1; k >= 0; k--) {
-                    ans.add(matrix[])
+            if (top != bottom) {
+                for (int i = right - 1; i >= left; i--) {
+                    ans.add(matrix[bottom][i]);
                 }
             }
+            if (left != right) {
+                for (int i = bottom - 1; i > top; i--) {
+                    ans.add(matrix[i][left]);
+                }
+            }
+            left++;
+            right--;
+            top++;
+            bottom--;
+        }
+        return ans;
+    }
+
+    /**
+     * 55. Jump Game
+     *
+     * @param nums
+     * @return
+     */
+    public boolean canJump(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int reach = nums[0];
+        for (int i = 0; i < nums.length - 1 && i <= reach; i++) {
+            reach = Math.max(reach, i + nums[i]);
+        }
+        return reach >= nums.length - 1;
+    }
+
+    public List<Interval> merge(List<Interval> intervals) {
+        if (intervals == null || intervals.size() == 0) {
+            return new ArrayList<>();
+        }
+        return null;
+    }
+
+    /**
+     * 58. Length of Last Word
+     *
+     * @param s
+     * @return
+     */
+    public int lengthOfLastWord(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        int lastIndex = s.lastIndexOf(" ");
+        return s.length() - 1 - lastIndex;
+    }
+
+    /**
+     * 59. Spiral Matrix II
+     *
+     * @param n
+     * @return
+     */
+    public int[][] generateMatrix(int n) {
+        int[][] matrix = new int[n][n];
+        int total = 0;
+        int left = 0;
+        int right = n - 1;
+        int top = 0;
+        int bottom = n - 1;
+        while (left <= right && top <= bottom) {
+            for (int i = left; i <= right; i++) {
+                matrix[top][i] = ++total;
+            }
+            for (int i = top + 1; i <= bottom; i++) {
+                matrix[i][right] = ++total;
+            }
+            if (top != bottom) {
+                for (int i = right - 1; i >= left; i--) {
+                    matrix[bottom][i] = ++total;
+                }
+            }
+            if (left != right) {
+                for (int i = bottom - 1; i > left; i--) {
+                    matrix[i][left] = ++total;
+                }
+            }
+            left++;
+            right--;
+            top++;
+            bottom--;
+        }
+        return matrix;
+    }
+
+    /**
+     * 60. Permutation Sequence
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public String getPermutation(int n, int k) {
+        if (n <= 0 || k < 0) {
+            return "";
+        }
+        int[] pos = new int[n + 1];
+        pos[0] = 1;
+        StringBuilder stringBuilder = new StringBuilder();
+        int factory = 1;
+        for (int i = 1; i <= n; i++) {
+            pos[i] = factory;
 
         }
+        return "";
     }
+
+    /**
+     * 61. Rotate List
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode rotateRight(ListNode head, int k) {
+        if (head == null || k < 0) {
+            return head;
+        }
+        ListNode fast = head;
+        int count = 1;
+        while (fast.next != null) {
+            fast = fast.next;
+            count++;
+        }
+        fast.next = head;
+        ListNode slow = head;
+        if ((k %= count) != 0) {
+            for (int i = 0; i < count - k; i++) {
+                slow = slow.next;
+                fast = fast.next;
+            }
+        }
+        fast.next = null;
+        return slow;
+    }
+
+    /**
+     * 62. Unique Paths
+     *
+     * @param m
+     * @param n
+     * @return
+     */
+    public int uniquePaths(int m, int n) {
+        if (m < 0 || n < 0) {
+            return 0;
+        }
+        int[] dp = new int[n];
+        dp[0] = 1;
+        for (int i = 0; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[j] += dp[j - 1];
+            }
+        }
+        return dp[n - 1];
+    }
+
+    /**
+     * 63. Unique Paths II
+     *
+     * @param obstacleGrid
+     * @return
+     */
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        if (obstacleGrid == null || obstacleGrid.length == 0) {
+            return 0;
+        }
+        int column = obstacleGrid[0].length;
+        int[] dp = new int[column];
+        dp[0] = 1;
+        for (int i = 0; i < obstacleGrid.length; i++) {
+            for (int j = 0; j < column; j++) {
+                if (obstacleGrid[i][j] == 1) {
+                    dp[j] = 0;
+                } else {
+                    dp[j] += j > 0 ? dp[j - 1] : 0;
+                }
+            }
+        }
+        return dp[column - 1];
+    }
+
+    /**
+     * 64. Minimum Path Sum
+     *
+     * @param grid
+     * @return
+     */
+    public int minPathSum(int[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        int[][] dp = new int[row][column];
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (i == 0 && j == 0) {
+                    dp[0][0] = grid[i][j];
+                } else if (i == 0) {
+                    dp[i][j] = dp[i][j - 1] + grid[i][j];
+                } else if (j == 0) {
+                    dp[i][j] = dp[i - 1][j] + grid[i][j];
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+                }
+            }
+        }
+        return dp[row - 1][column - 1];
+    }
+
 }
