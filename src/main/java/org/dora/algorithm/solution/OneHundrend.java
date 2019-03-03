@@ -1,4 +1,4 @@
-package solution;
+package org.dora.algorithm.solution;
 
 
 import org.dora.algorithm.datastructe.Interval;
@@ -75,7 +75,8 @@ public class OneHundrend {
         if (s == null || s.length() == 0) {
             return 0;
         }
-        int left = 0, longest = 0;
+        int left = 0;
+        int longest = 0;
         HashMap<Character, Integer> map = new HashMap<>();
         for (int i = 0; i < s.length(); i++) {
             if (map.containsKey(s.charAt(i))) {
@@ -95,7 +96,8 @@ public class OneHundrend {
      * @return
      */
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
-        int m = nums1.length, n = nums2.length;
+        int m = nums1.length;
+        int n = nums2.length;
         if (m > n) {
             return findMedianSortedArrays(nums2, nums1);
         }
@@ -129,7 +131,9 @@ public class OneHundrend {
         if (s == null || s.length() == 0) {
             return "";
         }
-        int m = s.length(), left = 0, longest = 0;
+        int m = s.length();
+        int left = 0;
+        int longest = 0;
         boolean[][] dp = new boolean[m][m];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j <= i; j++) {
@@ -211,7 +215,8 @@ public class OneHundrend {
         if (str.length() == 0) {
             return 0;
         }
-        int sign = 1, idx = 0;
+        int sign = 1;
+        int idx = 0;
         if (str.charAt(idx) == '-' || str.charAt(idx) == '+') {
             sign = str.charAt(idx) == '-' ? -1 : 1;
             idx++;
@@ -290,7 +295,9 @@ public class OneHundrend {
         if (height == null || height.length == 0) {
             return 0;
         }
-        int result = 0, left = 0, right = height.length - 1;
+        int result = 0;
+        int left = 0;
+        int right = height.length - 1;
         while (left < right) {
             result = Math.max(result, Math.min(height[left], height[right]) * (right - left));
             if (height[left] <= height[right]) {
@@ -337,7 +344,9 @@ public class OneHundrend {
             if (i > 0 && nums[i] == nums[i - 1]) {
                 continue;
             }
-            int left = i + 1, right = nums.length - 1, target = 0 - nums[i];
+            int left = i + 1;
+            int right = nums.length - 1;
+            int target = 0 - nums[i];
             while (left < right) {
                 if (nums[left] + nums[right] == target) {
                     ans.add(Arrays.asList(nums[i], nums[left], nums[right]));
@@ -935,7 +944,8 @@ public class OneHundrend {
         if (isStringEmpty(num1) || isStringEmpty(num2)) {
             return "";
         }
-        int m = num1.length(), n = num2.length();
+        int m = num1.length();
+        int n = num2.length();
         int[] position = new int[m + n];
         for (int i = m - 1; i >= 0; i--) {
             for (int j = n - 1; j >= 0; j--) {
@@ -1420,18 +1430,29 @@ public class OneHundrend {
      * @return
      */
     public String getPermutation(int n, int k) {
-        if (n <= 0 || k < 0) {
+        if (n <= 0) {
             return "";
         }
-        int[] pos = new int[n + 1];
-        pos[0] = 1;
-        StringBuilder stringBuilder = new StringBuilder();
-        int factory = 1;
-        for (int i = 1; i <= n; i++) {
-            pos[i] = factory;
-
+        int[] factory = new int[n];
+        factory[0] = 1;
+        int fac = 1;
+        for (int i = 1; i < n; i++) {
+            fac = i * fac;
+            factory[i] = fac;
         }
-        return "";
+        List<Integer> nums = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            nums.add(i);
+        }
+        k--;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            int index = k / factory[n - 1 - i];
+            stringBuilder.append(nums.get(index));
+            nums.remove(index);
+            k -= index * factory[n - 1 - i];
+        }
+        return stringBuilder.toString();
     }
 
     /**
@@ -1537,6 +1558,175 @@ public class OneHundrend {
             }
         }
         return dp[row - 1][column - 1];
+    }
+
+    /**
+     * 66. Plus One
+     *
+     * @param digits
+     * @return
+     */
+    public int[] plusOne(int[] digits) {
+        int n = digits.length;
+        for (int i = n - 1; i >= 0; i--) {
+            if (digits[i] != 9) {
+                digits[i]++;
+                return digits;
+            } else {
+                digits[i] = 0;
+            }
+        }
+        int[] ans = new int[n + 1];
+        ans[0] = 1;
+        return ans;
+    }
+
+    /**
+     * 67. Add Binary
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public String addBinary(String a, String b) {
+        int m = a.length() - 1;
+        int n = b.length() - 1;
+        StringBuilder ans = new StringBuilder();
+        int carry = 0;
+        while (m >= 0 || n >= 0 || carry > 0) {
+            int sum = (m >= 0 ? a.charAt(m--) - '0' : 0) + (n >= 0 ? b.charAt(n--) - '0' : 0) + carry;
+            carry = sum / 2;
+            ans.insert(0, sum % 2);
+        }
+        return ans.toString();
+    }
+
+    /**
+     * 68. Text Justification
+     *
+     * @param words
+     * @param maxWidth
+     * @return
+     */
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        if (words == null || words.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+        for (int i = 0, k, l; i < words.length; i += k) {
+            for (k = 0, l = 0; k < words.length && l + words[i + k].length() <= maxWidth - k; k++) {
+                l += words[i + k].length();
+            }
+            String tmp = words[i];
+            for (int j = 0; j < k - 1; j++) {
+                if (i + k == words.length) {
+                    tmp += " ";
+                } else {
+
+                }
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 69. Sqrt(x)
+     *
+     * @param x
+     * @return
+     */
+    public int mySqrt(int x) {
+        double precision = 0.00001;
+        double ans = x;
+        while ((ans * ans - x) > precision) {
+            ans = (ans + x / ans) / 2;
+        }
+        return (int) ans;
+    }
+
+    /**
+     * 70. Climbing Stairs
+     *
+     * @param n
+     * @return
+     */
+    public int climbStairs(int n) {
+        if (n <= 2) {
+            return n < 0 ? 0 : n;
+        }
+        int one = 1;
+        int two = 2;
+        int ans = 0;
+        for (int i = 3; i <= n; i++) {
+            ans = one + two;
+            one = two;
+            two = ans;
+        }
+        return ans;
+    }
+
+
+    /**
+     * 71. Simplify Path
+     *
+     * @param path
+     * @return
+     */
+    public String simplifyPath(String path) {
+        if (path == null || path.length() == 0) {
+            return "";
+        }
+        Deque<String> deque = new LinkedList<>();
+        Set<String> skip = new HashSet<>(Arrays.asList("", "."));
+        String[] paths = path.split("/");
+        for (String tmp : paths) {
+            if (!skip.contains(tmp)) {
+                if ("..".equals(tmp)) {
+                    if (!deque.isEmpty()) {
+                        deque.pop();
+                    }
+                } else {
+                    deque.push(tmp);
+                }
+            }
+        }
+        String ans = "";
+        while (!deque.isEmpty()) {
+            ans = "/" + deque.poll() + ans;
+        }
+        return ans.length() == 0 ? "/" : ans;
+    }
+
+    /**
+     * 72. Edit Distance
+     *
+     * @param word1
+     * @param word2
+     * @return
+     */
+    public int minDistance(String word1, String word2) {
+        if (word1 == null || word2.length() == 0) {
+            return 0;
+        }
+        int m = word1.length();
+        int n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = 1 + Math.min(dp[i - 1][j], Math.min(dp[i][j - 1], dp[i - 1][j - 1]));
+                }
+            }
+        }
+        return dp[m][n];
     }
 
 }
