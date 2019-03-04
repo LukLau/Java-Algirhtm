@@ -1613,20 +1613,56 @@ public class OneHundrend {
             return new ArrayList<>();
         }
         List<String> ans = new ArrayList<>();
-        for (int i = 0, k, l; i < words.length; i += k) {
-            for (k = 0, l = 0; k < words.length && l + words[i + k].length() <= maxWidth - k; k++) {
-                l += words[i + k].length();
+        int startIndex = 0;
+        while (startIndex < words.length) {
+            int line = 0;
+            int endIndex = startIndex;
+            while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
+                line += words[endIndex++].length() + 1;
             }
-            String tmp = words[i];
-            for (int j = 0; j < k - 1; j++) {
-                if (i + k == words.length) {
-                    tmp += " ";
-                } else {
-
-                }
+            boolean isLast = endIndex == words.length;
+            int countOfWords = endIndex - startIndex;
+            StringBuilder stringBuilder = new StringBuilder();
+            if (countOfWords == 1) {
+                stringBuilder.append(words[startIndex]);
+            } else {
+                int blankSpace = maxWidth - line + 1;
+                int countOfSpace = isLast ? 1 : 1 + blankSpace / (countOfWords - 1);
+                int extraSpace = isLast ? 0 : blankSpace % (countOfWords - 1);
+                stringBuilder = construct(words, startIndex, endIndex, countOfSpace, extraSpace);
             }
+            ans.add(correct(stringBuilder.toString(), maxWidth));
+            startIndex = endIndex;
         }
         return ans;
+    }
+
+    private StringBuilder construct(String[] words, int startIndex, int endIndex, int spaces, int extra) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = startIndex; i < endIndex; i++) {
+            stringBuilder.append(words[i]);
+
+            int tmp = 0;
+            while (tmp < spaces) {
+                stringBuilder.append(" ");
+                tmp++;
+            }
+            if (extra > 0) {
+                stringBuilder.append(" ");
+                extra--;
+            }
+        }
+        return stringBuilder;
+    }
+
+    private String correct(String stringBuilder, int maxWidth) {
+        while (stringBuilder.length() < maxWidth) {
+            stringBuilder = stringBuilder + " ";
+        }
+        while (stringBuilder.length() > maxWidth) {
+            stringBuilder = stringBuilder.substring(0, stringBuilder.length() - 1);
+        }
+        return stringBuilder;
     }
 
     /**
