@@ -12,6 +12,10 @@ import java.util.*;
  */
 public class OneHundrend {
 
+    public static void main(String[] args) {
+
+    }
+
     /**
      * 1. Two Sum
      *
@@ -1015,7 +1019,6 @@ public class OneHundrend {
         return dp;
     }
 
-
     /**
      * 45. Jump Game II
      *
@@ -1070,7 +1073,6 @@ public class OneHundrend {
             tmp.remove(tmp.size() - 1);
         }
     }
-
 
     /**
      * 47. Permutations II
@@ -1701,7 +1703,6 @@ public class OneHundrend {
         return ans;
     }
 
-
     /**
      * 71. Simplify Path
      *
@@ -1764,5 +1765,328 @@ public class OneHundrend {
         }
         return dp[m][n];
     }
+
+    /**
+     * 73. Set Matrix Zeroes
+     *
+     * @param matrix
+     */
+    public void setZeroes(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return;
+        }
+        boolean fc = false;
+        boolean fr = false;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j] == 0) {
+                    matrix[i][0] = 0;
+                    matrix[0][j] = 0;
+                    if (i == 0) {
+                        fc = true;
+                    }
+                    if (j == 0) {
+                        fr = true;
+                    }
+                }
+            }
+        }
+        for (int i = 1; i < matrix.length; i++) {
+            for (int j = 1; j < matrix[i].length; j++) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        if (fc) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                matrix[0][j] = 0;
+            }
+        }
+        if (fr) {
+            for (int i = 0; i < matrix.length; i++) {
+                matrix[i][0] = 0;
+            }
+        }
+    }
+
+    /**
+     * 74. Search a 2D Matrix
+     *
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int j = 0;
+        int i = row - 1;
+        while (i >= 0 && j < column) {
+            if (matrix[i][j] == target) {
+                return true;
+            } else if (matrix[i][j] < target) {
+                j++;
+            } else {
+                i--;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 75. Sort Colors
+     *
+     * @param nums
+     */
+    public void sortColors(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int one = 0;
+        int second = nums.length - 1;
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] == 2 && i < second) {
+                swap(nums, i, second--);
+            }
+            while (nums[i] == 0 && i > one) {
+                swap(nums, i, one++);
+            }
+        }
+    }
+
+    /**
+     * 76. Minimum Window Substring
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public String minWindow(String s, String t) {
+        if (s == null || t == null) {
+            return "";
+        }
+        HashMap<Character, Integer> map = new HashMap<>();
+        for (int i = 0; i < s.length(); i++) {
+            int count = map.getOrDefault(s.charAt(i), 0);
+            map.put(s.charAt(i), ++count);
+        }
+        int begin = 0;
+        int end = 0;
+        int ans = 0;
+        int count = t.length();
+        while (end < s.length()) {
+
+        }
+        return "";
+    }
+
+    /**
+     * 77. Combinations
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> ans = new ArrayList<>();
+        combine(ans, new ArrayList<>(), 1, n, k);
+        return ans;
+    }
+
+    private void combine(List<List<Integer>> ans, List<Integer> tmp, int start, int n, int k) {
+        if (tmp.size() == k) {
+            ans.add(new ArrayList<>(tmp));
+        }
+        for (int i = start; i <= n; i++) {
+            tmp.add(i);
+            combine(ans, tmp, i + 1, n, k);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    /**
+     * 78. Subsets
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsets(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        subsets(ans, new ArrayList<>(), 0, nums);
+        return ans;
+    }
+
+    private void subsets(List<List<Integer>> ans, List<Integer> tmp, int index, int[] nums) {
+        ans.add(new ArrayList<>(tmp));
+        for (int i = index; i < nums.length; i++) {
+            tmp.add(nums[i]);
+            subsets(ans, tmp, i + 1, nums);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    /**
+     * 79. Word Search
+     *
+     * @param board
+     * @param word
+     * @return
+     */
+    public boolean exist(char[][] board, String word) {
+        if (board == null || board.length == 0) {
+            return false;
+        }
+        boolean[][] used = new boolean[board.length][board[0].length];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j] == word.charAt(0) && check(used, i, j, board, 0, word)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    private boolean check(boolean[][] used, int i, int j, char[][] board, int k, String word) {
+        if (k == word.length()) {
+            return true;
+        }
+        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || board[i][j] != word.charAt(k) || used[i][j]) {
+            return false;
+        }
+        used[i][j] = true;
+        if (check(used, i - 1, j, board, k + 1, word) ||
+                check(used, i + 1, j, board, k + 1, word) ||
+                check(used, i, j - 1, board, k + 1, word) ||
+                check(used, i, j + 1, board, k + 1, word)) {
+            return true;
+        }
+        used[i][j] = false;
+        return false;
+    }
+
+    /**
+     * 80. Remove Duplicates from Sorted Array II
+     *
+     * @param nums
+     * @return
+     */
+    public int removeDuplicatesII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int idx = 1;
+        int count = 1;
+        int value = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] == value) {
+                count++;
+                if (count > 2) {
+                    continue;
+                }
+            } else {
+                count = 1;
+                value = nums[i];
+            }
+            nums[idx++] = nums[i];
+        }
+        return idx;
+    }
+
+    /**
+     * 82. Remove Duplicates from Sorted List II
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            ListNode currNode = head.next.next;
+            while (currNode != null && currNode.val == head.val) {
+                currNode = currNode.next;
+            }
+            return deleteDuplicates(currNode);
+        } else {
+            head.next = deleteDuplicates(head.next);
+            return head;
+        }
+    }
+
+    /**
+     * 83. Remove Duplicates from Sorted List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicatesEasy(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            return deleteDuplicatesEasy(head.next);
+        } else {
+            head.next = deleteDuplicatesEasy(head.next);
+            return head;
+        }
+    }
+
+    /**
+     * 84. Largest Rectangle in Histogram
+     *
+     * @param heights
+     * @return
+     */
+    public int largestRectangleArea(int[] heights) {
+        if (heights == null || heights.length == 0) {
+            return 0;
+        }
+        Deque<Integer> stack = new LinkedList<>();
+        int ans = 0;
+        for (int i = 0; i <= heights.length; i++) {
+            int h = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] < h) {
+                stack.push(i);
+            } else {
+                int value = heights[stack.pop()];
+                int size = stack.isEmpty() ? i : i - 1 - stack.peek();
+                ans = Math.max(ans, value * size);
+                i--;
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 85. Maximal Rectangle
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+
+        int column = matrix[0].length;
+        int row = matrix.length;
+        int[][] dp = new int[row][column];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+
+            }
+        }
+    }
+
 
 }
