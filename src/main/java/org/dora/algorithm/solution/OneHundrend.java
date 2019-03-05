@@ -3,6 +3,7 @@ package org.dora.algorithm.solution;
 
 import org.dora.algorithm.datastructe.Interval;
 import org.dora.algorithm.datastructe.ListNode;
+import org.dora.algorithm.datastructe.TreeNode;
 
 import java.util.*;
 
@@ -11,6 +12,7 @@ import java.util.*;
  * @date 2019/02/16
  */
 public class OneHundrend {
+
 
     public static void main(String[] args) {
 
@@ -2077,15 +2079,216 @@ public class OneHundrend {
         if (matrix == null || matrix.length == 0) {
             return 0;
         }
-
-        int column = matrix[0].length;
-        int row = matrix.length;
-        int[][] dp = new int[row][column];
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
+        int ans = 0;
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == '0') {
+                    dp[i][j] = -1;
+                    continue;
+                }
+                dp[i][j] = j;
+                if (j > 0 && dp[i][j - 1] >= 0) {
+                    dp[i][j] = dp[i][j - 1];
+                }
+                int width = j - dp[i][j] + 1;
+                for (int k = i; k >= 0 && matrix[k][j] == '1'; k--) {
+                    width = Math.min(width, j - dp[k][j] + 1);
+                    ans = Math.max(ans, (i - k + 1) * width);
+                }
 
             }
         }
+        return ans;
+    }
+
+    /**
+     * 86. Partition List
+     *
+     * @param head
+     * @param x
+     * @return
+     */
+    public ListNode partition(ListNode head, int x) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode root = new ListNode(0);
+        ListNode small = root;
+        ListNode dummy = new ListNode(0);
+        ListNode big = dummy;
+        while (head != null) {
+            if (head.val < x) {
+                small.next = head;
+                small = small.next;
+            } else {
+                big.next = head;
+                big = big.next;
+            }
+            head = head.next;
+        }
+        big.next = null;
+        small.next = dummy.next;
+        return root.next;
+    }
+
+    /**
+     * 87. Scramble String
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public boolean isScramble(String s1, String s2) {
+        if (s1 == null || s2 == null) {
+            return false;
+        }
+        if (s1.equals(s2)) {
+            return true;
+        }
+        int m = s1.length();
+
+        int[] hash = new int[26];
+        for (int i = 0; i < m; i++) {
+            hash[s1.charAt(i) - 'a']++;
+            hash[s2.charAt(i) - 'a']--;
+        }
+        for (int i = 0; i < 26; i++) {
+
+            if (hash[i] != 0) {
+                return false;
+            }
+        }
+        for (int i = 1; i < m; i++) {
+            if (isScramble(s1.substring(0, i), s2.substring(0, i)) && isScramble(s1.substring(i), s2.substring(i))) {
+                return true;
+            }
+            if (isScramble(s1.substring(0, i), s2.substring(m - i)) && isScramble(s1.substring(i), s2.substring(0, m - i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 88. Merge Sorted Array
+     *
+     * @param nums1
+     * @param m
+     * @param nums2
+     * @param n
+     */
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        return;
+    }
+
+    /**
+     * 90. Subsets II
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(nums);
+        List<List<Integer>> ans = new ArrayList<>();
+        subsetsWithDup(ans, new ArrayList<>(), 0, nums);
+        return ans;
+    }
+
+    private void subsetsWithDup(List<List<Integer>> ans, List<Integer> integers, int startIndex, int[] nums) {
+        ans.add(new ArrayList<>(integers));
+        for (int i = startIndex; i < nums.length; i++) {
+            if (i > startIndex && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            integers.add(nums[i]);
+            subsetsWithDup(ans, integers, i + 1, nums);
+            integers.remove(integers.size() - 1);
+        }
+    }
+
+    /**
+     * 93. Restore IP Addresses
+     *
+     * @param s
+     * @return
+     */
+    public List<String> restoreIpAddresses(String s) {
+        if (s == null || s.length() == 0) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+        for (int a = 0; a < 4; a++) {
+            for (int b = a + 1; b <= 7; b++) {
+                for (int c = b + 1; c <= 10; c++) {
+                    for (int d = c + 1; d <= s.length(); d++) {
+                        if (a + b + c + d == 12) {
+                            continue;
+                        }
+
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 94. Binary Tree Inorder Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> inorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<Integer> ans = new ArrayList<>();
+        TreeNode p = root;
+        Stack<TreeNode> stack = new Stack<>();
+        while (p != null || !stack.isEmpty()) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            ans.add(p.val);
+            p = p.right;
+        }
+        return ans;
+    }
+
+    /**
+     * 95. Unique Binary Search Trees II
+     *
+     * @param n
+     * @return
+     */
+    public List<TreeNode> generateTrees(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        List<TreeNode> ans = new ArrayList<>();
+        generateTrees(ans, 1, n);
+        return ans;
+    }
+
+    private void generateTrees(List<TreeNode> ans, int begin,) {
+        if (lefet > right) {
+            return;
+        }
+        if (lefet == right) {
+            TreeNode node = new TreeNode(lefet);
+            ans.add(node);
+            return;
+        }
+
+
     }
 
 
