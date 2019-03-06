@@ -11,7 +11,7 @@ import java.util.*;
  * @author liulu
  * @date 2019/02/16
  */
-public class OneHundrend {
+public class OneHundred {
 
 
     public static void main(String[] args) {
@@ -2181,7 +2181,20 @@ public class OneHundrend {
      * @param n
      */
     public void merge(int[] nums1, int m, int[] nums2, int n) {
-        return;
+        int k = m + n - 1;
+        while (m >= 1 && n >= 1) {
+            if (nums1[m - 1] > nums2[n - 1]) {
+                nums1[k--] = nums1[m - 1];
+                m--;
+            } else {
+                nums1[k--] = nums2[n - 1];
+                n--;
+            }
+        }
+        while (n >= 1) {
+            nums1[k--] = nums2[n - 1];
+            n--;
+        }
     }
 
     /**
@@ -2273,22 +2286,139 @@ public class OneHundrend {
         if (n <= 0) {
             return new ArrayList<>();
         }
+        return generateTrees(1, n);
+    }
+
+    private List<TreeNode> generateTrees(int left, int right) {
+
         List<TreeNode> ans = new ArrayList<>();
-        generateTrees(ans, 1, n);
+        if (left > right) {
+            ans.add(null);
+            return ans;
+        }
+        if (left == right) {
+            TreeNode root = new TreeNode(left);
+            ans.add(root);
+            return ans;
+        }
+        for (int i = left; i <= right; i++) {
+            List<TreeNode> leftList = generateTrees(left, i - 1);
+            List<TreeNode> rightList = generateTrees(i + 1, right);
+            for (TreeNode leftNode : leftList) {
+                for (TreeNode rightNode : rightList) {
+                    TreeNode root = new TreeNode(i);
+                    root.left = leftNode;
+                    root.right = rightNode;
+                    ans.add(root);
+                }
+            }
+        }
         return ans;
     }
 
-    private void generateTrees(List<TreeNode> ans, int begin,) {
-        if (lefet > right) {
-            return;
+    /**
+     * 96. Unique Binary Search Trees
+     *
+     * @param n
+     * @return
+     */
+    public int numTrees(int n) {
+        if (n <= 1) {
+            return n;
         }
-        if (lefet == right) {
-            TreeNode node = new TreeNode(lefet);
-            ans.add(node);
-            return;
+        int[] dp = new int[n + 1];
+        dp[0] = dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                dp[i] += dp[j - 1] * dp[i - j];
+            }
         }
+        return dp[n];
+
+    }
 
 
+    /**
+     * 97. Interleaving String
+     *
+     * @param s1
+     * @param s2
+     * @param s3
+     * @return
+     */
+    public boolean isInterleave(String s1, String s2, String s3) {
+        int m = s1.length(), n = s2.length();
+        if (m + n != s3.length()) {
+            return false;
+        }
+
+        boolean[] dp = new boolean[n + 1];
+        for (int i = 0; i <= m; i++) {
+            for (int j = 0; j <= n; j++) {
+                if (i == 0 && j == 0) {
+                    dp[j] = true;
+                } else if (i == 0) {
+                    dp[j] = s2.charAt(j - 1) == s3.charAt(i + j - 1) && dp[j - 1];
+                } else if (j == 0) {
+                    dp[j] = s1.charAt(i - 1) == s3.charAt(i + j - 1) && dp[j];
+                } else {
+                    dp[j] = (dp[j] && s1.charAt(i - 1) == s3.charAt(i + j - 1)) || (dp[j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1));
+                }
+            }
+        }
+        return dp[n];
+    }
+
+    /**
+     * 98. Validate Binary Search Tree
+     *
+     * @param root
+     * @return
+     */
+    public boolean isValidBST(TreeNode root) {
+        if (root == null) {
+            return false;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        TreeNode prev = null;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            if (null == prev) {
+                prev = p;
+            } else {
+                if (prev.val >= p.val) {
+                    return false;
+                }
+                prev = p;
+            }
+            p = p.right;
+        }
+        return true;
+    }
+
+    /**
+     * 100. Same Tree
+     *
+     * @param p
+     * @param q
+     * @return
+     */
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) {
+            return true;
+        }
+        if (p == null || q == null) {
+            return false;
+        }
+        if (p.val == q.val) {
+            return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+        }
+        return false;
     }
 
 
