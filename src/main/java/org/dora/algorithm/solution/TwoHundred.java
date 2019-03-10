@@ -13,14 +13,13 @@ import java.util.Stack;
  * @date 2019/03/07
  */
 public class TwoHundred {
-
     /**
      * 124. Binary Tree Maximum Path Sum
      *
      * @param root
      * @return
      */
-    private static int maxPathSum = 0;
+    private static int maxPathSum = Integer.MIN_VALUE;
 
     /**
      * 101. Symmetric Tree
@@ -599,36 +598,42 @@ public class TwoHundred {
             return 0;
         }
         int n = prices.length;
-
         int[] left = new int[n];
-
-        int minLeft = prices[0];
-
+        int minPrices = prices[0];
+        int maxLeft = 0;
         for (int i = 1; i < n; i++) {
-            if (prices[i] < minLeft) {
-                minLeft = prices[i];
+            if (prices[i] < minPrices) {
+                minPrices = prices[i];
             }
-
+            maxLeft = Math.max(maxLeft, prices[i] - minPrices);
+            left[i] = maxLeft;
         }
-        int[] right = new int[n];
+        int[] right = new int[n + 1];
 
-        int maxRight = prices[n - 1];
+        int maxPrices = prices[n - 1];
 
+        int maxRight = 0;
         for (int i = n - 2; i >= 0; i--) {
-            if (prices[i] < maxRight) {
-                right[i] = maxRight - prices[i];
+            if (prices[i] > maxPrices) {
+                maxPrices = prices[i];
             }
+            maxRight = Math.max(maxRight, maxPrices - prices[i]);
+            right[i] = maxRight;
         }
+
         int result = 0;
 
-        for (int i = 0; i < n - 1; i++) {
+        for (int i = 0; i < n; i++) {
             result = Math.max(result, left[i] + right[i + 1]);
         }
         return result;
 
     }
 
+
     /**
+     * 124. Binary Tree Maximum Path Sum
+     *
      * @param root
      * @return
      */
