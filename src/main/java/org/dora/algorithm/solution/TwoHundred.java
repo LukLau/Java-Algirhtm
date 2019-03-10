@@ -3,10 +3,7 @@ package org.dora.algorithm.solution;
 import org.dora.algorithm.datastructe.ListNode;
 import org.dora.algorithm.datastructe.TreeNode;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * @author lauluk
@@ -20,6 +17,7 @@ public class TwoHundred {
      * @return
      */
     private static int maxPathSum = Integer.MIN_VALUE;
+    private static int ans = 0;
 
     /**
      * 101. Symmetric Tree
@@ -630,7 +628,6 @@ public class TwoHundred {
 
     }
 
-
     /**
      * 124. Binary Tree Maximum Path Sum
      *
@@ -654,5 +651,202 @@ public class TwoHundred {
         maxPathSum = Math.max(maxPathSum, left + right + root.val);
         return Math.max(left, right) + root.val;
     }
+
+    /**
+     * @param s
+     * @return
+     */
+    public boolean isPalindrome(String s) {
+        if (s == null || s.length() == 0) {
+            return true;
+        }
+        int left = 0;
+        int right = s.length() - 1;
+        while (left < right) {
+            if (!Character.isLetterOrDigit(s.charAt(left))) {
+                left++;
+                continue;
+            }
+            if (!Character.isLetterOrDigit(s.charAt(right))) {
+                right--;
+                continue;
+            }
+            if (Character.toLowerCase(s.charAt(left)) == Character.toLowerCase(s.charAt(right))) {
+                left++;
+                right--;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 128. Longest Consecutive Sequence
+     *
+     * @param nums
+     * @return
+     */
+    public int longestConsecutive(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        HashMap<Integer, Integer> hashMap = new HashMap<>();
+        int result = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (!hashMap.containsKey(nums[i])) {
+                int left = hashMap.getOrDefault(nums[i] - 1, 0);
+                int right = hashMap.getOrDefault(nums[i] + 1, 0);
+
+                int value = left + right + 1;
+                result = Math.max(result, value);
+
+                hashMap.put(nums[i], value);
+                hashMap.put(nums[i] - left, value);
+                hashMap.put(nums[i] + right, value);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 129. Sum Root to Leaf Numbers
+     *
+     * @param root
+     * @return
+     */
+    public int sumNumbers(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null && root.right == null) {
+            return root.val;
+        }
+        return sumNumbers(root.left, root.val) + sumNumbers(root.right, root.val);
+    }
+
+    private int sumNumbers(TreeNode root, int value) {
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null && root.right == null) {
+            return value * 10 + root.val;
+        }
+        return sumNumbers(root.left, value * 10 + root.val) + sumNumbers(root.right, value * 10 + root.val);
+    }
+
+    /**
+     * 130. Surrounded Regions
+     *
+     * @param board
+     */
+    public void solve(char[][] board) {
+        if (board == null || board.length == 0) {
+            return;
+        }
+        int[][] matrix = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        Queue<Point> queue = new LinkedList<>();
+        for (int i = 0; i < board.length; i++) {
+
+            for (int j = 0; j < board[i].length; j++) {
+                boolean edge = i == 0 || i == board.length - 1 || j == 0 || j == board[i].length - 1;
+                if (edge && board[i][j] == 'O') {
+                    Point point = new Point(i, j);
+                    queue.offer(point);
+                    board[i][j] = 'B';
+                    while (!queue.isEmpty()) {
+                        Point node = queue.poll();
+                        for (int k = 0; k < 4; k++) {
+                            int x = matrix[k][0] + node.x;
+                            int y = matrix[k][1] + node.y;
+                            if (x >= 0 && x <= board.length - 1 && y >= 0 && y <= board[i].length - 1 && board[x][y] == 'O') {
+                                board[x][y] = 'B';
+                                queue.offer(new Point(x, y));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j] == 'B') {
+                    board[i][j] = 'O';
+                } else if (board[i][j] == 'O') {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+    }
+
+    private void solve(int i, int j, char[][] board) {
+        if (i > 0 && board[i - 1][j] == 'O') {
+            board[i - 1][j] = 'B';
+            solve(i - 1, j, board);
+        }
+        if (i < board.length - 1 && board[i + 1][j] == 'O') {
+            board[i + 1][j] = 'B';
+            solve(i + 1, j, board);
+        }
+        if (j > 0 && board[i][j - 1] == 'O') {
+            board[i][j - 1] = 'B';
+            solve(i, j - 1, board);
+        }
+        if (j < board[i].length - 1 && board[i][j + 1] == 'O') {
+            board[i][j + 1] = 'B';
+            solve(i, j + 1, board);
+        }
+    }
+
+    /**
+     * 131. Palindrome Partitioning
+     *
+     * @param s
+     * @return
+     */
+    public List<List<String>> partition(String s) {
+        if (s == null || s.length() == 0) {
+            return new ArrayList<>();
+        }
+        List<List<String>> ans = new ArrayList<>();
+        dfs(ans, new ArrayList<>(), 0, s);
+        return ans;
+    }
+
+    private void dfs(List<List<String>> ans, List<String> tmp, int start, String s) {
+        if (start == s.length()) {
+            ans.add(new ArrayList<>(tmp));
+        }
+        for (int i = start; i < s.length(); i++) {
+            if (isValid(s, start, i)) {
+                tmp.add(s.substring(start, i + 1));
+                dfs(ans, tmp, i + 1, s);
+                tmp.remove(tmp.size() - 1);
+            }
+        }
+
+    }
+
+    private boolean isValid(String s, int left, int right) {
+        while (left < right) {
+            if (s.charAt(left) != s.charAt(right)) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
+
+    static class Point {
+        int x;
+        int y;
+
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
 
 }
