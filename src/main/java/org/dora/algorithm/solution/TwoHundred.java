@@ -1,6 +1,8 @@
 package org.dora.algorithm.solution;
 
 import org.dora.algorithm.datastructe.ListNode;
+import org.dora.algorithm.datastructe.Node;
+import org.dora.algorithm.datastructe.Point;
 import org.dora.algorithm.datastructe.TreeNode;
 
 import java.util.*;
@@ -813,38 +815,148 @@ public class TwoHundred {
         return ans;
     }
 
-    private void dfs(List<List<String>> ans, List<String> tmp, int start, String s) {
-        if (start == s.length()) {
+    private void dfs(List<List<String>> ans, List<String> tmp, int left, String s) {
+        if (left == s.length()) {
             ans.add(new ArrayList<>(tmp));
         }
-        for (int i = start; i < s.length(); i++) {
-            if (isValid(s, start, i)) {
-                tmp.add(s.substring(start, i + 1));
+        for (int i = left; i < s.length(); i++) {
+            if (isValid(s, left, i)) {
+                tmp.add(s.substring(left, i + 1));
                 dfs(ans, tmp, i + 1, s);
                 tmp.remove(tmp.size() - 1);
             }
         }
-
     }
 
     private boolean isValid(String s, int left, int right) {
+        if (left > right) {
+            return false;
+        }
         while (left < right) {
-            if (s.charAt(left) != s.charAt(right)) {
+            if (s.charAt(left) == s.charAt(right)) {
+                left++;
+                right--;
+            } else {
                 return false;
             }
-            left++;
-            right--;
         }
         return true;
     }
 
-    static class Point {
-        int x;
-        int y;
+    /**
+     * 132. Palindrome Partitioning II
+     *
+     * @param s
+     * @return
+     */
+    public int minCut(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        int n = s.length();
+        int[] curr = new int[n];
+        boolean[][] dp = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            int min = i;
+            for (int j = 0; j <= i; j++) {
+                if (s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1])) {
+                    dp[j][i] = true;
+                    min = j == 0 ? 0 : Math.min(min, curr[j - 1] + 1);
+                }
+            }
+            curr[i] = min;
+        }
+        return curr[n - 1];
+    }
 
-        public Point(int x, int y) {
-            this.x = x;
-            this.y = y;
+    /**
+     * 134. Gas Station
+     *
+     * @param gas
+     * @param cost
+     * @return
+     */
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        if (gas == null || cost == null) {
+            return 0;
+        }
+        int sum = 0;
+        int total = 0;
+        int index = 0;
+        for (int i = 0; i < gas.length; i++) {
+            total += gas[i] - cost[i];
+            sum += gas[i] - cost[i];
+            if (sum < 0) {
+                sum = 0;
+                index = i + 1;
+            }
+        }
+        return total < 0 ? -1 : index;
+    }
+
+    /**
+     * 135. Candy
+     *
+     * @param ratings
+     * @return
+     */
+    public int candy(int[] ratings) {
+        if (ratings == null || ratings.length == 0) {
+            return 0;
+        }
+        int n = ratings.length;
+        int[] candy = new int[n];
+        for (int i = 0; i < n; i++) {
+            candy[i] = 1;
+        }
+        for (int i = 1; i < n; i++) {
+            if (ratings[i] > ratings[i - 1]) {
+                candy[i] = Math.max(candy[i], candy[i - 1] + 1);
+            }
+        }
+        for (int i = n - 2; i >= 0; i--) {
+            if (ratings[i] > ratings[i - 1]) {
+                candy[i] = Math.max(candy[i], candy[i - 1] + 1);
+            }
+        }
+        int result = 0;
+        for (int candys : candy) {
+            result += candys;
+        }
+        return result;
+    }
+
+    /**
+     * 136. Single Number
+     *
+     * @param nums
+     * @return
+     */
+    public int singleNumber(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int result = 0;
+        for (int num : nums) {
+            result ^= num;
+        }
+        return result;
+    }
+
+
+    /**
+     * 138. Copy List with Random Pointer
+     *
+     * @param head
+     * @return
+     */
+    public Node copyRandomList(Node head) {
+        if (head == null) {
+            return null;
+        }
+        Node currNODE = head;
+        while (currNODE != null) {
+            Node node = new Node(curr)
         }
     }
 
