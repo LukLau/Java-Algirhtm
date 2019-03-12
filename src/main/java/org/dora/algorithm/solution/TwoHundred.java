@@ -955,7 +955,6 @@ public class TwoHundred {
             return null;
         }
         Node currNode = head;
-
         while (currNode != null) {
 
             Node tmp = new Node(currNode.val, currNode.next, currNode.random);
@@ -963,9 +962,9 @@ public class TwoHundred {
             currNode.next = tmp;
 
             currNode = tmp.next;
-
         }
         currNode = head;
+
         while (currNode != null) {
             Node node = currNode.next;
             if (currNode.random != null) {
@@ -974,7 +973,7 @@ public class TwoHundred {
             currNode = node.next;
         }
         currNode = head;
-        Node copyNode = currNode.next;
+        Node copyHead = currNode.next;
         while (currNode.next != null) {
             Node tmp = currNode.next;
 
@@ -982,7 +981,190 @@ public class TwoHundred {
 
             currNode = tmp;
         }
-        return copyNode;
+        return copyHead;
+
+    }
+
+    /**
+     * 139. Word Break
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        if (s == null || wordDict.isEmpty()) {
+            return false;
+        }
+        return wordBreak(new HashSet<>(), s, wordDict);
+    }
+
+    private boolean wordBreak(Set<String> hash, String s, List<String> wordDict) {
+        if (wordDict.contains(s)) {
+            return true;
+        }
+        if (hash.contains(s)) {
+            return false;
+        }
+        for (String word : wordDict) {
+            if (s.startsWith(word) && wordBreak(hash, s.substring(word.length()), wordDict)) {
+                return true;
+            }
+        }
+        hash.add(s);
+        return false;
+    }
+
+    /**
+     * 140. Word Break II
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public List<String> wordBreakII(String s, List<String> wordDict) {
+        if (s == null || wordDict.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return wordBreakDFS(s, wordDict, new HashMap<>());
+    }
+
+    private List<String> wordBreakDFS(String s, List<String> wordDict, HashMap<String, LinkedList<String>> hashMap) {
+        if (hashMap.containsKey(s)) {
+            return hashMap.get(s);
+        }
+        LinkedList<String> ans = new LinkedList<>();
+        if (s.length() == 0) {
+            ans.add("");
+            return ans;
+        }
+        for (String word : wordDict) {
+            if (s.startsWith(word)) {
+                List<String> tmp = wordBreakDFS(s.substring(word.length()), wordDict, hashMap);
+
+                for (String value : tmp) {
+                    ans.add(word + (value.isEmpty() ? "" : " ") + value);
+                }
+            }
+        }
+        hashMap.put(s, ans);
+        return ans;
+    }
+
+    /**
+     * 141. Linked List Cycle
+     *
+     * @param head
+     * @return
+     */
+    public boolean hasCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == slow) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 142. Linked List Cycle II
+     *
+     * @param head
+     * @return
+     */
+    public ListNode detectCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == slow) {
+                fast = head;
+                while (fast != slow) {
+                    fast = fast.next;
+                    slow = slow.next;
+                }
+                return fast;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 143. Reorder List
+     *
+     * @param head
+     */
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return;
+        }
+        return;
+    }
+
+    /**
+     * 144. Binary Tree Preorder Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> preorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<Integer> ans = new ArrayList<>();
+
+        Stack<TreeNode> stack = new Stack<>();
+
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+            ans.add(node.val);
+            if (node.right != null) {
+                stack.add(node.right);
+            }
+            if (node.left != null) {
+                stack.add(node.left);
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 145. Binary Tree Postorder Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> postorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        LinkedList<Integer> ans = new LinkedList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        while (!stack.isEmpty() || p != null) {
+            if (p != null) {
+                ans.addFirst(p.val);
+                stack.push(p);
+                p = p.right;
+            } else {
+                p = stack.pop();
+                p = p.left;
+            }
+        }
+        return ans;
     }
 
 
