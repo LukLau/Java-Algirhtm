@@ -954,10 +954,35 @@ public class TwoHundred {
         if (head == null) {
             return null;
         }
-        Node currNODE = head;
-        while (currNODE != null) {
-            Node node = new Node(curr)
+        Node currNode = head;
+
+        while (currNode != null) {
+
+            Node tmp = new Node(currNode.val, currNode.next, currNode.random);
+
+            currNode.next = tmp;
+
+            currNode = tmp.next;
+
         }
+        currNode = head;
+        while (currNode != null) {
+            Node node = currNode.next;
+            if (currNode.random != null) {
+                node.random = currNode.random.next;
+            }
+            currNode = node.next;
+        }
+        currNode = head;
+        Node copyNode = currNode.next;
+        while (currNode.next != null) {
+            Node tmp = currNode.next;
+
+            currNode.next = tmp.next;
+
+            currNode = tmp;
+        }
+        return copyNode;
     }
 
 
