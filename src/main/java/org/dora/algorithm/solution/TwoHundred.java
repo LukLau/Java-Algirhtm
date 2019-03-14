@@ -1168,4 +1168,155 @@ public class TwoHundred {
     }
 
 
+    /**
+     * 147. Insertion Sort List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode insertionSortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        return null;
+    }
+
+
+    /**
+     * 148. Sort List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        ListNode tmp = slow.next;
+        slow.next = null;
+        ListNode l1 = sortList(head);
+        ListNode l2 = sortList(tmp);
+        return merge(l1, l2);
+    }
+
+    private ListNode merge(ListNode start, ListNode end) {
+        ListNode root = new ListNode(0);
+        ListNode dummy = root;
+        while (start != null && end != null) {
+            if (start.val < end.val) {
+                dummy.next = start;
+                start = start.next;
+            } else {
+                dummy.next = end;
+                end = end.next;
+            }
+            dummy = dummy.next;
+        }
+        if (start != null) {
+            dummy.next = start;
+        }
+        if (end != null) {
+            dummy.next = end;
+        }
+        return root.next;
+    }
+
+
+    /**
+     * 149. Max Points on a Line
+     *
+     * @param points
+     * @return
+     */
+    public int maxPoints(Point[] points) {
+        return 0;
+    }
+
+    /**
+     * 151. Reverse Words in a String
+     *
+     * @param s
+     * @return
+     */
+    public String reverseWords(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        s = s.trim();
+        char[] ch = s.toCharArray();
+        reverseWord(ch, 0, s.length() - 1);
+        List<String> ans = new ArrayList<>();
+        for (int i = 0; i < ch.length; i++) {
+            StringBuilder stringBuilder = new StringBuilder();
+            if (ch[i] != ' ') {
+                stringBuilder.append(ch[i]);
+            }
+        }
+        //todo
+        return "";
+
+
+    }
+
+    private void reverseWord(char[] ch, int start, int end) {
+        if (start > end) {
+            return;
+        }
+        for (int i = start; i <= (start + end) / 2; i++) {
+            swap(ch, i, start + end - i);
+        }
+    }
+
+    private void swap(char[] ch, int start, int end) {
+        char tmp = ch[start];
+        ch[start] = ch[end];
+        ch[end] = tmp;
+    }
+
+
+    /**
+     * 152. Maximum Product Subarray
+     *
+     * @param nums
+     * @return
+     */
+    public int maxProduct(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int max = nums[0];
+
+        int min = nums[0];
+
+        int result = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int maxMulti = Math.max(Math.max(max * nums[i], min * nums[i]), nums[i]);
+            int minMulti = Math.min(Math.min(min * nums[i], max * nums[i]), nums[i]);
+
+            result = Math.max(result, maxMulti);
+
+            max = maxMulti;
+
+            min = minMulti;
+        }
+        return result;
+    }
+
+    /**
+     * 153. Find Minimum in Rotated Sorted Array
+     *
+     * @param nums
+     * @return
+     */
+    public int findMin(int[] nums) {
+        // todo
+        return 0;
+    }
+
 }
