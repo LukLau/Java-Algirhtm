@@ -21,6 +21,12 @@ public class TwoHundred {
     private static int maxPathSum = Integer.MIN_VALUE;
     private static int ans = 0;
 
+    public static void main(String[] args) {
+        TwoHundred twoHundred = new TwoHundred();
+        int[] nums = new int[0];
+        twoHundred.findMissingRanges(nums, -2147483648, 2147483647);
+    }
+
     /**
      * 101. Symmetric Tree
      *
@@ -943,7 +949,6 @@ public class TwoHundred {
         return result;
     }
 
-
     /**
      * 138. Copy List with Random Pointer
      *
@@ -1100,7 +1105,6 @@ public class TwoHundred {
         return null;
     }
 
-
     /**
      * 143. Reorder List
      *
@@ -1167,7 +1171,6 @@ public class TwoHundred {
         return ans;
     }
 
-
     /**
      * 147. Insertion Sort List
      *
@@ -1180,7 +1183,6 @@ public class TwoHundred {
         }
         return null;
     }
-
 
     /**
      * 148. Sort List
@@ -1227,7 +1229,6 @@ public class TwoHundred {
         return root.next;
     }
 
-
     /**
      * 149. Max Points on a Line
      *
@@ -1248,20 +1249,24 @@ public class TwoHundred {
         if (s == null || s.length() == 0) {
             return "";
         }
-        s = s.trim();
-        char[] ch = s.toCharArray();
-        reverseWord(ch, 0, s.length() - 1);
-        List<String> ans = new ArrayList<>();
-        for (int i = 0; i < ch.length; i++) {
-            StringBuilder stringBuilder = new StringBuilder();
-            if (ch[i] != ' ') {
-                stringBuilder.append(ch[i]);
+        StringBuilder stringBuilder = new StringBuilder();
+        int end = s.length() - 1;
+        boolean hasWord = false;
+        while (end >= 0) {
+            if (s.charAt(end) == ' ') {
+                end--;
+                continue;
             }
+            int startIndex = s.lastIndexOf(' ', end);
+            if (hasWord) {
+                stringBuilder.append(" ");
+            }
+            String tmp = s.substring(startIndex + 1, end + 1);
+            stringBuilder.append(tmp);
+            hasWord = true;
+            end = startIndex - 1;
         }
-        //todo
-        return "";
-
-
+        return stringBuilder.toString();
     }
 
     private void reverseWord(char[] ch, int start, int end) {
@@ -1278,7 +1283,6 @@ public class TwoHundred {
         ch[start] = ch[end];
         ch[end] = tmp;
     }
-
 
     /**
      * 152. Maximum Product Subarray
@@ -1318,5 +1322,201 @@ public class TwoHundred {
         // todo
         return 0;
     }
+
+    /**
+     * 154. Find Minimum in Rotated Sorted Array II
+     *
+     * @param nums
+     * @return
+     */
+    public int findMinII(int[] nums) {
+        // todo
+        return 0;
+    }
+
+    /**
+     * 156 Binary Tree Upside Down
+     *
+     * @param root
+     * @return
+     */
+    public TreeNode upsideDownBinaryTree(TreeNode root) {
+        if (root == null || root.left == null) {
+            return root;
+        }
+        TreeNode curr = root;
+
+        TreeNode prev = null;
+
+        TreeNode tmp = null;
+
+        while (curr != null) {
+            TreeNode node = curr.left;
+
+            curr.left = tmp;
+
+            tmp = curr.right;
+
+            curr.right = prev;
+
+
+            prev = curr;
+
+            curr = node;
+        }
+        return prev;
+    }
+
+    /**
+     * 159、Longest Substring with At Most Two Distinct Characters
+     *
+     * @param s
+     * @return
+     */
+    private int lengthOfLongestSubstringTwoDistinct(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        HashMap<Character, Integer> map = new HashMap<>();
+        int result = 0;
+        int left = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int count = map.getOrDefault(s.charAt(i), 0);
+            map.put(s.charAt(i), ++count);
+            while (map.size() > 2) {
+                int num = map.get(s.charAt(left));
+                if (--num == 0) {
+                    map.remove(s.charAt(left--));
+                }
+            }
+            result = Math.max(result, i - left + 1);
+        }
+        return ans;
+    }
+
+    /**
+     * 160. Intersection of Two Linked Lists
+     *
+     * @param headA
+     * @param headB
+     * @return
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) {
+            return null;
+        }
+        ListNode p1 = headA;
+        ListNode p2 = headB;
+        while (p1 != p2) {
+            p1 = (p1 == null) ? headB : p1.next;
+            p2 = (p2 == null) ? headA : p2.next;
+        }
+        return p1;
+    }
+
+    /**
+     * 161、One Edit Distance
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean oneEditDistance(String s, String p) {
+        if (s == null || p == null) {
+            return false;
+        }
+        // todo
+        return true;
+    }
+
+    /**
+     * 162. Find Peak Element
+     *
+     * @param nums
+     * @return
+     */
+    public int findPeakElement(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < nums[mid + 1]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+    /**
+     * 163、 Missing Ranges
+     *
+     * @param nums
+     * @param lower
+     * @param upper
+     * @return
+     */
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        // write your code here
+        if (nums == null) {
+            return new ArrayList<>();
+        }
+        int left = lower;
+        List<String> ans = new ArrayList<>();
+        for (int i = 0; i <= nums.length; i++) {
+            int right = (i < nums.length && nums[i] <= upper) ? nums[i] : upper == Integer.MAX_VALUE ? Integer.MAX_VALUE : upper + 1;
+            if (left == right) {
+                left++;
+            } else if (right > left) {
+
+                String s = (right - left == 1) ? ("" + left) : (left + "->" + (right - 1));
+                left = right + 1;
+                ans.add(s);
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 165. Compare Version Numbers
+     *
+     * @param version1
+     * @param version2
+     * @return
+     */
+    public int compareVersion(String version1, String version2) {
+        if (version1 == null || version2 == null) {
+            return 0;
+        }
+        int i = 0;
+        int j = 0;
+        while (i < version1.length() || j < version2.length()) {
+            int tmp1 = 0;
+            int tmp2 = 0;
+            while (i < version1.length() && version1.charAt(i) != '.') {
+                tmp1 = tmp1 * 10 + version1.charAt(i) - '0';
+                i++;
+            }
+            while (j < version2.length() && version2.charAt(j) != '.') {
+                tmp2 = tmp2 * 10 + version2.charAt(j) - '0';
+                j++;
+            }
+            if (tmp1 < tmp2) {
+                return -1;
+            } else if (tmp1 > tmp2) {
+                return 1;
+            } else {
+                i++;
+                j++;
+            }
+        }
+        return 0;
+
+    }
+
 
 }
