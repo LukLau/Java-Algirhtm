@@ -1518,5 +1518,331 @@ public class TwoHundred {
 
     }
 
+    /**
+     * 167. Two Sum II - Input array is sorted
+     *
+     * @param numbers
+     * @param target
+     * @return
+     */
+    public int[] twoSum(int[] numbers, int target) {
+        int[] ans = new int[2];
+        if (numbers == null || numbers.length == 0) {
+            return ans;
+        }
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < numbers.length; i++) {
+            if (map.containsKey(target - numbers[i])) {
+                ans[0] = map.get(target - numbers[i]) + 1;
+                ans[1] = i + 1;
+                return ans;
+            }
+            map.put(numbers[i], i);
+        }
+        return ans;
+    }
+
+
+    /**
+     * 168. Excel Sheet Column Title
+     *
+     * @param n
+     * @return
+     */
+    public String convertToTitle(int n) {
+        if (n < 0) {
+            return "";
+        }
+        String res = "";
+        while (n > 0) {
+            res = (char) ((n - 1) % 26 + 'A') + res;
+            n = (n - 1) / 26;
+        }
+        return res;
+    }
+
+    /**
+     * 169. Majority Element
+     *
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            int count = map.getOrDefault(num, 0);
+            map.put(num, ++count);
+        }
+        for (int i = 0; i < nums.length; i++) {
+            int count = map.get(nums[i]);
+            if (count * 2 > nums.length) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 174. Dungeon Game
+     *
+     * @param dungeon
+     * @return
+     */
+    public int calculateMinimumHP(int[][] dungeon) {
+        if (dungeon == null || dungeon.length == 0) {
+            return 0;
+        }
+        int m = dungeon.length;
+        int n = dungeon[0].length;
+
+        int[] dp = new int[n + 1];
+
+        dp[n] = dp[n - 1] = Integer.MAX_VALUE;
+
+        for (int i = m - 1; i >= 0; i--) {
+
+            for (int j = n - 1; j >= 0; j--) {
+                dp[j] = Math.max(1, Math.min(dp[j], dp[j + 1]) - dungeon[i][j]);
+            }
+        }
+        return dp[0];
+    }
+
+    /**
+     * 179. Largest Number
+     *
+     * @param nums
+     * @return
+     */
+    public String largestNumber(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return "";
+        }
+        String[] ans = new String[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            ans[i] = String.valueOf(nums[i]);
+        }
+        Arrays.sort(ans, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String tmp1 = o1 + o2;
+                String tmp2 = o2 + o1;
+                return tmp1.compareTo(tmp2) > 0 ? -1 : 1;
+            }
+        });
+        if (ans.length == 1) {
+            return ans[0].toString();
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String s : ans) {
+            stringBuilder.append(s);
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 186、Reverse Words in a String II
+     *
+     * @param s
+     * @return
+     */
+    public String reverseWordsII(String s) {
+        // Write your code here
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        String[] strs = s.split(" ");
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+
+        for (String str : strs) {
+            str = reverse(str);
+            stringBuilder.append(str);
+            stringBuilder.append(" ");
+        }
+        return stringBuilder.toString().trim();
+
+    }
+
+    /**
+     * 186、Reverse Words in a String II
+     *
+     * @param s
+     * @return
+     */
+    private String reverse(String s) {
+        char[] ch = s.toCharArray();
+        for (int i = 0; i < ch.length / 2; i++) {
+            swap(ch, i, ch.length - 1 - i);
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for (char c : ch) {
+            stringBuilder.append(c);
+        }
+        return stringBuilder.toString();
+    }
+
+
+    /**
+     * 188. Best Time to Buy and Sell Stock IV
+     *
+     * @param k
+     * @param prices
+     * @return
+     */
+    public int maxProfitIIII(int k, int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int[] ans = new int[k];
+        return 0;
+    }
+
+    /**
+     * 189. Rotate Array
+     *
+     * @param nums
+     * @param k
+     */
+    public void rotate(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        if (nums.length <= k) {
+            reverseArray(nums, 0, nums.length - 1);
+        }
+        reverseArray(nums, 0, nums.length - 1);
+        reverseArray(nums, 0, k - 1);
+        reverseArray(nums, k, nums.length - 1);
+    }
+
+    private void reverseArray(int[] nums, int start, int end) {
+        if (start > end) {
+            return;
+        }
+        for (int i = start; i <= (start + end) / 2; i++) {
+            swapNum(nums, i, (start + end) - i);
+        }
+    }
+
+    private void swapNum(int[] nums, int start, int end) {
+        int tmp = nums[start];
+        nums[start] = nums[end];
+        nums[end] = tmp;
+    }
+
+    /**
+     * 191. Number of 1 Bits
+     *
+     * @param n
+     * @return
+     */
+    public int hammingWeight(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int count = 0;
+        while (n != 0) {
+            count++;
+            n = n & (n - 1);
+        }
+        return count;
+    }
+
+    /**
+     * 198. House Robber
+     *
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int skipCurrent = 0;
+        int robCurrent = 0;
+        for (int num : nums) {
+            int tmp = skipCurrent;
+            skipCurrent = Math.max(skipCurrent, robCurrent);
+            robCurrent = num + tmp;
+        }
+        return Math.max(robCurrent, skipCurrent);
+    }
+
+    /**
+     * 199. Binary Tree Right Side View
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        LinkedList<TreeNode> ans = new LinkedList<>();
+        List<Integer> result = new ArrayList<>();
+
+        ans.add(root);
+        TreeNode node = null;
+
+        while (!ans.isEmpty()) {
+            int size = ans.size();
+            for (int i = 0; i < size; i++) {
+                node = ans.pollFirst();
+
+                if (node.left != null) {
+                    ans.add(node.left);
+                }
+
+                if (node.right != null) {
+                    ans.add(node.right);
+                }
+            }
+            result.add(node.val);
+
+        }
+        return result;
+    }
+
+    /**
+     * 200. Number of Islands
+     *
+     * @param grid
+     * @return
+     */
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int m = grid.length;
+        int n = grid[0].length;
+        int count = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == '1') {
+                    dfs(i, j, grid);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    private void dfs(int i, int j, char[][] grid) {
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[i].length || grid[i][j] != '1') {
+            return;
+        }
+        grid[i][j] = '0';
+        dfs(i - 1, j, grid);
+        dfs(i + 1, j, grid);
+
+        dfs(i, j - 1, grid);
+
+        dfs(i, j + 1, grid);
+    }
 
 }
