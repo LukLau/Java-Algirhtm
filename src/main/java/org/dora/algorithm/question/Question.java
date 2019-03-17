@@ -11,6 +11,14 @@ import java.util.*;
 public class Question {
 
     /**
+     * 52. N-Queens II
+     *
+     * @param n
+     * @return
+     */
+    private int count = 0;
+
+    /**
      * 4. Median of Two Sorted Arrays
      *
      * @param nums1
@@ -96,7 +104,6 @@ public class Question {
         }
         return s;
     }
-
 
     /**
      * 10. Regular Expression Matching
@@ -219,7 +226,6 @@ public class Question {
         return root.next;
 
     }
-
 
     /**
      * 24. Swap Nodes in Pairs
@@ -363,7 +369,6 @@ public class Question {
         nums[j] = tmp;
     }
 
-
     /**
      * 32. Longest Valid Parentheses
      *
@@ -409,16 +414,543 @@ public class Question {
         }
         int left = 0;
         int right = nums.length - 1;
+        while (left < right) {
+            int mid = (left + right) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            }
+            if (nums[left] <= nums[mid]) {
+                if (nums[left] <= target && target < nums[mid]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return nums[left] == target ? left : -1;
+    }
+
+    /**
+     * 34. Find First and Last Position of Element in Sorted Array
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] searchRange(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return new int[2];
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        int[] ans = new int[2];
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                right = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        if (nums[left] != target) {
+            return ans;
+        }
+        ans[0] = left;
+        right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                right = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        ans[1] = right;
+        return ans;
+    }
+
+    /**
+     * 35. Search Insert Position
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int searchInsert(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
         while (left <= right) {
             int mid = left + (right - left) >> 1;
             if (nums[mid] == target) {
                 return mid;
             } else if (nums[mid] < target) {
-                if (nums[left] <= nums[mid]) {
-                    right = mid - 1;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
+    }
+
+    /**
+     * 41. First Missing Positive
+     *
+     * @param nums
+     * @return
+     */
+    public int firstMissingPositive(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] > 0 && nums[i] <= nums.length && nums[nums[i] - 1] != nums[i]) {
+                swap(nums, nums[i - 1], i);
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return nums.length + 1;
+    }
+
+    /**
+     * 42. Trapping Rain Water
+     *
+     * @param height
+     * @return
+     */
+    public int trap(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = height.length - 1;
+        int result = 0;
+        int maxLeft = 0;
+        int maxRight = 0;
+        while (left < right) {
+            while (left < right && height[left] == 0) {
+                left++;
+            }
+            while (left < right && height[right] == 0) {
+                right--;
+            }
+            int min = Math.min(height[left], height[right]);
+            for (int i = left; i <= right; i++) {
+                if (height[i] >= min) {
+                    height[i] -= min;
+                } else {
+                    result += min - height[i];
+                    height[i] = 0;
+                }
+            }
+
+        }
+        return result;
+    }
+
+    /**
+     * 44. Wildcard Matching
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatchII(String s, String p) {
+        if (s == null || p == null) {
+            return false;
+        }
+
+        int m = s.length();
+        int n = p.length();
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[m][n] = true;
+        for (int j = n - 1; j >= 0; j--) {
+            if (p.charAt(j) != '*') {
+                break;
+            }
+            dp[m][j] = true;
+        }
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                if (s.charAt(i) == p.charAt(j) || p.charAt(j) == '?') {
+                    dp[i][j] = dp[i + 1][j + 1];
+                } else if (p.charAt(j) == '*') {
+                    dp[i][j] = dp[i][j + 1] || dp[i + 1][j];
+                } else {
+                    dp[i][j] = false;
                 }
             }
         }
-        return -1;
+        return dp[0][0];
     }
+
+    /**
+     * 45. Jump Game II
+     *
+     * @param nums
+     * @return
+     */
+    public int jump(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int step = 0;
+        int furthest = 0;
+        int curr = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            furthest = Math.max(curr, i + nums[i]);
+            if (i == curr) {
+                step++;
+                curr = furthest;
+            }
+        }
+        return step;
+    }
+
+    /**
+     * 50. Pow(x, n)
+     *
+     * @param x
+     * @param n
+     * @return
+     */
+    public double myPow(double x, int n) {
+        if (n == 0) {
+            return 1;
+        }
+        if (n < 0) {
+            n = -n;
+            x = 1 / x;
+        }
+        if (x > Integer.MAX_VALUE || x < Integer.MIN_VALUE) {
+            return 0;
+        }
+        return n % 2 == 0 ? myPow(x * x, n / 2) : x * myPow(x * x, n / 2);
+    }
+
+    /**
+     * 51. N-Queens
+     *
+     * @param n
+     * @return
+     */
+    public List<List<String>> solveNQueens(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        char[][] nQueens = new char[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                nQueens[i][j] = '.';
+            }
+        }
+        List<List<String>> ans = new ArrayList<>();
+        solveNQueens(ans, nQueens, 0, n);
+        return ans;
+    }
+
+    private void solveNQueens(List<List<String>> ans, char[][] nQueens, int row, int n) {
+        if (row == n) {
+
+            List<String> queens = construct(nQueens);
+
+            ans.add(queens);
+
+        }
+        for (int col = 0; col < n; col++) {
+            if (matchQueens(nQueens, col, row, n)) {
+                nQueens[row][col] = 'Q';
+                solveNQueens(ans, nQueens, row + 1, n);
+                nQueens[row][col] = '.';
+            }
+        }
+    }
+
+    private boolean matchQueens(char[][] nQueens, int col, int row, int n) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (nQueens[i][col] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+            if (nQueens[i][j] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
+            if (nQueens[i][j] == 'Q') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private List<String> construct(char[][] nQueens) {
+        List<String> ans = new ArrayList<>();
+        for (char[] row : nQueens) {
+            ans.add(String.valueOf(row));
+        }
+        return ans;
+    }
+
+    public int totalNQueens(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int[] dp = new int[n];
+        return totalNQueens(dp, 0, n);
+    }
+
+    private int totalNQueens(int[] dp, int row, int n) {
+        int result = 0;
+        if (row == n) {
+            result++;
+            return result;
+        }
+        for (int col = 0; col < n; col++) {
+            if (matchTotalNQueens(dp, col, row, n)) {
+                dp[row] = col;
+                result += totalNQueens(dp, row + 1, n);
+                dp[row] = -1;
+            }
+        }
+        return result;
+    }
+
+    private boolean matchTotalNQueens(int[] dp, int col, int row, int n) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (dp[i] == col || Math.abs(row - i) == Math.abs(dp[i] - col)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 54. Spiral Matrix
+     *
+     * @param matrix
+     * @return
+     */
+    public List<Integer> spiralOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return new ArrayList<>();
+        }
+        List<Integer> ans = new ArrayList<>();
+        int left = 0;
+        int right = matrix[0].length - 1;
+        int top = 0;
+        int bottom = matrix.length - 1;
+        while (left <= right && top <= bottom) {
+            for (int i = left; i <= right; i++) {
+                ans.add(matrix[top][i]);
+            }
+            for (int i = top + 1; i <= bottom; i++) {
+                ans.add(matrix[i][right]);
+            }
+            if (top != bottom) {
+                for (int i = right - 1; i >= left; i--) {
+                    ans.add(matrix[bottom][i]);
+                }
+            }
+            if (left != right) {
+                for (int i = bottom - 1; i > top; i--) {
+                    ans.add(matrix[i][left]);
+                }
+            }
+            left++;
+            right--;
+            bottom--;
+            top++;
+        }
+        return ans;
+    }
+
+    /**
+     * 59. Spiral Matrix II
+     *
+     * @param n
+     * @return
+     */
+    public int[][] generateMatrix(int n) {
+        if (n <= 0) {
+            return new int[0][0];
+        }
+        int[][] matrix = new int[n][n];
+        int left = 0;
+        int right = n - 1;
+        int top = 0;
+        int bottom = n - 1;
+        int total = 0;
+        while (total != n * n) {
+            for (int i = left; i <= right; i++) {
+                matrix[top][i] = ++total;
+            }
+            for (int i = top + 1; i <= bottom; i++) {
+                matrix[i][right] = ++total;
+            }
+            if (top != bottom) {
+                for (int i = right - 1; i >= left; i--) {
+                    matrix[bottom][i] = ++total;
+                }
+            }
+            if (left != right) {
+                for (int i = bottom - 1; i > left; i--) {
+                    matrix[i][left] = ++total;
+                }
+            }
+            left++;
+            right--;
+            top++;
+            bottom--;
+        }
+        return matrix;
+    }
+
+    /**
+     * 60. Permutation Sequence
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public String getPermutation(int n, int k) {
+        if (n <= 0) {
+            return "";
+        }
+        int[] position = new int[n + 1];
+        position[0] = 1;
+        int factory = 1;
+        for (int i = 1; i <= n; i++) {
+            factory = factory * i;
+            position[i] = factory;
+        }
+        List<Integer> ans = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            ans.add(i);
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        k--;
+        for (int i = 0; i < n; i++) {
+            int index = k / position[n - 1 - i];
+            stringBuilder.append(ans.get(index));
+            ans.remove(index);
+            k -= index * position[n - 1 - i];
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 61. Rotate List
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode rotateRight(ListNode head, int k) {
+        if (head == null) {
+            return null;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        int count = 1;
+        while (fast.next != null) {
+            fast = fast.next;
+            count++;
+        }
+        k %= count;
+        fast.next = head;
+        for (int i = 0; i < count - k; i++) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        fast.next = null;
+        return slow;
+    }
+
+
+    /**
+     * 62. Unique Paths
+     *
+     * @param m
+     * @param n
+     * @return
+     */
+    public int uniquePaths(int m, int n) {
+        int[] dp = new int[n];
+        dp[0] = 1;
+        for (int i = 0; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[j] = dp[j - 1] + dp[j];
+            }
+        }
+        return dp[n - 1];
+    }
+
+    /**
+     * 63. Unique Paths II
+     *
+     * @param obstacleGrid
+     * @return
+     */
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        if (obstacleGrid == null || obstacleGrid.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[obstacleGrid[0].length];
+        dp[0] = 1;
+        for (int i = 0; i < obstacleGrid.length; i++) {
+            for (int j = 0; j < obstacleGrid[0].length; j++) {
+                if (obstacleGrid[i][j] == 1) {
+                    dp[j] = 0;
+                } else {
+                    dp[j] = dp[j] + (j > 0 ? dp[j - 1] : 0);
+                }
+            }
+        }
+        return dp[obstacleGrid[0].length - 1];
+    }
+
+    /**
+     * 64. Minimum Path Sum
+     *
+     * @param grid
+     * @return
+     */
+    public int minPathSum(int[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int m = grid.length;
+        int n = grid[0].length;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = grid[0][0];
+                } else if (i == 0) {
+                    dp[i][j] = dp[i][j - 1] + grid[i][j];
+                } else if (j == 0) {
+                    dp[i][j] = dp[i - 1][j] + grid[i][j];
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+                }
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+
 }
