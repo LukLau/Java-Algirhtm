@@ -18,6 +18,13 @@ public class Question {
      */
     private int count = 0;
 
+    public static void main(String[] args) {
+        Question question = new Question();
+        String[] words = new String[]{"abcdefg", "qwertyui", "yuiopoppp"};
+        question.simplifyPath("/home//foo/");
+
+    }
+
     /**
      * 4. Median of Two Sorted Arrays
      *
@@ -880,7 +887,6 @@ public class Question {
         return slow;
     }
 
-
     /**
      * 62. Unique Paths
      *
@@ -952,5 +958,152 @@ public class Question {
         return dp[m - 1][n - 1];
     }
 
+    /**
+     * 66. Plus One
+     *
+     * @param digits
+     * @return
+     */
+    public int[] plusOne(int[] digits) {
+        if (digits == null || digits.length == 0) {
+            return new int[0];
+        }
+        for (int i = digits.length - 1; i >= 0; i--) {
+            if (digits[i] == 9) {
+                digits[i] = 0;
+            } else {
+                digits[i]++;
+                return digits;
+            }
+        }
+        int[] ans = new int[digits.length + 1];
+        ans[0] = 1;
+        return ans;
+    }
 
+    /**
+     * 68. Text Justification
+     *
+     * @param words
+     * @param maxWidth
+     * @return
+     */
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        if (words == null || words.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+        for (int i = 0, k; i < words.length; i += k) {
+            int line = 0;
+            for (k = i; i + k < words.length && line + words[i + k].length() <= maxWidth - k; k++) {
+                line += words[k].length();
+            }
+            String tmp = words[i];
+            for (int j = 0; j < k - 1; j++) {
+                if (i + k == words.length) {
+                    tmp += " ";
+                } else {
+                    int countOfBlankSpace = (maxWidth - line) / (k - 1) + (j < (maxWidth - line) % (k - 1) ? 1 : 0);
+                    while (countOfBlankSpace > 0) {
+                        tmp += " ";
+                        countOfBlankSpace--;
+                    }
+                }
+                tmp += words[i + j + 1];
+            }
+            ans.add(adjust(new StringBuilder(tmp), maxWidth));
+        }
+        return ans;
+    }
+
+
+    private String adjust(StringBuilder sb, int maxWidth) {
+        String stringBuilder = sb.toString();
+
+        while (stringBuilder.length() < maxWidth) {
+            stringBuilder = stringBuilder + " ";
+        }
+        while (stringBuilder.length() > maxWidth) {
+            stringBuilder = stringBuilder.substring(0, stringBuilder.length() - 1);
+        }
+        return stringBuilder;
+
+    }
+
+    /**
+     * 69. Sqrt(x)
+     *
+     * @param x
+     * @return
+     */
+    public int mySqrt(int x) {
+        double precision = 0.00001;
+        double ans = x;
+        while ((ans * ans - x) > precision) {
+            ans = (ans + x / ans) / 2;
+        }
+        return (int) ans;
+    }
+
+    /**
+     * 70. Climbing Stairs
+     *
+     * @param n
+     * @return
+     */
+    public int climbStairs(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        if (n == 1) {
+            return 1;
+        }
+        if (n == 2) {
+            return 2;
+        }
+        int sum1 = 1;
+        int sum2 = 2;
+        int sum = 0;
+        for (int i = 3; i <= n; i++) {
+            sum = sum1 + sum2;
+            sum1 = sum2;
+            sum2 = sum;
+        }
+        return sum;
+    }
+
+    /**
+     * 71. Simplify Path
+     *
+     * @param path
+     * @return
+     */
+    public String simplifyPath(String path) {
+        if (path == null || path.length() == 0) {
+            return "";
+        }
+        Stack<String> stack = new Stack<>();
+        String[] strings = path.split("/");
+        Set<String> skip = new HashSet<>(Arrays.asList("..", ".", ""));
+        for (String node : strings) {
+            if (skip.contains(node)) {
+                if ("..".equals(node)) {
+                    if (!stack.isEmpty()) {
+                        stack.pop();
+                    }
+                }
+            } else {
+                stack.push(node);
+            }
+        }
+        if (stack.isEmpty()) {
+            return "/";
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String node : stack) {
+            stringBuilder = stringBuilder.append("/").append(node);
+        }
+        return stringBuilder.toString();
+
+    }
 }

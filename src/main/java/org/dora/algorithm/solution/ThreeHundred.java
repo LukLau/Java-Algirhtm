@@ -191,6 +191,7 @@ public class ThreeHundred {
         if (s == null || s.length() == 0) {
             return "";
         }
+        return "";
 
     }
 
