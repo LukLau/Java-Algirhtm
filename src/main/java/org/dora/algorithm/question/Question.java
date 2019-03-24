@@ -993,41 +993,27 @@ public class Question {
             return new ArrayList<>();
         }
         List<String> ans = new ArrayList<>();
-        int startIndex = 0;
-        while (startIndex < words.length) {
+        for (int i = 0, k; i < words.length; i += k) {
             int line = 0;
-            int endIndex = startIndex;
-            while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
-                line += words[endIndex].length() + 1;
-                endIndex++;
+            for (k = i; i + k < words.length && line + words[i + k].length() <= maxWidth - k; k++) {
+                line += words[k].length();
             }
-            boolean isLast = endIndex == words.length;
-            int countOfWord = endIndex - startIndex;
-            StringBuilder stringBuilder = new StringBuilder();
-            if (countOfWord == 1) {
-                stringBuilder.append(words[startIndex]);
-            } else {
-                int blankWord = isLast ? 1 : 1 + (maxWidth - line + 1) / (countOfWord - 1);
-                int extraWord = isLast ? 0 : (maxWidth - line + 1) % (countOfWord - 1);
-                construct(words, stringBuilder, blankWord, extraWord, startIndex, endIndex);
+            String tmp = words[i];
+            for (int j = 0; j < k - 1; j++) {
+                if (i + k == words.length) {
+                    tmp += " ";
+                } else {
+                    int countOfBlankSpace = (maxWidth - line) / (k - 1) + (j < (maxWidth - line) % (k - 1) ? 1 : 0);
+                    while (countOfBlankSpace > 0) {
+                        tmp += " ";
+                        countOfBlankSpace--;
+                    }
+                }
+                tmp += words[i + j + 1];
             }
-            ans.add(adjust(stringBuilder, maxWidth));
-            startIndex = endIndex;
+            ans.add(adjust(new StringBuilder(tmp), maxWidth));
         }
         return ans;
-    }
-
-    private void construct(String[] words, StringBuilder stringBuilder, int blankWord, int extraWord, int startIndex, int endIndex) {
-        for (int i = startIndex; i < endIndex; i++) {
-            stringBuilder.append(words[i]);
-            int tmp = blankWord;
-            while (tmp-- > 0) {
-                stringBuilder.append(" ");
-            }
-            if (extraWord-- > 0) {
-                stringBuilder.append(" ");
-            }
-        }
     }
 
 
@@ -1118,28 +1104,6 @@ public class Question {
             stringBuilder = stringBuilder.append("/").append(node);
         }
         return stringBuilder.toString();
-    }
 
-    /**
-     * 72. Edit Distance
-     *
-     * @param word1
-     * @param word2
-     * @return
-     */
-    public int minDistance(String word1, String word2) {
-        int m = word1.length();
-        int n = word2.length();
-        int[][] dp = new int[m + 1][n + 1];
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (i == 0 && j == 0) {
-                    dp[i][j] = 0;
-                } else if (i == 0) {
-
-                }
-            }
-        }
-        return 0;
     }
 }
