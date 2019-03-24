@@ -1,4 +1,4 @@
-package org.dora.algorithm;
+package org.dora.algorithm.solution;
 
 /**
  * 常见算法
