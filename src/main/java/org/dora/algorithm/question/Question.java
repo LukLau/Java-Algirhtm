@@ -1,6 +1,8 @@
 package org.dora.algorithm.question;
 
 import org.dora.algorithm.datastructe.ListNode;
+import org.dora.algorithm.datastructe.Point;
+import org.dora.algorithm.datastructe.TreeNode;
 
 import java.util.*;
 
@@ -19,9 +21,15 @@ public class Question {
     private int count = 0;
 
     public static void main(String[] args) {
+        List<String> wordDict = new ArrayList<>();
+        wordDict.add("cat");
+        wordDict.add("cats");
+        wordDict.add("and");
+        wordDict.add("sand");
+        wordDict.add("dog");
+        String s = "a good   example";
         Question question = new Question();
-        String[] words = new String[]{"abcdefg", "qwertyui", "yuiopoppp"};
-        question.simplifyPath("/home//foo/");
+        question.reverseWords(s);
 
     }
 
@@ -127,7 +135,6 @@ public class Question {
 
         int n = p.length();
 
-
         boolean[][] dp = new boolean[m + 1][n + 1];
 
         dp[0][0] = true;
@@ -138,16 +145,17 @@ public class Question {
             for (int j = 1; j <= n; j++) {
                 if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
                     dp[i][j] = dp[i - 1][j - 1];
-                }
-                if (p.charAt(j - 1) == '*') {
+                } else if (p.charAt(j - 1) == '*') {
                     if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
                         dp[i][j] = dp[i][j - 2];
                     } else {
-                        dp[i][j] = dp[i][j - 1] || dp[i - 1][j] || dp[i][j - 2];
+                        dp[i][j] = dp[i - 1][j] || dp[i][j - 2] || dp[i][j - 1];
                     }
+
                 }
             }
         }
+
         return dp[m][n];
     }
 
@@ -422,12 +430,11 @@ public class Question {
         int left = 0;
         int right = nums.length - 1;
         while (left < right) {
-            int mid = (left + right) / 2;
+            int mid = left + (right - left) / 2;
             if (nums[mid] == target) {
                 return mid;
-            }
-            if (nums[left] <= nums[mid]) {
-                if (nums[left] <= target && target < nums[mid]) {
+            } else if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && target >= nums[left]) {
                     right = mid - 1;
                 } else {
                     left = mid + 1;
@@ -440,7 +447,7 @@ public class Question {
                 }
             }
         }
-        return nums[left] == target ? left : -1;
+        return nums[left] == target ? -1 : left;
     }
 
     /**
@@ -578,29 +585,28 @@ public class Question {
         if (s == null || p == null) {
             return false;
         }
-
         int m = s.length();
         int n = p.length();
         boolean[][] dp = new boolean[m + 1][n + 1];
-        dp[m][n] = true;
-        for (int j = n - 1; j >= 0; j--) {
-            if (p.charAt(j) != '*') {
-                break;
-            }
-            dp[m][j] = true;
-        }
-        for (int i = m - 1; i >= 0; i--) {
-            for (int j = n - 1; j >= 0; j--) {
-                if (s.charAt(i) == p.charAt(j) || p.charAt(j) == '?') {
-                    dp[i][j] = dp[i + 1][j + 1];
-                } else if (p.charAt(j) == '*') {
-                    dp[i][j] = dp[i][j + 1] || dp[i + 1][j];
+        dp[0][0] = true;
+        for (int i = 0; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i][j - 1] || (i > 0 && dp[i - 1][j]);
                 } else {
-                    dp[i][j] = false;
+                    dp[i][j] = isMatch(s, p, i, j) ? dp[i - 1][j - 1] : false;
                 }
             }
         }
-        return dp[0][0];
+        return dp[m][n];
+    }
+
+    private boolean isMatch(String s, String p, int i, int j) {
+        if (s.charAt(i - 1) == p.charAt(j - 1)) {
+            return true;
+        } else {
+            return p.charAt(j - 1) == '?';
+        }
     }
 
     /**
@@ -712,33 +718,39 @@ public class Question {
         return ans;
     }
 
+    /**
+     * 52. N-Queens II
+     *
+     * @param n
+     * @return
+     */
     public int totalNQueens(int n) {
         if (n <= 0) {
             return 0;
         }
         int[] dp = new int[n];
-        return totalNQueens(dp, 0, n);
+        return totalNQueens(0, n, dp);
     }
 
-    private int totalNQueens(int[] dp, int row, int n) {
+    private int totalNQueens(int row, int n, int[] dp) {
         int result = 0;
-        if (row == n) {
+        if (row >= n) {
             result++;
             return result;
         }
-        for (int col = 0; col < n; col++) {
-            if (matchTotalNQueens(dp, col, row, n)) {
-                dp[row] = col;
-                result += totalNQueens(dp, row + 1, n);
+        for (int i = 0; i < n; i++) {
+            if (isValid(i, row, n, dp)) {
+                dp[row] = i;
+                result += totalNQueens(row + 1, n, dp);
                 dp[row] = -1;
             }
         }
         return result;
     }
 
-    private boolean matchTotalNQueens(int[] dp, int col, int row, int n) {
-        for (int i = row - 1; i >= 0; i--) {
-            if (dp[i] == col || Math.abs(row - i) == Math.abs(dp[i] - col)) {
+    private boolean isValid(int column, int row, int n, int[] dp) {
+        for (int i = 0; i < row; i++) {
+            if (dp[i] == column || Math.abs(i - row) == Math.abs(dp[i] - column)) {
                 return false;
             }
         }
@@ -1136,10 +1148,1362 @@ public class Question {
                 if (i == 0 && j == 0) {
                     dp[i][j] = 0;
                 } else if (i == 0) {
+                    dp[i][j] = j;
+                } else if (j == 0) {
+                    dp[i][j] = i;
+                } else {
+                    if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                        dp[i][j] = dp[i - 1][j - 1];
+                    } else {
+                        dp[i][j] = 1 + Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]);
+                    }
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    /**
+     * 73. Set Matrix Zeroes
+     *
+     * @param matrix
+     */
+    public void setZeroes(int[][] matrix) {
+        if (matrix == null) {
+            return;
+        }
+        boolean fr = false;
+        boolean fc = false;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j] == 0) {
+                    matrix[i][0] = 0;
+                    matrix[0][j] = 0;
+                    if (i == 0) {
+                        fc = true;
+                    }
+                    if (j == 0) {
+                        fr = true;
+                    }
+                }
+            }
+        }
+        for (int i = 1; i < matrix.length; i++) {
+            for (int j = 1; j < matrix[i].length; j++) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        if (fr) {
+            for (int i = 0; i < matrix.length; i++) {
+                matrix[i][0] = 0;
+            }
+        }
+        if (fc) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                matrix[0][j] = 0;
+            }
+        }
+    }
+
+    /**
+     * 76. Minimum Window Substring
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public String minWindow(String s, String t) {
+        if (s == null || t == null) {
+            return "";
+        }
+        int[] hash = new int[256];
+        for (Character character : t.toCharArray()) {
+            hash[character - 'a']++;
+        }
+        int endIndex = 0;
+        int count = t.length();
+        int begin = 0;
+        int distance = Integer.MAX_VALUE;
+        int head = 0;
+        while (endIndex < s.length()) {
+            while (hash[s.charAt(endIndex++) - 'a']-- > 0) {
+                count--;
+            }
+            while (count == 0) {
+                if (endIndex - begin < distance) {
+                    head = begin;
+                    distance = endIndex - head;
+                }
+                if (hash[s.charAt(begin++)]++ > 0) {
+                    count++;
+                }
+            }
+        }
+        return distance == Integer.MAX_VALUE ? "" : s.substring(head, head + distance);
+    }
+
+    /**
+     * 80. Remove Duplicates from Sorted Array II
+     *
+     * @param nums
+     * @return
+     */
+    public int removeDuplicates(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int index = 1;
+        int value = nums[0];
+        int count = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] == value) {
+                count++;
+                if (count > 2) {
+                    continue;
+                }
+            } else {
+                value = nums[i];
+                count = 1;
+            }
+            nums[index++] = nums[i];
+        }
+        return index;
+    }
+
+    /**
+     * 81. Search in Rotated Sorted Array II
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public boolean searchII(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return true;
+            }
+            if (nums[mid] == nums[left]) {
+                left++;
+            } else if (nums[mid] > nums[left]) {
+                if (target < nums[mid] && nums[left] <= target) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 82. Remove Duplicates from Sorted List II
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            ListNode currNode = head.next.next;
+            while (currNode != null && currNode.val == head.val) {
+                currNode = currNode.next;
+            }
+            return deleteDuplicates(currNode);
+        } else {
+            head.next = deleteDuplicates(head.next);
+            return head;
+        }
+    }
+
+    /**
+     * 83. Remove Duplicates from Sorted List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicatesII(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            return deleteDuplicatesII(head.next);
+        } else {
+            head.next = deleteDuplicatesII(head.next);
+            return head;
+        }
+    }
+
+    /**
+     * 84. Largest Rectangle in Histogram
+     *
+     * @param heights
+     * @return
+     */
+    public int largestRectangleArea(int[] heights) {
+        if (heights == null || heights.length == 0) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        int result = 0;
+        for (int i = 0; i <= heights.length; i++) {
+            int h = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] < h) {
+                stack.push(i);
+            } else {
+                int index = stack.pop();
+                int size = stack.isEmpty() ? i : i - stack.peek() - 1;
+                result = Math.max(result, size * heights[index]);
+                i--;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 85. Maximal Rectangle
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int result = 0;
+
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[] left = new int[n];
+        int[] right = new int[n];
+        for (int j = 0; j < n; j++) {
+            right[j] = n;
+        }
+        int[] height = new int[n];
+        for (int i = 0; i < m; i++) {
+            int maxLeft = 0;
+            int minRight = n;
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == '1') {
+                    height[j]++;
+                } else {
+                    height[j] = 0;
+                }
+            }
+
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == '1') {
+                    left[j] = Math.max(left[j], maxLeft);
+                } else {
+                    left[j] = 0;
+                    maxLeft = j + 1;
+                }
+            }
+            for (int j = n - 1; j >= 0; j--) {
+                if (matrix[i][j] == '1') {
+                    right[j] = Math.min(right[j], minRight);
+                } else {
+                    right[j] = n;
+                    minRight = j;
+                }
+            }
+            for (int j = 0; j < n; j++) {
+                result = Math.max(result, (right[j] - left[j]) * height[j]);
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 86. Partition List
+     *
+     * @param head
+     * @param x
+     * @return
+     */
+    public ListNode partition(ListNode head, int x) {
+        if (head == null) {
+            return null;
+        }
+        ListNode dummy1 = new ListNode(0);
+        ListNode d1 = dummy1;
+
+        ListNode dummy2 = new ListNode(0);
+        ListNode d2 = dummy2;
+
+        while (head != null) {
+            if (head.val < x) {
+                d1.next = head;
+                d1 = d1.next;
+            } else {
+                d2.next = head;
+                d2 = d2.next;
+            }
+            head = head.next;
+        }
+        d2.next = null;
+        d1.next = dummy2.next;
+
+        return dummy1.next;
+    }
+
+    /**
+     * 87. Scramble String
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public boolean isScramble(String s1, String s2) {
+        if (s1 == null || s2 == null) {
+            return false;
+        }
+        if (s1.equals(s2)) {
+            return true;
+        }
+        int[] hash = new int[26];
+        for (int i = 0; i < s1.length(); i++) {
+            hash[s1.charAt(i) - 'a']++;
+            hash[s2.charAt(i) - 'a']--;
+        }
+        for (int i = 0; i < 26; i++) {
+            if (hash[i] != 0) {
+                return false;
+            }
+        }
+        int m = s1.length();
+        for (int i = 1; i < m; i++) {
+            if (isScramble(s1.substring(0, i), s2.substring(0, i)) && isScramble(s1.substring(i), s2.substring(i))) {
+                return true;
+            }
+            if (isScramble(s1.substring(0, i), s2.substring(m - i)) && isScramble(s1.substring(i), s2.substring(0, m - i))) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    /**
+     * 88. Merge Sorted Array
+     *
+     * @param nums1
+     * @param m
+     * @param nums2
+     * @param n
+     */
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int k = m + n - 1;
+        while (m > 0 && n > 0) {
+            if (nums1[m - 1] > nums2[n - 1]) {
+                nums1[k--] = nums1[m - 1];
+                m--;
+            } else {
+                nums1[k--] = nums2[n - 1];
+                n--;
+            }
+        }
+        while (n > 0) {
+            nums1[k--] = nums2[n - 1];
+            n--;
+        }
+    }
+
+    /**
+     * 90. Subsets II
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(nums);
+        List<List<Integer>> ans = new ArrayList<>();
+        subsetsWithDup(ans, new ArrayList<>(), 0, nums);
+        return ans;
+    }
+
+    private <E> void subsetsWithDup(List<List<Integer>> ans, List<Integer> tmp, int start, int[] nums) {
+        ans.add(new ArrayList<>(tmp));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            tmp.add(nums[i]);
+            subsetsWithDup(ans, tmp, i + 1, nums);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    /**
+     * 92. Reverse Linked List II
+     *
+     * @param head
+     * @param m
+     * @param n
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null) {
+            return null;
+        }
+        if (m == n) {
+            return head;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode fast = root;
+        for (int i = 0; i < m; i++) {
+            fast = fast.next;
+        }
+        ListNode slow = root;
+        for (int i = 0; i < m - 1; i++) {
+            slow = slow.next;
+        }
+        ListNode pre = fast.next;
+        ListNode start = slow.next;
+        for (int i = 0; i <= n - m; i++) {
+            ListNode tmp = start.next;
+            start.next = pre;
+            pre = start;
+            start = tmp;
+        }
+        slow.next = pre;
+        return root.next;
+    }
+
+    /**
+     * 93. Restore IP Addresses
+     *
+     * @param s
+     * @return
+     */
+    public List<String> restoreIpAddresses(String s) {
+        if (s.length() < 12) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+        for (int a = 1; a <= 3; a++) {
+            for (int b = 1; b <= 3; b++) {
+                for (int c = 1; c <= 3; c++) {
+                    for (int d = 1; d <= 3; d++) {
+                        int sum = a + b + c + d;
+                        if (sum == s.length()) {
+                            String s1 = s.substring(0, a);
+                            String s2 = s.substring(a, b);
+                            String s3 = s.substring(a + b, c);
+                            String s4 = s.substring(a + b + c, d);
+                            if (isValid(s1) && isValid(s2) && isValid(s3) && isValid(s4)) {
+                                ans.add(s1 + "." + s2 + "." + s3 + "." + s4);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+
+    private boolean isValid(String s) {
+        if (s.length() > 3 || s.length() == 0 || (s.charAt(0) == '0' && s.length() > 1) || Integer.parseInt(s) > 255) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 95. Unique Binary Search Trees II
+     *
+     * @param n
+     * @return
+     */
+    public List<TreeNode> generateTrees(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        return generateTrees(1, n);
+    }
+
+    private List<TreeNode> generateTrees(int start, int end) {
+        List<TreeNode> listNode = new ArrayList<>();
+        if (start == end) {
+            listNode.add(new TreeNode(start));
+            return listNode;
+        }
+        if (start > end) {
+            listNode.add(null);
+            return listNode;
+        }
+        for (int i = start; i <= end; i++) {
+            List<TreeNode> lefts = generateTrees(start, i - 1);
+
+            List<TreeNode> rights = generateTrees(i + 1, end);
+            for (TreeNode left : lefts) {
+                for (TreeNode right : rights) {
+                    TreeNode root = new TreeNode(i);
+                    root.left = left;
+                    root.right = right;
+                    listNode.add(root);
+                }
+            }
+        }
+        return listNode;
+    }
+
+    /**
+     * 96. Unique Binary Search Trees
+     *
+     * @param n
+     * @return
+     */
+    public int numTrees(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        int[] dp = new int[n + 1];
+
+        dp[0] = dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                dp[i] += dp[j - 1] * dp[i - j];
+            }
+        }
+        return dp[n];
+    }
+
+    /**
+     * 97. Interleaving String
+     *
+     * @param s1
+     * @param s2
+     * @param s3
+     * @return
+     */
+    public boolean isInterleave(String s1, String s2, String s3) {
+        int m = s1.length();
+        int n = s2.length();
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) {
+            for (int j = 0; j <= n; j++) {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = true;
+                } else if (i == 0) {
+                    dp[i][j] = dp[i][j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1);
+                } else if (j == 0) {
+                    dp[i][j] = dp[i - 1][j] && s1.charAt(i - 1) == s3.charAt(i + j - 1);
+                } else {
+                    dp[i][j] = (dp[i - 1][j] && s1.charAt(i - 1) == s3.charAt(i + j - 1)) || (dp[i][j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1));
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    /**
+     * 98. Validate Binary Search Tree
+     *
+     * @param root
+     * @return
+     */
+    public boolean isValidBST(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode dummy = root;
+        TreeNode prev = null;
+        while (!stack.isEmpty() || dummy != null) {
+            while (dummy != null) {
+                stack.push(dummy);
+                dummy = dummy.left;
+            }
+            dummy = stack.pop();
+            if (prev == null) {
+                prev = dummy;
+            } else {
+                if (prev.val >= dummy.val) {
+                    return false;
+                }
+                prev = dummy;
+            }
+            dummy = dummy.right;
+        }
+        return true;
+    }
+
+    /**
+     * 99. Recover Binary Search Tree
+     *
+     * @param root
+     */
+    public void recoverTree(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        TreeNode first = null;
+        TreeNode second = null;
+        TreeNode prev = null;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            if (prev == null) {
+                prev = p;
+            } else {
+                if (first == null && prev.val >= p.val) {
+                    first = prev;
+                }
+                if (first != null && prev.val >= p.val) {
+                    second = p;
+                }
+                prev = p;
+            }
+            p = p.right;
+        }
+        if (first != null && second != null) {
+            int val = first.val;
+            first.val = second.val;
+            second.val = val;
+        }
+    }
+
+    /**
+     * 145. Binary Tree Postorder Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> postorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        LinkedList<Integer> ans = new LinkedList<>();
+        TreeNode p = root;
+        Stack<TreeNode> stack = new Stack<>();
+        while (!stack.isEmpty() || p != null) {
+            if (p != null) {
+                ans.addFirst(p.val);
+                stack.push(p);
+                p = p.right;
+            } else {
+                p = stack.pop();
+                p = p.left;
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 103. Binary Tree Zigzag Level Order Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        boolean left = true;
+        LinkedList<TreeNode> list = new LinkedList<>();
+        list.add(root);
+        while (!list.isEmpty()) {
+            LinkedList<Integer> tmp = new LinkedList<>();
+            int size = list.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode p = list.pop();
+                if (p.left != null) {
+                    list.add(p.left);
+                }
+                if (p.right != null) {
+                    list.add(p.right);
+                }
+                if (left) {
+                    tmp.addLast(p.val);
+                } else {
+                    tmp.addFirst(p.val);
+                }
+            }
+            left = !left;
+            ans.add(tmp);
+        }
+        return ans;
+    }
+
+    /**
+     * 105. Construct Binary Tree from Preorder and Inorder Traversal
+     *
+     * @param preorder
+     * @param inorder
+     * @return
+     */
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        if (preorder == null || inorder == null) {
+            return null;
+        }
+        return buildTree(0, 0, inorder.length - 1, preorder, inorder);
+    }
+
+    private TreeNode buildTree(int preStart, int inStart, int inEnd, int[] preorder, int[] inorder) {
+        if (preStart >= preorder.length || inStart > inEnd) {
+            return null;
+        }
+        TreeNode root = new TreeNode(preorder[preStart]);
+        int index = 0;
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == root.val) {
+                index = i;
+                break;
+            }
+        }
+        root.left = buildTree(preStart + 1, inStart, index - 1, preorder, inorder);
+        root.right = buildTree(preStart + index - inStart + 1, index + 1, inEnd, preorder, inorder);
+        return root;
+    }
+
+    /**
+     * 106. Construct Binary Tree from Inorder and Postorder Traversal
+     *
+     * @param inorder
+     * @param postorder
+     * @return
+     */
+    public TreeNode buildTreeII(int[] inorder, int[] postorder) {
+        if (inorder == null || postorder == null) {
+            return null;
+        }
+        return buildPostOrder(0, inorder.length - 1, 0, postorder.length - 1, inorder, postorder);
+    }
+
+    private TreeNode buildPostOrder(int inStart, int inEnd, int postStart, int postEnd, int[] inorder, int[] postorder) {
+        if (inStart > inEnd || postStart > postEnd) {
+            return null;
+        }
+        TreeNode root = new TreeNode(postorder[postEnd]);
+        int index = 0;
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == root.val) {
+                index = i;
+                break;
+            }
+        }
+        root.left = buildPostOrder(inStart, index - 1, postStart, postStart + (index - inStart) - 1, inorder, postorder);
+        root.right = buildPostOrder(index + 1, inEnd, postStart + index - inStart, postEnd - 1, inorder, postorder);
+        return root;
+    }
+
+    /**
+     * 108. Convert Sorted Array to Binary Search Tree
+     *
+     * @param nums
+     * @return
+     */
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return null;
+        }
+        return buildBst(0, nums.length - 1, nums);
+    }
+
+    private TreeNode buildBst(int start, int end, int[] nums) {
+        if (start > end) {
+            return null;
+        }
+        int mid = start + (end - start) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = buildBst(start, mid - 1, nums);
+        root.right = buildBst(mid + 1, end, nums);
+        return root;
+    }
+
+    /**
+     * 109. Convert Sorted List to Binary Search Tree
+     *
+     * @param head
+     * @return
+     */
+    public TreeNode sortedListToBST(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        return buildSortedList(head, null);
+    }
+
+    private TreeNode buildSortedList(ListNode head, ListNode tail) {
+        if (head == tail) {
+            return null;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast != tail && fast.next != tail) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        TreeNode root = new TreeNode(slow.val);
+        root.left = buildSortedList(head, slow);
+        root.right = buildSortedList(slow.next, tail);
+        return root;
+    }
+
+
+    /**
+     * 113. Path Sum II
+     *
+     * @param root
+     * @param sum
+     * @return
+     */
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        pathSum(ans, new ArrayList<Integer>(), root, sum);
+        return ans;
+    }
+
+    private void pathSum(List<List<Integer>> ans, List<Integer> integers, TreeNode root, int sum) {
+        integers.add(root.val);
+        if (root.left == null && root.right == null && root.val == sum) {
+            ans.add(new ArrayList<>(integers));
+        } else {
+            if (root.left != null) {
+                pathSum(ans, integers, root.left, sum - root.val);
+            }
+            if (root.right != null) {
+                pathSum(ans, integers, root.right, sum - root.val);
+            }
+        }
+        integers.remove(integers.size() - 1);
+    }
+
+    /**
+     * 114. Flatten Binary Tree to Linked List
+     *
+     * @param root
+     */
+    public void flatten(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode prev = null;
+        stack.push(root);
+        while (!stack.isEmpty()) {
+
+            TreeNode node = stack.pop();
+            if (node.right != null) {
+                stack.push(node.right);
+            }
+
+            if (node.left != null) {
+                stack.push(node.left);
+            }
+
+            if (prev == null) {
+                prev = node;
+            } else {
+                prev.right = node;
+
+                prev = node;
+
+            }
+            prev.left = null;
+        }
+    }
+
+    /**
+     * 115. Distinct Subsequences
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public int numDistinct(String s, String t) {
+        if (s == null || t == null) {
+            return 0;
+        }
+        int m = s.length();
+        int n = t.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                dp[i][j] = (s.charAt(i - 1) == t.charAt(j - 1) ? dp[i - 1][j - 1] : 0) + dp[i - 1][j];
+            }
+        }
+        return dp[m][n];
+    }
+
+
+    /**
+     * 118. Pascal's Triangle
+     *
+     * @param numRows
+     * @return
+     */
+    public List<List<Integer>> generate(int numRows) {
+        if (numRows <= 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        for (int i = 0; i < numRows; i++) {
+            List<Integer> tmp = new ArrayList<>();
+            tmp.add(1);
+            for (int j = 1; j < i; j++) {
+                int sum = ans.get(i - 1).get(j - 1) + ans.get(i - 1).get(j);
+                tmp.add(sum);
+            }
+            if (i > 0) {
+                tmp.add(1);
+            }
+            ans.add(tmp);
+        }
+        return ans;
+    }
+
+    /**
+     * 119. Pascal's Triangle II
+     *
+     * @param rowIndex
+     * @return
+     */
+    public List<Integer> getRow(int rowIndex) {
+        if (rowIndex < 0) {
+            return new ArrayList<>();
+        }
+        List<Integer> ans = new ArrayList<>();
+        ans.add(1);
+
+        for (int i = 0; i <= rowIndex; i++) {
+
+            for (int j = i - 1; j >= 1; j--) {
+                ans.set(j, ans.get(j - 1) + ans.get(j));
+            }
+            if (i > 0) {
+                ans.add(1);
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 120. Triangle
+     *
+     * @param triangle
+     * @return
+     */
+    public int minimumTotal(List<List<Integer>> triangle) {
+        if (triangle.isEmpty()) {
+            return 0;
+        }
+        int size = triangle.size();
+
+        List<Integer> ans = triangle.get(size - 1);
+
+        for (int i = size - 2; i >= 0; i--) {
+
+            for (int j = 0; j < triangle.get(i).size(); j++) {
+
+                int sum = Math.min(ans.get(j), ans.get(j + 1)) + triangle.get(i).get(j);
+
+                ans.set(j, sum);
+            }
+        }
+        return ans.get(0);
+    }
+
+    /**
+     * 123. Best Time to Buy and Sell Stock III
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfitIII(int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int n = prices.length;
+        int[] left = new int[n];
+        int minLeft = prices[0];
+        int max = 0;
+        for (int i = 1; i < n; i++) {
+            if (prices[i] < minLeft) {
+                minLeft = prices[i];
+            }
+            max = Math.max(max, prices[i] - minLeft);
+            left[i] = max;
+        }
+        int[] right = new int[n + 1];
+        int minRight = prices[n - 1];
+        int min = 0;
+        for (int i = n - 2; i >= 0; i--) {
+            if (prices[i] > minRight) {
+                minRight = prices[i];
+            }
+            min = Math.max(min, minRight - prices[i]);
+            right[i] = min;
+        }
+        int result = 0;
+        for (int i = 0; i < n; i++) {
+            result = Math.max(result, left[i] + right[i + 1]);
+        }
+        return result;
+    }
+
+    /**
+     * 128. Longest Consecutive Sequence
+     *
+     * @param nums
+     * @return
+     */
+    public int longestConsecutive(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int result = Integer.MIN_VALUE;
+
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        for (int num : nums) {
+            if (map.containsKey(num)) {
+                continue;
+            }
+            int left = map.getOrDefault(num - 1, 0);
+            int right = map.getOrDefault(num + 1, 0);
+            int sum = 1 + left + right;
+            result = Math.max(result, sum);
+            map.put(num, sum);
+            map.put(num - left, sum);
+            map.put(num + right, sum);
+        }
+        return result;
+    }
+
+    /**
+     * 129. Sum Root to Leaf Numbers
+     *
+     * @param root
+     * @return
+     */
+    public int sumNumbers(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        if (root.left == null && root.right == null) {
+            return root.val;
+        }
+        return dfs(root.left, root.val) + dfs(root.right, root.val);
+    }
+
+    private int dfs(TreeNode root, int val) {
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null && root.right == null) {
+            return val * 10 + root.val;
+        }
+        return dfs(root.left, val * 10 + root.val) + dfs(root.right, val * 10 + root.val);
+    }
+
+    /**
+     * 130. Surrounded Regions
+     *
+     * @param board
+     */
+    public void solve(char[][] board) {
+        if (board == null || board.length == 0) {
+            return;
+        }
+        int[][] matrix = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        LinkedList<Point> list = new LinkedList<>();
+        return;
+    }
+
+
+    /**
+     * 131. Palindrome Partitioning
+     *
+     * @param s
+     * @return
+     */
+    public List<List<String>> partition(String s) {
+        if (s == null || s.length() == 0) {
+            return new ArrayList<>();
+        }
+        List<List<String>> ans = new ArrayList<>();
+        partition(ans, new ArrayList<String>(), 0, s);
+        return ans;
+    }
+
+    private void partition(List<List<String>> ans, List<String> tmp, int left, String s) {
+        if (left == s.length()) {
+            ans.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = left; i < s.length(); i++) {
+            if (isValid(s, left, i)) {
+                tmp.add(s.substring(left, i + 1));
+                partition(ans, tmp, i + 1, s);
+                tmp.remove(tmp.size() - 1);
+            }
+        }
+    }
+
+    private boolean isValid(String s, int start, int end) {
+        if (start > end) {
+            return false;
+        }
+        while (start < end) {
+            if (s.charAt(start) == s.charAt(end)) {
+                start++;
+                end--;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 134. Gas Station
+     *
+     * @param gas
+     * @param cost
+     * @return
+     */
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        if (gas == null || cost == null) {
+            return 0;
+        }
+        int result = 0;
+        int total = 0;
+        int index = 0;
+        for (int i = 0; i < gas.length; i++) {
+            total += gas[i] - cost[i];
+            result += gas[i] - cost[i];
+            if (total < 0) {
+                index = i + 1;
+                total = 0;
+            }
+        }
+        return result < 0 ? -1 : index;
+    }
+
+
+    /**
+     * 135. Candy
+     *
+     * @param ratings
+     * @return
+     */
+    public int candy(int[] ratings) {
+        if (ratings == null || ratings.length == 0) {
+            return 0;
+        }
+        int n = ratings.length;
+        int[] dp = new int[n];
+        for (int i = 0; i < n; i++) {
+            dp[i] = 1;
+        }
+        for (int i = 1; i < n; i++) {
+            if (ratings[i] > ratings[i - 1] && dp[i] < 1 + dp[i - 1]) {
+                dp[i] = 1 + dp[i - 1];
+            }
+        }
+        for (int i = n - 2; i >= 0; i--) {
+            if (ratings[i] > ratings[i + 1] && dp[i] < 1 + dp[i + 1]) {
+                dp[i] = 1 + dp[i + 1];
+            }
+        }
+        int result = 0;
+        for (int i = 0; i < n; i++) {
+            result += dp[i];
+        }
+        return result;
+    }
+
+    /**
+     * 139. Word Break
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        if (s == null || s.length() == 0) {
+            return false;
+        }
+        return wordBreak(new HashSet<String>(), s, wordDict);
+    }
+
+    private boolean wordBreak(HashSet<String> notIncluded, String s, List<String> wordDict) {
+        if (wordDict.contains(s)) {
+            return true;
+        }
+        if (notIncluded.contains(s)) {
+            return false;
+        }
+        for (String word : wordDict) {
+            if (s.startsWith(word) && wordBreak(notIncluded, s.substring(word.length()), wordDict)) {
+                return true;
+            }
+        }
+        notIncluded.add(s);
+        return false;
+    }
+
+    /**
+     * 140. Word Break II
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public List<String> wordBreakII(String s, List<String> wordDict) {
+        if (s == null || wordDict.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return wordBreakDFS(s, wordDict, new HashMap<>());
+    }
+
+    private List<String> wordBreakDFS(String s, List<String> wordDict, HashMap<String, LinkedList<String>> hashMap) {
+        if (hashMap.containsKey(s)) {
+            return hashMap.get(s);
+        }
+        LinkedList<String> ans = new LinkedList<>();
+        if (s.length() == 0) {
+            ans.add("");
+            return ans;
+        }
+        for (String word : wordDict) {
+            if (s.startsWith(word)) {
+                List<String> tmp = wordBreakDFS(s.substring(word.length()), wordDict, hashMap);
+
+                for (String value : tmp) {
+                    ans.add(word + (value.isEmpty() ? "" : " ") + value);
 
                 }
             }
         }
-        return 0;
+        hashMap.put(s, ans);
+        return ans;
     }
+
+    /**
+     * 143. Reorder List
+     *
+     * @param head
+     */
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+
+        ListNode middle = slow.next;
+
+    }
+
+    /**
+     * 148. Sort List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        ListNode tmp = slow.next;
+        slow.next = null;
+        ListNode l1 = sortList(head);
+        ListNode l2 = sortList(tmp);
+        return merge(l1, l2);
+
+    }
+
+    private ListNode merge(ListNode l1, ListNode l2) {
+        ListNode root = new ListNode(0);
+        ListNode dummy = root;
+        while (l1 != null && l2 != null) {
+            if (l1.val <= l2.val) {
+                dummy.next = l1;
+                l1 = l1.next;
+            } else {
+                dummy.next = l2;
+                l2 = l2.next;
+            }
+            dummy = dummy.next;
+        }
+        if (l1 != null) {
+            dummy.next = l1;
+        }
+        if (l2 != null) {
+            dummy.next = l2;
+        }
+        return root.next;
+    }
+
+    /**
+     * 152. Maximum Product Subarray
+     *
+     * @param s
+     * @return
+     */
+    public String reverseWords(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        s = s.trim();
+        String[] strs = s.split(" ");
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = strs.length - 1; i >= 0; i--) {
+            if (strs[i].trim().length() == 0) {
+                continue;
+            }
+            stringBuilder.append(strs[i]);
+            if (i > 0) {
+                stringBuilder.append(" ");
+            }
+        }
+        return stringBuilder.toString();
+    }
+
 }
