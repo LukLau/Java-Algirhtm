@@ -2506,4 +2506,294 @@ public class Question {
         return stringBuilder.toString();
     }
 
+    /**
+     * 152. Maximum Product Subarray
+     *
+     * @param nums
+     * @return
+     */
+    public int maxProduct(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int max = nums[0];
+        int min = nums[0];
+        int result = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int tmpMax = Math.max(Math.max(max * nums[i], min * nums[i]), nums[i]);
+            int tmpMin = Math.min(Math.min(min * nums[i], max * nums[i]), nums[i]);
+            result = Math.max(result, tmpMax);
+            max = tmpMax;
+            min = tmpMin;
+        }
+        return result;
+    }
+
+    /**
+     * 153. Find Minimum in Rotated Sorted Array
+     *
+     * @param nums
+     * @return
+     */
+    public int findMin(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < nums[right]) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return nums[left];
+    }
+
+    /**
+     * 154. Find Minimum in Rotated Sorted Array II
+     *
+     * @param nums
+     * @return
+     */
+    public int findMinII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            if (nums[left] < nums[right]) {
+                return nums[left];
+            }
+            int mid = left + (right - left) / 2;
+            if (nums[left] < nums[mid]) {
+                left = mid + 1;
+            } else if (nums[left] > nums[mid]) {
+                right = mid;
+            } else {
+                left++;
+            }
+        }
+        return nums[left];
+    }
+
+    /**
+     * 156、Binary Tree Upside Down
+     *
+     * @param root
+     * @return
+     */
+    public TreeNode upsideDownBinaryTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode prev = null;
+        TreeNode tmp = null;
+        TreeNode curr = root;
+        while (curr != null) {
+            TreeNode node = curr.left;
+            curr.left = tmp;
+
+            tmp = curr.right;
+
+            curr.right = prev;
+
+
+            prev = curr;
+
+            curr = node;
+        }
+        return prev;
+    }
+
+    /**
+     * 159、Longest Substring with At Most Two Distinct Characters
+     *
+     * @param s
+     * @return
+     */
+    public int lengthOfLongestSubstringTwoDistinct(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        HashMap<Character, Integer> map = new HashMap<>();
+        int left = 0;
+        int result = 0;
+        for (int i = 0; i < s.length(); i++) {
+            map.put(s.charAt(i), i);
+            while (map.size() > 2) {
+                if (map.get(s.charAt(i)) == left) {
+                    map.remove(s.charAt(i));
+                }
+                left++;
+            }
+            result = Math.max(result, i - left + 1);
+        }
+        return result;
+    }
+
+    /**
+     * 160. Intersection of Two Linked Lists
+     *
+     * @param headA
+     * @param headB
+     * @return
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) {
+            return null;
+        }
+        int lenA = countOfListNode(headA);
+        int lenB = countOfListNode(headB);
+        while (lenA > lenB) {
+            headA = headA.next;
+            lenA--;
+        }
+        while (lenA < lenB) {
+            headB = headB.next;
+            lenB--;
+        }
+        while (headA != headB) {
+            headA = headA.next;
+            headB = headB.next;
+        }
+        return headA;
+    }
+
+    private int countOfListNode(ListNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int nodeCount = 0;
+        while (root != null) {
+            nodeCount++;
+
+            root = root.next;
+        }
+        return nodeCount;
+    }
+
+    /**
+     * 161、One Edit Distance
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isOneEditDistance(String s, String t) {
+
+        return false;
+    }
+
+    /**
+     * 162. Find Peak Element
+     *
+     * @param nums
+     * @return
+     */
+    public int findPeakElement(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < nums[mid + 1]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+    /**
+     * 163、Missing Ranges
+     *
+     * @param nums
+     * @param lower
+     * @param upper
+     * @return
+     */
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+        int l = lower;
+        for (int i = 0; i <= nums.length; i++) {
+            int right = (i < nums.length && nums[i] <= upper) ? nums[i] : upper + 1;
+            if (l == right) {
+                l++;
+            } else if (right > l) {
+                String tmp = (right - l == 1) ? "" + l : ("" + l) + "->" + ("" + (right - 1));
+                ans.add(tmp);
+                l = right + 1;
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 852. Peak Index in a Mountain Array
+     *
+     * @param A
+     * @return
+     */
+    public int peakIndexInMountainArray(int[] A) {
+        if (A == null || A.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = A.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (A[mid] < A[mid + 1]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+
+    /**
+     * @param version1
+     * @param version2
+     * @return
+     */
+    public int compareVersion(String version1, String version2) {
+        if (version1 == null || version2 == null) {
+            return -1;
+        }
+        int v1 = 0;
+        int v2 = 0;
+        while (v1 < version1.length() || v2 < version2.length()) {
+            while (v1 < version1.length() && !Character.isDigit(version1.charAt(v1))) {
+                v1++;
+            }
+            while (v2 < version2.length() && !Character.isDigit(version2.charAt(v2))) {
+                v2++;
+            }
+            int tmp1 = 0;
+            int tmp2 = 0;
+            while (v1 < version1.length() && Character.isDigit(version1.charAt(v1))) {
+                tmp1 = tmp1 * 10 + (version1.charAt(v1++) - '0');
+            }
+            while (v2 < version2.length() && Character.isDigit(version2.charAt(v2))) {
+                tmp2 = tmp2 * 10 + (version2.charAt(v2++) - '0');
+            }
+            if (tmp1 < tmp2) {
+                return -1;
+            } else if (tmp1 > tmp2) {
+                return 1;
+            }
+        }
+        return 0;
+    }
 }

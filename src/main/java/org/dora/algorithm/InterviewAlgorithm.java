@@ -1,5 +1,7 @@
 package org.dora.algorithm;
 
+import java.util.HashMap;
+
 /**
  * 常见算法
  *
@@ -56,6 +58,7 @@ public class InterviewAlgorithm {
     }
 
     /**
+     * 416、Partition Equal Subset Sum
      * 一个数组 分成值 相等的两个部分
      *
      * @param nums
@@ -106,5 +109,31 @@ public class InterviewAlgorithm {
         return -1;
     }
 
+    /**
+     * 字符串中最长无重复K个字符
+     *
+     * @param s
+     * @param k
+     * @return
+     */
+    public int lengthOfLongestSubstringKDistinct(String s, int k) {
+        if (s == null) {
+            return 0;
+        }
+        int result = 0;
+        HashMap<Character, Integer> map = new HashMap<>();
+        int left = 0;
+        for (int i = 0; i < s.length(); i++) {
+            map.put(s.charAt(i), i);
+            while (map.size() > k) {
+                if (map.get(s.charAt(i)) == left) {
+                    map.remove(s.charAt(i));
+                }
+                left++;
+            }
+            result = Math.max(result, i - left + 1);
+        }
+        return result;
+    }
 
 }
