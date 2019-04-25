@@ -11,7 +11,6 @@ import java.util.*;
  * @date 2019/04/24
  */
 public class SwordToOffer {
-    private void swa
 
     public static void main(String[] args) {
         SwordToOffer swordToOffer = new SwordToOffer();
@@ -272,10 +271,10 @@ public class SwordToOffer {
         }
         ListNode fast = head;
         for (int i = 0; i < k - 1; i++) {
+            fast = fast.next;
             if (fast == null) {
                 return null;
             }
-            fast = fast.next;
         }
         ListNode slow = head;
         while (fast.next != null) {
@@ -313,6 +312,63 @@ public class SwordToOffer {
 
     }
 
+    /**
+     * 数字在排序数组中出现的次数
+     *
+     * @param array
+     * @param k
+     * @return
+     */
+    public int GetNumberOfK(int[] array, int k) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int firstIndex = this.getNumberOfFirst(array, 0, array.length - 1, k);
+        int lastIndex = this.getNumberOfLast(array, 0, array.length - 1, k);
+        if (firstIndex != -1 && lastIndex != -1) {
+            return lastIndex - firstIndex + 1;
+        }
+        return 0;
+    }
+
+    private int getNumberOfLast(int[] array, int start, int end, int target) {
+        if (start > end) {
+            return -1;
+        }
+        while (start <= end) {
+            int mid = start + (end - start) / 2;
+
+            if (array[mid] < target) {
+                start = mid + 1;
+            } else if (array[mid] > target) {
+                end = mid - 1;
+            } else if (mid < end && array[mid + 1] == array[mid]) {
+                start = mid + 1;
+            } else {
+                return mid;
+            }
+        }
+        return -1;
+    }
+
+    private int getNumberOfFirst(int[] array, int start, int end, int target) {
+        if (start > end) {
+            return -1;
+        }
+        while (start <= end) {
+            int mid = start + (end - start) / 2;
+            if (array[mid] < target) {
+                start = mid + 1;
+            } else if (array[mid] > target) {
+                end = mid - 1;
+            } else if (mid > 0 && target == array[mid - 1]) {
+                end = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+        return -1;
+    }
 
     /**
      * 合并两个排序的链表
@@ -608,21 +664,24 @@ public class SwordToOffer {
             return new ArrayList<>();
         }
         ArrayList<String> ans = new ArrayList<>();
-        this.Permutation(ans, 0, str.toCharArray());
+        char[] chars = str.toCharArray();
+        Arrays.sort(chars);
+        this.Permutation(ans, 0, chars);
+
         return ans;
     }
 
-    private void Permutation(ArrayList<String> ans, int start, char[] array) {
-        if (start == array.length - 1) {
-            ans.add(String.valueOf(array));
+    private void Permutation(ArrayList<String> ans, int start, char[] chars) {
+        if (start == chars.length - 1) {
+            ans.add(String.valueOf(chars));
         }
-        for (int i = start; i < array.length; i++) {
-            if (i != start && array[i] == array[start]) {
+        for (int i = start; i < chars.length; i++) {
+            if (i != start && chars[i] == chars[start]) {
                 continue;
             }
-            this.swap(array, i, start);
-            this.Permutation(ans, start + 1, array);
-            this.swap(array, i, start);
+            this.swap(chars, i, start);
+            this.Permutation(ans, start + 1, chars);
+            this.swap(chars, i, start);
         }
     }
 
@@ -870,7 +929,28 @@ public class SwordToOffer {
      * @param num2
      */
     public void FindNumsAppearOnce(int[] array, int num1[], int num2[]) {
-
+        if (array == null || array.length == 0) {
+            return;
+        }
+        int result = 0;
+        for (int num : array) {
+            result ^= num;
+        }
+        int index = 0;
+        for (int i = 0; i < 32; i++) {
+            if ((result & (1 << i)) != 0) {
+                index = i;
+                break;
+            }
+        }
+        int base = 1 << index;
+        for (int num : array) {
+            if ((base & num) != 0) {
+                num1[0] ^= num;
+            } else {
+                num2[0] ^= num;
+            }
+        }
     }
 
 
@@ -893,9 +973,19 @@ public class SwordToOffer {
      * @return
      */
     public String LeftRotateString(String str, int n) {
-        str = str + str;
-        str = str.substring(n);
-        return str;
+        char[] chars = str.toCharArray();
+
+        this.rotate(chars, 0, n - 1);
+        this.rotate(chars, n, chars.length - 1);
+        this.rotate(chars, 0, chars.length - 1);
+
+        return String.valueOf(chars);
+    }
+
+    private void rotate(char[] chars, int start, int end) {
+        for (int i = start; i <= (start + end) / 2; i++) {
+            this.swap(chars, i, start + end - i);
+        }
     }
 
     /**
@@ -1314,14 +1404,6 @@ public class SwordToOffer {
             return false;
         }
         boolean[][] used = new boolean[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                int index = i * rows + j * cols;
-                if (matrix[i * +j] == str[0] && verify(matrix, i, j, str, 0)) {
-                    return true;
-                }
-            }
-        }
         return false;
     }
 
