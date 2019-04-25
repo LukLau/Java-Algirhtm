@@ -1,6 +1,7 @@
 package org.dora.algorithm.swordoffer;
 
 import org.dora.algorithm.datastructe.ListNode;
+import org.dora.algorithm.datastructe.TreeLinkNode;
 import org.dora.algorithm.datastructe.TreeNode;
 
 import java.util.*;
@@ -10,10 +11,11 @@ import java.util.*;
  * @date 2019/04/24
  */
 public class SwordToOffer {
+    private void swa
+
     public static void main(String[] args) {
         SwordToOffer swordToOffer = new SwordToOffer();
-        int[] ans = new int[]{1, 2, 3, 4, 5, 6, 7};
-        swordToOffer.reOrderArray(ans);
+        swordToOffer.StrToInt("-123");
     }
 
     /**
@@ -244,21 +246,17 @@ public class SwordToOffer {
         if (array == null || array.length == 0) {
             return;
         }
-        int[] ans = new int[array.length];
-        int index = 0;
         for (int i = 0; i < array.length; i++) {
-            if ((array[i] % 2) != 0) {
-                ans[index++] = array[i];
+            for (int j = array.length - 1; j > i; j--) {
+                if (array[j] % 2 == 1 && array[j - 1] % 2 == 0) {
+                    this.swapNum(array, j, j - 1);
+                }
             }
         }
+    }
 
-        for (int i = 0; i < array.length; i++) {
-            if ((array[i] % 2) == 0) {
-                ans[index++] = array[i];
-            }
-        }
-        array = ans;
-        return;
+    private void swapNum(int[] array, int j, int i) {
+
     }
 
     /**
@@ -985,7 +983,346 @@ public class SwordToOffer {
             return 0;
         }
         str = str.trim();
+        if (str.isEmpty()) {
+            return 0;
+        }
+        int sign = 1;
 
+        int index = 0;
+        while (index < str.length() && !Character.isDigit(str.charAt(index))) {
+            if (str.charAt(index) == '+') {
+                sign = 1;
+            }
+            if (str.charAt(index) == '-') {
+                sign = -1;
+            }
+            index++;
+        }
+        long ans = 0;
+        while (index < str.length() && Character.isDigit(str.charAt(index))) {
+            int value = str.charAt(index) - '0';
+            ans = ans * 10 + value;
+            index++;
+        }
+        if (index < str.length()) {
+            return 0;
+        }
+        ans = ans * sign;
+        if (ans > Integer.MAX_VALUE) {
+            return 0;
+        }
+        return (int) ans * sign;
+    }
+
+    /**
+     * 构建乘积数组
+     *
+     * @param A
+     * @return
+     */
+    public int[] multiply(int[] A) {
+        if (A == null || A.length == 0) {
+            return new int[]{};
+        }
+        int[] ans = new int[A.length];
+        int base = 1;
+        for (int i = 0; i < ans.length; i++) {
+            ans[i] = base;
+            base *= A[i];
+        }
+        base = 1;
+        for (int i = ans.length - 1; i >= 0; i--) {
+            ans[i] *= i;
+            base *= A[i];
+        }
+        return ans;
+    }
+
+
+    /**
+     * 正则表达式匹配
+     *
+     * @param str
+     * @param pattern
+     * @return
+     */
+    public boolean match(char[] str, char[] pattern) {
+        if (str == null || pattern == null) {
+            return false;
+        }
+        if (pattern.length == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 环的指定入口
+     *
+     * @param pHead
+     * @return
+     */
+    public ListNode EntryNodeOfLoop(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return null;
+        }
+        ListNode fast = pHead;
+        ListNode slow = pHead;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == slow) {
+                fast = pHead;
+                while (fast != slow) {
+                    fast = fast.next;
+                    slow = slow.next;
+                }
+                return fast;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 删除重复结点
+     *
+     * @param pHead
+     * @return
+     */
+    public ListNode deleteDuplication(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return pHead;
+        }
+        if (pHead.val == pHead.next.val) {
+            ListNode node = pHead.next.next;
+            while (node != null && node.val == pHead.val) {
+                node = node.next;
+            }
+            return this.deleteDuplication(node);
+        } else {
+            pHead.next = this.deleteDuplication(pHead.next);
+            return pHead;
+        }
+
+    }
+
+
+    /**
+     * 二叉树的下一个结点
+     *
+     * @param pNode
+     * @return
+     */
+    public TreeLinkNode GetNext(TreeLinkNode pNode) {
+        if (pNode == null) {
+            return pNode;
+        }
+        if (pNode.right != null) {
+            TreeLinkNode node = pNode.right;
+            while (node.left != null) {
+                node = node.left;
+            }
+            return node;
+        }
+        while (pNode.next != null) {
+            if (pNode.next.left == pNode) {
+                return pNode.next;
+            }
+            pNode = pNode.next;
+        }
+        return null;
+    }
+
+    /**
+     * 对称二叉树
+     *
+     * @param pRoot
+     * @return
+     */
+    boolean isSymmetrical(TreeNode pRoot) {
+        if (pRoot == null) {
+            return true;
+        }
+        if (pRoot.left == null && pRoot.right == null) {
+            return true;
+        }
+
+        if (pRoot.left == null || pRoot.right == null) {
+            return false;
+        }
+        if (pRoot.left.val == pRoot.right.val) {
+            return this.isSymme(pRoot.left, pRoot.right);
+        }
+        return false;
+    }
+
+    private boolean isSymme(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
+        }
+        if (left == null || right == null) {
+            return false;
+        }
+        if (left.val == right.val) {
+            return this.isSymme(left.left, right.right) && this.isSymme(left.right, right.left);
+        }
+        return false;
+    }
+
+
+    /**
+     * 之字形打印二叉树
+     *
+     * @param pRoot
+     * @return
+     */
+    public ArrayList<ArrayList<Integer>> Print(TreeNode pRoot) {
+        if (pRoot == null) {
+            return new ArrayList<>();
+        }
+        ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
+        Deque<TreeNode> deque = new LinkedList<>();
+        deque.add(pRoot);
+        boolean leftToRight = true;
+        while (!deque.isEmpty()) {
+            int size = deque.size();
+            LinkedList<Integer> tmp = new LinkedList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = deque.poll();
+                if (leftToRight) {
+                    tmp.addLast(node.val);
+                } else {
+                    tmp.addFirst(node.val);
+                }
+                if (node.left != null) {
+                    deque.add(node.left);
+                }
+                if (node.right != null) {
+                    deque.add(node.right);
+                }
+            }
+            ans.add(new ArrayList<>(tmp));
+            leftToRight = !leftToRight;
+        }
+        return ans;
+    }
+
+
+    /**
+     * 把二叉树打印成多行
+     *
+     * @param pRoot
+     * @return
+     */
+    ArrayList<ArrayList<Integer>> PrintII(TreeNode pRoot) {
+        if (pRoot == null) {
+            return new ArrayList<>();
+        }
+        ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
+        Deque<TreeNode> deque = new LinkedList<>();
+        deque.add(pRoot);
+        while (!deque.isEmpty()) {
+            int size = deque.size();
+            LinkedList<Integer> tmp = new LinkedList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = deque.poll();
+                tmp.addLast(node.val);
+                if (node.left != null) {
+                    deque.add(node.left);
+                }
+                if (node.right != null) {
+                    deque.add(node.right);
+                }
+            }
+            ans.add(new ArrayList<>(tmp));
+        }
+        return ans;
+    }
+
+    /**
+     * 二叉搜索树的第k个结点
+     *
+     * @param pRoot
+     * @param k
+     * @return
+     */
+    TreeNode KthNode(TreeNode pRoot, int k) {
+        if (pRoot == null || k <= 0) {
+            return null;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        int size = 0;
+        while (!stack.isEmpty() || pRoot != null) {
+            while (pRoot != null) {
+                stack.push(pRoot);
+                pRoot = pRoot.left;
+            }
+            size++;
+            pRoot = stack.pop();
+            if (size == k) {
+                return pRoot;
+            }
+            pRoot = pRoot.right;
+        }
+        return null;
+    }
+
+    /**
+     * 滑动窗口的最大值
+     *
+     * @param num
+     * @param size
+     * @return
+     */
+    public ArrayList<Integer> maxInWindows(int[] num, int size) {
+        if (num == null || num.length == 0 || num.length < size) {
+            return new ArrayList<>();
+        }
+        int global = Integer.MIN_VALUE;
+        ArrayList<Integer> ans = new ArrayList<>();
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(size);
+        int begin = 0;
+        int end = 0;
+        while (end < num.length) {
+            int local = Integer.MIN_VALUE;
+            while (end - begin <= size - 1) {
+
+                priorityQueue.add(num[end++]);
+
+            }
+            int max = priorityQueue.peek();
+
+            begin++;
+            ans.add(local);
+        }
+        return ans;
+
+    }
+
+    /**
+     * 矩阵中的路径
+     *
+     * @param matrix
+     * @param rows
+     * @param cols
+     * @param str
+     * @return
+     */
+    public boolean hasPath(char[] matrix, int rows, int cols, char[] str) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        boolean[][] used = new boolean[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                int index = i * rows + j * cols;
+                if (matrix[i * +j] == str[0] && verify(matrix, i, j, str, 0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 
