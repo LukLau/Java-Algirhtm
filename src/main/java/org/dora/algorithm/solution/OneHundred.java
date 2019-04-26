@@ -11,6 +11,7 @@ import java.util.*;
  * @author liulu
  * @date 2019/02/16
  */
+@Deprecated
 public class OneHundred {
 
 
@@ -105,7 +106,7 @@ public class OneHundred {
         int m = nums1.length;
         int n = nums2.length;
         if (m > n) {
-            return findMedianSortedArrays(nums2, nums1);
+            return this.findMedianSortedArrays(nums2, nums1);
         }
         int imin = 0, imax = m, max_left = 0, min_right = 0;
         while (imin <= imax) {
@@ -273,7 +274,7 @@ public class OneHundred {
         }
         int m = s.length();
         int n = p.length();
-        boolean[][] dp = initDp(p, m, n);
+        boolean[][] dp = this.initDp(p, m, n);
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
@@ -553,10 +554,10 @@ public class OneHundred {
             return l1;
         }
         if (l1.val <= l2.val) {
-            l1.next = mergeTwoLists(l1.next, l2);
+            l1.next = this.mergeTwoLists(l1.next, l2);
             return l1;
         } else {
-            l2.next = mergeTwoLists(l1, l2.next);
+            l2.next = this.mergeTwoLists(l1, l2.next);
             return l2;
         }
     }
@@ -572,7 +573,7 @@ public class OneHundred {
             return new ArrayList<>();
         }
         List<String> ans = new ArrayList<>();
-        generateParenthesis(ans, "", 0, 0, n);
+        this.generateParenthesis(ans, "", 0, 0, n);
         return ans;
     }
 
@@ -581,10 +582,10 @@ public class OneHundred {
             ans.add(s);
         }
         if (open < n) {
-            generateParenthesis(ans, s + "(", open + 1, close, n);
+            this.generateParenthesis(ans, s + "(", open + 1, close, n);
         }
         if (close < open) {
-            generateParenthesis(ans, s + ")", open, close + 1, n);
+            this.generateParenthesis(ans, s + ")", open, close + 1, n);
         }
     }
 
@@ -662,8 +663,8 @@ public class OneHundred {
             }
             currNode = currNode.next;
         }
-        ListNode newHead = reverseList(head, currNode);
-        head.next = reverseKGroup(currNode, k);
+        ListNode newHead = this.reverseList(head, currNode);
+        head.next = this.reverseKGroup(currNode, k);
         return newHead;
     }
 
@@ -739,7 +740,7 @@ public class OneHundred {
             index--;
         }
         if (index == 0) {
-            reverseArray(nums, index, nums.length - 1);
+            this.reverseArray(nums, index, nums.length - 1);
         } else {
             int j = nums.length - 1;
             while (j > index - 1) {
@@ -748,8 +749,8 @@ public class OneHundred {
                 }
                 j--;
             }
-            swap(nums, index - 1, j);
-            reverseArray(nums, index, nums.length - 1);
+            this.swap(nums, index - 1, j);
+            this.reverseArray(nums, index, nums.length - 1);
         }
     }
 
@@ -758,7 +759,7 @@ public class OneHundred {
             return;
         }
         for (int i = start; i <= (start + end) / 2; i++) {
-            swap(nums, i, start + end - i);
+            this.swap(nums, i, start + end - i);
         }
     }
 
@@ -828,12 +829,12 @@ public class OneHundred {
      * @return
      */
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
-        if (isEmpty(candidates)) {
+        if (this.isEmpty(candidates)) {
             return new ArrayList<>();
         }
         Arrays.sort(candidates);
         List<List<Integer>> ans = new ArrayList<>();
-        combinationSum(ans, new ArrayList<>(), 0, candidates, target);
+        this.combinationSum(ans, new ArrayList<>(), 0, candidates, target);
         return ans;
     }
 
@@ -843,7 +844,7 @@ public class OneHundred {
         }
         for (int i = index; i < candidates.length && candidates[i] <= target; i++) {
             integers.add(candidates[i]);
-            combinationSum(ans, integers, i, candidates, target - candidates[i]);
+            this.combinationSum(ans, integers, i, candidates, target - candidates[i]);
             integers.remove(integers.size() - 1);
         }
     }
@@ -860,12 +861,12 @@ public class OneHundred {
      * @return
      */
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
-        if (isEmpty(candidates)) {
+        if (this.isEmpty(candidates)) {
             return new ArrayList<>();
         }
         List<List<Integer>> ans = new ArrayList<>();
         Arrays.sort(candidates);
-        combinationSum2(ans, new ArrayList<>(), 0, candidates, target);
+        this.combinationSum2(ans, new ArrayList<>(), 0, candidates, target);
         return ans;
     }
 
@@ -878,7 +879,7 @@ public class OneHundred {
                 continue;
             }
             tmp.add(candidates[i]);
-            combinationSum2(ans, tmp, i + 1, candidates, target - candidates[i]);
+            this.combinationSum2(ans, tmp, i + 1, candidates, target - candidates[i]);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -890,12 +891,12 @@ public class OneHundred {
      * @return
      */
     public int firstMissingPositive(int[] nums) {
-        if (isEmpty(nums)) {
+        if (this.isEmpty(nums)) {
             return 1;
         }
         for (int i = 0; i < nums.length; i++) {
             while (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
-                swap(nums, i, nums[i] - 1);
+                this.swap(nums, i, nums[i] - 1);
             }
         }
         for (int i = 0; i < nums.length; i++) {
@@ -913,7 +914,7 @@ public class OneHundred {
      * @return
      */
     public int trap(int[] height) {
-        if (isEmpty(height)) {
+        if (this.isEmpty(height)) {
             return 0;
         }
         int result = 0;
@@ -947,7 +948,7 @@ public class OneHundred {
      * @return
      */
     public String multiply(String num1, String num2) {
-        if (isStringEmpty(num1) || isStringEmpty(num2)) {
+        if (this.isStringEmpty(num1) || this.isStringEmpty(num2)) {
             return "";
         }
         int m = num1.length();
@@ -994,7 +995,7 @@ public class OneHundred {
                 if (p.charAt(j - 1) == '*') {
                     dp[i][j] = dp[i][j - 1] || (i > 0 && dp[i - 1][j]);
                 } else {
-                    dp[i][j] = match(s, p, i, j) ? dp[i - 1][j - 1] : false;
+                    dp[i][j] = this.match(s, p, i, j) ? dp[i - 1][j - 1] : false;
                 }
             }
         }
@@ -1056,7 +1057,7 @@ public class OneHundred {
         }
         List<List<Integer>> ans = new ArrayList<>();
         boolean[] used = new boolean[nums.length];
-        permute(ans, new ArrayList<>(), used, nums);
+        this.permute(ans, new ArrayList<>(), used, nums);
         return ans;
     }
 
@@ -1070,7 +1071,7 @@ public class OneHundred {
             }
             used[i] = true;
             tmp.add(nums[i]);
-            permute(ans, tmp, used, nums);
+            this.permute(ans, tmp, used, nums);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
         }
@@ -1083,13 +1084,13 @@ public class OneHundred {
      * @return
      */
     public List<List<Integer>> permuteUnique(int[] nums) {
-        if (isEmpty(nums)) {
+        if (this.isEmpty(nums)) {
             return new ArrayList<>();
         }
         Arrays.sort(nums);
         List<List<Integer>> ans = new ArrayList<>();
         boolean[] used = new boolean[nums.length];
-        permuteUnique(ans, new ArrayList<>(), used, nums);
+        this.permuteUnique(ans, new ArrayList<>(), used, nums);
         return ans;
     }
 
@@ -1103,7 +1104,7 @@ public class OneHundred {
             }
             tmp.add(nums[i]);
             used[i] = true;
-            permuteUnique(ans, tmp, used, nums);
+            this.permuteUnique(ans, tmp, used, nums);
             tmp.remove(tmp.size() - 1);
             used[i] = false;
         }
@@ -1121,12 +1122,12 @@ public class OneHundred {
 
         for (int i = 0; i < matrix.length; i++) {
             for (int j = i; j < matrix[i].length; j++) {
-                swapMatrix(matrix, i, j);
+                this.swapMatrix(matrix, i, j);
             }
         }
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length / 2; j++) {
-                swapMatrixRow(matrix, i, j);
+                this.swapMatrixRow(matrix, i, j);
             }
         }
     }
@@ -1206,19 +1207,19 @@ public class OneHundred {
             }
         }
         List<List<String>> ans = new ArrayList<>();
-        solveNQueens(ans, nQueens, 0, n);
+        this.solveNQueens(ans, nQueens, 0, n);
         return ans;
 
     }
 
     private void solveNQueens(List<List<String>> ans, char[][] nQueens, int row, int n) {
         if (row == n) {
-            ans.add(construct(nQueens));
+            ans.add(this.construct(nQueens));
         }
         for (int col = 0; col < n; col++) {
-            if (!checkExist(nQueens, col, row, n)) {
+            if (!this.checkExist(nQueens, col, row, n)) {
                 nQueens[row][col] = 'Q';
-                solveNQueens(ans, nQueens, row + 1, n);
+                this.solveNQueens(ans, nQueens, row + 1, n);
                 nQueens[row][col] = '.';
             }
         }
@@ -1263,7 +1264,7 @@ public class OneHundred {
             return 0;
         }
         int[] dp = new int[n];
-        return totalNQueens(dp, 0, n);
+        return this.totalNQueens(dp, 0, n);
     }
 
     private int totalNQueens(int[] dp, int row, int n) {
@@ -1273,9 +1274,9 @@ public class OneHundred {
             return result;
         }
         for (int col = 0; col < n; col++) {
-            if (!checkExist(dp, row, col)) {
+            if (!this.checkExist(dp, row, col)) {
                 dp[row] = col;
-                result += totalNQueens(dp, row + 1, n);
+                result += this.totalNQueens(dp, row + 1, n);
                 dp[row] = -1;
             }
         }
@@ -1633,9 +1634,9 @@ public class OneHundred {
                 int blankSpace = maxWidth - line + 1;
                 int countOfSpace = isLast ? 1 : 1 + blankSpace / (countOfWords - 1);
                 int extraSpace = isLast ? 0 : blankSpace % (countOfWords - 1);
-                stringBuilder = construct(words, startIndex, endIndex, countOfSpace, extraSpace);
+                stringBuilder = this.construct(words, startIndex, endIndex, countOfSpace, extraSpace);
             }
-            ans.add(correct(stringBuilder.toString(), maxWidth));
+            ans.add(this.correct(stringBuilder.toString(), maxWidth));
             startIndex = endIndex;
         }
         return ans;
@@ -1854,10 +1855,10 @@ public class OneHundred {
         int second = nums.length - 1;
         for (int i = 0; i < nums.length; i++) {
             while (nums[i] == 2 && i < second) {
-                swap(nums, i, second--);
+                this.swap(nums, i, second--);
             }
             while (nums[i] == 0 && i > one) {
-                swap(nums, i, one++);
+                this.swap(nums, i, one++);
             }
         }
     }
@@ -1897,7 +1898,7 @@ public class OneHundred {
      */
     public List<List<Integer>> combine(int n, int k) {
         List<List<Integer>> ans = new ArrayList<>();
-        combine(ans, new ArrayList<>(), 1, n, k);
+        this.combine(ans, new ArrayList<>(), 1, n, k);
         return ans;
     }
 
@@ -1907,7 +1908,7 @@ public class OneHundred {
         }
         for (int i = start; i <= n; i++) {
             tmp.add(i);
-            combine(ans, tmp, i + 1, n, k);
+            this.combine(ans, tmp, i + 1, n, k);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -1923,7 +1924,7 @@ public class OneHundred {
             return new ArrayList<>();
         }
         List<List<Integer>> ans = new ArrayList<>();
-        subsets(ans, new ArrayList<>(), 0, nums);
+        this.subsets(ans, new ArrayList<>(), 0, nums);
         return ans;
     }
 
@@ -1931,7 +1932,7 @@ public class OneHundred {
         ans.add(new ArrayList<>(tmp));
         for (int i = index; i < nums.length; i++) {
             tmp.add(nums[i]);
-            subsets(ans, tmp, i + 1, nums);
+            this.subsets(ans, tmp, i + 1, nums);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -1950,7 +1951,7 @@ public class OneHundred {
         boolean[][] used = new boolean[board.length][board[0].length];
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                if (board[i][j] == word.charAt(0) && check(used, i, j, board, 0, word)) {
+                if (board[i][j] == word.charAt(0) && this.check(used, i, j, board, 0, word)) {
                     return true;
                 }
             }
@@ -1967,10 +1968,10 @@ public class OneHundred {
             return false;
         }
         used[i][j] = true;
-        if (check(used, i - 1, j, board, k + 1, word) ||
-                check(used, i + 1, j, board, k + 1, word) ||
-                check(used, i, j - 1, board, k + 1, word) ||
-                check(used, i, j + 1, board, k + 1, word)) {
+        if (this.check(used, i - 1, j, board, k + 1, word) ||
+                this.check(used, i + 1, j, board, k + 1, word) ||
+                this.check(used, i, j - 1, board, k + 1, word) ||
+                this.check(used, i, j + 1, board, k + 1, word)) {
             return true;
         }
         used[i][j] = false;
@@ -2020,9 +2021,9 @@ public class OneHundred {
             while (currNode != null && currNode.val == head.val) {
                 currNode = currNode.next;
             }
-            return deleteDuplicates(currNode);
+            return this.deleteDuplicates(currNode);
         } else {
-            head.next = deleteDuplicates(head.next);
+            head.next = this.deleteDuplicates(head.next);
             return head;
         }
     }
@@ -2038,9 +2039,9 @@ public class OneHundred {
             return head;
         }
         if (head.val == head.next.val) {
-            return deleteDuplicatesEasy(head.next);
+            return this.deleteDuplicatesEasy(head.next);
         } else {
-            head.next = deleteDuplicatesEasy(head.next);
+            head.next = this.deleteDuplicatesEasy(head.next);
             return head;
         }
     }
@@ -2164,10 +2165,10 @@ public class OneHundred {
             }
         }
         for (int i = 1; i < m; i++) {
-            if (isScramble(s1.substring(0, i), s2.substring(0, i)) && isScramble(s1.substring(i), s2.substring(i))) {
+            if (this.isScramble(s1.substring(0, i), s2.substring(0, i)) && this.isScramble(s1.substring(i), s2.substring(i))) {
                 return true;
             }
-            if (isScramble(s1.substring(0, i), s2.substring(m - i)) && isScramble(s1.substring(i), s2.substring(0, m - i))) {
+            if (this.isScramble(s1.substring(0, i), s2.substring(m - i)) && this.isScramble(s1.substring(i), s2.substring(0, m - i))) {
                 return true;
             }
         }
@@ -2211,7 +2212,7 @@ public class OneHundred {
         }
         Arrays.sort(nums);
         List<List<Integer>> ans = new ArrayList<>();
-        subsetsWithDup(ans, new ArrayList<>(), 0, nums);
+        this.subsetsWithDup(ans, new ArrayList<>(), 0, nums);
         return ans;
     }
 
@@ -2222,7 +2223,7 @@ public class OneHundred {
                 continue;
             }
             integers.add(nums[i]);
-            subsetsWithDup(ans, integers, i + 1, nums);
+            this.subsetsWithDup(ans, integers, i + 1, nums);
             integers.remove(integers.size() - 1);
         }
     }
@@ -2288,7 +2289,7 @@ public class OneHundred {
         if (n <= 0) {
             return new ArrayList<>();
         }
-        return generateTrees(1, n);
+        return this.generateTrees(1, n);
     }
 
     private List<TreeNode> generateTrees(int left, int right) {
@@ -2304,8 +2305,8 @@ public class OneHundred {
             return ans;
         }
         for (int i = left; i <= right; i++) {
-            List<TreeNode> leftList = generateTrees(left, i - 1);
-            List<TreeNode> rightList = generateTrees(i + 1, right);
+            List<TreeNode> leftList = this.generateTrees(left, i - 1);
+            List<TreeNode> rightList = this.generateTrees(i + 1, right);
             for (TreeNode leftNode : leftList) {
                 for (TreeNode rightNode : rightList) {
                     TreeNode root = new TreeNode(i);
@@ -2418,7 +2419,7 @@ public class OneHundred {
             return false;
         }
         if (p.val == q.val) {
-            return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+            return this.isSameTree(p.left, q.left) && this.isSameTree(p.right, q.right);
         }
         return false;
     }

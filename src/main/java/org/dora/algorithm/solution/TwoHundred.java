@@ -11,6 +11,7 @@ import java.util.*;
  * @author lauluk
  * @date 2019/03/07
  */
+@Deprecated
 public class TwoHundred {
     /**
      * 124. Binary Tree Maximum Path Sum
@@ -37,7 +38,7 @@ public class TwoHundred {
         if (root == null) {
             return false;
         }
-        return isSymmetric(root.left, root.right);
+        return this.isSymmetric(root.left, root.right);
     }
 
     private boolean isSymmetric(TreeNode left, TreeNode right) {
@@ -48,7 +49,7 @@ public class TwoHundred {
             return false;
         }
         if (left.val == right.val) {
-            return isSymmetric(left.left, right.right) && isSymmetric(left.right, right.left);
+            return this.isSymmetric(left.left, right.right) && this.isSymmetric(left.right, right.left);
         }
         return false;
     }
@@ -132,7 +133,7 @@ public class TwoHundred {
         if (root == null) {
             return 0;
         }
-        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+        return 1 + Math.max(this.maxDepth(root.left), this.maxDepth(root.right));
     }
 
     /**
@@ -149,7 +150,7 @@ public class TwoHundred {
         if (preorder.length == 0 || inorder.length == 0) {
             return null;
         }
-        return buildTree(0, 0, inorder.length - 1, preorder, inorder);
+        return this.buildTree(0, 0, inorder.length - 1, preorder, inorder);
     }
 
     private TreeNode buildTree(int preStart, int inStart, int inEnd, int[] preorder, int[] inorder) {
@@ -164,8 +165,8 @@ public class TwoHundred {
                 break;
             }
         }
-        root.left = buildTree(preStart + 1, inStart, idx - 1, preorder, inorder);
-        root.right = buildTree(preStart + idx - inStart + 1, idx + 1, inEnd, preorder, inorder);
+        root.left = this.buildTree(preStart + 1, inStart, idx - 1, preorder, inorder);
+        root.right = this.buildTree(preStart + idx - inStart + 1, idx + 1, inEnd, preorder, inorder);
         return root;
     }
 
@@ -180,7 +181,7 @@ public class TwoHundred {
         if (inorder == null || postorder == null) {
             return null;
         }
-        return buildTree(0, inorder.length - 1, inorder, 0, postorder.length - 1, postorder);
+        return this.buildTree(0, inorder.length - 1, inorder, 0, postorder.length - 1, postorder);
     }
 
     private TreeNode buildTree(int inStart, int inEnd, int[] inorder, int postStart, int postEnd, int[] postorder) {
@@ -198,8 +199,8 @@ public class TwoHundred {
                 break;
             }
         }
-        root.left = buildTree(inStart, idx - 1, inorder, postStart, postStart + idx - inStart - 1, postorder);
-        root.right = buildTree(idx + 1, inEnd, inorder, postStart + idx - inStart, postEnd - 1, postorder);
+        root.left = this.buildTree(inStart, idx - 1, inorder, postStart, postStart + idx - inStart - 1, postorder);
+        root.right = this.buildTree(idx + 1, inEnd, inorder, postStart + idx - inStart, postEnd - 1, postorder);
         return root;
     }
 
@@ -244,7 +245,7 @@ public class TwoHundred {
         if (nums == null || nums.length == 0) {
             return null;
         }
-        return sortedArrayToBST(nums, 0, nums.length - 1);
+        return this.sortedArrayToBST(nums, 0, nums.length - 1);
 
     }
 
@@ -254,8 +255,8 @@ public class TwoHundred {
         }
         int mid = start + (end - start) / 2;
         TreeNode root = new TreeNode(nums[mid]);
-        root.left = sortedArrayToBST(nums, start, mid - 1);
-        root.right = sortedArrayToBST(nums, mid + 1, end);
+        root.left = this.sortedArrayToBST(nums, start, mid - 1);
+        root.right = this.sortedArrayToBST(nums, mid + 1, end);
         return root;
     }
 
@@ -269,7 +270,7 @@ public class TwoHundred {
         if (head == null) {
             return null;
         }
-        return toBST(head, null);
+        return this.toBST(head, null);
     }
 
     private TreeNode toBST(ListNode head, ListNode tail) {
@@ -285,8 +286,8 @@ public class TwoHundred {
             slow = slow.next;
         }
         TreeNode thead = new TreeNode(slow.val);
-        thead.left = toBST(head, slow);
-        thead.right = toBST(slow.next, tail);
+        thead.left = this.toBST(head, slow);
+        thead.right = this.toBST(slow.next, tail);
         return thead;
     }
 
@@ -300,18 +301,18 @@ public class TwoHundred {
         if (root == null) {
             return true;
         }
-        return dfs(root) != -1;
+        return this.dfs(root) != -1;
     }
 
     private int dfs(TreeNode root) {
         if (root == null) {
             return 0;
         }
-        int left = dfs(root.left);
+        int left = this.dfs(root.left);
         if (left == -1) {
             return -1;
         }
-        int right = dfs(root.right);
+        int right = this.dfs(root.right);
         if (right == -1) {
             return -1;
         }
@@ -335,12 +336,12 @@ public class TwoHundred {
             return 1;
         }
         if (root.left == null) {
-            return 1 + minDepth(root.right);
+            return 1 + this.minDepth(root.right);
         }
         if (root.right == null) {
-            return 1 + minDepth(root.left);
+            return 1 + this.minDepth(root.left);
         }
-        return 1 + Math.min(minDepth(root.left), minDepth(root.right));
+        return 1 + Math.min(this.minDepth(root.left), this.minDepth(root.right));
     }
 
     /**
@@ -357,7 +358,7 @@ public class TwoHundred {
         if (root.left == null && root.right == null && root.val == sum) {
             return true;
         }
-        return hasPathSum(root.left, sum - root.val) || hasPathSum(root.right, sum - root.val);
+        return this.hasPathSum(root.left, sum - root.val) || this.hasPathSum(root.right, sum - root.val);
     }
 
     private boolean hasPathSumDfs(TreeNode root, int value) {
@@ -370,7 +371,7 @@ public class TwoHundred {
         if (root.left == null && root.right == null && root.val == value) {
             return true;
         }
-        return hasPathSumDfs(root.left, value - root.val) || hasPathSumDfs(root.right, value - root.val);
+        return this.hasPathSumDfs(root.left, value - root.val) || this.hasPathSumDfs(root.right, value - root.val);
     }
 
     /**
@@ -385,7 +386,7 @@ public class TwoHundred {
             return new ArrayList<>();
         }
         List<List<Integer>> ans = new ArrayList<>();
-        pathSum(ans, new ArrayList<>(), root, sum);
+        this.pathSum(ans, new ArrayList<>(), root, sum);
         return ans;
     }
 
@@ -400,10 +401,10 @@ public class TwoHundred {
             return;
         }
         if (root.left != null) {
-            pathSum(ans, tmp, root.left, sum - root.val);
+            this.pathSum(ans, tmp, root.left, sum - root.val);
         }
         if (root.right != null) {
-            pathSum(ans, tmp, root.right, sum - root.val);
+            this.pathSum(ans, tmp, root.right, sum - root.val);
         }
         tmp.remove(tmp.size() - 1);
     }
@@ -646,7 +647,7 @@ public class TwoHundred {
         if (root == null) {
             return 0;
         }
-        dfsMaxPathSum(root);
+        this.dfsMaxPathSum(root);
         return maxPathSum;
     }
 
@@ -654,8 +655,8 @@ public class TwoHundred {
         if (root == null) {
             return 0;
         }
-        int left = dfsMaxPathSum(root.left);
-        int right = dfsMaxPathSum(root.right);
+        int left = this.dfsMaxPathSum(root.left);
+        int right = this.dfsMaxPathSum(root.right);
         maxPathSum = Math.max(maxPathSum, left + right + root.val);
         return Math.max(left, right) + root.val;
     }
@@ -730,7 +731,7 @@ public class TwoHundred {
         if (root.left == null && root.right == null) {
             return root.val;
         }
-        return sumNumbers(root.left, root.val) + sumNumbers(root.right, root.val);
+        return this.sumNumbers(root.left, root.val) + this.sumNumbers(root.right, root.val);
     }
 
     private int sumNumbers(TreeNode root, int value) {
@@ -740,7 +741,7 @@ public class TwoHundred {
         if (root.left == null && root.right == null) {
             return value * 10 + root.val;
         }
-        return sumNumbers(root.left, value * 10 + root.val) + sumNumbers(root.right, value * 10 + root.val);
+        return this.sumNumbers(root.left, value * 10 + root.val) + this.sumNumbers(root.right, value * 10 + root.val);
     }
 
     /**
@@ -790,19 +791,19 @@ public class TwoHundred {
     private void solve(int i, int j, char[][] board) {
         if (i > 0 && board[i - 1][j] == 'O') {
             board[i - 1][j] = 'B';
-            solve(i - 1, j, board);
+            this.solve(i - 1, j, board);
         }
         if (i < board.length - 1 && board[i + 1][j] == 'O') {
             board[i + 1][j] = 'B';
-            solve(i + 1, j, board);
+            this.solve(i + 1, j, board);
         }
         if (j > 0 && board[i][j - 1] == 'O') {
             board[i][j - 1] = 'B';
-            solve(i, j - 1, board);
+            this.solve(i, j - 1, board);
         }
         if (j < board[i].length - 1 && board[i][j + 1] == 'O') {
             board[i][j + 1] = 'B';
-            solve(i, j + 1, board);
+            this.solve(i, j + 1, board);
         }
     }
 
@@ -817,7 +818,7 @@ public class TwoHundred {
             return new ArrayList<>();
         }
         List<List<String>> ans = new ArrayList<>();
-        dfs(ans, new ArrayList<>(), 0, s);
+        this.dfs(ans, new ArrayList<>(), 0, s);
         return ans;
     }
 
@@ -826,9 +827,9 @@ public class TwoHundred {
             ans.add(new ArrayList<>(tmp));
         }
         for (int i = left; i < s.length(); i++) {
-            if (isValid(s, left, i)) {
+            if (this.isValid(s, left, i)) {
                 tmp.add(s.substring(left, i + 1));
-                dfs(ans, tmp, i + 1, s);
+                this.dfs(ans, tmp, i + 1, s);
                 tmp.remove(tmp.size() - 1);
             }
         }
@@ -1001,7 +1002,7 @@ public class TwoHundred {
         if (s == null || wordDict.isEmpty()) {
             return false;
         }
-        return wordBreak(new HashSet<>(), s, wordDict);
+        return this.wordBreak(new HashSet<>(), s, wordDict);
     }
 
     private boolean wordBreak(Set<String> hash, String s, List<String> wordDict) {
@@ -1012,7 +1013,7 @@ public class TwoHundred {
             return false;
         }
         for (String word : wordDict) {
-            if (s.startsWith(word) && wordBreak(hash, s.substring(word.length()), wordDict)) {
+            if (s.startsWith(word) && this.wordBreak(hash, s.substring(word.length()), wordDict)) {
                 return true;
             }
         }
@@ -1031,7 +1032,7 @@ public class TwoHundred {
         if (s == null || wordDict.isEmpty()) {
             return new ArrayList<>();
         }
-        return wordBreakDFS(s, wordDict, new HashMap<>());
+        return this.wordBreakDFS(s, wordDict, new HashMap<>());
     }
 
     private List<String> wordBreakDFS(String s, List<String> wordDict, HashMap<String, LinkedList<String>> hashMap) {
@@ -1045,7 +1046,7 @@ public class TwoHundred {
         }
         for (String word : wordDict) {
             if (s.startsWith(word)) {
-                List<String> tmp = wordBreakDFS(s.substring(word.length()), wordDict, hashMap);
+                List<String> tmp = this.wordBreakDFS(s.substring(word.length()), wordDict, hashMap);
 
                 for (String value : tmp) {
                     ans.add(word + (value.isEmpty() ? "" : " ") + value);
@@ -1202,9 +1203,9 @@ public class TwoHundred {
         }
         ListNode tmp = slow.next;
         slow.next = null;
-        ListNode l1 = sortList(head);
-        ListNode l2 = sortList(tmp);
-        return merge(l1, l2);
+        ListNode l1 = this.sortList(head);
+        ListNode l2 = this.sortList(tmp);
+        return this.merge(l1, l2);
     }
 
     private ListNode merge(ListNode start, ListNode end) {
@@ -1274,7 +1275,7 @@ public class TwoHundred {
             return;
         }
         for (int i = start; i <= (start + end) / 2; i++) {
-            swap(ch, i, start + end - i);
+            this.swap(ch, i, start + end - i);
         }
     }
 
@@ -1660,7 +1661,7 @@ public class TwoHundred {
 
 
         for (String str : strs) {
-            str = reverse(str);
+            str = this.reverse(str);
             stringBuilder.append(str);
             stringBuilder.append(" ");
         }
@@ -1677,7 +1678,7 @@ public class TwoHundred {
     private String reverse(String s) {
         char[] ch = s.toCharArray();
         for (int i = 0; i < ch.length / 2; i++) {
-            swap(ch, i, ch.length - 1 - i);
+            this.swap(ch, i, ch.length - 1 - i);
         }
         StringBuilder stringBuilder = new StringBuilder();
         for (char c : ch) {
@@ -1713,11 +1714,11 @@ public class TwoHundred {
             return;
         }
         if (nums.length <= k) {
-            reverseArray(nums, 0, nums.length - 1);
+            this.reverseArray(nums, 0, nums.length - 1);
         }
-        reverseArray(nums, 0, nums.length - 1);
-        reverseArray(nums, 0, k - 1);
-        reverseArray(nums, k, nums.length - 1);
+        this.reverseArray(nums, 0, nums.length - 1);
+        this.reverseArray(nums, 0, k - 1);
+        this.reverseArray(nums, k, nums.length - 1);
     }
 
     private void reverseArray(int[] nums, int start, int end) {
@@ -1725,7 +1726,7 @@ public class TwoHundred {
             return;
         }
         for (int i = start; i <= (start + end) / 2; i++) {
-            swapNum(nums, i, (start + end) - i);
+            this.swapNum(nums, i, (start + end) - i);
         }
     }
 
@@ -1824,7 +1825,7 @@ public class TwoHundred {
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (grid[i][j] == '1') {
-                    dfs(i, j, grid);
+                    this.dfs(i, j, grid);
                     count++;
                 }
             }
@@ -1837,12 +1838,12 @@ public class TwoHundred {
             return;
         }
         grid[i][j] = '0';
-        dfs(i - 1, j, grid);
-        dfs(i + 1, j, grid);
+        this.dfs(i - 1, j, grid);
+        this.dfs(i + 1, j, grid);
 
-        dfs(i, j - 1, grid);
+        this.dfs(i, j - 1, grid);
 
-        dfs(i, j + 1, grid);
+        this.dfs(i, j + 1, grid);
     }
 
 }
