@@ -12,6 +12,13 @@ import java.util.*;
  */
 public class SwordToOffer {
 
+    /**
+     * 字符串中 第一个不重复的字符
+     *
+     * @param ch
+     */
+    private int[] num = new int[256];
+
     public static void main(String[] args) {
         SwordToOffer swordToOffer = new SwordToOffer();
         swordToOffer.StrToInt("-123");
@@ -423,7 +430,6 @@ public class SwordToOffer {
         return false;
     }
 
-
     /**
      * 二叉树镜像
      *
@@ -438,7 +444,6 @@ public class SwordToOffer {
             this.Mirror(root.right);
         }
     }
-
 
     /**
      * 矩阵旋转计数
@@ -667,7 +672,12 @@ public class SwordToOffer {
         char[] chars = str.toCharArray();
         Arrays.sort(chars);
         this.Permutation(ans, 0, chars);
-
+        ans.sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
         return ans;
     }
 
@@ -690,7 +700,6 @@ public class SwordToOffer {
         array[i] = array[k];
         array[k] = tmp;
     }
-
 
     /**
      * 数组中出现次数超过一半的数字
@@ -953,7 +962,6 @@ public class SwordToOffer {
         }
     }
 
-
     /**
      * 和为S的连续正数序列
      * todo 不解 滑动窗口
@@ -962,7 +970,28 @@ public class SwordToOffer {
      * @return
      */
     public ArrayList<ArrayList<Integer>> FindContinuousSequence(int sum) {
-        return null;
+        if (sum <= 0) {
+            return new ArrayList<>();
+        }
+        ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
+        int fast = 2;
+        int slow = 1;
+        while (slow < fast) {
+            int value = (fast + slow) * (fast - slow + 1) / 2;
+            if (value == sum) {
+                ArrayList<Integer> tmp = new ArrayList<>();
+                for (int i = slow; i <= fast; i++) {
+                    tmp.add(i);
+                }
+                ans.add(tmp);
+                slow++;
+            } else if (value < sum) {
+                fast++;
+            } else {
+                slow++;
+            }
+        }
+        return ans;
     }
 
     /**
@@ -1049,7 +1078,6 @@ public class SwordToOffer {
 
     }
 
-
     /**
      * 求1+2+3+...+n
      *
@@ -1060,7 +1088,6 @@ public class SwordToOffer {
         n = n > 0 ? n + this.Sum_Solution(n - 1) : 0;
         return n;
     }
-
 
     /**
      * 把字符串转换成整数
@@ -1128,7 +1155,6 @@ public class SwordToOffer {
         return ans;
     }
 
-
     /**
      * 正则表达式匹配
      *
@@ -1143,7 +1169,28 @@ public class SwordToOffer {
         if (pattern.length == 0) {
             return true;
         }
-        return false;
+        int m = str.length;
+        int n = pattern.length;
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = pattern[j - 1] == '*' && dp[0][j - 2];
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (str[i - 1] == pattern[j - 1] || pattern[j - 1] == '.') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (pattern[j - 1] == '*') {
+                    if (str[i - 1] != pattern[j - 2] && pattern[j - 2] != '.') {
+                        dp[i][j] = dp[i][j - 2];
+                    } else {
+                        dp[i][j] = dp[i - 1][j] || dp[i][j - 2] || dp[i][j - 1];
+                    }
+
+                }
+            }
+        }
+        return dp[m][n];
     }
 
     /**
@@ -1173,7 +1220,6 @@ public class SwordToOffer {
         return null;
     }
 
-
     /**
      * 删除重复结点
      *
@@ -1196,7 +1242,6 @@ public class SwordToOffer {
         }
 
     }
-
 
     /**
      * 二叉树的下一个结点
@@ -1260,7 +1305,6 @@ public class SwordToOffer {
         return false;
     }
 
-
     /**
      * 之字形打印二叉树
      *
@@ -1297,7 +1341,6 @@ public class SwordToOffer {
         }
         return ans;
     }
-
 
     /**
      * 把二叉树打印成多行
@@ -1360,7 +1403,7 @@ public class SwordToOffer {
 
     /**
      * 滑动窗口的最大值
-     *
+     * todo 未解
      * @param num
      * @param size
      * @return
@@ -1369,22 +1412,24 @@ public class SwordToOffer {
         if (num == null || num.length == 0 || num.length < size) {
             return new ArrayList<>();
         }
-        int global = Integer.MIN_VALUE;
         ArrayList<Integer> ans = new ArrayList<>();
-        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(size);
-        int begin = 0;
-        int end = 0;
-        while (end < num.length) {
-            int local = Integer.MIN_VALUE;
-            while (end - begin <= size - 1) {
+        LinkedList<Integer> linkedList = new LinkedList<>();
+        for (int i = 0; i < num.length; i++) {
+            int begin = i - size + 1;
 
-                priorityQueue.add(num[end++]);
-
+            if (linkedList.isEmpty()) {
+                linkedList.addLast(i);
+            } else if (begin > linkedList.peekFirst()) {
+                linkedList.pollFirst();
             }
-            int max = priorityQueue.peek();
 
-            begin++;
-            ans.add(local);
+            while (!linkedList.isEmpty() && num[linkedList.peekLast()] <= num[i]) {
+                linkedList.pollLast();
+            }
+            linkedList.add(i);
+            if (begin >= 0) {
+                ans.add(num[linkedList.peekFirst()]);
+            }
         }
         return ans;
 
@@ -1404,7 +1449,143 @@ public class SwordToOffer {
             return false;
         }
         boolean[][] used = new boolean[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                int index = i * cols + j;
+                if (matrix[index] == str[0] && this.verifyPath(matrix, used, i, j, 0, str)) {
+                    return true;
+                }
+            }
+        }
         return false;
+    }
+
+    private boolean verifyPath(char[] matrix, boolean[][] used, int i, int j, int k, char[] str) {
+        if (k == str.length) {
+            return true;
+        }
+        if (i < 0 || i >= used.length || j < 0 || j >= used[i].length || used[i][j]) {
+            return false;
+        }
+        int index = i * used[0].length + j;
+        if (matrix[index] != str[k]) {
+            return false;
+        }
+
+        used[i][j] = true;
+        boolean veiry = this.verifyPath(matrix, used, i - 1, j, k + 1, str) ||
+                this.verifyPath(matrix, used, i + 1, j, k + 1, str) ||
+                this.verifyPath(matrix, used, i, j - 1, k + 1, str) ||
+                this.verifyPath(matrix, used, i, j + 1, k + 1, str);
+        if (veiry) {
+            return true;
+        }
+        used[i][j] = false;
+        return false;
+    }
+
+    /**
+     * 不用加减乘除做加法
+     *
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public int Add(int num1, int num2) {
+        while (num2 != 0) {
+            int tmp = num1 ^ num2;
+            num2 = (num1 & num2) << 1;
+            num1 = tmp;
+        }
+        return num1;
+
+    }
+
+    /**
+     * 数组中重复的数字
+     *
+     * @param numbers
+     * @param length
+     * @param duplication
+     * @return
+     */
+    public boolean duplicate(int numbers[], int length, int[] duplication) {
+        if (numbers == null || length == 0) {
+            return false;
+        }
+        return false;
+    }
+
+    /**
+     * 机器人的运动范围
+     *
+     * @param threshold
+     * @param rows
+     * @param cols
+     * @return
+     */
+    public int movingCount(int threshold, int rows, int cols) {
+        boolean[][] used = new boolean[rows][cols];
+
+        return this.verify(used, 0, 0, threshold);
+    }
+
+    private boolean getMovingValue(int i, int j, int threshold) {
+        int sum = 0;
+        while (i != 0 || j != 0) {
+            sum += i % 10 + j % 10;
+            i /= 10;
+            j /= 10;
+        }
+        return sum <= threshold;
+    }
+
+    private int verify(boolean[][] used, int i, int j, int threshold) {
+
+        if (i < 0 || i >= used.length || j < 0 || j >= used[i].length) {
+            return 0;
+        }
+        if (used[i][j]) {
+            return 0;
+        }
+        boolean notExceed = this.getMovingValue(i, j, threshold);
+        if (!notExceed) {
+            return 0;
+        }
+        used[i][j] = true;
+        return this.verify(used, i - 1, j, threshold) +
+
+                this.verify(used, i + 1, j, threshold) +
+
+                this.verify(used, i, j - 1, threshold) +
+
+                this.verify(used, i, j + 1, threshold) + 1;
+    }
+
+    public void Insert(char ch) {
+        int index = 0;
+        for (int i = 0; i < num.length; i++) {
+            num[i] = -1;
+        }
+        if (num[ch - 'a'] == -1) {
+            num[ch - 'a'] = index;
+        } else {
+            num[ch - 'a'] = -2;
+        }
+        index++;
+    }
+
+    //return the first appearence once char in current stringstream
+    public char FirstAppearingOnce() {
+        int minIndex = Integer.MAX_VALUE;
+        char ans = '#';
+        for (int i = 0; i < 256; i++) {
+            if (num[i] >= 0 && num[i] < minIndex) {
+                ans = (char) i;
+                minIndex = num[i];
+            }
+        }
+        return ans;
     }
 
 
