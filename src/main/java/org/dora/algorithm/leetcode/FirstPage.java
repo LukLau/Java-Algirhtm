@@ -1,6 +1,7 @@
 package org.dora.algorithm.leetcode;
 
 import org.dora.algorithm.datastructe.ListNode;
+import org.dora.algorithm.datastructe.TreeNode;
 
 import java.util.*;
 
@@ -2651,6 +2652,338 @@ public class FirstPage {
             tmp.remove(tmp.size() - 1);
         }
     }
+
+
+    /**
+     * 92. Reverse Linked List II
+     *
+     * @param head
+     * @param m
+     * @param n
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode fast = root;
+        ListNode slow = root;
+        for (int i = 0; i < m - 1; i++) {
+            slow = slow.next;
+        }
+        for (int j = 0; j < n; j++) {
+            fast = fast.next;
+        }
+
+        ListNode prev = fast.next;
+
+        ListNode current = slow.next;
+        for (int i = 0; i <= n - m; i++) {
+
+            ListNode tmp = current.next;
+            current.next = prev;
+            prev = current;
+            current = tmp;
+
+        }
+        slow.next = prev;
+
+        return root.next;
+    }
+
+
+    /**
+     * 93. Restore IP Addresses
+     *
+     * @param s
+     * @return
+     */
+    public List<String> restoreIpAddresses(String s) {
+        if (s == null || s.length() == 0) {
+            return new ArrayList<>();
+        }
+        return null;
+    }
+
+
+    /**
+     * 94. Binary Tree Inorder Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> inorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<Integer> ans = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode node = root;
+        while (!stack.isEmpty() || node != null) {
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
+            node = stack.pop();
+            ans.add(node.val);
+            node = node.right;
+        }
+        return ans;
+    }
+
+
+    /**
+     * 95. Unique Binary Search Trees II
+     *
+     * @param n
+     * @return
+     */
+    public List<TreeNode> generateTrees(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        return this.generateTrees(1, n);
+    }
+
+    private List<TreeNode> generateTrees(int start, int end) {
+        List<TreeNode> list = new ArrayList<>();
+        if (start > end) {
+            list.add(null);
+            return list;
+
+        }
+        if (start == end) {
+            TreeNode node = new TreeNode(start);
+            list.add(node);
+            return list;
+        }
+        for (int i = start; i <= end; i++) {
+            List<TreeNode> lefts = this.generateTrees(start, i - 1);
+            List<TreeNode> rights = this.generateTrees(i + 1, end);
+            for (TreeNode left : lefts) {
+                for (TreeNode right : rights) {
+                    TreeNode root = new TreeNode(i);
+                    root.left = left;
+                    root.right = right;
+                    list.add(root);
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 96. Unique Binary Search Trees
+     * trick : 动态规划
+     * f(n) = r(1) + r(2) + r(3) + ... + r(n)
+     * r(i) = f(i-1) * f(n-i);
+     * so f(n) = r(0) * r(n-1) + r(1) * (n-1) + ..r(n-1) * r(0)
+     *
+     * @param n
+     * @return
+     */
+    public int numTrees(int n) {
+        if (n <= 1) {
+            return 1;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+
+            for (int j = 1; j <= i; j++) {
+                dp[i] += dp[j - 1] * dp[i - j];
+            }
+        }
+        return dp[n];
+    }
+
+    /**
+     * 97. Interleaving String
+     *
+     * @param s1
+     * @param s2
+     * @param s3
+     * @return
+     */
+    public boolean isInterleave(String s1, String s2, String s3) {
+        if (s1 == null || s2 == null || s3 == null) {
+            return false;
+        }
+        int m = s1.length();
+        int n = s2.length();
+        return false;
+    }
+
+
+    /**
+     * 98. Validate Binary Search Tree
+     *
+     * @param root
+     * @return
+     */
+    public boolean isValidBST(TreeNode root) {
+        if (root == null) {
+            return false;
+        }
+        TreeNode prev = null;
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode node = root;
+        while (!stack.isEmpty() || node != null) {
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
+            node = stack.pop();
+            if (prev == null) {
+                prev = node;
+            } else {
+                if (prev.val >= node.val) {
+                    return false;
+                }
+                prev = node;
+            }
+            node = node.right;
+        }
+        return true;
+
+    }
+
+
+    /**
+     * 99. Recover Binary Search Tree
+     *
+     * @param root
+     */
+    public void recoverTree(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        TreeNode first = null;
+        TreeNode second = null;
+
+        Stack<TreeNode> stack = new Stack<>();
+
+        TreeNode node = root;
+
+        TreeNode prev = null;
+
+        while (!stack.isEmpty() || node != null) {
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
+
+            node = stack.pop();
+
+            if (prev == null) {
+                prev = node;
+            } else {
+
+                if (first == null && prev.val >= node.val) {
+                    first = prev;
+                }
+                if (first != null && prev.val >= node.val) {
+                    second = node;
+                }
+                prev = node;
+            }
+
+
+            node = node.right;
+        }
+        if (first != null && second != null) {
+            int val = first.val;
+            first.val = second.val;
+            second.val = val;
+        }
+
+    }
+
+
+    /**
+     * 100. Same Tree
+     *
+     * @param p
+     * @param q
+     * @return
+     */
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) {
+            return true;
+        }
+
+        if (p == null || q == null) {
+            return false;
+        }
+
+        if (p.val == q.val) {
+            return this.isSameTree(p.left, q.left) && this.isSameTree(p.right, q.right);
+        }
+        return false;
+    }
+
+
+    /**
+     * 101. Symmetric Tree
+     *
+     * @param root
+     * @return
+     */
+    public boolean isSymmetric(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return this.isSymmetricTree(root.left, root.right);
+    }
+
+    private boolean isSymmetricTree(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
+        }
+        if (left == null || right == null) {
+            return false;
+        }
+        if (left.val == right.val) {
+            return this.isSymmetricTree(left.left, right.right) && this.isSymmetricTree(left.right, right.left);
+        }
+        return false;
+    }
+
+
+    /**
+     * 102. Binary Tree Level Order Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        Deque<TreeNode> deque = new LinkedList<>();
+        deque.add(root);
+        while (!deque.isEmpty()) {
+            int size = deque.size();
+            List<Integer> tmp = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = deque.poll();
+                tmp.add(node.val);
+                if (node.left != null) {
+                    deque.add(node.left);
+                }
+                if (node.right != null) {
+                    deque.add(node.right);
+                }
+            }
+            ans.add(tmp);
+        }
+        return ans;
+    }
+
 
 }
 
