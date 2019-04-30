@@ -2,6 +2,7 @@ package org.dora.algorithm.leetcode;
 
 import org.dora.algorithm.datastructe.ListNode;
 import org.dora.algorithm.datastructe.Node;
+import org.dora.algorithm.datastructe.Point;
 import org.dora.algorithm.datastructe.TreeNode;
 
 import java.util.*;
@@ -11,6 +12,12 @@ import java.util.*;
  * @date 2019-04-29
  */
 public class SecondPage {
+
+    public static void main(String[] args) {
+        SecondPage secondPage = new SecondPage();
+
+
+    }
 
     /**
      * 104. Maximum Depth of Binary Tree
@@ -24,7 +31,6 @@ public class SecondPage {
         }
         return 1 + Math.max(this.maxDepth(root.left), this.maxDepth(root.right));
     }
-
 
     /**
      * 106. Construct Binary Tree from Inorder and Postorder Traversal
@@ -98,7 +104,6 @@ public class SecondPage {
         return ans;
     }
 
-
     /**
      * 108. Convert Sorted Array to Binary Search Tree
      *
@@ -160,7 +165,6 @@ public class SecondPage {
         return root;
     }
 
-
     /**
      * 110. Balanced Binary Tree
      *
@@ -176,7 +180,6 @@ public class SecondPage {
         }
         return false;
     }
-
 
     /**
      * 111. Minimum Depth of Binary Tree
@@ -196,7 +199,6 @@ public class SecondPage {
         }
         return 1 + Math.min(this.minDepth(root.left), this.minDepth(root.right));
     }
-
 
     /**
      * 112. Path Sum
@@ -248,7 +250,6 @@ public class SecondPage {
         }
         tmp.remove(tmp.size() - 1);
     }
-
 
     /**
      * 114. Flatten Binary Tree to Linked Lis
@@ -310,7 +311,6 @@ public class SecondPage {
         }
         return dp[m][n];
     }
-
 
     /**
      * 116. Populating Next Right Pointers in Each Node
@@ -378,7 +378,6 @@ public class SecondPage {
         return ans;
     }
 
-
     /**
      * 119. Pascal's Triangle II
      *
@@ -410,7 +409,6 @@ public class SecondPage {
         return ans;
     }
 
-
     /**
      * 120. Triangle
      * dp[row][column] = dp[row+1][column] + dp[row+1][column+1]
@@ -435,7 +433,6 @@ public class SecondPage {
 
         return dp.get(0);
     }
-
 
     /**
      * 121. Best Time to Buy and Sell Stock
@@ -466,7 +463,6 @@ public class SecondPage {
         return result;
     }
 
-
     /**
      * 122. Best Time to Buy and Sell Stock II
      *
@@ -489,7 +485,6 @@ public class SecondPage {
         }
         return result;
     }
-
 
     /**
      * 123. Best Time to Buy and Sell Stock III
@@ -571,7 +566,6 @@ public class SecondPage {
         return result;
     }
 
-
     /**
      * 125. Valid Palindrome
      *
@@ -610,7 +604,6 @@ public class SecondPage {
         return true;
 
     }
-
 
     /**
      * 128. Longest Consecutive Sequence
@@ -778,7 +771,6 @@ public class SecondPage {
         return true;
     }
 
-
     /**
      * 132. Palindrome Partitioning II
      * <p>
@@ -814,7 +806,6 @@ public class SecondPage {
         }
         return cut[m - 1];
     }
-
 
     /**
      * 134. Gas Station
@@ -896,7 +887,6 @@ public class SecondPage {
         return result;
     }
 
-
     /**
      * 138. Copy List with Random Pointer
      *
@@ -946,7 +936,6 @@ public class SecondPage {
 
     }
 
-
     /**
      * 139. Word Break
      *
@@ -986,7 +975,6 @@ public class SecondPage {
         included.put(s, false);
         return false;
     }
-
 
     /**
      * 140. Word Break II
@@ -1029,7 +1017,6 @@ public class SecondPage {
         return ans;
     }
 
-
     /**
      * 141. Linked List Cycle
      *
@@ -1055,7 +1042,6 @@ public class SecondPage {
 
 
     }
-
 
     /**
      * 142. Linked List Cycle II
@@ -1085,7 +1071,6 @@ public class SecondPage {
         return null;
     }
 
-
     /**
      * 143. Reorder List
      *
@@ -1107,7 +1092,7 @@ public class SecondPage {
         ListNode middle = slow;
 
         /**
-         *
+         * 1 -> 2 -> 3-> 4- >5->6 链表中间倒序
          */
         ListNode current = slow.next;
 
@@ -1159,7 +1144,6 @@ public class SecondPage {
         return end;
     }
 
-
     /**
      * 144. Binary Tree Preorder Traversal
      *
@@ -1208,6 +1192,303 @@ public class SecondPage {
                 node = stack.pop();
                 node = node.left;
 
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 148. Sort List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        ListNode tmp = slow.next;
+        slow.next = null;
+        ListNode l1 = this.sortList(head);
+        ListNode l2 = this.sortList(tmp);
+        return this.merge(l1, l2);
+
+
+    }
+
+    private ListNode merge(ListNode l1, ListNode l2) {
+        if (l1 == null) {
+            return l2;
+        }
+        if (l2 == null) {
+            return l1;
+        }
+        if (l1.val <= l2.val) {
+
+            l1.next = this.merge(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = this.merge(l1, l2.next);
+            return l2;
+        }
+    }
+
+    /**
+     * 149. Max Points on a Line
+     *
+     * @param points
+     * @return
+     */
+    public int maxPoints(int[][] points) {
+        if (points == null || points.length == 0) {
+            return 0;
+        }
+        Point[] array = new Point[points.length];
+        for (int i = 0; i < points.length; i++) {
+            Point tmp = new Point(points[i][0], points[i][1]);
+
+            array[i] = tmp;
+        }
+
+
+        int result = 0;
+
+        Map<Integer, Map<Integer, Integer>> map = new HashMap<Integer, Map<Integer, Integer>>();
+
+        for (int i = 0; i < array.length; i++) {
+
+
+            map.clear();
+
+
+            int overlap = 1;
+
+            int tmp = 0;
+
+            for (int j = i + 1; j < array.length; j++) {
+
+                int x = array[j].x - array[i].x;
+
+                int y = array[j].y - array[j].y;
+
+                if (x == 0 && y == 0) {
+
+                    overlap++;
+
+                    continue;
+                }
+                int gcd = this.gcd(x, y);
+                if (gcd != 0) {
+                    x /= gcd;
+                    y /= gcd;
+                }
+                if (map.containsKey(x)) {
+
+                    if (map.get(x).containsKey(y)) {
+
+                        map.get(x).put(y, map.get(x).get(y) + 1);
+
+                    } else {
+                        map.get(x).put(y, 1);
+                    }
+                } else {
+
+                    Map<Integer, Integer> m = new HashMap<Integer, Integer>();
+
+                    m.put(y, 1);
+                    map.put(x, m);
+                }
+                tmp = Math.max(tmp, map.get(x).get(y));
+            }
+            result = Math.max(result, tmp + overlap);
+
+        }
+
+        return result;
+
+
+    }
+
+    private int gcd(int x, int y) {
+        if (y == 0) {
+            return x;
+        }
+        return this.gcd(y, x % y);
+    }
+
+    /**
+     * 151. Reverse Words in a String
+     *
+     * @param s
+     * @return
+     */
+    public String reverseWords(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        s = s.trim();
+        String[] words = s.split(" ");
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = words.length - 1; i >= 0; i--) {
+            if (words[i].length() == 0) {
+                continue;
+            }
+            stringBuilder.append(words[i]);
+            if (i > 0) {
+                stringBuilder.append(" ");
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+
+    /**
+     * 152. Maximum Product Subarray
+     * trick : 关于连续元素问题
+     * 可看作是贪心问题
+     * 同时需考虑 使元素连续起来
+     * 通过 全局值 与上一次连续的局部值进行比较
+     * 获得最终的答案
+     *
+     * @param nums
+     * @return
+     */
+    public int maxProduct(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int max = nums[0];
+        int min = nums[0];
+
+        int result = nums[0];
+
+        for (int i = 1; i < nums.length; i++) {
+
+            // 连续元素的最大乘机
+            int tmpMax = Math.max(Math.max(max * nums[i], min * nums[i]), nums[i]);
+
+            // 连续元素的最小乘机
+            int tmpMin = Math.min(Math.min(min * nums[i], max * nums[i]), nums[i]);
+
+
+            // 全局与局部比较
+            result = Math.max(result, tmpMax);
+
+            max = tmpMax;
+
+            min = tmpMin;
+
+        }
+
+        return result;
+
+    }
+
+
+    /**
+     * 153. Find Minimum in Rotated Sorted Array
+     *
+     * @param nums
+     * @return
+     */
+    public int findMin(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+
+        int right = nums.length - 1;
+
+        // 方案一
+        // 从右边往左边比较
+        // 如果右边与中值 是有序序列
+        // 右边界往中靠拢
+        // 如果中值 比左边界大 说明右边有更小的
+
+
+        // 方案二
+        // 从左边往右边比较
+        // 如果序列是排序的
+        // 直接返回
+        // 如果不是 说明发生了旋转
+
+
+        while (left < right) {
+            if (nums[left] < nums[right]) {
+                return nums[left];
+            }
+            int mid = left + (right - left) / 2;
+
+            if (nums[mid] > nums[left]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return nums[left];
+    }
+
+
+    /**
+     * 154. Find Minimum in Rotated Sorted Array II
+     *
+     * @param nums
+     * @return
+     */
+    public int findMinII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+
+            if (nums[mid] == nums[right]) {
+                right--;
+            } else if (nums[mid] < nums[right]) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return nums[left];
+
+    }
+
+    /**
+     * 199. Binary Tree Right Side View
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Deque<TreeNode> deque = new LinkedList<>();
+        List<Integer> ans = new ArrayList<>();
+        deque.add(root);
+        while (!deque.isEmpty()) {
+            int size = deque.size();
+            for (int i = 0; i < size; i++) {
+                root = deque.poll();
+
+                if (root.left != null) {
+                    deque.add(root.left);
+                }
+                if (root.right != null) {
+                    deque.add(root.right);
+                }
+                if (i == size - 1) {
+                    ans.add(root.val);
+                }
             }
         }
         return ans;

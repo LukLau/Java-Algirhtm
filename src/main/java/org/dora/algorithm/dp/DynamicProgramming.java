@@ -1,4 +1,4 @@
-package org.dora.algorithm.leetcode.dp;
+package org.dora.algorithm.dp;
 
 /**
  * @author dora
