@@ -881,7 +881,335 @@ public class SecondPage {
             result += dp[i];
         }
         return result;
+
+
+    }
+
+    /**
+     * 136. Single Number
+     */
+    public int singleNumber(int[] nums) {
+        int result = 0;
+        for (int num : nums) {
+            result ^= num;
+        }
+        return result;
     }
 
 
+    /**
+     * 138. Copy List with Random Pointer
+     *
+     * @param head
+     * @return
+     */
+    public Node copyRandomList(Node head) {
+        if (head == null) {
+            return null;
+        }
+        Node current = head;
+        while (current != null) {
+
+            Node tmp = new Node(current.val, current.next, null);
+
+            current.next = tmp;
+
+            if (current.next != null) {
+
+                current = tmp.next;
+            }
+        }
+        current = head;
+        while (current != null) {
+            Node next = current.next;
+            if (current.random != null) {
+                next.random = current.random.next;
+            }
+            current = next.next;
+        }
+
+        current = head;
+
+        Node copyHead = head.next;
+
+        while (current.next != null) {
+
+            Node tmp = current.next;
+
+            current.next = tmp.next;
+
+            current = tmp;
+        }
+
+        return copyHead;
+
+
+    }
+
+
+    /**
+     * 139. Word Break
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        if (s == null || s.isEmpty()) {
+            return false;
+        }
+        // 深度优先遍历思想
+
+        // 由于可能存在超时问题
+
+        // 需要减少计算次数
+
+        // 故需存储已经计算的数据
+
+        HashMap<String, Boolean> included = new HashMap<>();
+        return this.dfsWord(included, s, wordDict);
+
+    }
+
+    private boolean dfsWord(HashMap<String, Boolean> included, String s, List<String> wordDict) {
+        if (wordDict.contains(s)) {
+            return true;
+        }
+        if (included.containsKey(s)) {
+            return false;
+        }
+        for (String word : wordDict) {
+            if (s.startsWith(word) && this.dfsWord(included, s.substring(word.length()), wordDict)) {
+                return true;
+            }
+        }
+        included.put(s, false);
+        return false;
+    }
+
+
+    /**
+     * 140. Word Break II
+     * <p>
+     * todo 思路 深度优先遍历
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public List<String> wordBreakII(String s, List<String> wordDict) {
+        if (s == null || s.length() == 0) {
+            return new ArrayList<>();
+        }
+        HashMap<String, List<String>> map = new HashMap<>();
+        return this.wordBreakII(map, s, wordDict);
+    }
+
+    private List<String> wordBreakII(HashMap<String, List<String>> map, String s, List<String> wordDict) {
+        if (map.containsKey(s)) {
+            return map.get(s);
+        }
+        List<String> ans = new ArrayList<>();
+        if (s.length() == 0) {
+            ans.add("");
+            return ans;
+        }
+        for (String word : wordDict) {
+            if (s.startsWith(word)) {
+                List<String> tmp = this.wordBreakII(map, s.substring(word.length()), wordDict);
+
+                for (String value : tmp) {
+                    String str = value.isEmpty() ? "" : " ";
+                    ans.add(word + str);
+                }
+            }
+        }
+
+        map.put(s, ans);
+        return ans;
+    }
+
+
+    /**
+     * 141. Linked List Cycle
+     *
+     * @param head
+     * @return
+     */
+    public boolean hasCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+
+            fast = fast.next.next;
+
+            slow = slow.next;
+            if (fast == slow) {
+                return true;
+            }
+        }
+        return false;
+
+
+    }
+
+
+    /**
+     * 142. Linked List Cycle II
+     *
+     * @param head
+     * @return
+     */
+    public ListNode detectCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == slow) {
+                fast = head;
+                while (fast != slow) {
+                    fast = fast.next;
+                    slow = slow.next;
+                }
+                return fast;
+
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 143. Reorder List
+     *
+     * @param head
+     */
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return;
+        }
+        ListNode fast = head;
+
+        ListNode slow = head;
+
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+
+        ListNode middle = slow;
+
+        /**
+         *
+         */
+        ListNode current = slow.next;
+
+
+        ListNode prev = this.reverse(current, null);
+
+
+        slow.next = prev;
+
+
+        slow = head;
+
+
+        fast = middle.next;
+
+
+        while (slow != middle) {
+            middle.next = fast.next;
+
+            fast.next = slow.next;
+
+            slow.next = fast;
+
+
+            slow = fast.next;
+
+            fast = middle.next;
+
+        }
+
+    }
+
+    private ListNode reverse(ListNode start, ListNode last) {
+        ListNode end = last;
+
+
+        while (start != last) {
+
+
+            ListNode tmp = start.next;
+
+
+            start.next = end;
+
+            end = start;
+
+            start = tmp;
+        }
+        return end;
+    }
+
+
+    /**
+     * 144. Binary Tree Preorder Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> preorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<Integer> ans = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            root = stack.pop();
+            if (root.right != null) {
+                stack.push(root.right);
+            }
+            if (root.left != null) {
+                stack.push(root.left);
+            }
+            ans.add(root.val);
+        }
+        return ans;
+    }
+
+    /**
+     * 145. Binary Tree Postorder Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> postorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        LinkedList<Integer> ans = new LinkedList<>();
+        TreeNode node = root;
+        Stack<TreeNode> stack = new Stack<>();
+        while (!stack.isEmpty() || node != null) {
+            if (node != null) {
+                stack.push(node);
+                ans.addFirst(node.val);
+                node = node.right;
+            } else {
+                node = stack.pop();
+                node = node.left;
+
+            }
+        }
+        return ans;
+    }
 }
