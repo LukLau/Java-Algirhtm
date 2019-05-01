@@ -10,23 +10,22 @@ import java.util.Stack;
  * @date 2019-03-15
  */
 public class BSTIterator {
-    LinkedList<Integer> linkedList = new LinkedList<>();
+
+    private LinkedList<Integer> ans = new LinkedList<>();
+
     public BSTIterator(TreeNode root) {
-
-        Stack<TreeNode> stack = new Stack<>();
-
-        TreeNode p = root;
-
-        while (!stack.isEmpty() || p != null) {
-            while (p != null) {
-                stack.push(p);
-                p = p.left;
+        if (root != null) {
+            Stack<TreeNode> stack = new Stack<>();
+            TreeNode node = root;
+            while (!stack.isEmpty() || node != null) {
+                while (node != null) {
+                    stack.push(node);
+                    node = node.left;
+                }
+                node = stack.pop();
+                ans.add(node.val);
+                node = node.right;
             }
-            p = stack.pop();
-
-            linkedList.addLast(p.val);
-
-            p = p.right;
         }
     }
 
@@ -34,13 +33,13 @@ public class BSTIterator {
      * @return the next smallest number
      */
     public int next() {
-        return linkedList.pollFirst();
+        return ans.pop();
     }
 
     /**
      * @return whether we have a next smallest number
      */
     public boolean hasNext() {
-        return !linkedList.isEmpty();
+        return !ans.isEmpty();
     }
 }

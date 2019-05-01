@@ -2985,5 +2985,24 @@ public class FirstPage {
     }
 
 
+    /**
+     * 189. Rotate Array
+     *
+     * @param nums
+     * @param k
+     */
+    public void rotate(int[] nums, int k) {
+        if (nums == null || nums.length == 0 || k < 0) {
+            return;
+        }
+
+        k %= nums.length;
+        this.reverseNums(nums, 0, nums.length - 1);
+        this.reverseNums(nums, 0, k - 1);
+        this.reverseNums(nums, k, nums.length - 1);
+
+    }
+
+
 }
 

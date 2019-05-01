@@ -1493,4 +1493,326 @@ public class SecondPage {
         }
         return ans;
     }
+
+
+    /**
+     * 160. Intersection of Two Linked Lists
+     *
+     * @param headA
+     * @param headB
+     * @return
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode p1 = headA;
+        ListNode p2 = headB;
+        while (p1 != p2) {
+            p1 = p1 == null ? headB : p1.next;
+            p2 = p2 == null ? headA : p2.next;
+        }
+        return p1;
+    }
+
+
+    /**
+     * 162. Find Peak Element
+     *
+     * @param nums
+     * @return
+     */
+    public int findPeakElement(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        /**
+         * 边界值比较
+         * 需慎重考虑是否需要移动 中值
+         */
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < nums[mid + 1]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+
+    /**
+     * 174. Dungeon Game
+     *
+     * @param dungeon
+     * @return
+     */
+    public int calculateMinimumHP(int[][] dungeon) {
+        if (dungeon == null || dungeon.length == 0) {
+            return 0;
+        }
+        int row = dungeon.length;
+
+        int column = dungeon[0].length;
+
+        /**
+         * 动态规划题目
+         * dp[i][j] = Math.max(1, Math.min(dp[i+1][j], dp[i][j+1]) - dungeon[i][j])
+         * 当数据元素 大于0 的时候 不必要做任何操作
+         * 所以需从底向上规划
+         */
+//        int[][] dp = new int[row][column];
+//
+//        for (int i = row - 1; i >= 0; i--) {
+//            for (int j = column - 1; j >= 0; j--) {
+//                if (i == row - 1 && j == column - 1) {
+//                    dp[i][j] = Math.max(1, 1 - dungeon[i][j]);
+//                } else if (i == row - 1) {
+//                    dp[i][j] = Math.max(1, dp[i][j + 1] - dungeon[i][j]);
+//                } else if (j == column - 1) {
+//                    dp[i][j] = Math.max(1, dp[i + 1][j] - dungeon[i][j]);
+//                } else {
+//                    dp[i][j] = Math.max(1, Math.min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j]);
+//                }
+//            }
+//        }
+//        return dp[0][0];
+
+        /**
+         *
+         * 方案二 将二维度dp 优化成 一维dp
+         */
+
+        int[] dp = new int[column];
+
+        dp[column - 1] = Math.max(1, 1 - dungeon[row - 1][column - 1]);
+
+        for (int j = column - 2; j >= 0; j--) {
+            dp[j] = Math.max(1, dp[j + 1] - dungeon[row - 1][j + 1]);
+        }
+
+        for (int i = row - 2; i >= 0; i--) {
+            for (int j = column - 1; j >= 0; j--) {
+                if (j == column - 1) {
+                    dp[j] = Math.max(1, dp[j] - dungeon[i][j]);
+                } else {
+                    dp[j] = Math.max(1, Math.min(dp[j], dp[j + 1]) - dungeon[i][j]);
+                }
+            }
+        }
+        return dp[0];
+    }
+
+
+    /**
+     * 179. Largest Number
+     *
+     * @param nums
+     * @return
+     */
+    public String largestNumber(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return "";
+        }
+        String[] str = new String[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            str[i] = String.valueOf(nums[i]);
+        }
+        Arrays.sort(str, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String s1 = o1 + o2;
+                String s2 = o2 + o1;
+
+                return s1.compareTo(s2) > 0 ? -1 : 1;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                return false;
+            }
+        });
+        if (str[0].equals("0")) {
+            return "0";
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String tmp : str) {
+            stringBuilder.append(tmp);
+        }
+        return stringBuilder.toString();
+    }
+
+
+    /**
+     * 186、Reverse Words in a String II
+     *
+     * @param str
+     * @return
+     */
+    public char[] reverseWords(char[] str) {
+        // write your code here
+        if (str == null || str.length == 0) {
+            return new char[]{};
+        }
+        String string = String.valueOf(str);
+        String[] words = string.split(" ");
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = words.length - 1; i >= 0; i--) {
+            if (words[i].length() == 0) {
+                continue;
+            }
+            sb.append(words[i]);
+            if (i > 0) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString().toCharArray();
+    }
+
+    /**
+     * 188. Best Time to Buy and Sell Stock IV
+     * 卖股票经典问题
+     *
+     * @param k
+     * @param prices
+     * @return
+     */
+    public int maxProfit(int k, int[] prices) {
+        if (prices == null || prices.length == 0 || k <= 0) {
+            return 0;
+        }
+        /**
+         * dp[k][j] = math.max(dp[k][j-1], prices[j] + 上一次最大利润)
+         *
+         *
+         * prev = Math.max(tmp, dp[k-1][j-1] - prices[j);
+         *
+         *
+         */
+        int[][] dp = new int[k + 1][prices.length];
+        for (int i = 1; i <= k; i++) {
+            int tmp = -prices[0];
+            for (int j = 1; j < prices.length; j++) {
+
+                dp[i][j] = Math.max(dp[i][j - 1], prices[j] + tmp);
+
+                tmp = Math.max(tmp, dp[i - 1][j - 1] - prices[j]);
+            }
+        }
+        return dp[k][prices.length - 1];
+    }
+
+    /**
+     * 190. Reverse Bits
+     *
+     * @param n
+     * @return
+     */
+    public int reverseBits(int n) {
+        int result = 0;
+
+        for (int i = 0; i < 32; i++) {
+            // 取到 二进制数据的最后一位 相当于 % 2
+            result += n & 1;
+
+            // 二进制数据右移 相当于 / 2
+
+            // 循环遍历 相当于 一个数 对2的取模 必须取32 次
+            n >>>= 1;
+            if (i < 31) {
+                // 由于是二进制反转 每一次遍历 反转后的数 需 扩大一倍 result <<= 1;
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 198. House Robber
+     *
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        /**
+         * 动态规划思想
+         * 抢劫房子只有两个选择
+         * 前面一个不抢 抢前前一个 以及当前一个
+         * 抢了前面一个 不抢当前一个
+         * dp[i] = math.max(dp[i-2] + nums[i], dp[i-1])
+         *
+         */
+//        int[] dp = new int[nums.length + 1];
+//
+//
+//        // 方案一 使用一维数组
+//        for (int i = 1; i <= nums.length; i++) {
+//            if (i == 1) {
+//                dp[i] = Math.max(0, nums[i - 1]);
+//            } else {
+//                dp[i] = Math.max(dp[i - 2] + nums[i - 1], dp[i - 1]);
+//            }
+//        }
+//        return dp[nums.length];
+
+        int preRob = 0;
+
+        int currentRob = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+
+            int tmp = preRob;
+
+            preRob = Math.max(currentRob, preRob);
+
+
+            currentRob = tmp + nums[i];
+        }
+        return Math.max(currentRob, preRob);
+    }
+
+
+    /**
+     * 200. Number of Islands
+     *
+     * @param grid
+     * @return
+     */
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        int count = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (grid[i][j] == '1') {
+                    this.verify(grid, i, j);
+                    count++;
+                }
+            }
+        }
+        return count;
+
+    }
+
+    private void verify(char[][] grid, int i, int j) {
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[i].length || grid[i][j] != '1') {
+            return;
+        }
+        grid[i][j] = '0';
+        this.verify(grid, i - 1, j);
+        this.verify(grid, i + 1, j);
+        this.verify(grid, i, j - 1);
+        this.verify(grid, i, j + 1);
+    }
+
+
 }
