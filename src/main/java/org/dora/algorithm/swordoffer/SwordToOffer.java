@@ -10,6 +10,7 @@ import java.util.*;
  * @author liulu
  * @date 2019/04/24
  */
+@Deprecated
 public class SwordToOffer {
 
     /**
@@ -22,6 +23,7 @@ public class SwordToOffer {
     public static void main(String[] args) {
         SwordToOffer swordToOffer = new SwordToOffer();
         swordToOffer.StrToInt("-123");
+        swordToOffer.isNumeric(new char[]{'-', '.', '1', '2', '3'});
     }
 
     /**
@@ -841,17 +843,6 @@ public class SwordToOffer {
     }
 
     /**
-     * 丑数
-     * todo 不懂
-     *
-     * @param index
-     * @return
-     */
-    public int GetUglyNumber_Solution(int index) {
-        return -1;
-    }
-
-    /**
      * 第一个只出现一次的字符
      * todo 不懂
      *
@@ -1404,6 +1395,7 @@ public class SwordToOffer {
     /**
      * 滑动窗口的最大值
      * todo 未解
+     *
      * @param num
      * @param size
      * @return
@@ -1586,6 +1578,116 @@ public class SwordToOffer {
             }
         }
         return ans;
+    }
+
+
+    /**
+     * 丑数
+     *
+     * @param index
+     * @return
+     */
+    public int GetUglyNumber_Solution(int index) {
+        if (index < 7) {
+            return index;
+        }
+        int idx2 = 0;
+        int idx3 = 0;
+        int idx5 = 0;
+        int[] ans = new int[index];
+        ans[0] = 1;
+        int end = 1;
+        while (end < index) {
+            ans[end] = Math.min(Math.min(ans[idx2] * 2, ans[idx3] * 3), ans[idx5] * 5);
+            if (ans[idx2] * 2 == ans[end]) {
+                idx2++;
+            } else if (ans[idx3] * 3 == ans[end]) {
+                idx3++;
+            } else if (ans[idx5] * 5 == ans[end]) {
+                idx5++;
+            }
+            end++;
+        }
+        return ans[index - 1];
+    }
+
+    /**
+     * 孩子们的游戏(圆圈中最后剩下的数)
+     *
+     * @param n
+     * @param m
+     * @return
+     */
+    public int LastRemaining_Solution(int n, int m) {
+        if (n < 1 || m < 1) {
+            return -1;
+        }
+        int[] ans = new int[n];
+        int count = n;
+        int index = -1;
+        int step = 0;
+        while (count > 0) {
+            index++;
+            if (index >= n) {
+                index = 0;
+            }
+            if (ans[index] == -1) {
+                continue;
+            }
+            step++;
+            if (step == m) {
+                count--;
+                ans[index] = -1;
+                step = 0;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * 表示数值的字符串
+     *
+     * @param str
+     * @return
+     */
+    public boolean isNumeric(char[] str) {
+        if (str == null) {
+            return false;
+        }
+
+
+        boolean hasE = false;
+        boolean hasDecimal = false;
+        boolean hasSign = false;
+        int index = 0;
+        while (index < str.length && !Character.isDigit(str[index])) {
+            boolean goodSign = str[index] == '-' || str[index] == '+';
+            if (!goodSign) {
+                return false;
+            }
+            index++;
+        }
+        HashMap<Character, Integer> map = new HashMap<>();
+        for (int i = 0; i < str.length; i++) {
+            char c = str[i];
+            if (c == 'e' || c == 'E') {
+
+                if (i == str.length - 1) {
+                    return false;
+                }
+                if (hasE) {
+                    return false;
+                }
+                hasE = true;
+            } else if (c == '-' || c == '+') {
+
+                if (hasSign &&) {
+                    hasSign = true;
+                }
+            }
+        }
+        return true;
+
     }
 
 
