@@ -8,7 +8,8 @@ import java.util.Map;
  * @date 2019-03-15
  */
 public class TwoSum {
-    private HashMap<Integer, Integer> table = new HashMap<>();
+
+    private HashMap<Integer, Integer> map = new HashMap<>();
 
     /**
      * @param number: An integer
@@ -16,12 +17,9 @@ public class TwoSum {
      */
     public void add(int number) {
         // write your code here
-        int count = table.getOrDefault(number, 0);
-        count = count + 1;
-        table.put(number, count);
-
+        int count = map.getOrDefault(number, 0);
+        map.put(number, ++count);
     }
-
 
     /**
      * @param value: An integer
@@ -29,17 +27,19 @@ public class TwoSum {
      */
     public boolean find(int value) {
         // write your code here
-        for (Map.Entry<Integer, Integer> entry : table.entrySet()) {
-            int num = entry.getKey();
-            int y = value - num;
-            if (y == num) {
-                if (entry.getValue() >= 2) {
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+
+            int key = entry.getKey();
+
+            int remain = value - key;
+
+            if (remain == key) {
+                return entry.getValue() >= 2;
+            } else {
+                if (map.containsKey(remain)) {
                     return true;
                 }
-            } else if (table.containsKey(y)) {
-                return true;
             }
-
         }
         return false;
     }

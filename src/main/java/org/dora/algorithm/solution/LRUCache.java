@@ -2,29 +2,38 @@ package org.dora.algorithm.solution;
 
 import java.util.HashMap;
 
-
 /**
  * @author liulu
  * @date 2019-03-14
  */
 public class LRUCache {
 
-    private int count;
-    private int capacity;
+
+    private volatile int capacity;
+
+
     private Node head;
+
+
     private Node tail;
-    private HashMap<Integer, Node> map;
+
+
+    private HashMap<Integer, Node> map = new HashMap<>();
+
 
     public LRUCache(int capacity) {
+
         this.capacity = capacity;
 
         head = new Node();
+
         tail = new Node();
 
         head.next = tail;
+
         tail.prev = head;
 
-        map = new HashMap<>();
+
     }
 
     public int get(int key) {
@@ -32,13 +41,15 @@ public class LRUCache {
         if (node == null) {
             return -1;
         }
-        moveNode(node);
+
+        this.moveNode(node);
+
         return node.value;
     }
 
     private void moveNode(Node node) {
-        removeNode(node);
-        addNode(node);
+        this.removeNode(node);
+        this.addNode(node);
     }
 
     private void addNode(Node node) {
@@ -52,51 +63,71 @@ public class LRUCache {
     }
 
     private void removeNode(Node node) {
+
+
         Node tmp = node.prev;
+
         Node next = node.next;
+
         tmp.next = next;
         next.prev = tmp;
 
         node.prev = null;
         node.next = null;
+
+    }
+
+    private Node popNode() {
+        Node prev = tail.prev;
+
+        this.removeNode(prev);
+
+        return prev;
     }
 
     public void put(int key, int value) {
         Node node = map.get(key);
         if (node != null) {
             node.value = value;
-            moveNode(node);
+            this.moveNode(node);
+            return;
         } else {
+
             node = new Node(key, value);
-            map.put(key, node);
-            addNode(node);
-            count++;
-            if (count > capacity) {
-                Node tmp = getTailNode();
-                map.remove(tmp.key);
-                count--;
+
+
+            if (map.size() == capacity) {
+
+                Node tail = this.popNode();
+
+                map.remove(tail.key);
             }
+
+            map.put(key, node);
+
+            this.addNode(node);
         }
     }
 
-    private Node getTailNode() {
-        Node node = tail.prev;
-        removeNode(node);
-        return node;
-    }
 
+    /**
+     * 内部数据结构
+     */
     class Node {
+        int key;
+        int value;
+
         Node prev;
         Node next;
-        private int key;
-        private int value;
 
-        private Node() {
+        public Node() {
         }
 
-        private Node(int key, int value) {
+        public Node(int key, int value) {
             this.key = key;
             this.value = value;
         }
     }
+
+
 }

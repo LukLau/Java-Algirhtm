@@ -1,22 +1,20 @@
-package org.dora.algorithm.solution;
+package org.dora.algorithm.leetcode;
 
-
-import org.dora.algorithm.datastructe.Interval;
 import org.dora.algorithm.datastructe.ListNode;
 import org.dora.algorithm.datastructe.TreeNode;
 
 import java.util.*;
 
 /**
- * @author liulu
- * @date 2019/02/16
+ * @author dora
+ * @date 2019-04-26
  */
-@Deprecated
-public class OneHundred {
+public class FirstPage {
 
 
     public static void main(String[] args) {
-
+        FirstPage firstPage = new FirstPage();
+        firstPage.minWindow("bdab", "ab");
     }
 
     /**
@@ -28,15 +26,15 @@ public class OneHundred {
      */
     public int[] twoSum(int[] nums, int target) {
         if (nums == null || nums.length == 0) {
-            return new int[2];
+            return new int[]{};
         }
         int[] ans = new int[2];
-        Map<Integer, Integer> map = new HashMap<>();
+        HashMap<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
             if (map.containsKey(target - nums[i])) {
+
                 ans[0] = map.get(target - nums[i]);
                 ans[1] = i;
-                return ans;
             }
             map.put(nums[i], i);
         }
@@ -51,23 +49,25 @@ public class OneHundred {
      * @return
      */
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        if (l1 == null && l2 == null) {
+        if (l1 == null || l2 == null) {
             return null;
         }
         int carry = 0;
-        ListNode root = new ListNode(0);
+        ListNode root = new ListNode(-1);
         ListNode dummy = root;
-        while (l1 != null || l2 != null || carry != 0) {
-            int sum = (l1 == null ? 0 : l1.val) + (l2 == null ? 0 : l2.val) + carry;
+        while (l1 != null || l2 != null) {
+            int value = (l1 == null ? 0 : l1.val) + (l2 == null ? 0 : l2.val) + carry;
+            ListNode node = new ListNode(value % 10);
+            carry /= 10;
 
-            carry = sum / 10;
-
-            ListNode node = new ListNode(sum % 10);
             dummy.next = node;
+
             dummy = dummy.next;
 
             l1 = l1 == null ? null : l1.next;
+
             l2 = l2 == null ? null : l2.next;
+
         }
         return root.next;
     }
@@ -79,20 +79,20 @@ public class OneHundred {
      * @return
      */
     public int lengthOfLongestSubstring(String s) {
-        if (s == null || s.length() == 0) {
+        if (s == null || s.isEmpty()) {
             return 0;
         }
-        int left = 0;
-        int longest = 0;
         HashMap<Character, Integer> map = new HashMap<>();
+        int left = 0;
+        int result = 0;
         for (int i = 0; i < s.length(); i++) {
             if (map.containsKey(s.charAt(i))) {
                 left = Math.max(left, map.get(s.charAt(i)) + 1);
             }
-            longest = Math.max(longest, i - left + 1);
             map.put(s.charAt(i), i);
+            result = Math.max(result, i - left + 1);
         }
-        return longest;
+        return result;
     }
 
     /**
@@ -105,27 +105,7 @@ public class OneHundred {
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         int m = nums1.length;
         int n = nums2.length;
-        if (m > n) {
-            return this.findMedianSortedArrays(nums2, nums1);
-        }
-        int imin = 0, imax = m, max_left = 0, min_right = 0;
-        while (imin <= imax) {
-            int i = (imin + imax) / 2;
-            int j = (m + n + 1) / 2 - i;
-            if (i > 0 && nums1[i - 1] > nums2[j]) {
-                imax = i - 1;
-            } else if (i < m && nums1[i] < nums2[j - 1]) {
-                imin = i + 1;
-            } else {
-                if (i == m) {
-                    max_left = nums1[i - 1];
-                } else if (i == 0) {
-                    max_left = nums2[j - 1];
-                }
-            }
-        }
-        return -1;
-
+        return 0;
     }
 
     /**
@@ -135,31 +115,31 @@ public class OneHundred {
      * @return
      */
     public String longestPalindrome(String s) {
-        if (s == null || s.length() == 0) {
+        if (s == null || s.isEmpty()) {
             return "";
         }
-        int m = s.length();
         int left = 0;
-        int longest = 0;
-        boolean[][] dp = new boolean[m][m];
-        for (int i = 0; i < m; i++) {
+        int len = 0;
+        int n = s.length();
+        boolean[][] dp = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
             for (int j = 0; j <= i; j++) {
                 if (i - j <= 2) {
-                    dp[j][i] = s.charAt(j) == s.charAt(i);
+                    dp[j][i] = s.charAt(i) == s.charAt(j);
                 } else {
-                    dp[j][i] = s.charAt(j) == s.charAt(i) && dp[j + 1][i - 1];
+                    dp[j][i] = s.charAt(i) == s.charAt(j) && dp[j + 1][i - 1];
                 }
-                if (dp[j][i] && i - j + 1 > longest) {
+                if (dp[j][i] && i - j + 1 > len) {
                     left = j;
-                    longest = i - j + 1;
+                    len = i - j + 1;
                 }
-
             }
         }
-        if (longest > 0) {
-            return s.substring(left, left + longest);
+        if (len > 0) {
+            return s.substring(left, left + len);
         }
         return s;
+
     }
 
     /**
@@ -170,21 +150,22 @@ public class OneHundred {
      * @return
      */
     public String convert(String s, int numRows) {
-        if (s == null || s.length() == 0) {
+        if (s == null || s.isEmpty() || numRows <= 1) {
             return "";
         }
+        char[] chars = s.toCharArray();
         StringBuilder[] stringBuilders = new StringBuilder[numRows];
         for (int i = 0; i < numRows; i++) {
             stringBuilders[i] = new StringBuilder();
         }
-        int idx = 0;
-        char[] chars = s.toCharArray();
-        while (idx < s.length()) {
-            for (int i = 0; i < numRows && idx < chars.length; i++) {
-                stringBuilders[i].append(chars[idx++]);
+        StringBuilder ans = new StringBuilder();
+        int index = 0;
+        while (index < chars.length) {
+            for (int i = 0; i < numRows && index < chars.length; i++) {
+                stringBuilders[i].append(chars[index++]);
             }
-            for (int i = numRows - 2; i >= 1 && idx < chars.length; i--) {
-                stringBuilders[i].append(chars[idx++]);
+            for (int i = numRows - 2; i >= 1 && index < chars.length; i--) {
+                stringBuilders[i].append(chars[index++]);
             }
         }
         for (int i = 1; i < numRows; i++) {
@@ -195,11 +176,14 @@ public class OneHundred {
 
     /**
      * 7. Reverse Integer
+     *
+     * @param x
+     * @return
      */
     public int reverse(int x) {
         int sum = 0;
         while (x != 0) {
-            if (sum > Integer.MAX_VALUE / 10 || sum < Integer.MIN_VALUE / 10) {
+            if (x > Integer.MAX_VALUE / 10 || x < Integer.MIN_VALUE / 10) {
                 return 0;
             }
             sum = sum * 10 + x % 10;
@@ -215,27 +199,35 @@ public class OneHundred {
      * @return
      */
     public int myAtoi(String str) {
-        if (str == null || str.length() == 0) {
-            return 0;
-        }
         str = str.trim();
-        if (str.length() == 0) {
+        if (str.isEmpty()) {
             return 0;
         }
         int sign = 1;
-        int idx = 0;
-        if (str.charAt(idx) == '-' || str.charAt(idx) == '+') {
-            sign = str.charAt(idx) == '-' ? -1 : 1;
-            idx++;
+
+        int index = 0;
+
+        while (index < str.length() & !Character.isDigit(str.charAt(index))) {
+            if (str.charAt(index) == '+') {
+                sign = 1;
+                index++;
+                break;
+            } else if (str.charAt(index) == '-') {
+                sign = -1;
+                index++;
+                break;
+            } else {
+                return 0;
+            }
         }
+
         Long ans = 0L;
-        while (idx < str.length() && Character.isDigit(str.charAt(idx))) {
-            int value = str.charAt(idx) - '0';
-            ans = ans * 10 + value;
+        while (index < str.length() && Character.isDigit(str.charAt(index))) {
+            ans = ans * 10 + str.charAt(index) - '0';
+            index++;
             if (ans > Integer.MAX_VALUE) {
                 return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
             }
-            idx++;
         }
         return sign * ans.intValue();
     }
@@ -247,10 +239,7 @@ public class OneHundred {
      * @return
      */
     public boolean isPalindrome(int x) {
-        if (x == 0) {
-            return true;
-        }
-        if (x % 10 == 0) {
+        if (x != 0 && x % 10 == 0) {
             return false;
         }
         int sum = 0;
@@ -258,7 +247,7 @@ public class OneHundred {
             sum = sum * 10 + x % 10;
             x /= 10;
         }
-        return sum == x || sum / 10 == x;
+        return sum / 10 == x || sum == x;
     }
 
     /**
@@ -269,31 +258,42 @@ public class OneHundred {
      * @return
      */
     public boolean isMatch(String s, String p) {
-        if (s == null || p == null) {
+        if (s == null && p == null) {
             return false;
+        } else if (s == null) {
+            return true;
         }
         int m = s.length();
         int n = p.length();
-        boolean[][] dp = this.initDp(p, m, n);
+
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j - 2];
+        }
+
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
                     dp[i][j] = dp[i - 1][j - 1];
-                }
-                if (p.charAt(j - 1) == '*') {
+                } else if (p.charAt(j - 1) == '*') {
                     if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
                         dp[i][j] = dp[i][j - 2];
                     } else {
-                        dp[i][j] = dp[i][j - 1] || dp[i][j - 2] || dp[i - 1][j];
+                        dp[i][j] = dp[i][j - 1] || dp[i - 1][j] || dp[i][j - 2];
                     }
                 }
             }
         }
         return dp[m][n];
+
     }
 
     /**
      * 11. Container With Most Water
+     * two point move to middle
+     * because the width is decrease,
+     * we need chose the moving point according to height
      *
      * @param height
      * @return
@@ -302,18 +302,28 @@ public class OneHundred {
         if (height == null || height.length == 0) {
             return 0;
         }
-        int result = 0;
         int left = 0;
         int right = height.length - 1;
+        int ans = 0;
         while (left < right) {
-            result = Math.max(result, Math.min(height[left], height[right]) * (right - left));
-            if (height[left] <= height[right]) {
+            ans = Math.max(ans, (right - left) * Math.min(height[left], height[right]));
+            if (height[left] < height[right]) {
                 left++;
             } else {
                 right--;
             }
         }
-        return result;
+        return ans;
+    }
+
+    /**
+     * 12. Integer to Roman
+     *
+     * @param num
+     * @return
+     */
+    public String intToRoman(int num) {
+        return "";
     }
 
     /**
@@ -327,8 +337,8 @@ public class OneHundred {
             return "";
         }
         String prefix = strs[0];
-        for (int i = 1; i < strs.length; i++) {
-            while (strs[i].indexOf(prefix) != 0) {
+        for (String str : strs) {
+            while (!str.startsWith(prefix)) {
                 prefix = prefix.substring(0, prefix.length() - 1);
             }
         }
@@ -345,18 +355,19 @@ public class OneHundred {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> ans = new ArrayList<>();
         Arrays.sort(nums);
+        List<List<Integer>> ans = new ArrayList<>();
         for (int i = 0; i < nums.length - 2; i++) {
             if (i > 0 && nums[i] == nums[i - 1]) {
                 continue;
             }
             int left = i + 1;
             int right = nums.length - 1;
-            int target = 0 - nums[i];
             while (left < right) {
-                if (nums[left] + nums[right] == target) {
-                    ans.add(Arrays.asList(nums[i], nums[left], nums[right]));
+                int sum = nums[i] + nums[left] + nums[right];
+                if (sum == 0) {
+                    List<Integer> tmp = Arrays.asList(nums[i], nums[left], nums[right]);
+                    ans.add(tmp);
                     while (left < right && nums[left] == nums[left + 1]) {
                         left++;
                     }
@@ -365,7 +376,7 @@ public class OneHundred {
                     }
                     left++;
                     right--;
-                } else if (nums[left] + nums[right] < target) {
+                } else if (sum < 0) {
                     left++;
                 } else {
                     right--;
@@ -384,24 +395,27 @@ public class OneHundred {
      */
     public int threeSumClosest(int[] nums, int target) {
         if (nums == null || nums.length == 0) {
-            return Integer.MAX_VALUE;
+            return 0;
         }
         int result = nums[0] + nums[1] + nums[2];
         Arrays.sort(nums);
         for (int i = 0; i < nums.length - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
             int left = i + 1;
             int right = nums.length - 1;
             while (left < right) {
                 int sum = nums[i] + nums[left] + nums[right];
                 if (sum == target) {
                     return sum;
-                } else if (Math.abs(sum - target) < Math.abs(result - target)) {
-                    result = sum;
-                }
-                if (sum < target) {
+                } else if (sum < target) {
                     left++;
                 } else {
                     right--;
+                }
+                if (Math.abs(result - target) > Math.abs(sum - target)) {
+                    result = sum;
                 }
             }
         }
@@ -415,64 +429,20 @@ public class OneHundred {
      * @return
      */
     public List<String> letterCombinations(String digits) {
-        if (digits == null || digits.length() == 0) {
+        if (digits == null || digits.isEmpty()) {
             return new ArrayList<>();
         }
-        String[] mp = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
         LinkedList<String> ans = new LinkedList<>();
-        ans.add("");
+        String[] map = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        ans.addLast("");
         for (int i = 0; i < digits.length(); i++) {
             int index = digits.charAt(i) - '0';
-            String value = mp[index];
+            String tmp = map[index];
             while (ans.peek().length() == i) {
-                String peek = ans.poll();
-                for (char c : value.toCharArray()) {
-                    ans.add(peek + c);
-                }
-            }
-        }
-        return ans;
-    }
-
-    /**
-     * 18. 4Sum
-     *
-     * @param nums
-     * @param target
-     * @return
-     */
-    public List<List<Integer>> fourSum(int[] nums, int target) {
-        if (nums == null || nums.length == 0) {
-            return new ArrayList<>();
-        }
-        List<List<Integer>> ans = new ArrayList<>();
-        Arrays.sort(nums);
-        for (int i = 0; i < nums.length - 3; i++) {
-            if (i > 0 && nums[i] == nums[i - 1]) {
-                continue;
-            }
-            for (int j = i + 1; j < nums.length - 2; j++) {
-                if (j > i + 1 && nums[j] == nums[j - 1]) {
-                    continue;
-                }
-                int left = j + 1, right = nums.length - 1;
-                while (left < right) {
-                    int sum = nums[i] + nums[j] + nums[left] + nums[right];
-                    if (sum == target) {
-                        ans.add(Arrays.asList(nums[i], nums[j], nums[left], nums[right]));
-                        while (left < right && nums[left] == nums[left + 1]) {
-                            left++;
-                        }
-                        while (left < right && nums[right] == nums[right - 1]) {
-                            right--;
-                        }
-                        left++;
-                        right--;
-                    } else if (sum < target) {
-                        left++;
-                    } else {
-                        right--;
-                    }
+                String pop = ans.pop();
+                for (char c : tmp.toCharArray()) {
+                    String value = pop + c;
+                    ans.add(value);
                 }
             }
         }
@@ -487,24 +457,25 @@ public class OneHundred {
      * @return
      */
     public ListNode removeNthFromEnd(ListNode head, int n) {
-        if (head == null || n < 0) {
-            return head;
+        if (head == null) {
+            return null;
         }
         ListNode root = new ListNode(0);
         root.next = head;
         ListNode fast = root;
-        ListNode slow = root;
         for (int i = 0; i < n; i++) {
             fast = fast.next;
         }
+        ListNode slow = root;
         while (fast.next != null) {
-            slow = slow.next;
             fast = fast.next;
+            slow = slow.next;
         }
-        ListNode node = slow.next;
-        slow.next = node.next;
-        node.next = null;
+        ListNode tmp = slow.next;
+        slow.next = tmp.next;
+        tmp.next = null;
         return root.next;
+
     }
 
     /**
@@ -514,22 +485,22 @@ public class OneHundred {
      * @return
      */
     public boolean isValid(String s) {
-        if (s == null || s.length() == 0) {
-            return true;
+        if (s == null || s.isEmpty()) {
+            return false;
         }
-        Deque<Character> stack = new LinkedList<>();
+        Stack<Character> stack = new Stack<>();
         for (int i = 0; i < s.length(); i++) {
             if (s.charAt(i) == '(') {
                 stack.push(')');
-            } else if (s.charAt(i) == '[') {
-                stack.push(']');
             } else if (s.charAt(i) == '{') {
                 stack.push('}');
+            } else if (s.charAt(i) == '[') {
+                stack.push(']');
             } else {
-                if (stack.isEmpty() || stack.peek() != s.charAt(i)) {
-                    return false;
-                } else {
+                if (!stack.isEmpty() && stack.peek() == s.charAt(i)) {
                     stack.pop();
+                } else {
+                    return false;
                 }
             }
         }
@@ -546,13 +517,12 @@ public class OneHundred {
     public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
         if (l1 == null && l2 == null) {
             return null;
-        }
-        if (l1 == null) {
+        } else if (l1 == null) {
             return l2;
-        }
-        if (l2 == null) {
+        } else if (l2 == null) {
             return l1;
         }
+
         if (l1.val <= l2.val) {
             l1.next = this.mergeTwoLists(l1.next, l2);
             return l1;
@@ -560,6 +530,7 @@ public class OneHundred {
             l2.next = this.mergeTwoLists(l1, l2.next);
             return l2;
         }
+
     }
 
     /**
@@ -573,20 +544,21 @@ public class OneHundred {
             return new ArrayList<>();
         }
         List<String> ans = new ArrayList<>();
-        this.generateParenthesis(ans, "", 0, 0, n);
+        this.generateParenthesis(ans, 0, 0, "", n);
         return ans;
     }
 
-    private void generateParenthesis(List<String> ans, String s, int open, int close, int n) {
-        if (s.length() == 2 * n) {
+    private void generateParenthesis(List<String> ans, int open, int close, String s, int n) {
+        if (n * 2 == s.length()) {
             ans.add(s);
         }
         if (open < n) {
-            this.generateParenthesis(ans, s + "(", open + 1, close, n);
+            this.generateParenthesis(ans, open + 1, close, s + "(", n);
         }
         if (close < open) {
-            this.generateParenthesis(ans, s + ")", open, close + 1, n);
+            this.generateParenthesis(ans, open, close + 1, s + ")", n);
         }
+
     }
 
     /**
@@ -599,21 +571,31 @@ public class OneHundred {
         if (lists == null || lists.length == 0) {
             return null;
         }
-
-        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
-        for (ListNode node : lists) {
-            if (node != null) {
-                priorityQueue.add(node);
+        PriorityQueue<ListNode> queue = new PriorityQueue<>(lists.length, new Comparator<ListNode>() {
+            @Override
+            public int compare(ListNode o1, ListNode o2) {
+                if (o1.val < o2.val) {
+                    return -1;
+                } else if (o1.val == o2.val) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        });
+        for (ListNode listNode : lists) {
+            if (listNode != null) {
+                queue.add(listNode);
             }
         }
         ListNode root = new ListNode(0);
         ListNode dummy = root;
-        while (!priorityQueue.isEmpty()) {
-            ListNode node = priorityQueue.poll();
+        while (!queue.isEmpty()) {
+            ListNode node = queue.poll();
             dummy.next = node;
             dummy = dummy.next;
             if (node.next != null) {
-                priorityQueue.add(node.next);
+                queue.add(node.next);
             }
         }
         return root.next;
@@ -634,13 +616,19 @@ public class OneHundred {
         ListNode dummy = root;
         while (dummy.next != null && dummy.next.next != null) {
             ListNode fast = dummy.next.next;
+
             ListNode slow = dummy.next;
 
-            dummy.next = fast;
-            slow.next = fast.next;
+            ListNode tmp = fast.next;
+
             fast.next = slow;
 
+            dummy.next = fast;
+
+            slow.next = tmp;
+
             dummy = dummy.next.next;
+
         }
         return root.next;
     }
@@ -653,28 +641,30 @@ public class OneHundred {
      * @return
      */
     public ListNode reverseKGroup(ListNode head, int k) {
-        if (head == null || head.next == null) {
-            return head;
+        if (head == null || k <= 0) {
+            return null;
         }
-        ListNode currNode = head;
+        ListNode fast = head;
         for (int i = 0; i < k; i++) {
-            if (currNode == null) {
+            if (fast == null) {
                 return head;
             }
-            currNode = currNode.next;
+            fast = fast.next;
         }
-        ListNode newHead = this.reverseList(head, currNode);
-        head.next = this.reverseKGroup(currNode, k);
-        return newHead;
+        ListNode newHead = this.reverseListNode(head, fast);
+        head.next = this.reverseKGroup(head.next, k);
+        return head;
+
+
     }
 
-    private ListNode reverseList(ListNode first, ListNode last) {
-        ListNode prev = last;
-        while (first != last) {
-            ListNode tmp = first.next;
-            first.next = prev;
-            prev = first;
-            first = tmp;
+    private ListNode reverseListNode(ListNode start, ListNode end) {
+        ListNode prev = end;
+        while (start != end) {
+            ListNode tmp = start.next;
+            start.next = prev;
+            prev = start;
+            start = tmp;
         }
         return prev;
     }
@@ -689,13 +679,52 @@ public class OneHundred {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-        int idx = 1;
+        int index = 1;
         for (int i = 1; i < nums.length; i++) {
             if (nums[i] != nums[i - 1]) {
-                nums[idx++] = nums[i];
+                nums[index++] = nums[i];
             }
         }
-        return idx;
+        return index;
+    }
+
+    /**
+     * 27. Remove Element
+     *
+     * @param nums
+     * @param val
+     * @return
+     */
+    public int removeElement(int[] nums, int val) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int index = 0;
+        for (int num : nums) {
+            if (num != val) {
+                nums[index++] = num;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * 28. Implement strStr()
+     *
+     * @param haystack
+     * @param needle
+     * @return
+     */
+    public int strStr(String haystack, String needle) {
+        for (int i = 0; i < haystack.length(); i++) {
+            for (int j = 0; j < needle.length(); j++) {
+                if (j == needle.length()) {
+                    return i;
+                }
+
+            }
+        }
+        return 0;
     }
 
     /**
@@ -706,24 +735,34 @@ public class OneHundred {
      * @return
      */
     public int divide(int dividend, int divisor) {
+        if (divisor == 0) {
+            return Integer.MAX_VALUE;
+        }
         if (dividend == Integer.MIN_VALUE && divisor == -1) {
             return Integer.MAX_VALUE;
         }
-        int sign = (dividend < 0) ^ (divisor < 0) ? -1 : 1;
-        long dvd = Math.abs(dividend);
-        long dvs = Math.abs(divisor);
-        Long result = 0L;
-        while (dvd >= dvs) {
-            long multi = 1;
-            long tmp = dvs;
-            while (dvd >= (tmp << 1)) {
-                multi <<= 1;
-                tmp <<= 1;
-            }
-            result += multi;
-            dvd -= tmp;
+        if (divisor == 1) {
+            return dividend;
         }
-        return sign * result.intValue();
+        int sign = (dividend < 0) ^ (divisor < 0) ? -1 : 1;
+
+        int dvd = Math.abs(dividend);
+
+        int dvs = Math.abs(divisor);
+
+        int ans = 0;
+        while (dvd >= dvs) {
+            int tmp = 1;
+            int multi = dvs;
+            while (dvd >= (multi << 1)) {
+                tmp <<= 1;
+                multi <<= 1;
+            }
+            ans += tmp;
+            dvd -= multi;
+        }
+        return ans;
+
     }
 
     /**
@@ -736,37 +775,39 @@ public class OneHundred {
             return;
         }
         int index = nums.length - 1;
-        while (index > 0 && nums[index] < nums[index - 1]) {
+        while (index > 0) {
+            if (nums[index] > nums[index - 1]) {
+                break;
+            }
             index--;
         }
         if (index == 0) {
-            this.reverseArray(nums, index, nums.length - 1);
+            this.reverseNums(nums, 0, nums.length - 1);
         } else {
             int j = nums.length - 1;
-            while (j > index - 1) {
+            while (j >= index) {
                 if (nums[j] > nums[index - 1]) {
                     break;
                 }
                 j--;
             }
+            ;
             this.swap(nums, index - 1, j);
-            this.reverseArray(nums, index, nums.length - 1);
+            this.reverseNums(nums, index, nums.length - 1);
+
         }
     }
 
-    private void reverseArray(int[] nums, int start, int end) {
-        if (start > end) {
-            return;
-        }
+    private void reverseNums(int[] nums, int start, int end) {
         for (int i = start; i <= (start + end) / 2; i++) {
             this.swap(nums, i, start + end - i);
         }
     }
 
-    private void swap(int[] nums, int i, int j) {
-        int tmp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = tmp;
+    private void swap(int[] nums, int start, int end) {
+        int tmp = nums[start];
+        nums[start] = nums[end];
+        nums[end] = tmp;
     }
 
     /**
@@ -776,31 +817,30 @@ public class OneHundred {
      * @return
      */
     public int longestValidParentheses(String s) {
-        if (s == null || s.length() == 0) {
+        if (s == null || s.isEmpty()) {
             return 0;
         }
-        Deque<Integer> stack = new LinkedList<>();
+        int left = -1;
         int result = 0;
+        Stack<Integer> stack = new Stack<>();
         for (int i = 0; i < s.length(); i++) {
             if (s.charAt(i) == '(') {
                 stack.push(i);
+            } else if (stack.isEmpty()) {
+                left = i;
             } else {
-                if (!stack.isEmpty() && s.charAt(stack.peek()) == '(') {
+                if (s.charAt(stack.peek()) == '(') {
                     stack.pop();
-                } else {
-                    stack.push(i);
                 }
+                if (stack.isEmpty()) {
+                    result = Math.max(result, i - left);
+                } else {
+                    result = Math.max(result, i - stack.peek());
+                }
+
             }
+
         }
-        if (stack.isEmpty()) {
-            return s.length();
-        }
-        int a = s.length();
-        while (!stack.isEmpty()) {
-            result = Math.max(result, a - 1 - stack.peek());
-            a = stack.pop();
-        }
-        result = Math.max(result, a);
         return result;
     }
 
@@ -817,8 +857,125 @@ public class OneHundred {
         }
         int left = 0;
         int right = nums.length - 1;
-        // todo 待学习
+        while (left <= right) {
+
+            int mid = left + (right - left) / 2;
+
+
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && nums[left] <= target) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
         return -1;
+    }
+
+    /**
+     * 34. Find First and Last Position of Element in Sorted Array
+     * tricker : 两次二分搜索
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] searchRange(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{-1, -1};
+        }
+        int[] ans = new int[]{-1, -1};
+
+        // 方案一、两次二分搜索
+        // 第一次从右往左
+        // 第二次从左往右
+//        int left = 0;
+//        int right = nums.length - 1;
+//        while (left < right) {
+//            int mid = left + (right - left) / 2;
+//            if (nums[mid] < target) {
+//                left = mid + 1;
+//            } else {
+//                right = mid;
+//            }
+//        }
+//        if (nums[left] != target) {
+//            return ans;
+//        }
+//        ans[0] = left;
+//        right = nums.length - 1;
+//        while (left < right) {
+//            int mid = left + (right - left) / 2 + 1;
+//            if (nums[mid] > target) {
+//                right = mid - 1;
+//            } else {
+//                left = mid;
+//            }
+//        }
+//        ans[1] = left;
+
+        // 方案二
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                int startIndex = mid;
+                while (startIndex > 0 && nums[startIndex] == nums[startIndex - 1]) {
+                    startIndex--;
+                }
+
+                int endIndex = mid;
+                while (endIndex < nums.length - 1 && nums[endIndex] == nums[endIndex + 1]) {
+                    endIndex++;
+                }
+                ans[0] = startIndex;
+
+                ans[1] = endIndex;
+
+                return ans;
+            } else if (nums[mid] < target) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 35. Search Insert Position
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int searchInsert(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
     }
 
     /**
@@ -829,7 +986,7 @@ public class OneHundred {
      * @return
      */
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
-        if (this.isEmpty(candidates)) {
+        if (candidates == null || candidates.length == 0) {
             return new ArrayList<>();
         }
         Arrays.sort(candidates);
@@ -838,19 +995,19 @@ public class OneHundred {
         return ans;
     }
 
-    private void combinationSum(List<List<Integer>> ans, List<Integer> integers, int index, int[] candidates, int target) {
+    private void combinationSum(List<List<Integer>> ans, List<Integer> tmp, int start, int[] candidates, int target) {
         if (target == 0) {
-            ans.add(new ArrayList<>(integers));
+            ans.add(new ArrayList<>(tmp));
+            return;
         }
-        for (int i = index; i < candidates.length && candidates[i] <= target; i++) {
-            integers.add(candidates[i]);
-            this.combinationSum(ans, integers, i, candidates, target - candidates[i]);
-            integers.remove(integers.size() - 1);
+        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
+            if (i > start && candidates[i] == candidates[i - 1]) {
+                continue;
+            }
+            tmp.add(candidates[i]);
+            this.combinationSum(ans, tmp, i, candidates, target - candidates[i]);
+            tmp.remove(tmp.size() - 1);
         }
-    }
-
-    private boolean isEmpty(int[] array) {
-        return array == null || array.length == 0;
     }
 
     /**
@@ -861,21 +1018,23 @@ public class OneHundred {
      * @return
      */
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
-        if (this.isEmpty(candidates)) {
+        if (candidates == null || candidates.length == 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> ans = new ArrayList<>();
         Arrays.sort(candidates);
+        List<List<Integer>> ans = new ArrayList<>();
         this.combinationSum2(ans, new ArrayList<>(), 0, candidates, target);
         return ans;
+
     }
 
-    private void combinationSum2(List<List<Integer>> ans, List<Integer> tmp, int index, int[] candidates, int target) {
+    private void combinationSum2(List<List<Integer>> ans, List<Integer> tmp, int start, int[] candidates, int target) {
         if (target == 0) {
             ans.add(new ArrayList<>(tmp));
+            return;
         }
-        for (int i = index; i < candidates.length && candidates[i] <= target; i++) {
-            if (i > index && candidates[i] == candidates[i - 1]) {
+        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
+            if (i > start && candidates[i] == candidates[i - 1]) {
                 continue;
             }
             tmp.add(candidates[i]);
@@ -891,8 +1050,8 @@ public class OneHundred {
      * @return
      */
     public int firstMissingPositive(int[] nums) {
-        if (this.isEmpty(nums)) {
-            return 1;
+        if (nums == null || nums.length == 0) {
+            return 0;
         }
         for (int i = 0; i < nums.length; i++) {
             while (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
@@ -901,7 +1060,7 @@ public class OneHundred {
         }
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] != i + 1) {
-                return i + 1;
+                return i;
             }
         }
         return nums.length + 1;
@@ -914,27 +1073,32 @@ public class OneHundred {
      * @return
      */
     public int trap(int[] height) {
-        if (this.isEmpty(height)) {
+        if (height == null || height.length == 0) {
             return 0;
         }
-        int result = 0;
         int left = 0;
         int right = height.length - 1;
+        int result = 0;
+
+        int minLeft = 0;
+        int minRight = 0;
+
         while (left < right) {
-            while (left < right && height[left] == 0) {
-                left++;
-            }
-            while (left < right && height[right] == 0) {
-                right--;
-            }
-            int min = Math.min(height[left], height[right]);
-            for (int i = left; i <= right; i++) {
-                if (height[i] >= min) {
-                    height[i] -= min;
+            if (height[left] <= height[right]) {
+                if (height[left] >= minLeft) {
+                    minLeft = height[left];
                 } else {
-                    result += min - height[i];
-                    height[i] = 0;
+                    result += minLeft - height[left];
+
                 }
+                left++;
+            } else {
+                if (height[right] >= minRight) {
+                    minRight = height[right];
+                } else {
+                    result += minRight - height[right];
+                }
+                right--;
             }
         }
         return result;
@@ -948,35 +1112,31 @@ public class OneHundred {
      * @return
      */
     public String multiply(String num1, String num2) {
-        if (this.isStringEmpty(num1) || this.isStringEmpty(num2)) {
-            return "";
-        }
         int m = num1.length();
         int n = num2.length();
-        int[] position = new int[m + n];
+
+        int[] nums = new int[m + n];
+        int carry = 0;
         for (int i = m - 1; i >= 0; i--) {
             for (int j = n - 1; j >= 0; j--) {
-                int value = (num1.charAt(i) - '0') * (num2.charAt(j) - '0') + position[i + j + 1];
-                position[i + j + 1] = value % 10;
-                position[i + j] += value / 10;
+                int value = (num1.charAt(i) - '0') * (num2.charAt(j) - '0') + nums[i + 1 + j];
+
+                nums[i + 1 + j] = value % 10;
+                nums[i + j] += value / 10;
             }
         }
         StringBuilder sb = new StringBuilder();
-        for (int num : position) {
-            if (sb.length() == 0 && num == 0) {
-                continue;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0 || (sb.length() != 0)) {
+                sb.append(nums[i]);
             }
-            sb.append(num);
         }
         return sb.length() == 0 ? "0" : sb.toString();
     }
 
-    private boolean isStringEmpty(String string) {
-        return string == null || string.length() == 0;
-    }
-
     /**
      * 44. Wildcard Matching
+     * todo 不懂
      *
      * @param s
      * @param p
@@ -989,41 +1149,28 @@ public class OneHundred {
         int m = s.length();
         int n = p.length();
         boolean[][] dp = new boolean[m + 1][n + 1];
+
         dp[0][0] = true;
-        for (int i = 0; i <= m; i++) {
+
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = p.charAt(j - 1) == '*';
+        }
+        for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                if (p.charAt(j - 1) == '*') {
-                    dp[i][j] = dp[i][j - 1] || (i > 0 && dp[i - 1][j]);
-                } else {
-                    dp[i][j] = this.match(s, p, i, j) ? dp[i - 1][j - 1] : false;
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
                 }
             }
         }
+
         return dp[m][n];
-    }
-
-    private boolean match(String s, String p, int i, int j) {
-        if (i == 0) {
-            return false;
-        } else if (p.charAt(j - 1) == '?') {
-            return true;
-        } else if (s.charAt(i - 1) == p.charAt(j - 1)) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean[][] initDp(String p, int m, int n) {
-        boolean[][] dp = new boolean[m + 1][n + 1];
-        dp[0][0] = true;
-        for (int j = 1; j <= n; j++) {
-            dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j - 2];
-        }
-        return dp;
     }
 
     /**
      * 45. Jump Game II
+     * trick : 贪心算法
      *
      * @param nums
      * @return
@@ -1033,13 +1180,13 @@ public class OneHundred {
             return 0;
         }
         int step = 0;
-        int currEnd = 0;
-        int currFarthest = 0;
+        int furthest = 0;
+        int current = 0;
         for (int i = 0; i < nums.length - 1; i++) {
-            currFarthest = Math.max(currFarthest, i + nums[i]);
-            if (i == currEnd) {
-                currEnd = currFarthest;
+            furthest = Math.max(furthest, i + nums[i]);
+            if (i == current) {
                 step++;
+                current = furthest;
             }
         }
         return step;
@@ -1057,24 +1204,29 @@ public class OneHundred {
         }
         List<List<Integer>> ans = new ArrayList<>();
         boolean[] used = new boolean[nums.length];
-        this.permute(ans, new ArrayList<>(), used, nums);
+        this.permute(ans, new ArrayList<>(), nums, used);
         return ans;
+
+
     }
 
-    private void permute(List<List<Integer>> ans, List<Integer> tmp, boolean[] used, int[] nums) {
+    private void permute(List<List<Integer>> ans, List<Integer> tmp, int[] nums, boolean[] used) {
         if (tmp.size() == nums.length) {
             ans.add(new ArrayList<>(tmp));
+            return;
         }
         for (int i = 0; i < nums.length; i++) {
             if (used[i]) {
                 continue;
             }
-            used[i] = true;
             tmp.add(nums[i]);
-            this.permute(ans, tmp, used, nums);
-            used[i] = false;
+            used[i] = true;
+            this.permute(ans, tmp, nums, used);
             tmp.remove(tmp.size() - 1);
+            used[i] = false;
+
         }
+
     }
 
     /**
@@ -1084,29 +1236,34 @@ public class OneHundred {
      * @return
      */
     public List<List<Integer>> permuteUnique(int[] nums) {
-        if (this.isEmpty(nums)) {
+        if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
         Arrays.sort(nums);
         List<List<Integer>> ans = new ArrayList<>();
         boolean[] used = new boolean[nums.length];
-        this.permuteUnique(ans, new ArrayList<>(), used, nums);
+        this.permuteUnique(ans, new ArrayList<Integer>(), nums, used);
         return ans;
     }
 
-    private void permuteUnique(List<List<Integer>> ans, List<Integer> tmp, boolean[] used, int[] nums) {
+    private void permuteUnique(List<List<Integer>> ans, List<Integer> tmp, int[] nums, boolean[] used) {
         if (tmp.size() == nums.length) {
             ans.add(new ArrayList<>(tmp));
+            return;
         }
         for (int i = 0; i < nums.length; i++) {
-            if (used[i] || (i > 0 && nums[i] == nums[i - 1] && !used[i - 1])) {
+            if (used[i]) {
+                continue;
+            }
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
                 continue;
             }
             tmp.add(nums[i]);
             used[i] = true;
-            this.permuteUnique(ans, tmp, used, nums);
+            this.permuteUnique(ans, tmp, nums, used);
             tmp.remove(tmp.size() - 1);
             used[i] = false;
+
         }
     }
 
@@ -1119,29 +1276,30 @@ public class OneHundred {
         if (matrix == null || matrix.length == 0) {
             return;
         }
-
         for (int i = 0; i < matrix.length; i++) {
-            for (int j = i; j < matrix[i].length; j++) {
+            for (int j = 0; j < i; j++) {
                 this.swapMatrix(matrix, i, j);
             }
         }
         for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length / 2; j++) {
-                this.swapMatrixRow(matrix, i, j);
+
+            int[] row = matrix[i];
+
+            int start = 0;
+
+            int end = row.length - 1;
+
+            for (int j = start; j <= (start + end) / 2; j++) {
+                this.swap(row, j, start + end - j);
             }
         }
-    }
 
-    private void swapMatrixRow(int[][] matrix, int i, int j) {
-        int tmp = matrix[i][j];
-        matrix[i][j] = matrix[i][matrix[i].length - 1 - j];
-        matrix[i][matrix[i].length - 1 - j] = tmp;
     }
 
     private void swapMatrix(int[][] matrix, int i, int j) {
         int tmp = matrix[i][j];
         matrix[i][j] = matrix[j][i];
-        matrix[i][j] = tmp;
+        matrix[j][i] = tmp;
     }
 
     /**
@@ -1154,17 +1312,24 @@ public class OneHundred {
         if (strs == null || strs.length == 0) {
             return new ArrayList<>();
         }
+
+        List<List<String>> ans = new ArrayList<>();
+
         HashMap<String, List<String>> map = new HashMap<>();
-        for (String tmp : strs) {
-            char[] chars = tmp.toCharArray();
+
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+
             Arrays.sort(chars);
             String key = String.valueOf(chars);
             if (!map.containsKey(key)) {
                 map.put(key, new ArrayList<>());
             }
-            map.get(key).add(tmp);
+            map.get(key).add(str);
         }
-        return new ArrayList<>(map.values());
+        ans.addAll(map.values());
+        return ans;
+
     }
 
     /**
@@ -1175,19 +1340,17 @@ public class OneHundred {
      * @return
      */
     public double myPow(double x, int n) {
-        double result = 1;
-        int p = Math.abs(n);
-        while (p != 0) {
-            if ((p % 2) != 0) {
-                result *= x;
-            }
-            x *= x;
-            p /= 2;
+        if (n == 0) {
+            return 1;
         }
-        if (result > Integer.MAX_VALUE || result < Integer.MIN_VALUE) {
+        if (n < 0) {
+            x = 1 / x;
+            n = -n;
+        }
+        if (x > Integer.MAX_VALUE || x < Integer.MIN_VALUE) {
             return 0;
         }
-        return (n < 0) ? 1 / result : result;
+        return (n & 1) == 0 ? this.myPow(x * x, n / 2) : x * this.myPow(x * x, n / 2);
     }
 
     /**
@@ -1197,7 +1360,7 @@ public class OneHundred {
      * @return
      */
     public List<List<String>> solveNQueens(int n) {
-        if (n < 0) {
+        if (n <= 0) {
             return new ArrayList<>();
         }
         char[][] nQueens = new char[n][n];
@@ -1206,91 +1369,100 @@ public class OneHundred {
                 nQueens[i][j] = '.';
             }
         }
+
         List<List<String>> ans = new ArrayList<>();
-        this.solveNQueens(ans, nQueens, 0, n);
-        return ans;
 
+        for (int i = 0; i < n; i++) {
+
+            this.getQueens(nQueens, ans, i, n);
+        }
+        return ans;
     }
 
-    private void solveNQueens(List<List<String>> ans, char[][] nQueens, int row, int n) {
+    private void getQueens(char[][] nQueens, List<List<String>> ans, int row, int n) {
         if (row == n) {
-            ans.add(this.construct(nQueens));
-        }
-        for (int col = 0; col < n; col++) {
-            if (!this.checkExist(nQueens, col, row, n)) {
-                nQueens[row][col] = 'Q';
-                this.solveNQueens(ans, nQueens, row + 1, n);
-                nQueens[row][col] = '.';
+            List<String> tmp = new ArrayList<>();
+            for (char[] nQueen : nQueens) {
+                tmp.add(String.valueOf(nQueen));
             }
-        }
-    }
-
-    private boolean checkExist(char[][] nQueens, int col, int row, int n) {
-        for (int i = 0; i < row; i++) {
-            if (nQueens[i][col] == 'Q') {
-                return true;
-            }
-        }
-        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
-            if (nQueens[i][j] == 'Q') {
-                return true;
-            }
-        }
-        for (int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
-            if (nQueens[i][j] == 'Q') {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private List<String> construct(char[][] nQueens) {
-        List<String> ans = new ArrayList<>();
-        for (char[] row : nQueens) {
-            String tmp = String.valueOf(row);
             ans.add(tmp);
+            return;
         }
-        return ans;
+        for (int j = 0; j < n; j++) {
+            if (this.verifyNQueens(nQueens, row, j, n)) {
+                nQueens[row][j] = 'Q';
+                this.getQueens(nQueens, ans, row + 1, n);
+                nQueens[row][j] = ',';
+            }
+        }
+
     }
+
+    private boolean verifyNQueens(char[][] nQueens, int row, int column, int n) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (nQueens[i][column] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = column - 1; i >= 0 && j >= 0; i--, j--) {
+            if (nQueens[i][j] == 'Q') {
+                return false;
+            }
+
+        }
+        for (int i = row - 1, j = column + 1; i >= 0 && j < n; i--, j++) {
+            if (nQueens[i][j] == 'Q') {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     /**
      * 52. N-Queens II
+     * trick : 每行所在下标 用dp 存储起来
      *
      * @param n
      * @return
      */
     public int totalNQueens(int n) {
-        if (n < 0) {
+        if (n <= 0) {
             return 0;
         }
         int[] dp = new int[n];
-        return this.totalNQueens(dp, 0, n);
+        int count = this.getTotal(dp, 0);
+        return count;
     }
 
-    private int totalNQueens(int[] dp, int row, int n) {
-        int result = 0;
-        if (row == n) {
-            result++;
-            return result;
+    private int getTotal(int[] dp, int row) {
+        int count = 0;
+        if (row == dp.length) {
+            count++;
+            return 1;
         }
-        for (int col = 0; col < n; col++) {
-            if (!this.checkExist(dp, row, col)) {
-                dp[row] = col;
-                result += this.totalNQueens(dp, row + 1, n);
+
+        for (int j = 0; j < dp.length; j++) {
+            if (this.verify(dp, row, j)) {
+                dp[row] = j;
+                count += this.getTotal(dp, row + 1);
+
                 dp[row] = -1;
             }
         }
-        return result;
+
+        return count;
     }
 
-    private boolean checkExist(int[] dp, int row, int col) {
-        for (int i = 0; i < row; i++) {
-            if (dp[i] == col || Math.abs(dp[i] - i) == Math.abs(row - col)) {
-                return true;
+    private boolean verify(int[] dp, int row, int column) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (dp[i] == column || Math.abs(i - row) == Math.abs(column - dp[i])) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
+
 
     /**
      * 53. Maximum Subarray
@@ -1304,16 +1476,15 @@ public class OneHundred {
         }
         int local = 0;
         int global = Integer.MIN_VALUE;
-        for (int num : nums) {
-            local = local > 0 ? local + num : num;
-            global = Math.max(global, local);
+        for (int i = 0; i < nums.length; i++) {
+            local = local > 0 ? local + nums[i] : nums[i];
+            global = Math.max(local, global);
         }
         return global;
     }
 
+
     /**
-     * 54. Spiral Matrix
-     *
      * @param matrix
      * @return
      */
@@ -1322,10 +1493,12 @@ public class OneHundred {
             return new ArrayList<>();
         }
         List<Integer> ans = new ArrayList<>();
+        int row = matrix.length;
+        int column = matrix[0].length;
         int left = 0;
-        int right = matrix[0].length - 1;
+        int right = column - 1;
         int top = 0;
-        int bottom = matrix.length - 1;
+        int bottom = row - 1;
         while (left <= right && top <= bottom) {
             for (int i = left; i <= right; i++) {
                 ans.add(matrix[top][i]);
@@ -1361,19 +1534,27 @@ public class OneHundred {
         if (nums == null || nums.length == 0) {
             return false;
         }
-        int reach = nums[0];
+        int reach = Integer.MAX_VALUE;
         for (int i = 0; i < nums.length - 1 && i <= reach; i++) {
-            reach = Math.max(reach, i + nums[i]);
+
         }
         return reach >= nums.length - 1;
     }
 
-    public List<Interval> merge(List<Interval> intervals) {
-        if (intervals == null || intervals.size() == 0) {
-            return new ArrayList<>();
+    /**
+     * 57. Insert Interval
+     *
+     * @param intervals
+     * @param newInterval
+     * @return
+     */
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        if (intervals == null || intervals == null) {
+            return new int[][]{};
         }
         return null;
     }
+
 
     /**
      * 58. Length of Last Word
@@ -1382,11 +1563,17 @@ public class OneHundred {
      * @return
      */
     public int lengthOfLastWord(String s) {
-        if (s == null || s.length() == 0) {
+        s = s.trim();
+        if (s.isEmpty()) {
             return 0;
         }
-        int lastIndex = s.lastIndexOf(" ");
-        return s.length() - 1 - lastIndex;
+        int lastIndex = s.length() - 1;
+        int count = 0;
+        while (lastIndex >= 0 && s.charAt(lastIndex) != ' ') {
+            count++;
+            lastIndex--;
+        }
+        return count;
     }
 
     /**
@@ -1396,12 +1583,15 @@ public class OneHundred {
      * @return
      */
     public int[][] generateMatrix(int n) {
+        if (n <= 0) {
+            return new int[][]{};
+        }
         int[][] matrix = new int[n][n];
-        int total = 0;
         int left = 0;
         int right = n - 1;
         int top = 0;
         int bottom = n - 1;
+        int total = 0;
         while (left <= right && top <= bottom) {
             for (int i = left; i <= right; i++) {
                 matrix[top][i] = ++total;
@@ -1415,17 +1605,18 @@ public class OneHundred {
                 }
             }
             if (left != right) {
-                for (int i = bottom - 1; i > left; i--) {
+                for (int i = bottom - 1; i > top; i--) {
                     matrix[i][left] = ++total;
                 }
             }
+            top++;
             left++;
             right--;
-            top++;
             bottom--;
         }
         return matrix;
     }
+
 
     /**
      * 60. Permutation Sequence
@@ -1435,30 +1626,42 @@ public class OneHundred {
      * @return
      */
     public String getPermutation(int n, int k) {
-        if (n <= 0) {
-            return "";
-        }
-        int[] factory = new int[n];
-        factory[0] = 1;
-        int fac = 1;
-        for (int i = 1; i < n; i++) {
-            fac = i * fac;
-            factory[i] = fac;
+
+        int[] array = new int[n + 1];
+
+        int base = 1;
+
+        array[0] = 1;
+
+        for (int i = 1; i <= n; i++) {
+
+
+            base *= i;
+
+            array[i] = base;
+
         }
         List<Integer> nums = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
             nums.add(i);
         }
+        List<Integer> ans = new ArrayList<>();
         k--;
-        StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            int index = k / factory[n - 1 - i];
-            stringBuilder.append(nums.get(index));
+            int index = k / array[n - 1 - i];
+            ans.add(nums.get(index));
             nums.remove(index);
-            k -= index * factory[n - 1 - i];
+            k -= index * array[n - 1 - i];
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Integer number : ans) {
+            stringBuilder.append(number);
         }
         return stringBuilder.toString();
+
+
     }
+
 
     /**
      * 61. Rotate List
@@ -1468,11 +1671,13 @@ public class OneHundred {
      * @return
      */
     public ListNode rotateRight(ListNode head, int k) {
-        if (head == null || k < 0) {
+        if (head == null || head.next == null || k == 0) {
             return head;
         }
-        ListNode fast = head;
+
         int count = 1;
+
+        ListNode fast = head;
         while (fast.next != null) {
             fast = fast.next;
             count++;
@@ -1481,13 +1686,17 @@ public class OneHundred {
         ListNode slow = head;
         if ((k %= count) != 0) {
             for (int i = 0; i < count - k; i++) {
-                slow = slow.next;
                 fast = fast.next;
+                slow = slow.next;
             }
         }
-        fast.next = null;
-        return slow;
+        ListNode tmp = slow.next;
+        slow.next = null;
+
+        return tmp;
+
     }
+
 
     /**
      * 62. Unique Paths
@@ -1497,14 +1706,11 @@ public class OneHundred {
      * @return
      */
     public int uniquePaths(int m, int n) {
-        if (m < 0 || n < 0) {
-            return 0;
-        }
         int[] dp = new int[n];
         dp[0] = 1;
         for (int i = 0; i < m; i++) {
             for (int j = 1; j < n; j++) {
-                dp[j] += dp[j - 1];
+                dp[j] = dp[j - 1] + dp[j];
             }
         }
         return dp[n - 1];
@@ -1520,15 +1726,17 @@ public class OneHundred {
         if (obstacleGrid == null || obstacleGrid.length == 0) {
             return 0;
         }
+        int row = obstacleGrid.length;
         int column = obstacleGrid[0].length;
         int[] dp = new int[column];
         dp[0] = 1;
-        for (int i = 0; i < obstacleGrid.length; i++) {
+        for (int i = 0; i < row; i++) {
+
             for (int j = 0; j < column; j++) {
                 if (obstacleGrid[i][j] == 1) {
                     dp[j] = 0;
-                } else {
-                    dp[j] += j > 0 ? dp[j - 1] : 0;
+                } else if (j > 0) {
+                    dp[j] = dp[j - 1] + dp[j];
                 }
             }
         }
@@ -1548,11 +1756,10 @@ public class OneHundred {
         int row = grid.length;
         int column = grid[0].length;
         int[][] dp = new int[row][column];
-
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (i == 0 && j == 0) {
-                    dp[0][0] = grid[i][j];
+                    dp[i][j] = grid[0][0];
                 } else if (i == 0) {
                     dp[i][j] = dp[i][j - 1] + grid[i][j];
                 } else if (j == 0) {
@@ -1565,6 +1772,42 @@ public class OneHundred {
         return dp[row - 1][column - 1];
     }
 
+
+    /**
+     * 65. Valid Number
+     *
+     * @param s
+     * @return
+     */
+    public boolean isNumber(String s) {
+        if (s == null || s.length() == 0) {
+            return false;
+        }
+        s = s.trim();
+
+        int index = 0;
+        boolean hasSign = false;
+        while (index < s.length() && !Character.isDigit(s.charAt(index))) {
+            if (s.charAt(index) == '+' || s.charAt(index) == '-') {
+                if (hasSign) {
+                    return false;
+                }
+                hasSign = true;
+                index++;
+            } else {
+                return false;
+            }
+        }
+        while (index < s.length() && Character.isDigit(s.charAt(index))) {
+            index++;
+        }
+        if (index == s.length()) {
+            return true;
+        }
+        return false;
+
+    }
+
     /**
      * 66. Plus One
      *
@@ -1572,8 +1815,10 @@ public class OneHundred {
      * @return
      */
     public int[] plusOne(int[] digits) {
-        int n = digits.length;
-        for (int i = n - 1; i >= 0; i--) {
+        if (digits == null || digits.length == 0) {
+            return new int[]{};
+        }
+        for (int i = digits.length - 1; i >= 0; i--) {
             if (digits[i] != 9) {
                 digits[i]++;
                 return digits;
@@ -1581,10 +1826,11 @@ public class OneHundred {
                 digits[i] = 0;
             }
         }
-        int[] ans = new int[n + 1];
+        int[] ans = new int[digits.length + 1];
         ans[0] = 1;
         return ans;
     }
+
 
     /**
      * 67. Add Binary
@@ -1594,17 +1840,20 @@ public class OneHundred {
      * @return
      */
     public String addBinary(String a, String b) {
+        String ans = "";
         int m = a.length() - 1;
         int n = b.length() - 1;
-        StringBuilder ans = new StringBuilder();
         int carry = 0;
         while (m >= 0 || n >= 0 || carry > 0) {
-            int sum = (m >= 0 ? a.charAt(m--) - '0' : 0) + (n >= 0 ? b.charAt(n--) - '0' : 0) + carry;
-            carry = sum / 2;
-            ans.insert(0, sum % 2);
+            int value = (m >= 0 ? a.charAt(m--) - '0' : 0) + (n >= 0 ? b.charAt(n--) - '0' : 0) + carry;
+
+            ans = ((char) (value % 2 + '0')) + ans;
+
+            carry = value / 2;
         }
-        return ans.toString();
+        return ans;
     }
+
 
     /**
      * 68. Text Justification
@@ -1618,57 +1867,74 @@ public class OneHundred {
             return new ArrayList<>();
         }
         List<String> ans = new ArrayList<>();
+
         int startIndex = 0;
+
         while (startIndex < words.length) {
             int line = 0;
+
             int endIndex = startIndex;
+
             while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
-                line += words[endIndex++].length() + 1;
+
+                line += words[endIndex].length() + 1;
+
+                endIndex++;
             }
-            boolean isLast = endIndex == words.length;
-            int countOfWords = endIndex - startIndex;
-            StringBuilder stringBuilder = new StringBuilder();
-            if (countOfWords == 1) {
-                stringBuilder.append(words[startIndex]);
+
+            StringBuilder sb = new StringBuilder();
+
+
+            boolean lastRow = endIndex == words.length;
+
+            int lineOfRow = maxWidth - line + 1;
+
+            int numOfWord = endIndex - startIndex;
+
+            if (numOfWord == 1) {
+                sb.append(words[startIndex]);
             } else {
-                int blankSpace = maxWidth - line + 1;
-                int countOfSpace = isLast ? 1 : 1 + blankSpace / (countOfWords - 1);
-                int extraSpace = isLast ? 0 : blankSpace % (countOfWords - 1);
-                stringBuilder = this.construct(words, startIndex, endIndex, countOfSpace, extraSpace);
+                int blankWord = lastRow ? 1 : 1 + (maxWidth - line + 1) / (numOfWord - 1);
+
+                int extraWord = lastRow ? 0 : (maxWidth - line + 1) % (numOfWord - 1);
+
+                this.constructRow(sb, blankWord, extraWord, startIndex, endIndex, words);
             }
-            ans.add(this.correct(stringBuilder.toString(), maxWidth));
+
             startIndex = endIndex;
+
+            ans.add(this.adjustString(sb, maxWidth));
+
         }
         return ans;
     }
 
-    private StringBuilder construct(String[] words, int startIndex, int endIndex, int spaces, int extra) {
-        StringBuilder stringBuilder = new StringBuilder();
+    private String adjustString(StringBuilder sb, int maxWidth) {
+        String value = sb.toString();
+        while (value.length() > maxWidth) {
+            value = value.substring(0, value.length() - 1);
+        }
+        while (value.length() < maxWidth) {
+            value = value + " ";
+        }
+        return value;
+    }
+
+    private void constructRow(StringBuilder sb, int countOfBlank, int extraOfBlank,
+                              int startIndex, int endIndex, String[] words) {
         for (int i = startIndex; i < endIndex; i++) {
-            stringBuilder.append(words[i]);
-
-            int tmp = 0;
-            while (tmp < spaces) {
-                stringBuilder.append(" ");
-                tmp++;
+            sb.append(words[i]);
+            int tmp = countOfBlank;
+            while (tmp-- > 0) {
+                sb.append(" ");
             }
-            if (extra > 0) {
-                stringBuilder.append(" ");
-                extra--;
+            if (extraOfBlank-- > 0) {
+                sb.append(" ");
             }
         }
-        return stringBuilder;
+
     }
 
-    private String correct(String stringBuilder, int maxWidth) {
-        while (stringBuilder.length() < maxWidth) {
-            stringBuilder = stringBuilder + " ";
-        }
-        while (stringBuilder.length() > maxWidth) {
-            stringBuilder = stringBuilder.substring(0, stringBuilder.length() - 1);
-        }
-        return stringBuilder;
-    }
 
     /**
      * 69. Sqrt(x)
@@ -1677,9 +1943,9 @@ public class OneHundred {
      * @return
      */
     public int mySqrt(int x) {
-        double precision = 0.00001;
+        double precision = 0.0001;
         double ans = x;
-        while ((ans * ans - x) > precision) {
+        while (ans * ans - x > precision) {
             ans = (ans + x / ans) / 2;
         }
         return (int) ans;
@@ -1692,19 +1958,26 @@ public class OneHundred {
      * @return
      */
     public int climbStairs(int n) {
-        if (n <= 2) {
-            return n < 0 ? 0 : n;
+        if (n == 0) {
+            return 0;
         }
-        int one = 1;
-        int two = 2;
-        int ans = 0;
+        if (n == 1) {
+            return 1;
+        }
+        if (n == 2) {
+            return 2;
+        }
+        int sum1 = 1;
+        int sum2 = 2;
+        int sum = 0;
         for (int i = 3; i <= n; i++) {
-            ans = one + two;
-            one = two;
-            two = ans;
+            sum = sum1 + sum2;
+            sum1 = sum2;
+            sum2 = sum;
         }
-        return ans;
+        return sum;
     }
+
 
     /**
      * 71. Simplify Path
@@ -1716,26 +1989,26 @@ public class OneHundred {
         if (path == null || path.length() == 0) {
             return "";
         }
-        Deque<String> deque = new LinkedList<>();
-        Set<String> skip = new HashSet<>(Arrays.asList("", "."));
+        Set<String> skip = new HashSet<>(Arrays.asList(".", "", ".."));
+        Deque<String> ans = new LinkedList<>();
         String[] paths = path.split("/");
-        for (String tmp : paths) {
-            if (!skip.contains(tmp)) {
-                if ("..".equals(tmp)) {
-                    if (!deque.isEmpty()) {
-                        deque.pop();
-                    }
-                } else {
-                    deque.push(tmp);
-                }
+        for (int i = 0; i < paths.length; i++) {
+            if (!skip.contains(paths[i])) {
+                ans.add(paths[i]);
+            } else if (!ans.isEmpty() && paths[i].equals("..")) {
+                ans.pollLast();
             }
         }
-        String ans = "";
-        while (!deque.isEmpty()) {
-            ans = "/" + deque.poll() + ans;
+        if (ans.isEmpty()) {
+            return "/";
         }
-        return ans.length() == 0 ? "/" : ans;
+        String sb = "";
+        for (String str : ans) {
+            sb = sb + "/" + str;
+        }
+        return sb;
     }
+
 
     /**
      * 72. Edit Distance
@@ -1759,17 +2032,16 @@ public class OneHundred {
                     dp[i][j] = j;
                 } else if (j == 0) {
                     dp[i][j] = i;
+                } else if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
-                        dp[i][j] = dp[i - 1][j - 1];
-                    } else {
-                        dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));
-                    }
+                    dp[i][j] = 1 + Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]);
                 }
             }
         }
         return dp[m][n];
     }
+
 
     /**
      * 73. Set Matrix Zeroes
@@ -1780,8 +2052,8 @@ public class OneHundred {
         if (matrix == null || matrix.length == 0) {
             return;
         }
-        boolean fc = false;
         boolean fr = false;
+        boolean fc = false;
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
                 if (matrix[i][j] == 0) {
@@ -1815,6 +2087,7 @@ public class OneHundred {
         }
     }
 
+
     /**
      * 74. Search a 2D Matrix
      *
@@ -1828,8 +2101,8 @@ public class OneHundred {
         }
         int row = matrix.length;
         int column = matrix[0].length;
-        int j = 0;
         int i = row - 1;
+        int j = 0;
         while (i >= 0 && j < column) {
             if (matrix[i][j] == target) {
                 return true;
@@ -1844,6 +2117,7 @@ public class OneHundred {
 
     /**
      * 75. Sort Colors
+     * trick: 双指针
      *
      * @param nums
      */
@@ -1851,20 +2125,22 @@ public class OneHundred {
         if (nums == null || nums.length == 0) {
             return;
         }
-        int one = 0;
-        int second = nums.length - 1;
+        int red = 0;
+        int blue = nums.length - 1;
         for (int i = 0; i < nums.length; i++) {
-            while (nums[i] == 2 && i < second) {
-                this.swap(nums, i, second--);
+            while (nums[i] == 2 && blue > i) {
+                this.swap(nums, blue--, i);
             }
-            while (nums[i] == 0 && i > one) {
-                this.swap(nums, i, one++);
+            while (nums[i] == 0 && i > red) {
+                this.swap(nums, red++, i);
             }
         }
     }
 
+
     /**
      * 76. Minimum Window Substring
+     * todo 未解
      *
      * @param s
      * @param t
@@ -1874,17 +2150,48 @@ public class OneHundred {
         if (s == null || t == null) {
             return "";
         }
-        HashMap<Character, Integer> map = new HashMap<>();
-        for (int i = 0; i < s.length(); i++) {
-            int count = map.getOrDefault(s.charAt(i), 0);
-            map.put(s.charAt(i), ++count);
-        }
-        int begin = 0;
         int end = 0;
-        int ans = 0;
+
+        int begin = 0;
+
+        int result = Integer.MAX_VALUE;
+
+        int head = 0;
+
         int count = t.length();
+
+        int[] hash = new int[256];
+
+        for (int i = 0; i < t.length(); i++) {
+            hash[t.charAt(i) - '0']++;
+        }
+
         while (end < s.length()) {
 
+            while (end < s.length() && hash[s.charAt(end) - '0']-- > 0) {
+
+                end++;
+                count--;
+
+            }
+            while (count == 0) {
+                if (end - begin < result) {
+                    head = begin;
+                    result = end - begin;
+                }
+                int index = s.charAt(begin) - '0';
+
+                int value = hash[s.charAt(begin) - '0'];
+
+                if (hash[s.charAt(begin++) - '0']++ == 0) {
+
+                    count++;
+                }
+            }
+            end++;
+        }
+        if (result < Integer.MAX_VALUE) {
+            return s.substring(head, head + result);
         }
         return "";
     }
@@ -1897,14 +2204,18 @@ public class OneHundred {
      * @return
      */
     public List<List<Integer>> combine(int n, int k) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
         List<List<Integer>> ans = new ArrayList<>();
-        this.combine(ans, new ArrayList<>(), 1, n, k);
+        this.combine(ans, new ArrayList<Integer>(), 1, n, k);
         return ans;
     }
 
     private void combine(List<List<Integer>> ans, List<Integer> tmp, int start, int n, int k) {
         if (tmp.size() == k) {
             ans.add(new ArrayList<>(tmp));
+            return;
         }
         for (int i = start; i <= n; i++) {
             tmp.add(i);
@@ -1912,6 +2223,7 @@ public class OneHundred {
             tmp.remove(tmp.size() - 1);
         }
     }
+
 
     /**
      * 78. Subsets
@@ -1923,19 +2235,22 @@ public class OneHundred {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
+
         List<List<Integer>> ans = new ArrayList<>();
         this.subsets(ans, new ArrayList<>(), 0, nums);
         return ans;
+
     }
 
-    private void subsets(List<List<Integer>> ans, List<Integer> tmp, int index, int[] nums) {
+    private <E> void subsets(List<List<Integer>> ans, List<Integer> tmp, int start, int[] nums) {
         ans.add(new ArrayList<>(tmp));
-        for (int i = index; i < nums.length; i++) {
+        for (int i = start; i < nums.length; i++) {
             tmp.add(nums[i]);
             this.subsets(ans, tmp, i + 1, nums);
             tmp.remove(tmp.size() - 1);
         }
     }
+
 
     /**
      * 79. Word Search
@@ -1948,30 +2263,34 @@ public class OneHundred {
         if (board == null || board.length == 0) {
             return false;
         }
-        boolean[][] used = new boolean[board.length][board[0].length];
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                if (board[i][j] == word.charAt(0) && this.check(used, i, j, board, 0, word)) {
+
+        int row = board.length;
+
+        int column = board[0].length;
+
+        boolean[][] used = new boolean[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] == word.charAt(0) && this.verify(board, i, j, used, 0, word)) {
                     return true;
                 }
             }
         }
         return false;
-
     }
 
-    private boolean check(boolean[][] used, int i, int j, char[][] board, int k, String word) {
+    private boolean verify(char[][] board, int i, int j, boolean[][] used, int k, String word) {
         if (k == word.length()) {
             return true;
         }
-        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || board[i][j] != word.charAt(k) || used[i][j]) {
+        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || used[i][j] || board[i][j] != word.charAt(k)) {
             return false;
         }
         used[i][j] = true;
-        if (this.check(used, i - 1, j, board, k + 1, word) ||
-                this.check(used, i + 1, j, board, k + 1, word) ||
-                this.check(used, i, j - 1, board, k + 1, word) ||
-                this.check(used, i, j + 1, board, k + 1, word)) {
+        if (this.verify(board, i - 1, j, used, k + 1, word) ||
+                this.verify(board, i + 1, j, used, k + 1, word) ||
+                this.verify(board, i, j - 1, used, k + 1, word) ||
+                this.verify(board, i, j + 1, used, k + 1, word)) {
             return true;
         }
         used[i][j] = false;
@@ -1988,23 +2307,62 @@ public class OneHundred {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-        int idx = 1;
         int count = 1;
-        int value = nums[0];
+        int index = 1;
         for (int i = 1; i < nums.length; i++) {
-            if (nums[i] == value) {
+            if (nums[i] == nums[i - 1]) {
                 count++;
-                if (count > 2) {
+                if (count >= 3) {
                     continue;
                 }
             } else {
                 count = 1;
-                value = nums[i];
             }
-            nums[idx++] = nums[i];
+            nums[index++] = nums[i];
         }
-        return idx;
+        return index;
     }
+
+
+    /**
+     * 81. Search in Rotated Sorted Array II
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public boolean searchII(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        // 二分搜索关键
+        // 每次省略一半部分
+        // 故关键点在于 中值 以及中值比较部分
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return true;
+            } else if (nums[left] == nums[mid]) {
+                left++;
+            } else if (nums[left] < nums[mid]) {
+                if (nums[left] <= target && target < nums[mid]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (nums[mid] < target && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return false;
+    }
+
 
     /**
      * 82. Remove Duplicates from Sorted List II
@@ -2017,11 +2375,11 @@ public class OneHundred {
             return head;
         }
         if (head.val == head.next.val) {
-            ListNode currNode = head.next.next;
-            while (currNode != null && currNode.val == head.val) {
-                currNode = currNode.next;
+            ListNode node = head.next.next;
+            while (node != null && node.val == head.val) {
+                node = node.next;
             }
-            return this.deleteDuplicates(currNode);
+            return this.deleteDuplicates(node);
         } else {
             head.next = this.deleteDuplicates(head.next);
             return head;
@@ -2034,14 +2392,15 @@ public class OneHundred {
      * @param head
      * @return
      */
-    public ListNode deleteDuplicatesEasy(ListNode head) {
+    public ListNode deleteDuplicatesII(ListNode head) {
         if (head == null || head.next == null) {
             return head;
         }
         if (head.val == head.next.val) {
-            return this.deleteDuplicatesEasy(head.next);
+            return this.deleteDuplicates(head.next);
+
         } else {
-            head.next = this.deleteDuplicatesEasy(head.next);
+            head.next = this.deleteDuplicates(head.next);
             return head;
         }
     }
@@ -2056,21 +2415,23 @@ public class OneHundred {
         if (heights == null || heights.length == 0) {
             return 0;
         }
-        Deque<Integer> stack = new LinkedList<>();
-        int ans = 0;
+        Stack<Integer> stack = new Stack<>();
+        int left = 0;
+        int result = 0;
         for (int i = 0; i <= heights.length; i++) {
             int h = i == heights.length ? 0 : heights[i];
             if (stack.isEmpty() || heights[stack.peek()] < h) {
                 stack.push(i);
             } else {
-                int value = heights[stack.pop()];
-                int size = stack.isEmpty() ? i : i - 1 - stack.peek();
-                ans = Math.max(ans, value * size);
+                int index = stack.pop();
+                int size = stack.isEmpty() ? i : i - stack.peek() - 1;
+                result = Math.max(result, heights[index] * size);
                 i--;
             }
         }
-        return ans;
+        return result;
     }
+
 
     /**
      * 85. Maximal Rectangle
@@ -2082,63 +2443,108 @@ public class OneHundred {
         if (matrix == null || matrix.length == 0) {
             return 0;
         }
-        int ans = 0;
-        int m = matrix.length;
-        int n = matrix[0].length;
-        int[][] dp = new int[m][n];
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (matrix[i][j] == '0') {
-                    dp[i][j] = -1;
-                    continue;
-                }
-                dp[i][j] = j;
-                if (j > 0 && dp[i][j - 1] >= 0) {
-                    dp[i][j] = dp[i][j - 1];
-                }
-                int width = j - dp[i][j] + 1;
-                for (int k = i; k >= 0 && matrix[k][j] == '1'; k--) {
-                    width = Math.min(width, j - dp[k][j] + 1);
-                    ans = Math.max(ans, (i - k + 1) * width);
-                }
+        int row = matrix.length;
+        int column = matrix[0].length;
 
+        // 使用三个一维数组来存储每列数组代表的值
+        int[] left = new int[column];
+
+        int[] right = new int[column];
+
+
+        int[] height = new int[column];
+
+
+        // 由于右边界从右往左比较 故需初始化
+        for (int j = 0; j < column; j++) {
+            right[j] = column;
+        }
+
+
+        int result = 0;
+
+        // area = height[j] * (right[j] - left[j] if matrix[i][j] == '1'
+        for (int i = 0; i < row; i++) {
+
+            int maxLeft = 0;
+
+            int minRight = column;
+
+            for (int j = 0; j < column; j++) {
+                if (matrix[i][j] == '0') {
+                    height[j] = 0;
+                } else {
+                    height[j]++;
+                }
+            }
+            for (int j = 0; j < column; j++) {
+                if (matrix[i][j] == '1') {
+                    left[j] = Math.max(left[j], maxLeft);
+                } else {
+                    left[j] = 0;
+                    maxLeft = j + 1;
+                }
+            }
+            for (int j = column - 1; j >= 0; j--) {
+                if (matrix[i][j] == '1') {
+                    right[j] = Math.min(right[j], minRight);
+
+                } else {
+                    right[j] = column;
+                    minRight = j;
+                }
+            }
+            for (int j = 0; j < column; j++) {
+                result = Math.max(result, height[j] * (right[j] - left[j]));
             }
         }
-        return ans;
+        return result;
     }
+
 
     /**
      * 86. Partition List
+     * todo 需慎重考虑
      *
      * @param head
      * @param x
      * @return
      */
     public ListNode partition(ListNode head, int x) {
-        if (head == null || head.next == null) {
-            return head;
+        if (head == null) {
+            return null;
         }
         ListNode root = new ListNode(0);
+
+        ListNode big = root;
+        ListNode node = big;
         ListNode small = root;
-        ListNode dummy = new ListNode(0);
-        ListNode big = dummy;
         while (head != null) {
-            if (head.val < x) {
+            if (head.val <= x) {
+
                 small.next = head;
+
                 small = small.next;
             } else {
+
                 big.next = head;
+
                 big = big.next;
             }
             head = head.next;
         }
-        big.next = null;
-        small.next = dummy.next;
+
+        small.next = node.next;
+
         return root.next;
+
+
     }
+
 
     /**
      * 87. Scramble String
+     * todo 待优化
      *
      * @param s1
      * @param s2
@@ -2152,14 +2558,17 @@ public class OneHundred {
             return true;
         }
         int m = s1.length();
-
-        int[] hash = new int[26];
-        for (int i = 0; i < m; i++) {
-            hash[s1.charAt(i) - 'a']++;
-            hash[s2.charAt(i) - 'a']--;
+        int n = s2.length();
+        if (m != n) {
+            return false;
         }
-        for (int i = 0; i < 26; i++) {
 
+        int[] hash = new int[256];
+        for (int i = 0; i < m; i++) {
+            hash[s1.charAt(i) - '0']--;
+            hash[s2.charAt(i) - '0']++;
+        }
+        for (int i = 0; i < 256; i++) {
             if (hash[i] != 0) {
                 return false;
             }
@@ -2168,12 +2577,14 @@ public class OneHundred {
             if (this.isScramble(s1.substring(0, i), s2.substring(0, i)) && this.isScramble(s1.substring(i), s2.substring(i))) {
                 return true;
             }
-            if (this.isScramble(s1.substring(0, i), s2.substring(m - i)) && this.isScramble(s1.substring(i), s2.substring(0, m - i))) {
+            if (this.isScramble(s1.substring(i), s2.substring(0, m - i)) && this.isScramble(s1.substring(0, i), s2.substring(m - i))) {
                 return true;
             }
         }
         return false;
+
     }
+
 
     /**
      * 88. Merge Sorted Array
@@ -2184,20 +2595,34 @@ public class OneHundred {
      * @param n
      */
     public void merge(int[] nums1, int m, int[] nums2, int n) {
-        int k = m + n - 1;
-        while (m >= 1 && n >= 1) {
-            if (nums1[m - 1] > nums2[n - 1]) {
-                nums1[k--] = nums1[m - 1];
-                m--;
+        if (nums1 == null || nums2 == null) {
+            return;
+        }
+        int s = m + n - 1;
+        m = m - 1;
+        n = n - 1;
+        while (m >= 0 && n >= 0) {
+            if (nums1[m] >= nums2[n]) {
+                nums1[s--] = nums1[m--];
             } else {
-                nums1[k--] = nums2[n - 1];
-                n--;
+                nums1[s--] = nums2[n--];
             }
         }
-        while (n >= 1) {
-            nums1[k--] = nums2[n - 1];
-            n--;
+        while (n >= 0) {
+            nums1[s--] = nums2[n--];
         }
+    }
+
+
+    /**
+     * gray code
+     * // todo 格雷码
+     *
+     * @param n
+     * @return
+     */
+    public List<Integer> grayCode(int n) {
+        return null;
     }
 
     /**
@@ -2212,21 +2637,62 @@ public class OneHundred {
         }
         Arrays.sort(nums);
         List<List<Integer>> ans = new ArrayList<>();
-        this.subsetsWithDup(ans, new ArrayList<>(), 0, nums);
+        this.subsetsWithDup(ans, new ArrayList<Integer>(), 0, nums);
         return ans;
     }
 
-    private void subsetsWithDup(List<List<Integer>> ans, List<Integer> integers, int startIndex, int[] nums) {
-        ans.add(new ArrayList<>(integers));
-        for (int i = startIndex; i < nums.length; i++) {
-            if (i > startIndex && nums[i] == nums[i - 1]) {
+    private void subsetsWithDup(List<List<Integer>> ans, List<Integer> tmp, int start, int[] nums) {
+        ans.add(new ArrayList<>(tmp));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) {
                 continue;
             }
-            integers.add(nums[i]);
-            this.subsetsWithDup(ans, integers, i + 1, nums);
-            integers.remove(integers.size() - 1);
+            tmp.add(nums[i]);
+            this.subsetsWithDup(ans, tmp, i + 1, nums);
+            tmp.remove(tmp.size() - 1);
         }
     }
+
+
+    /**
+     * 92. Reverse Linked List II
+     *
+     * @param head
+     * @param m
+     * @param n
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode fast = root;
+        ListNode slow = root;
+        for (int i = 0; i < m - 1; i++) {
+            slow = slow.next;
+        }
+        for (int j = 0; j < n; j++) {
+            fast = fast.next;
+        }
+
+        ListNode prev = fast.next;
+
+        ListNode current = slow.next;
+        for (int i = 0; i <= n - m; i++) {
+
+            ListNode tmp = current.next;
+            current.next = prev;
+            prev = current;
+            current = tmp;
+
+        }
+        slow.next = prev;
+
+        return root.next;
+    }
+
 
     /**
      * 93. Restore IP Addresses
@@ -2238,21 +2704,9 @@ public class OneHundred {
         if (s == null || s.length() == 0) {
             return new ArrayList<>();
         }
-        List<String> ans = new ArrayList<>();
-        for (int a = 0; a < 4; a++) {
-            for (int b = a + 1; b <= 7; b++) {
-                for (int c = b + 1; c <= 10; c++) {
-                    for (int d = c + 1; d <= s.length(); d++) {
-                        if (a + b + c + d == 12) {
-                            continue;
-                        }
-
-                    }
-                }
-            }
-        }
-        return ans;
+        return null;
     }
+
 
     /**
      * 94. Binary Tree Inorder Traversal
@@ -2265,19 +2719,20 @@ public class OneHundred {
             return new ArrayList<>();
         }
         List<Integer> ans = new ArrayList<>();
-        TreeNode p = root;
         Stack<TreeNode> stack = new Stack<>();
-        while (p != null || !stack.isEmpty()) {
-            while (p != null) {
-                stack.push(p);
-                p = p.left;
+        TreeNode node = root;
+        while (!stack.isEmpty() || node != null) {
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
             }
-            p = stack.pop();
-            ans.add(p.val);
-            p = p.right;
+            node = stack.pop();
+            ans.add(node.val);
+            node = node.right;
         }
         return ans;
     }
+
 
     /**
      * 95. Unique Binary Search Trees II
@@ -2292,54 +2747,58 @@ public class OneHundred {
         return this.generateTrees(1, n);
     }
 
-    private List<TreeNode> generateTrees(int left, int right) {
+    private List<TreeNode> generateTrees(int start, int end) {
+        List<TreeNode> list = new ArrayList<>();
+        if (start > end) {
+            list.add(null);
+            return list;
 
-        List<TreeNode> ans = new ArrayList<>();
-        if (left > right) {
-            ans.add(null);
-            return ans;
         }
-        if (left == right) {
-            TreeNode root = new TreeNode(left);
-            ans.add(root);
-            return ans;
+        if (start == end) {
+            TreeNode node = new TreeNode(start);
+            list.add(node);
+            return list;
         }
-        for (int i = left; i <= right; i++) {
-            List<TreeNode> leftList = this.generateTrees(left, i - 1);
-            List<TreeNode> rightList = this.generateTrees(i + 1, right);
-            for (TreeNode leftNode : leftList) {
-                for (TreeNode rightNode : rightList) {
+        for (int i = start; i <= end; i++) {
+            List<TreeNode> lefts = this.generateTrees(start, i - 1);
+            List<TreeNode> rights = this.generateTrees(i + 1, end);
+            for (TreeNode left : lefts) {
+                for (TreeNode right : rights) {
                     TreeNode root = new TreeNode(i);
-                    root.left = leftNode;
-                    root.right = rightNode;
-                    ans.add(root);
+                    root.left = left;
+                    root.right = right;
+                    list.add(root);
                 }
             }
         }
-        return ans;
+        return list;
     }
 
     /**
      * 96. Unique Binary Search Trees
+     * trick : 动态规划
+     * f(n) = r(1) + r(2) + r(3) + ... + r(n)
+     * r(i) = f(i-1) * f(n-i);
+     * so f(n) = r(0) * r(n-1) + r(1) * (n-1) + ..r(n-1) * r(0)
      *
      * @param n
      * @return
      */
     public int numTrees(int n) {
         if (n <= 1) {
-            return n;
+            return 1;
         }
         int[] dp = new int[n + 1];
-        dp[0] = dp[1] = 1;
+        dp[0] = 1;
+        dp[1] = 1;
         for (int i = 2; i <= n; i++) {
-            for (int j = 1; j <= n; j++) {
+
+            for (int j = 1; j <= i; j++) {
                 dp[i] += dp[j - 1] * dp[i - j];
             }
         }
         return dp[n];
-
     }
-
 
     /**
      * 97. Interleaving String
@@ -2350,27 +2809,14 @@ public class OneHundred {
      * @return
      */
     public boolean isInterleave(String s1, String s2, String s3) {
-        int m = s1.length(), n = s2.length();
-        if (m + n != s3.length()) {
+        if (s1 == null || s2 == null || s3 == null) {
             return false;
         }
-
-        boolean[] dp = new boolean[n + 1];
-        for (int i = 0; i <= m; i++) {
-            for (int j = 0; j <= n; j++) {
-                if (i == 0 && j == 0) {
-                    dp[j] = true;
-                } else if (i == 0) {
-                    dp[j] = s2.charAt(j - 1) == s3.charAt(i + j - 1) && dp[j - 1];
-                } else if (j == 0) {
-                    dp[j] = s1.charAt(i - 1) == s3.charAt(i + j - 1) && dp[j];
-                } else {
-                    dp[j] = (dp[j] && s1.charAt(i - 1) == s3.charAt(i + j - 1)) || (dp[j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1));
-                }
-            }
-        }
-        return dp[n];
+        int m = s1.length();
+        int n = s2.length();
+        return false;
     }
+
 
     /**
      * 98. Validate Binary Search Tree
@@ -2382,27 +2828,80 @@ public class OneHundred {
         if (root == null) {
             return false;
         }
-        Stack<TreeNode> stack = new Stack<>();
-        TreeNode p = root;
         TreeNode prev = null;
-        while (!stack.isEmpty() || p != null) {
-            while (p != null) {
-                stack.push(p);
-                p = p.left;
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode node = root;
+        while (!stack.isEmpty() || node != null) {
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
             }
-            p = stack.pop();
-            if (null == prev) {
-                prev = p;
+            node = stack.pop();
+            if (prev == null) {
+                prev = node;
             } else {
-                if (prev.val >= p.val) {
+                if (prev.val >= node.val) {
                     return false;
                 }
-                prev = p;
+                prev = node;
             }
-            p = p.right;
+            node = node.right;
         }
         return true;
+
     }
+
+
+    /**
+     * 99. Recover Binary Search Tree
+     *
+     * @param root
+     */
+    public void recoverTree(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        TreeNode first = null;
+        TreeNode second = null;
+
+        Stack<TreeNode> stack = new Stack<>();
+
+        TreeNode node = root;
+
+        TreeNode prev = null;
+
+        while (!stack.isEmpty() || node != null) {
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
+
+            node = stack.pop();
+
+            if (prev == null) {
+                prev = node;
+            } else {
+
+                if (first == null && prev.val >= node.val) {
+                    first = prev;
+                }
+                if (first != null && prev.val >= node.val) {
+                    second = node;
+                }
+                prev = node;
+            }
+
+
+            node = node.right;
+        }
+        if (first != null && second != null) {
+            int val = first.val;
+            first.val = second.val;
+            second.val = val;
+        }
+
+    }
+
 
     /**
      * 100. Same Tree
@@ -2415,9 +2914,11 @@ public class OneHundred {
         if (p == null && q == null) {
             return true;
         }
+
         if (p == null || q == null) {
             return false;
         }
+
         if (p.val == q.val) {
             return this.isSameTree(p.left, q.left) && this.isSameTree(p.right, q.right);
         }
@@ -2425,4 +2926,83 @@ public class OneHundred {
     }
 
 
+    /**
+     * 101. Symmetric Tree
+     *
+     * @param root
+     * @return
+     */
+    public boolean isSymmetric(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return this.isSymmetricTree(root.left, root.right);
+    }
+
+    private boolean isSymmetricTree(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
+        }
+        if (left == null || right == null) {
+            return false;
+        }
+        if (left.val == right.val) {
+            return this.isSymmetricTree(left.left, right.right) && this.isSymmetricTree(left.right, right.left);
+        }
+        return false;
+    }
+
+
+    /**
+     * 102. Binary Tree Level Order Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        Deque<TreeNode> deque = new LinkedList<>();
+        deque.add(root);
+        while (!deque.isEmpty()) {
+            int size = deque.size();
+            List<Integer> tmp = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = deque.poll();
+                tmp.add(node.val);
+                if (node.left != null) {
+                    deque.add(node.left);
+                }
+                if (node.right != null) {
+                    deque.add(node.right);
+                }
+            }
+            ans.add(tmp);
+        }
+        return ans;
+    }
+
+
+    /**
+     * 189. Rotate Array
+     *
+     * @param nums
+     * @param k
+     */
+    public void rotate(int[] nums, int k) {
+        if (nums == null || nums.length == 0 || k < 0) {
+            return;
+        }
+
+        k %= nums.length;
+        this.reverseNums(nums, 0, nums.length - 1);
+        this.reverseNums(nums, 0, k - 1);
+        this.reverseNums(nums, k, nums.length - 1);
+
+    }
+
+
 }
+

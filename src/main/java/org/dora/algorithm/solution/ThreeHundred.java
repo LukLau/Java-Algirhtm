@@ -9,6 +9,7 @@ import java.util.*;
  * @author liulu
  * @date 2019-03-16
  */
+@Deprecated
 public class ThreeHundred {
     public static void main(String[] args) {
         ThreeHundred threeHundred = new ThreeHundred();
@@ -89,7 +90,7 @@ public class ThreeHundred {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode prev = reverseList(head.next);
+        ListNode prev = this.reverseList(head.next);
         head.next.next = head;
         head.next = null;
         return prev;
@@ -127,7 +128,7 @@ public class ThreeHundred {
         Set<String> ans = new HashSet<>();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                dfs(board, i, j, trie, visited, ans, "");
+                this.dfs(board, i, j, trie, visited, ans, "");
             }
         }
         return new ArrayList<>(ans);
@@ -145,10 +146,10 @@ public class ThreeHundred {
             ans.add(s);
         }
         visited[i][j] = true;
-        dfs(board, i - 1, j, trie, visited, ans, s);
-        dfs(board, i + 1, j, trie, visited, ans, s);
-        dfs(board, i, j - 1, trie, visited, ans, s);
-        dfs(board, i, j + 1, trie, visited, ans, s);
+        this.dfs(board, i - 1, j, trie, visited, ans, s);
+        this.dfs(board, i + 1, j, trie, visited, ans, s);
+        this.dfs(board, i, j - 1, trie, visited, ans, s);
+        this.dfs(board, i, j + 1, trie, visited, ans, s);
         visited[i][j] = false;
     }
 
@@ -162,7 +163,7 @@ public class ThreeHundred {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-        return Math.max(rob(nums, 0, nums.length - 2), rob(nums, 1, nums.length - 1));
+        return Math.max(this.rob(nums, 0, nums.length - 2), this.rob(nums, 1, nums.length - 1));
     }
 
     private int rob(int[] nums, int start, int end) {
@@ -207,7 +208,7 @@ public class ThreeHundred {
             return new ArrayList<>();
         }
         List<List<Integer>> ans = new ArrayList<>();
-        combinationSum3(ans, new ArrayList<>(), 1, k, n);
+        this.combinationSum3(ans, new ArrayList<>(), 1, k, n);
         return ans;
     }
 
@@ -218,7 +219,7 @@ public class ThreeHundred {
         }
         for (int i = start; i <= 9 && i <= n; i++) {
             tmp.add(i);
-            combinationSum3(ans, tmp, i + 1, k, n - i);
+            this.combinationSum3(ans, tmp, i + 1, k, n - i);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -234,15 +235,15 @@ public class ThreeHundred {
         if (nums == null || nums.length == 0) {
             return -1;
         }
-        int partion = partition(nums, 0, nums.length - 1);
+        int partion = this.partition(nums, 0, nums.length - 1);
         k = nums.length - k;
 
         while (partion != k) {
 
             if (partion < k) {
-                partion = partition(nums, partion + 1, nums.length - 1);
+                partion = this.partition(nums, partion + 1, nums.length - 1);
             } else {
-                partion = partition(nums, 0, partion - 1);
+                partion = this.partition(nums, 0, partion - 1);
             }
         }
         return nums[partion];
@@ -432,9 +433,9 @@ public class ThreeHundred {
         if (p.val < root.val && q.val > root.val) {
             return root;
         } else if (p.val < root.val) {
-            return lowestCommonAncestor(root.left, p, q);
+            return this.lowestCommonAncestor(root.left, p, q);
         } else {
-            return lowestCommonAncestor(root.right, p, q);
+            return this.lowestCommonAncestor(root.right, p, q);
         }
     }
 
@@ -453,8 +454,8 @@ public class ThreeHundred {
         if (root == p || root == q) {
             return root;
         }
-        TreeNode left = lowestCommonAncestorII(root.left, p, q);
-        TreeNode right = lowestCommonAncestorII(root.right, p, q);
+        TreeNode left = this.lowestCommonAncestorII(root.left, p, q);
+        TreeNode right = this.lowestCommonAncestorII(root.right, p, q);
 
         return left != null && right != null ? root : left != null ? left : right;
     }
