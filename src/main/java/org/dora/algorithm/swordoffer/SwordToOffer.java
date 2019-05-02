@@ -1681,9 +1681,6 @@ public class SwordToOffer {
                 hasE = true;
             } else if (c == '-' || c == '+') {
 
-                if (hasSign &&) {
-                    hasSign = true;
-                }
             }
         }
         return true;

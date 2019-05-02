@@ -10,6 +10,10 @@ public class Node {
     public Node next;
     public Node random;
 
+
+    public Node left;
+    public Node right;
+
     public Node(int val, Node next, Node random) {
         this.val = val;
         this.next = next;

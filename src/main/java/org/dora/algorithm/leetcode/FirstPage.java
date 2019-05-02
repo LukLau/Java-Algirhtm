@@ -1,5 +1,6 @@
 package org.dora.algorithm.leetcode;
 
+import org.dora.algorithm.datastructe.Interval;
 import org.dora.algorithm.datastructe.ListNode;
 import org.dora.algorithm.datastructe.TreeNode;
 
@@ -318,12 +319,19 @@ public class FirstPage {
 
     /**
      * 12. Integer to Roman
+     * todo 巧妙设计 相当于取一个数字的每位下标
      *
      * @param num
      * @return
      */
     public String intToRoman(int num) {
-        return "";
+        String M[] = {"", "M", "MM", "MMM"};
+        String C[] = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+        String X[] = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+        String I[] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+
+        // 取千位 首字母 + 取百位首字 + 取十位首 + 取末尾
+        return M[num / 1000] + C[(num % 1000) / 100] + X[(num % 100) / 10] + I[num % 10];
     }
 
     /**
@@ -343,6 +351,46 @@ public class FirstPage {
             }
         }
         return prefix;
+    }
+
+
+    /**
+     * 13. Roman to Integer
+     *
+     * @param s
+     * @return
+     */
+    public int romanToInt(String s) {
+        if (s == null || s.length() == 0) {
+            return -1;
+        }
+        int[] ans = new int[s.length()];
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == 'I') {
+                ans[i] = 1;
+            } else if (s.charAt(i) == 'V') {
+                ans[i] = 5;
+            } else if (s.charAt(i) == 'X') {
+                ans[i] = 10;
+            } else if (s.charAt(i) == 'L') {
+                ans[i] = 50;
+            } else if (s.charAt(i) == 'C') {
+                ans[i] = 100;
+            } else if (s.charAt(i) == 'D') {
+                ans[i] = 500;
+            } else if (s.charAt(i) == 'M') {
+                ans[i] = 1000;
+            }
+        }
+        int result = ans[0];
+        for (int i = 1; i < s.length(); i++) {
+            if (ans[i - 1] < ans[i]) {
+                result += ans[i] - 2 * ans[i - 1];
+            } else {
+                result += ans[i];
+            }
+        }
+        return result;
     }
 
     /**
@@ -1136,7 +1184,8 @@ public class FirstPage {
 
     /**
      * 44. Wildcard Matching
-     * todo 不懂
+     * todo 不懂 与正则表达式匹配区别
+     * trick: * 可以匹配任意字符串  正则表达式需要前缀匹配
      *
      * @param s
      * @param p
@@ -1147,25 +1196,49 @@ public class FirstPage {
             return false;
         }
         int m = s.length();
+
         int n = p.length();
+
+
         boolean[][] dp = new boolean[m + 1][n + 1];
 
-        dp[0][0] = true;
 
-        for (int j = 1; j <= n; j++) {
-            dp[0][j] = p.charAt(j - 1) == '*';
+        /**
+         * 方案一、正序规划
+         *
+         */
+//        dp[0][0] = true;
+//        for (int j = 1; j <= n; j++) {
+//            dp[0][j] = p.charAt(j - 1) == '*' ? dp[0][j - 1] : false;
+//        }
+//        for (int i = 1; i <= m; i++) {
+//            for (int j = 1; j <= n; j++) {
+//                if (p.charAt(j - 1) == '*') {
+//                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+//                } else if (p.charAt(j - 1) == '?' || s.charAt(i - 1) == p.charAt(j - 1)) {
+//                    dp[i][j] = dp[i - 1][j - 1];
+//                }
+//            }
+//        }
+
+        /**
+         * 方案二、倒序规划
+         */
+        dp[m][n] = true;
+        for (int j = n - 1; j >= 0; j--) {
+            dp[m][j] = p.charAt(j - 1) == '*' ? dp[m][j + 1] : false;
         }
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
                 if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?') {
-                    dp[i][j] = dp[i - 1][j - 1];
+                    dp[i][j] = dp[i + 1][j + 1];
                 } else if (p.charAt(j - 1) == '*') {
-                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
+                    dp[i][j] = dp[i][j + 1] || dp[i + 1][j];
                 }
+
             }
         }
-
-        return dp[m][n];
+        return dp[0][0];
     }
 
     /**
@@ -1542,6 +1615,27 @@ public class FirstPage {
     }
 
     /**
+     * 56. Merge Intervals
+     *
+     * @param intervals
+     * @return
+     */
+    public int[][] merge(int[][] intervals) {
+        if (intervals == null || intervals.length == 0) {
+            return new int[][]{};
+        }
+        Interval[] intervalList = new Interval[intervals.length];
+        for (int i = 0; i < intervals.length; i++) {
+            Interval tmp = new Interval(intervals[i][0], intervals[i][1]);
+
+            intervalList[i] = tmp;
+
+        }
+        Arrays.sort(intervalList);
+        return null;
+    }
+
+    /**
      * 57. Insert Interval
      *
      * @param intervals
@@ -1775,37 +1869,54 @@ public class FirstPage {
 
     /**
      * 65. Valid Number
+     * todo 不太懂
      *
      * @param s
      * @return
      */
     public boolean isNumber(String s) {
-        if (s == null || s.length() == 0) {
+        if (s == null) {
             return false;
         }
         s = s.trim();
+        if (s.length() == 0) {
+            return false;
+        }
+        boolean numberAfterE = true;
+        boolean pointSeen = false;
+        boolean eSeen = false;
+        boolean numberSeen = false;
 
-        int index = 0;
-        boolean hasSign = false;
-        while (index < s.length() && !Character.isDigit(s.charAt(index))) {
-            if (s.charAt(index) == '+' || s.charAt(index) == '-') {
-                if (hasSign) {
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            // 判断是否是 0-9一个
+            if (ch >= '0' && ch <= '9') {
+                numberSeen = true;
+                numberAfterE = true;
+            } else if (ch == '.') {
+                // 判断是否已经出现过E 或者出现过点
+                if (eSeen || pointSeen) {
+
                     return false;
                 }
-                hasSign = true;
-                index++;
+                pointSeen = true;
+            } else if (ch == '-' || ch == '+') {
+                // 判断是否出底数后面
+                if (i != 0 && s.charAt(i - 1) != 'e' && s.charAt(i - 1) != 'E') {
+                    return false;
+                }
+            } else if (ch == 'e' || ch == 'E') {
+                // 判断是否有重复的 后者 之前是否有数字
+                if (!numberSeen || eSeen) {
+                    return false;
+                }
+                eSeen = true;
+                numberAfterE = false;
             } else {
                 return false;
             }
         }
-        while (index < s.length() && Character.isDigit(s.charAt(index))) {
-            index++;
-        }
-        if (index == s.length()) {
-            return true;
-        }
-        return false;
-
+        return numberAfterE && numberSeen;
     }
 
     /**
@@ -2802,6 +2913,7 @@ public class FirstPage {
 
     /**
      * 97. Interleaving String
+     * todo 一直找不到动态方程式
      *
      * @param s1
      * @param s2
@@ -2814,7 +2926,25 @@ public class FirstPage {
         }
         int m = s1.length();
         int n = s2.length();
-        return false;
+        if (m + n != s3.length()) {
+            return false;
+        }
+        boolean[][] dp = new boolean[m + 11][n + 1];
+        for (int i = 0; i <= m; i++) {
+            for (int j = 0; j <= n; j++) {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = true;
+                } else if (i == 0) {
+                    dp[0][j] = s2.charAt(j - 1) == s3.charAt(i + j - 1);
+                } else if (j == 0) {
+                    dp[i][0] = s1.charAt(i - 1) == s3.charAt(i + j - 1);
+                } else {
+                    dp[i][j] = dp[i - 1][j] && s1.charAt(i - 1) == s3.charAt(i + j - 1)
+                            || dp[i][j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1);
+                }
+            }
+        }
+        return dp[m][n];
     }
 
 
