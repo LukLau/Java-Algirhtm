@@ -5,55 +5,69 @@ package org.dora.algorithm.solution;
  * @date 2019-03-16
  */
 public class Trie {
+
+
     private TrieNode root;
-    /** Initialize your data structure here. */
+
+    /**
+     * Initialize your data structure here.
+     */
     public Trie() {
         root = new TrieNode();
     }
 
-    /** Inserts a word into the trie. */
+    /**
+     * Inserts a word into the trie.
+     */
     public void insert(String word) {
         TrieNode p = root;
         for (int i = 0; i < word.length(); i++) {
-            if (p.words[word.charAt(i) - 'a'] == null) {
-                p.words[word.charAt(i) - 'a'] = new TrieNode();
+            int index = word.charAt(i) - 'a';
+            if (p.nodes[index] == null) {
+                p.nodes[index] = new TrieNode();
             }
-            p = p.words[word.charAt(i) - 'a'];
+            p = p.nodes[index];
         }
-        p.hasNext = true;
+        p.word = word;
     }
 
-    /** Returns if the word is in the trie. */
+    /**
+     * Returns if the word is in the trie.
+     */
     public boolean search(String word) {
         TrieNode p = root;
         for (int i = 0; i < word.length(); i++) {
-            if (p.words[word.charAt(i) - 'a'] == null) {
+            int index = word.charAt(i) - 'a';
+            if (p.nodes[index] == null) {
                 return false;
             }
-            p = p.words[word.charAt(i) - 'a'];
+            p = p.nodes[index];
         }
-        return p.hasNext;
+        return word.equals(p.word);
     }
 
-
-    /** Returns if there is any word in the trie that starts with the given prefix. */
+    /**
+     * Returns if there is any word in the trie that starts with the given prefix.
+     */
     public boolean startsWith(String prefix) {
         TrieNode p = root;
         for (int i = 0; i < prefix.length(); i++) {
-            if (p.words[prefix.charAt(i) - 'a'] == null) {
+            int index = prefix.charAt(i) - 'a';
+            if (p.nodes[index] == null) {
                 return false;
             }
-            p = p.words[prefix.charAt(i) - 'a'];
+            p = p.nodes[index];
         }
         return true;
     }
 
     class TrieNode {
-        private boolean hasNext = false;
-        private TrieNode[] words;
+        private TrieNode[] nodes;
+        private String word;
 
         public TrieNode() {
-            words = new TrieNode[26];
+            nodes = new TrieNode[26];
+            word = "";
         }
     }
 }

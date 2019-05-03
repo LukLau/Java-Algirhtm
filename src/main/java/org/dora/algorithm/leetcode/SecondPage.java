@@ -314,6 +314,7 @@ public class SecondPage {
 
     /**
      * 116. Populating Next Right Pointers in Each Node
+     * todo 巧妙设计 一直未搞懂
      *
      * @param root
      * @return
@@ -322,22 +323,51 @@ public class SecondPage {
         if (root == null) {
             return null;
         }
-        Deque<Node> deque = new LinkedList<>();
         Node node = root;
-        deque.add(node);
-        while (!deque.isEmpty()) {
-            int size = deque.size();
-            Node prev = null;
-            for (int i = 0; i < size; i++) {
-                node = deque.poll();
-                if (prev == null) {
-                    prev = node;
-                } else {
-                    prev.next = null;
+        while (node.left != null) {
+            Node prev = node.left;
+            while (node != null) {
+                node.left.next = node.right;
+                if (node.next != null) {
+                    node.right.next = node.next.left;
                 }
+                node = node.next;
             }
+            node = prev;
         }
-        return null;
+
+        return root;
+    }
+
+    /**
+     * 117. Populating Next Right Pointers in Each Node II
+     * todo  巧妙设计 一直不懂
+     *
+     * @param root
+     * @return
+     */
+    public Node connectII(Node root) {
+        if (root == null) {
+            return null;
+        }
+        Node node = root;
+        while (node.left != null) {
+            Node prev = node.left;
+            while (node != null) {
+
+                Node right = node.right;
+                if (right != null) {
+                    node.left.next = right;
+                    if (node.next != null) {
+                        right.next = right.left;
+                    }
+                }
+
+            }
+            node = prev;
+        }
+
+        return root;
     }
 
     /**
@@ -1198,6 +1228,26 @@ public class SecondPage {
     }
 
     /**
+     * @param head
+     * @return
+     */
+    public ListNode insertionSortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode node = head;
+        ListNode prev = head;
+        while (node != null) {
+            ListNode next = node.next;
+            while (prev.next != null && prev.val < next.val) {
+                prev = prev.next;
+            }
+
+        }
+        return null;
+    }
+
+    /**
      * 148. Sort List
      *
      * @param head
@@ -1540,6 +1590,40 @@ public class SecondPage {
         return left;
     }
 
+
+    /**
+     * 169. major elements
+     *
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int candidate = nums[0];
+        int count = 0;
+        for (int num : nums) {
+            if (num == candidate) {
+                count++;
+            } else {
+                if (count == 0) {
+                    candidate = num;
+                    count = 1;
+                    continue;
+                } else {
+                    count--;
+                }
+            }
+        }
+        count = 0;
+        for (int num : nums) {
+            if (num == candidate) {
+                count++;
+            }
+        }
+        return 2 * count > nums.length ? candidate : -1;
+    }
 
     /**
      * 174. Dungeon Game

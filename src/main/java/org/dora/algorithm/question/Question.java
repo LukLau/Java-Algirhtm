@@ -45,7 +45,7 @@ public class Question {
         int m = nums1.length;
         int n = nums2.length;
         if (m > n) {
-            return findMedianSortedArrays(nums2, nums1);
+            return this.findMedianSortedArrays(nums2, nums1);
         }
         int imin = 0;
         int imax = nums1.length;
@@ -289,8 +289,8 @@ public class Question {
             }
             currNode = currNode.next;
         }
-        ListNode newHead = reverseListNode(head, currNode);
-        head.next = reverseKGroup(currNode, k);
+        ListNode newHead = this.reverseListNode(head, currNode);
+        head.next = this.reverseKGroup(currNode, k);
         return newHead;
     }
 
@@ -355,7 +355,7 @@ public class Question {
             index--;
         }
         if (index == 0) {
-            reverseNums(nums, 0, nums.length - 1);
+            this.reverseNums(nums, 0, nums.length - 1);
         } else {
             int j = nums.length - 1;
             while (j > index - 1) {
@@ -364,8 +364,8 @@ public class Question {
                 }
                 j--;
             }
-            swap(nums, index - 1, j);
-            reverseNums(nums, index, nums.length - 1);
+            this.swap(nums, index - 1, j);
+            this.reverseNums(nums, index, nums.length - 1);
         }
     }
 
@@ -374,7 +374,7 @@ public class Question {
             return;
         }
         for (int i = start; i <= (start + end) / 2; i++) {
-            swap(nums, i, start + end - i);
+            this.swap(nums, i, start + end - i);
         }
     }
 
@@ -527,7 +527,7 @@ public class Question {
         }
         for (int i = 0; i < nums.length; i++) {
             while (nums[i] > 0 && nums[i] <= nums.length && nums[nums[i] - 1] != nums[i]) {
-                swap(nums, nums[i - 1], i);
+                this.swap(nums, nums[i - 1], i);
             }
         }
         for (int i = 0; i < nums.length; i++) {
@@ -594,7 +594,7 @@ public class Question {
                 if (p.charAt(j - 1) == '*') {
                     dp[i][j] = dp[i][j - 1] || (i > 0 && dp[i - 1][j]);
                 } else {
-                    dp[i][j] = isMatch(s, p, i, j) ? dp[i - 1][j - 1] : false;
+                    dp[i][j] = this.isMatch(s, p, i, j) ? dp[i - 1][j - 1] : false;
                 }
             }
         }
@@ -650,7 +650,7 @@ public class Question {
         if (x > Integer.MAX_VALUE || x < Integer.MIN_VALUE) {
             return 0;
         }
-        return n % 2 == 0 ? myPow(x * x, n / 2) : x * myPow(x * x, n / 2);
+        return n % 2 == 0 ? this.myPow(x * x, n / 2) : x * this.myPow(x * x, n / 2);
     }
 
     /**
@@ -670,22 +670,22 @@ public class Question {
             }
         }
         List<List<String>> ans = new ArrayList<>();
-        solveNQueens(ans, nQueens, 0, n);
+        this.solveNQueens(ans, nQueens, 0, n);
         return ans;
     }
 
     private void solveNQueens(List<List<String>> ans, char[][] nQueens, int row, int n) {
         if (row == n) {
 
-            List<String> queens = construct(nQueens);
+            List<String> queens = this.construct(nQueens);
 
             ans.add(queens);
 
         }
         for (int col = 0; col < n; col++) {
-            if (matchQueens(nQueens, col, row, n)) {
+            if (this.matchQueens(nQueens, col, row, n)) {
                 nQueens[row][col] = 'Q';
-                solveNQueens(ans, nQueens, row + 1, n);
+                this.solveNQueens(ans, nQueens, row + 1, n);
                 nQueens[row][col] = '.';
             }
         }
@@ -729,7 +729,7 @@ public class Question {
             return 0;
         }
         int[] dp = new int[n];
-        return totalNQueens(0, n, dp);
+        return this.totalNQueens(0, n, dp);
     }
 
     private int totalNQueens(int row, int n, int[] dp) {
@@ -739,9 +739,9 @@ public class Question {
             return result;
         }
         for (int i = 0; i < n; i++) {
-            if (isValid(i, row, n, dp)) {
+            if (this.isValid(i, row, n, dp)) {
                 dp[row] = i;
-                result += totalNQueens(row + 1, n, dp);
+                result += this.totalNQueens(row + 1, n, dp);
                 dp[row] = -1;
             }
         }
@@ -1021,9 +1021,9 @@ public class Question {
             } else {
                 int blankWord = isLast ? 1 : 1 + (maxWidth - line + 1) / (countOfWord - 1);
                 int extraWord = isLast ? 0 : (maxWidth - line + 1) % (countOfWord - 1);
-                construct(words, stringBuilder, blankWord, extraWord, startIndex, endIndex);
+                this.construct(words, stringBuilder, blankWord, extraWord, startIndex, endIndex);
             }
-            ans.add(adjust(stringBuilder, maxWidth));
+            ans.add(this.adjust(stringBuilder, maxWidth));
             startIndex = endIndex;
         }
         return ans;
@@ -1324,9 +1324,9 @@ public class Question {
             while (currNode != null && currNode.val == head.val) {
                 currNode = currNode.next;
             }
-            return deleteDuplicates(currNode);
+            return this.deleteDuplicates(currNode);
         } else {
-            head.next = deleteDuplicates(head.next);
+            head.next = this.deleteDuplicates(head.next);
             return head;
         }
     }
@@ -1342,9 +1342,9 @@ public class Question {
             return head;
         }
         if (head.val == head.next.val) {
-            return deleteDuplicatesII(head.next);
+            return this.deleteDuplicatesII(head.next);
         } else {
-            head.next = deleteDuplicatesII(head.next);
+            head.next = this.deleteDuplicatesII(head.next);
             return head;
         }
     }
@@ -1489,10 +1489,10 @@ public class Question {
         }
         int m = s1.length();
         for (int i = 1; i < m; i++) {
-            if (isScramble(s1.substring(0, i), s2.substring(0, i)) && isScramble(s1.substring(i), s2.substring(i))) {
+            if (this.isScramble(s1.substring(0, i), s2.substring(0, i)) && this.isScramble(s1.substring(i), s2.substring(i))) {
                 return true;
             }
-            if (isScramble(s1.substring(0, i), s2.substring(m - i)) && isScramble(s1.substring(i), s2.substring(0, m - i))) {
+            if (this.isScramble(s1.substring(0, i), s2.substring(m - i)) && this.isScramble(s1.substring(i), s2.substring(0, m - i))) {
                 return true;
             }
         }
@@ -1537,7 +1537,7 @@ public class Question {
         }
         Arrays.sort(nums);
         List<List<Integer>> ans = new ArrayList<>();
-        subsetsWithDup(ans, new ArrayList<>(), 0, nums);
+        this.subsetsWithDup(ans, new ArrayList<>(), 0, nums);
         return ans;
     }
 
@@ -1548,7 +1548,7 @@ public class Question {
                 continue;
             }
             tmp.add(nums[i]);
-            subsetsWithDup(ans, tmp, i + 1, nums);
+            this.subsetsWithDup(ans, tmp, i + 1, nums);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -1597,29 +1597,23 @@ public class Question {
      * @return
      */
     public List<String> restoreIpAddresses(String s) {
-        if (s.length() < 12) {
+        if (s == null || s.length() < 12) {
             return new ArrayList<>();
         }
         List<String> ans = new ArrayList<>();
-        for (int a = 1; a <= 3; a++) {
-            for (int b = 1; b <= 3; b++) {
-                for (int c = 1; c <= 3; c++) {
-                    for (int d = 1; d <= 3; d++) {
-                        int sum = a + b + c + d;
-                        if (sum == s.length()) {
-                            String s1 = s.substring(0, a);
-                            String s2 = s.substring(a, b);
-                            String s3 = s.substring(a + b, c);
-                            String s4 = s.substring(a + b + c, d);
-                            if (isValid(s1) && isValid(s2) && isValid(s3) && isValid(s4)) {
-                                ans.add(s1 + "." + s2 + "." + s3 + "." + s4);
-                            }
-                        }
-                    }
+        int len = s.length();
+        for (int i = 1; i < 4 && i < len - 2; i++) {
+            for (int j = i + 1; j < 4 && j < len - 1; j++) {
+                for (int k = j + 1; k < 4 && k < len; k++) {
+                    String A = s.substring(0, i);
+                    String B = s.substring(i, j);
+                    String C = s.substring(j, k);
+                    String D = s.substring(k, len);
                 }
             }
         }
         return ans;
+
     }
 
     private boolean isValid(String s) {
@@ -1639,7 +1633,7 @@ public class Question {
         if (n <= 0) {
             return new ArrayList<>();
         }
-        return generateTrees(1, n);
+        return this.generateTrees(1, n);
     }
 
     private List<TreeNode> generateTrees(int start, int end) {
@@ -1653,9 +1647,9 @@ public class Question {
             return listNode;
         }
         for (int i = start; i <= end; i++) {
-            List<TreeNode> lefts = generateTrees(start, i - 1);
+            List<TreeNode> lefts = this.generateTrees(start, i - 1);
 
-            List<TreeNode> rights = generateTrees(i + 1, end);
+            List<TreeNode> rights = this.generateTrees(i + 1, end);
             for (TreeNode left : lefts) {
                 for (TreeNode right : rights) {
                     TreeNode root = new TreeNode(i);
@@ -1863,7 +1857,7 @@ public class Question {
         if (preorder == null || inorder == null) {
             return null;
         }
-        return buildTree(0, 0, inorder.length - 1, preorder, inorder);
+        return this.buildTree(0, 0, inorder.length - 1, preorder, inorder);
     }
 
     private TreeNode buildTree(int preStart, int inStart, int inEnd, int[] preorder, int[] inorder) {
@@ -1878,8 +1872,8 @@ public class Question {
                 break;
             }
         }
-        root.left = buildTree(preStart + 1, inStart, index - 1, preorder, inorder);
-        root.right = buildTree(preStart + index - inStart + 1, index + 1, inEnd, preorder, inorder);
+        root.left = this.buildTree(preStart + 1, inStart, index - 1, preorder, inorder);
+        root.right = this.buildTree(preStart + index - inStart + 1, index + 1, inEnd, preorder, inorder);
         return root;
     }
 
@@ -1894,7 +1888,7 @@ public class Question {
         if (inorder == null || postorder == null) {
             return null;
         }
-        return buildPostOrder(0, inorder.length - 1, 0, postorder.length - 1, inorder, postorder);
+        return this.buildPostOrder(0, inorder.length - 1, 0, postorder.length - 1, inorder, postorder);
     }
 
     private TreeNode buildPostOrder(int inStart, int inEnd, int postStart, int postEnd, int[] inorder, int[] postorder) {
@@ -1909,8 +1903,8 @@ public class Question {
                 break;
             }
         }
-        root.left = buildPostOrder(inStart, index - 1, postStart, postStart + (index - inStart) - 1, inorder, postorder);
-        root.right = buildPostOrder(index + 1, inEnd, postStart + index - inStart, postEnd - 1, inorder, postorder);
+        root.left = this.buildPostOrder(inStart, index - 1, postStart, postStart + (index - inStart) - 1, inorder, postorder);
+        root.right = this.buildPostOrder(index + 1, inEnd, postStart + index - inStart, postEnd - 1, inorder, postorder);
         return root;
     }
 
@@ -1924,7 +1918,7 @@ public class Question {
         if (nums == null || nums.length == 0) {
             return null;
         }
-        return buildBst(0, nums.length - 1, nums);
+        return this.buildBst(0, nums.length - 1, nums);
     }
 
     private TreeNode buildBst(int start, int end, int[] nums) {
@@ -1933,8 +1927,8 @@ public class Question {
         }
         int mid = start + (end - start) / 2;
         TreeNode root = new TreeNode(nums[mid]);
-        root.left = buildBst(start, mid - 1, nums);
-        root.right = buildBst(mid + 1, end, nums);
+        root.left = this.buildBst(start, mid - 1, nums);
+        root.right = this.buildBst(mid + 1, end, nums);
         return root;
     }
 
@@ -1948,7 +1942,7 @@ public class Question {
         if (head == null) {
             return null;
         }
-        return buildSortedList(head, null);
+        return this.buildSortedList(head, null);
     }
 
     private TreeNode buildSortedList(ListNode head, ListNode tail) {
@@ -1962,8 +1956,8 @@ public class Question {
             slow = slow.next;
         }
         TreeNode root = new TreeNode(slow.val);
-        root.left = buildSortedList(head, slow);
-        root.right = buildSortedList(slow.next, tail);
+        root.left = this.buildSortedList(head, slow);
+        root.right = this.buildSortedList(slow.next, tail);
         return root;
     }
 
@@ -1980,7 +1974,7 @@ public class Question {
             return new ArrayList<>();
         }
         List<List<Integer>> ans = new ArrayList<>();
-        pathSum(ans, new ArrayList<Integer>(), root, sum);
+        this.pathSum(ans, new ArrayList<Integer>(), root, sum);
         return ans;
     }
 
@@ -1990,10 +1984,10 @@ public class Question {
             ans.add(new ArrayList<>(integers));
         } else {
             if (root.left != null) {
-                pathSum(ans, integers, root.left, sum - root.val);
+                this.pathSum(ans, integers, root.left, sum - root.val);
             }
             if (root.right != null) {
-                pathSum(ans, integers, root.right, sum - root.val);
+                this.pathSum(ans, integers, root.right, sum - root.val);
             }
         }
         integers.remove(integers.size() - 1);
@@ -2218,7 +2212,7 @@ public class Question {
         if (root.left == null && root.right == null) {
             return root.val;
         }
-        return dfs(root.left, root.val) + dfs(root.right, root.val);
+        return this.dfs(root.left, root.val) + this.dfs(root.right, root.val);
     }
 
     private int dfs(TreeNode root, int val) {
@@ -2228,7 +2222,7 @@ public class Question {
         if (root.left == null && root.right == null) {
             return val * 10 + root.val;
         }
-        return dfs(root.left, val * 10 + root.val) + dfs(root.right, val * 10 + root.val);
+        return this.dfs(root.left, val * 10 + root.val) + this.dfs(root.right, val * 10 + root.val);
     }
 
     /**
@@ -2257,7 +2251,7 @@ public class Question {
             return new ArrayList<>();
         }
         List<List<String>> ans = new ArrayList<>();
-        partition(ans, new ArrayList<String>(), 0, s);
+        this.partition(ans, new ArrayList<String>(), 0, s);
         return ans;
     }
 
@@ -2267,9 +2261,9 @@ public class Question {
             return;
         }
         for (int i = left; i < s.length(); i++) {
-            if (isValid(s, left, i)) {
+            if (this.isValid(s, left, i)) {
                 tmp.add(s.substring(left, i + 1));
-                partition(ans, tmp, i + 1, s);
+                this.partition(ans, tmp, i + 1, s);
                 tmp.remove(tmp.size() - 1);
             }
         }
@@ -2359,7 +2353,7 @@ public class Question {
         if (s == null || s.length() == 0) {
             return false;
         }
-        return wordBreak(new HashSet<String>(), s, wordDict);
+        return this.wordBreak(new HashSet<String>(), s, wordDict);
     }
 
     private boolean wordBreak(HashSet<String> notIncluded, String s, List<String> wordDict) {
@@ -2370,7 +2364,7 @@ public class Question {
             return false;
         }
         for (String word : wordDict) {
-            if (s.startsWith(word) && wordBreak(notIncluded, s.substring(word.length()), wordDict)) {
+            if (s.startsWith(word) && this.wordBreak(notIncluded, s.substring(word.length()), wordDict)) {
                 return true;
             }
         }
@@ -2389,7 +2383,7 @@ public class Question {
         if (s == null || wordDict.isEmpty()) {
             return new ArrayList<>();
         }
-        return wordBreakDFS(s, wordDict, new HashMap<>());
+        return this.wordBreakDFS(s, wordDict, new HashMap<>());
     }
 
     private List<String> wordBreakDFS(String s, List<String> wordDict, HashMap<String, LinkedList<String>> hashMap) {
@@ -2403,7 +2397,7 @@ public class Question {
         }
         for (String word : wordDict) {
             if (s.startsWith(word)) {
-                List<String> tmp = wordBreakDFS(s.substring(word.length()), wordDict, hashMap);
+                List<String> tmp = this.wordBreakDFS(s.substring(word.length()), wordDict, hashMap);
 
                 for (String value : tmp) {
                     ans.add(word + (value.isEmpty() ? "" : " ") + value);
@@ -2453,9 +2447,9 @@ public class Question {
         }
         ListNode tmp = slow.next;
         slow.next = null;
-        ListNode l1 = sortList(head);
-        ListNode l2 = sortList(tmp);
-        return merge(l1, l2);
+        ListNode l1 = this.sortList(head);
+        ListNode l2 = this.sortList(tmp);
+        return this.merge(l1, l2);
 
     }
 
@@ -2646,8 +2640,8 @@ public class Question {
         if (headA == null || headB == null) {
             return null;
         }
-        int lenA = countOfListNode(headA);
-        int lenB = countOfListNode(headB);
+        int lenA = this.countOfListNode(headA);
+        int lenB = this.countOfListNode(headB);
         while (lenA > lenB) {
             headA = headA.next;
             lenA--;

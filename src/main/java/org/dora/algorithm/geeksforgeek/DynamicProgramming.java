@@ -1,4 +1,4 @@
-package org.dora.algorithm.dp;
+package org.dora.algorithm.geeksforgeek;
 
 /**
  * @author dora
