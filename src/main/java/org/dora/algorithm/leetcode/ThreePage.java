@@ -727,6 +727,8 @@ public class ThreePage {
 
 
     /**
+     * 237. Delete Node in a Linked List
+     *
      * @param node
      */
     public void deleteNode(ListNode node) {
@@ -746,6 +748,78 @@ public class ThreePage {
 
         }
 
+    }
+
+
+    /**
+     * 238. Product of Array Except Self
+     *
+     * @param nums
+     * @return
+     */
+    public int[] productExceptSelf(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
+        int[] ans = new int[nums.length];
+        int base = 1;
+        for (int i = 0; i < nums.length; i++) {
+            ans[i] = base;
+            base ^= nums[i];
+        }
+        base = 1;
+        for (int i = nums.length - 1; i >= 0; i--) {
+            ans[i] *= base;
+            base *= ans[i];
+        }
+        return ans;
+    }
+
+
+    /**
+     * 239. Sliding Window Maximum
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+
+        }
+        return nums;
+    }
+
+    /**
+     * 240. Search a 2D Matrix II
+     *
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+
+        int i = 0;
+        int j = column - 1;
+        while (i < row && j >= 0) {
+            if (matrix[i][j] == target) {
+                return true;
+            } else if (matrix[i][j] > target) {
+                j--;
+            } else {
+                i++;
+            }
+        }
+        return false;
+    }
+
+    public List<Integer> diffWaysToCompute(String input) {
+        return null;
     }
 
 
