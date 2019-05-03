@@ -1228,6 +1228,26 @@ public class SecondPage {
     }
 
     /**
+     * @param head
+     * @return
+     */
+    public ListNode insertionSortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode node = head;
+        ListNode prev = head;
+        while (node != null) {
+            ListNode next = node.next;
+            while (prev.next != null && prev.val < next.val) {
+                prev = prev.next;
+            }
+
+        }
+        return null;
+    }
+
+    /**
      * 148. Sort List
      *
      * @param head
@@ -1570,6 +1590,40 @@ public class SecondPage {
         return left;
     }
 
+
+    /**
+     * 169. major elements
+     *
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int candidate = nums[0];
+        int count = 0;
+        for (int num : nums) {
+            if (num == candidate) {
+                count++;
+            } else {
+                if (count == 0) {
+                    candidate = num;
+                    count = 1;
+                    continue;
+                } else {
+                    count--;
+                }
+            }
+        }
+        count = 0;
+        for (int num : nums) {
+            if (num == candidate) {
+                count++;
+            }
+        }
+        return 2 * count > nums.length ? candidate : -1;
+    }
 
     /**
      * 174. Dungeon Game

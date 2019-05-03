@@ -1,9 +1,9 @@
 package org.dora.algorithm.leetcode;
 
 import org.dora.algorithm.datastructe.ListNode;
+import org.dora.algorithm.datastructe.TreeNode;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author dora
@@ -11,6 +11,10 @@ import java.util.Set;
  */
 public class ThreePage {
 
+
+    public static void main(String[] args) {
+        ThreePage threePage = new ThreePage();
+    }
 
     /**
      * 201. Bitwise AND of Numbers Range
@@ -23,7 +27,6 @@ public class ThreePage {
     public int rangeBitwiseAnd(int m, int n) {
         return 0;
     }
-
 
     /**
      * 202. Happy Number
@@ -59,7 +62,6 @@ public class ThreePage {
         return false;
     }
 
-
     /**
      * 203. Remove Linked List Elements
      *
@@ -79,7 +81,6 @@ public class ThreePage {
             return head;
         }
     }
-
 
     /**
      * 204. Count Primes 计算素数个数
@@ -148,7 +149,6 @@ public class ThreePage {
 
     }
 
-
     /**
      * 209. Minimum Size Subarray Sum
      *
@@ -179,4 +179,574 @@ public class ThreePage {
         }
         return result == Integer.MAX_VALUE ? 0 : result;
     }
+
+    /**
+     * 213. House Robber II
+     *
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        return Math.max(this.houseRob(0, nums.length - 2, nums), this.houseRob(1, nums.length - 1, nums));
+    }
+
+    private int houseRob(int start, int end, int[] nums) {
+        if (start > end) {
+            return 0;
+        }
+        int robPrev = 0;
+        int robCurrent = 0;
+        for (int i = start; i <= end; i++) {
+            int tmp = robPrev;
+            robPrev = Math.max(robPrev, robCurrent);
+            robCurrent = tmp + nums[i];
+        }
+        return Math.max(robPrev, robCurrent);
+    }
+
+    /**
+     * 214. Shortest Palindrome
+     *
+     * @param s
+     * @return
+     */
+    public String shortestPalindrome(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        return "";
+    }
+
+    /**
+     * 214. Shortest Palindrome
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int findKthLargest(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+
+        int partition = this.partition(nums, 0, nums.length - 1);
+        k--;
+        while (partition != k) {
+
+            if (partition > k) {
+                partition = this.partition(nums, 0, k - 1);
+            } else {
+                partition = this.partition(nums, partition + 1, nums.length - 1);
+            }
+        }
+        return nums[k];
+    }
+
+    private int partition(int[] nums, int start, int end) {
+        if (start > end) {
+            return -1;
+        }
+        int pivot = nums[start];
+        while (start < end) {
+            while (start < end && nums[end] >= pivot) {
+                end--;
+            }
+            if (start < end) {
+                nums[start] = nums[end];
+                start++;
+            }
+            while (start < end && nums[start] <= pivot) {
+                start++;
+            }
+            if (start < end) {
+                nums[end] = nums[start];
+                end--;
+            }
+        }
+        nums[start] = pivot;
+        return start;
+    }
+
+    /**
+     * 216. Combination Sum III
+     *
+     * @param k
+     * @param n
+     * @return
+     */
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        if (k <= 0 || n <= 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        this.combinationSum3(ans, new ArrayList<Integer>(), 1, k, n);
+        return ans;
+    }
+
+    private void combinationSum3(List<List<Integer>> ans, List<Integer> tmp, int start, int k, int n) {
+        if (tmp.size() == k && n == 0) {
+            ans.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i <= 9 && i <= n; i++) {
+            tmp.add(i);
+            this.combinationSum3(ans, tmp, i + 1, k, n - i);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    /**
+     * 217. Contains Duplicate
+     *
+     * @param nums
+     * @return
+     */
+    public boolean containsDuplicate(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        HashSet<Integer> set = new HashSet<>();
+        for (int num : nums) {
+            if (set.contains(num)) {
+                return true;
+            }
+            set.add(num);
+        }
+        return false;
+    }
+
+    /**
+     * 219. Contains Duplicate II
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (map.containsKey(nums[i])) {
+                int diff = Math.abs(i - map.get(nums[i]));
+                if (diff > k) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 220. Contains Duplicate III
+     *
+     * @param nums
+     * @param k
+     * @param t
+     * @return
+     */
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        TreeSet<Integer> treeSet = new TreeSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            Integer floor = treeSet.floor(i - t);
+            Integer ceil = treeSet.ceiling(i + t);
+        }
+        return false;
+
+    }
+
+    /**
+     * 221. Maximal Square
+     * todo 需考虑好方程式
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalSquare(char[][] matrix) {
+        if (matrix == null | matrix.length == 0) {
+            return 0;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+
+
+        int result = 0;
+
+
+        int[][] dp = new int[row + 1][column + 1];
+
+        for (int i = 1; i <= row; i++) {
+            for (int j = 1; j <= column; j++) {
+                if (matrix[i - 1][j - 1] == '1') {
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
+//                    System.out.println("i:" + i + "j:" + j + "width:" + width);
+                    result = Math.max(result, dp[i][j]);
+                }
+            }
+        }
+        return result * result;
+    }
+
+
+    /**
+     * 224. Basic Calculator
+     *
+     * @param s
+     * @return
+     */
+    public int calculate(String s) {
+        if (s == null) {
+            return 0;
+        }
+        s = s.trim();
+        if (s.length() == 0) {
+            return 0;
+        }
+        int sign = 1;
+        Stack<Integer> stack = new Stack<>();
+        int result = 0;
+        int index = 0;
+        while (index < s.length()) {
+
+            int tmp = 0;
+            if (Character.isDigit(s.charAt(index))) {
+                while (index < s.length() && Character.isDigit(s.charAt(index))) {
+                    tmp = tmp * 10 + s.charAt(index) - '0';
+                    index++;
+                }
+                result += sign * tmp;
+            } else {
+                if (s.charAt(index) == '+') {
+                    sign = 1;
+                } else if (s.charAt(index) == '-') {
+                    sign = -1;
+                } else if (s.charAt(index) == '(') {
+                    stack.push(result);
+                    stack.push(sign);
+                    result = 0;
+                    sign = 1;
+                } else if (s.charAt(index) == ')') {
+                    result = stack.pop() * result + stack.pop();
+                }
+                index++;
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 226. Invert Binary Tree
+     *
+     * @param root
+     * @return
+     */
+    public TreeNode invertTree(TreeNode root) {
+        if (root != null) {
+            TreeNode left = root.left;
+            root.left = root.right;
+            root.right = left;
+            this.invertTree(root.left);
+            this.invertTree(root.right);
+        }
+        return root;
+    }
+
+
+    /**
+     * 227. Basic Calculator II
+     * todo 不太懂 不熟练
+     *
+     * @param s
+     * @return
+     */
+    public int calculateII(String s) {
+        if (s == null) {
+            return 0;
+        }
+        s = s.trim();
+
+        if (s.length() == 0) {
+            return 0;
+        }
+        char sign = '+';
+
+        Stack<Integer> stack = new Stack<>();
+
+        int result = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            if (Character.isDigit(s.charAt(i))) {
+                result = result * 10 + s.charAt(i) - '0';
+            }
+
+            if ((!Character.isDigit(s.charAt(i)) && s.charAt(i) != ' ') || i == s.length() - 1) {
+                if (sign == '+') {
+                    stack.push(result);
+                } else if (sign == '-') {
+                    stack.push(-result);
+                } else if (sign == '*') {
+                    stack.push(stack.pop() * result);
+                } else if (sign == '/') {
+                    stack.push(stack.pop() / result);
+                }
+                result = 0;
+                sign = s.charAt(i);
+            }
+        }
+
+        result = 0;
+        for (Integer num : stack) {
+            result += num;
+        }
+        return result;
+
+    }
+
+
+    /**
+     * 228. Summary Ranges
+     * todo 巧妙设计
+     *
+     * @param nums
+     * @return
+     */
+    public List<String> summaryRanges(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            int right = i;
+            while (right + 1 < nums.length && nums[right + 1] == nums[right] + 1) {
+                right++;
+            }
+            if (right > i) {
+                String value = nums[i] + "->" + nums[right];
+                ans.add(value);
+                i = right;
+            } else {
+                String value = nums[i] + "";
+                ans.add(value);
+
+            }
+        }
+        return ans;
+    }
+
+
+    /**
+     * 229. Majority Element II
+     *
+     * @param nums
+     * @return
+     */
+    public List<Integer> majorityElement(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<Integer> ans = new ArrayList<>();
+        int candidateA = nums[0];
+        int candidateB = nums[0];
+        int countA = 0;
+        int countB = 0;
+        for (int num : nums) {
+            if (num == candidateA) {
+                countA++;
+                continue;
+            }
+            if (num == candidateB) {
+                countB++;
+                continue;
+            }
+            if (countA == 0) {
+                candidateA = num;
+                countA = 1;
+                continue;
+            }
+            if (countB == 0) {
+                candidateB = num;
+                countB = 1;
+                continue;
+            }
+            countA--;
+            countB--;
+        }
+        countA = 0;
+        countB = 0;
+        for (int num : nums) {
+            if (num == candidateA) {
+                countA++;
+            } else if (num == candidateB) {
+                countB++;
+            }
+        }
+        if (countA * 3 > nums.length) {
+            ans.add(candidateA);
+        }
+        if (countB * 3 > nums.length) {
+            ans.add(candidateB);
+        }
+        return ans;
+    }
+
+
+    /**
+     * 230. Kth Smallest Element in a BST
+     *
+     * @param root
+     * @param k
+     * @return
+     */
+    public int kthSmallest(TreeNode root, int k) {
+        if (root == null || k <= 0) {
+            return -1;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        int count = 0;
+        while (!stack.isEmpty() | root != null) {
+            while (root != null) {
+                stack.push(root);
+                root = root.left;
+            }
+            root = stack.pop();
+            count++;
+            if (count == k) {
+                return root.val;
+            }
+            root = root.right;
+        }
+        return -1;
+    }
+
+    /**
+     * 231. Power of Two
+     *
+     * @param n
+     * @return
+     */
+    public boolean isPowerOfTwo(int n) {
+        if (n <= 0) {
+            return false;
+        }
+
+        n = n & (n - 1);
+        if (n == 0) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 234. Palindrome Linked List
+     *
+     * @param head
+     * @return
+     */
+    public boolean isPalindrome(ListNode head) {
+        if (head == null) {
+            return false;
+        }
+        if (head.next == null) {
+            return true;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        slow.next = this.reverseList(slow.next);
+        slow = slow.next;
+        while (slow != null) {
+            if (head.val != slow.val) {
+                return false;
+            }
+            head = head.next;
+            slow = slow.next;
+        }
+        return true;
+
+    }
+
+
+    /**
+     * 235. Lowest Common Ancestor of a Binary Search Tree
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+
+        if (root == null || p == root || q == root) {
+            return root;
+        }
+        if (p.val < root.val && q.val < root.val) {
+            return this.lowestCommonAncestor(root.left, p, q);
+        } else if (p.val > root.val && q.val > root.val) {
+            return this.lowestCommonAncestor(root.right, p, q);
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
+     * 236. Lowest Common Ancestor of a Binary Tree
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestorTree(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || p == root || q == root) {
+            return root;
+        }
+
+        TreeNode left = this.lowestCommonAncestorTree(root.left, p, q);
+
+        TreeNode right = this.lowestCommonAncestorTree(root.right, p, q);
+
+        if (left == null && right == null) {
+            return root;
+        } else {
+            return left != null ? left : right != null ? right : null;
+        }
+    }
+
+
+    /**
+     * @param node
+     */
+    public void deleteNode(ListNode node) {
+        if (node == null) {
+            return;
+        }
+        if (node.next == null) {
+            node = null;
+        } else {
+            node.val = node.next.val;
+
+            ListNode tmp = node;
+
+            node.next = tmp.next;
+
+            tmp = null;
+
+        }
+
+    }
+
+
 }
