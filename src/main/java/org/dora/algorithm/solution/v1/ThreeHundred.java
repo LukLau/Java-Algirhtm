@@ -1,4 +1,4 @@
-package org.dora.algorithm.solution;
+package org.dora.algorithm.solution.v1;
 
 import org.dora.algorithm.datastructe.ListNode;
 import org.dora.algorithm.datastructe.TreeNode;

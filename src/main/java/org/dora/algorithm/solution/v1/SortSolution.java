@@ -1,4 +1,4 @@
-package org.dora.algorithm.solution;
+package org.dora.algorithm.solution.v1;
 
 /**
  * @author liulu
@@ -26,7 +26,7 @@ public class SortSolution {
             for (int j = arrays.length - 1; j > i; j--) {
                 if (arrays[j] < arrays[j - 1]) {
                     needSort = !needSort;
-                    swap(arrays, j, j - 1);
+                    this.swap(arrays, j, j - 1);
                 }
             }
         }
@@ -45,9 +45,9 @@ public class SortSolution {
         if (left > right) {
             return;
         }
-        int index = partition(arrays, left, right);
-        quickSort(arrays, left, index - 1);
-        quickSort(arrays, index + 1, right);
+        int index = this.partition(arrays, left, right);
+        this.quickSort(arrays, left, index - 1);
+        this.quickSort(arrays, index + 1, right);
     }
 
     private int partition(int[] nums, int left, int right) {
@@ -77,11 +77,11 @@ public class SortSolution {
             return;
         }
         for (int i = nums.length / 2 - 1; i >= 0; i--) {
-            adjustHeap(nums, i, nums.length);
+            this.adjustHeap(nums, i, nums.length);
         }
         for (int i = nums.length - 1; i > 0; i--) {
-            swap(nums, 0, i);
-            adjustHeap(nums,0, i);
+            this.swap(nums, 0, i);
+            this.adjustHeap(nums,0, i);
         }
     }
 
@@ -92,7 +92,7 @@ public class SortSolution {
                     k++;
             }
             if (nums[k] > tmp) {
-                swap(nums, i, k);
+                this.swap(nums, i, k);
                 i = k;
             } else {
                 break;

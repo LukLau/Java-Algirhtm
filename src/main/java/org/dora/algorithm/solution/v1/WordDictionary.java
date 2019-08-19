@@ -1,4 +1,4 @@
-package org.dora.algorithm.solution;
+package org.dora.algorithm.solution.v1;
 
 /**
  * @author liulu
