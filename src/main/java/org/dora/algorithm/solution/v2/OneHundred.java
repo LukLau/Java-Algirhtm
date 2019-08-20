@@ -2,16 +2,15 @@ package org.dora.algorithm.solution.v2;
 
 import org.dora.algorithm.datastructe.ListNode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author dora
  * @date 2019-08-19
  */
 public class OneHundred {
+
+    private ListNode l1;
 
     /**
      * 10. Regular Expression Matching
@@ -219,6 +218,7 @@ public class OneHundred {
 
     /**
      * 19. Remove Nth Node From End of List
+     *
      * @param head
      * @param n
      * @return
@@ -227,8 +227,230 @@ public class OneHundred {
         if (head == null) {
             return null;
         }
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode slow = root;
+        ListNode fast = root;
+        for (int i = 0; i <= n - 1; i++) {
+            fast = fast.next;
+        }
+        while (fast.next != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        ListNode tmp = slow.next;
+        slow.next = tmp.next;
+        tmp = null;
+        return root.next;
+    }
+
+    /**
+     * 20. Valid Parentheses
+     *
+     * @param s
+     * @return
+     */
+    public boolean isValid(String s) {
+        if (s == null || s.isEmpty()) {
+            return true;
+        }
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                stack.push(')');
+            } else if (s.charAt(i) == '[') {
+                stack.push(']');
+            } else if (s.charAt(i) == '{') {
+                stack.push('}');
+            } else {
+                if (stack.isEmpty() || stack.peek() != s.charAt(i)) {
+                    return false;
+                }
+                stack.pop();
+            }
+        }
+        return stack.isEmpty();
+    }
 
 
+    /**
+     * 21. Merge Two Sorted Lists
+     *
+     * @param l1
+     * @param l2
+     * @return
+     */
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null && l2 == null) {
+            return null;
+        }
+        if (l1 == null || l2 == null) {
+            return l1 == null ? l2 : l1;
+        }
+        if (l1.val <= l2.val) {
+            l1.next = this.mergeTwoLists(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = this.mergeTwoLists(l1, l2.next);
+            return l2;
+        }
+    }
+
+    /**
+     * 22. Generate Parentheses
+     *
+     * @param n
+     * @return
+     */
+    public List<String> generateParenthesis(int n) {
+        if (n <= 0) {
+            return Collections.emptyList();
+        }
+        List<String> ans = new ArrayList<>();
+        this.generateParenthesis(ans, 0, 0, "", n);
+        return ans;
+    }
+
+    private void generateParenthesis(List<String> ans, int open, int close, String s, int n) {
+        if (s.length() == 2 * n) {
+            ans.add(s);
+        }
+        if (open < n) {
+            this.generateParenthesis(ans, open + 1, close, s + "(", n);
+        }
+        if (close < open) {
+            this.generateParenthesis(ans, open, close + 1, s + ")", n);
+        }
+
+    }
+
+
+    /**
+     * 23. Merge k Sorted Lists
+     *
+     * @param lists
+     * @return
+     */
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) {
+            return null;
+        }
+        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(lists.length, Comparator.comparingInt(o -> o.val));
+        for (ListNode node : lists) {
+            if (node != null) {
+                priorityQueue.add(node);
+            }
+        }
+        ListNode root = new ListNode(0);
+        ListNode dummy = root;
+        while (!priorityQueue.isEmpty()) {
+            ListNode node = priorityQueue.poll();
+            dummy.next = node;
+            dummy = dummy.next;
+            if (node.next != null) {
+                priorityQueue.add(node.next);
+            }
+
+        }
+        return root.next;
+    }
+
+
+    /**
+     * 24. Swap Nodes in Pairs
+     *
+     * @param head
+     * @return
+     */
+    public ListNode swapPairs(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode dummy = root;
+        while (dummy.next != null && dummy.next.next != null) {
+            ListNode fast = dummy.next.next;
+            ListNode slow = dummy.next;
+
+            slow.next = fast.next;
+            fast.next = slow;
+            dummy.next = fast;
+
+            dummy = dummy.next.next;
+        }
+        return root.next;
+    }
+
+    private ListNode reversListNode(ListNode start, ListNode end) {
+        ListNode prev = null;
+        while (prev != end) {
+            ListNode tmp = start.next;
+            start.next = prev;
+            prev = start;
+            start = tmp;
+        }
+        return prev;
+    }
+
+    /**
+     * 25. Reverse Nodes in k-Group
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode reverseKGroup(ListNode head, int k) {
+        if (head == null || k <= 0) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode fast = root;
+        for (int i = 0; i <= k - 1; i++) {
+            fast = fast.next;
+        }
+        return null;
+    }
+
+    /**
+     * 26. Remove Duplicates from Sorted Array
+     *
+     * @param nums
+     * @return
+     */
+    public int removeDuplicates(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int index = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] != nums[i - 1]) {
+                nums[index++] = nums[i];
+            }
+
+        }
+        return index;
+    }
+
+    /**
+     * 27. Remove Element
+     *
+     * @param nums
+     * @param val
+     * @return
+     */
+    public int removeElement(int[] nums, int val) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int index = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != val) {
+                nums[index++] = nums[i];
+            }
+        }
+        return index;
     }
 
 }
