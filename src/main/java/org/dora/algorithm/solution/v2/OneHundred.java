@@ -383,8 +383,8 @@ public class OneHundred {
     }
 
     private ListNode reversListNode(ListNode start, ListNode end) {
-        ListNode prev = null;
-        while (prev != end) {
+        ListNode prev = end;
+        while (start != end) {
             ListNode tmp = start.next;
             start.next = prev;
             prev = start;
@@ -401,16 +401,26 @@ public class OneHundred {
      * @return
      */
     public ListNode reverseKGroup(ListNode head, int k) {
-        if (head == null || k <= 0) {
-            return null;
+        if (head == null || head.next == null || k <= 0) {
+            return head;
         }
-        ListNode root = new ListNode(0);
-        root.next = head;
-        ListNode fast = root;
-        for (int i = 0; i <= k - 1; i++) {
-            fast = fast.next;
+        ListNode currNode = head;
+
+        int count = 0;
+
+        while (currNode != null && count != k) {
+            currNode = currNode.next;
+            count++;
         }
-        return null;
+        if (count != k) {
+            return head;
+        }
+
+        ListNode newHead = this.reversListNode(head, currNode);
+
+        head.next = this.reverseKGroup(currNode, k);
+
+        return newHead;
     }
 
     /**
@@ -451,6 +461,120 @@ public class OneHundred {
             }
         }
         return index;
+    }
+
+    /**
+     * todo kmp 算法实现
+     * 28. Implement strStr()
+     *
+     * @param haystack
+     * @param needle
+     * @return
+     */
+    public int strStr(String haystack, String needle) {
+        return 0;
+    }
+
+    /**
+     * 29. Divide Two Integers
+     *
+     * @param dividend
+     * @param divisor
+     * @return
+     */
+    public int divide(int dividend, int divisor) {
+        if (dividend == Integer.MIN_VALUE && divisor == -1) {
+            return Integer.MAX_VALUE;
+        }
+        return 0;
+    }
+
+
+    /**
+     * 31. Next Permutation
+     *
+     * @param nums
+     */
+    public void nextPermutation(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int index = nums.length - 1;
+
+        while (index > 0) {
+            if (nums[index] > nums[index - 1]) {
+                break;
+            }
+            index--;
+        }
+        if (index == 0) {
+            this.reverseArray(nums, 0, nums.length - 1);
+        } else {
+            int value = nums[index - 1];
+            int j = nums.length - 1;
+            while (j > index - 1) {
+                if (nums[j] > value) {
+                    break;
+                }
+                j--;
+            }
+            this.reverseValue(nums, index - 1, j);
+
+            this.reverseArray(nums, index, nums.length - 1);
+        }
+
+    }
+
+    private void reverseArray(int[] nums, int start, int end) {
+        if (start > end) {
+            return;
+        }
+        for (int i = start; i <= (start + end) / 2; i++) {
+            this.reverseValue(nums, i, start + end - i);
+        }
+    }
+
+    private void reverseValue(int[] nums, int i, int j) {
+        int val = nums[i];
+        nums[i] = nums[j];
+        nums[j] = val;
+    }
+
+
+    /**
+     * 32. Longest Valid Parentheses
+     *
+     * @param s
+     * @return
+     */
+    public int longestValidParentheses(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+
+        int left = -1;
+
+        int result = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                stack.push(i);
+
+            } else {
+                if (stack.isEmpty()) {
+                    left = i;
+                } else {
+                    stack.pop();
+                }
+                if (stack.isEmpty()) {
+                    result = Math.max(result, i - left);
+                } else {
+                    result = Math.max(result, i - stack.peek());
+                }
+            }
+        }
+        return result;
     }
 
 }
