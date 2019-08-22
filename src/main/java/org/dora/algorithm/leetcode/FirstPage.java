@@ -325,10 +325,10 @@ public class FirstPage {
      * @return
      */
     public String intToRoman(int num) {
-        String M[] = {"", "M", "MM", "MMM"};
-        String C[] = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
-        String X[] = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
-        String I[] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+        String[] M = {"", "M", "MM", "MMM"};
+        String[] C = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+        String[] X = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+        String[] I = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
 
         // 取千位 首字母 + 取百位首字 + 取十位首 + 取末尾
         return M[num / 1000] + C[(num % 1000) / 100] + X[(num % 100) / 10] + I[num % 10];
@@ -839,7 +839,6 @@ public class FirstPage {
                 }
                 j--;
             }
-            ;
             this.swap(nums, index - 1, j);
             this.reverseNums(nums, index, nums.length - 1);
 
@@ -1226,7 +1225,7 @@ public class FirstPage {
          */
         dp[m][n] = true;
         for (int j = n - 1; j >= 0; j--) {
-            dp[m][j] = p.charAt(j - 1) == '*' ? dp[m][j + 1] : false;
+            dp[m][j] = p.charAt(j - 1) == '*' && dp[m][j + 1];
         }
         for (int i = m - 1; i >= 0; i--) {
             for (int j = n - 1; j >= 0; j--) {

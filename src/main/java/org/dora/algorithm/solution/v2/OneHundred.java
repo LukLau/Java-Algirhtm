@@ -552,29 +552,172 @@ public class OneHundred {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
-
-        int left = -1;
-
-        int result = 0;
-
         for (int i = 0; i < s.length(); i++) {
             if (s.charAt(i) == '(') {
                 stack.push(i);
-
+            } else if (!stack.isEmpty() && s.charAt(stack.peek()) == '(') {
+                stack.pop();
             } else {
-                if (stack.isEmpty()) {
-                    left = i;
+                stack.push(i);
+            }
+        }
+        if (stack.isEmpty()) {
+            return s.length();
+        } else {
+            int a = s.length();
+            int result = 0;
+            while (!stack.isEmpty()) {
+                int pop = stack.pop();
+                result = Math.max(result, a - pop - 1);
+                a = pop;
+            }
+            result = Math.max(a, result);
+            return result;
+        }
+    }
+
+
+    /**
+     * 33. Search in Rotated Sorted Array
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int search(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && target >= nums[left]) {
+                    right = mid - 1;
                 } else {
-                    stack.pop();
+                    left = mid + 1;
                 }
-                if (stack.isEmpty()) {
-                    result = Math.max(result, i - left);
+            } else {
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid + 1;
                 } else {
-                    result = Math.max(result, i - stack.peek());
+                    right = mid - 1;
                 }
             }
         }
-        return result;
+        return nums[left] == target ? left : -1;
     }
+
+
+    /**
+     * 34. Find First and Last Position of Element in Sorted Array
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] searchRange(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{-1, -1};
+        }
+        int[] ans = new int[]{-1, -1};
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        if (nums[left] != target) {
+            return ans;
+        }
+        ans[0] = left;
+        right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2 + 1;
+            if (nums[mid] > target) {
+                right = mid - 1;
+            } else {
+                left = mid;
+            }
+        }
+        ans[1] = left;
+        return ans;
+    }
+
+
+    /**
+     * 39. Combination Sum
+     *
+     * @param candidates
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        if (candidates == null || candidates.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(candidates);
+        this.combinationSum(ans, new ArrayList<Integer>(), 0, candidates, target);
+        return ans;
+    }
+
+    private void combinationSum(List<List<Integer>> ans, List<Integer> tmp, int start, int[] candidates, int target) {
+        if (target == 0) {
+            ans.add(new ArrayList<>(tmp));
+        }
+        if (target < 0) {
+            return;
+        }
+        for (int i = start; i < candidates.length && target >= candidates[i]; i++) {
+            tmp.add(candidates[i]);
+            this.combinationSum(ans, tmp, i, candidates, target - candidates[i]);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+
+    /**
+     * 40. Combination Sum II
+     *
+     * @param candidates
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        if (candidates == null || candidates.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(candidates);
+        List<List<Integer>> ans = new ArrayList<>();
+        this.combinationSum2(ans, new ArrayList<Integer>(), candidates, 0, target);
+        return ans;
+    }
+
+    private void combinationSum2(List<List<Integer>> ans, ArrayList<Integer> integers, int[] candidates, int start, int target) {
+        if (target == 0) {
+            ans.add(new ArrayList<>(integers));
+            return;
+        }
+        if (target < 0) {
+            return;
+        }
+        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
+            if (i > start && candidates[i] == candidates[i - 1]) {
+                continue;
+            }
+            integers.add(candidates[i]);
+            this.combinationSum2(ans, integers, candidates, i + 1, target - candidates[i]);
+            integers.remove(integers.size() - 1);
+        }
+    }
+
 
 }

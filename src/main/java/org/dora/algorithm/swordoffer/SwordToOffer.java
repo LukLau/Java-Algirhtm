@@ -928,7 +928,7 @@ public class SwordToOffer {
      * @param num1
      * @param num2
      */
-    public void FindNumsAppearOnce(int[] array, int num1[], int num2[]) {
+    public void FindNumsAppearOnce(int[] array, int[] num1, int[] num2) {
         if (array == null || array.length == 0) {
             return;
         }
@@ -1062,10 +1062,7 @@ public class SwordToOffer {
         if (countOfZero >= 5) {
             return true;
         }
-        if (max - min > 4) {
-            return false;
-        }
-        return true;
+        return max - min <= 4;
 
     }
 
@@ -1501,7 +1498,7 @@ public class SwordToOffer {
      * @param duplication
      * @return
      */
-    public boolean duplicate(int numbers[], int length, int[] duplication) {
+    public boolean duplicate(int[] numbers, int length, int[] duplication) {
         if (numbers == null || length == 0) {
             return false;
         }

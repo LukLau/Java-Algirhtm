@@ -283,10 +283,7 @@ public class ThreeHundred {
             return false;
         }
         n = n & (n - 1);
-        if (n != 0) {
-            return true;
-        }
-        return false;
+        return n != 0;
     }
 
     /**
@@ -342,10 +339,7 @@ public class ThreeHundred {
      * @return
      */
     public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
-        if (nums == null || nums.length == 0) {
-            return false;
-        }
-        return true;
+        return nums != null && nums.length != 0;
     }
 
 

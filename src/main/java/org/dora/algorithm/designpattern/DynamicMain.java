@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 interface Service {
-    public int service(int param);
+    int service(int param);
 }
 
 public class DynamicMain {
