@@ -10,7 +10,11 @@ import java.util.*;
  */
 public class OneHundred {
 
-    private ListNode l1;
+
+    public static void main(String[] args) {
+        OneHundred oneHundred = new OneHundred();
+        oneHundred.myPow(2.00000, -2147483648);
+    }
 
     /**
      * 10. Regular Expression Matching
@@ -49,7 +53,6 @@ public class OneHundred {
         }
         return dp[m][n];
     }
-
 
     /**
      * 11. Container With Most Water
@@ -149,7 +152,6 @@ public class OneHundred {
         return ans;
     }
 
-
     /**
      * 16. 3Sum Closest
      *
@@ -188,7 +190,6 @@ public class OneHundred {
         }
         return result;
     }
-
 
     /**
      * 17. Letter Combinations of a Phone Number
@@ -272,7 +273,6 @@ public class OneHundred {
         return stack.isEmpty();
     }
 
-
     /**
      * 21. Merge Two Sorted Lists
      *
@@ -324,7 +324,6 @@ public class OneHundred {
 
     }
 
-
     /**
      * 23. Merge k Sorted Lists
      *
@@ -354,7 +353,6 @@ public class OneHundred {
         }
         return root.next;
     }
-
 
     /**
      * 24. Swap Nodes in Pairs
@@ -489,7 +487,6 @@ public class OneHundred {
         return 0;
     }
 
-
     /**
      * 31. Next Permutation
      *
@@ -540,7 +537,6 @@ public class OneHundred {
         nums[j] = val;
     }
 
-
     /**
      * 32. Longest Valid Parentheses
      *
@@ -576,7 +572,6 @@ public class OneHundred {
         }
     }
 
-
     /**
      * 33. Search in Rotated Sorted Array
      *
@@ -610,7 +605,6 @@ public class OneHundred {
         }
         return nums[left] == target ? left : -1;
     }
-
 
     /**
      * 34. Find First and Last Position of Element in Sorted Array
@@ -651,7 +645,6 @@ public class OneHundred {
         return ans;
     }
 
-
     /**
      * 39. Combination Sum
      *
@@ -682,7 +675,6 @@ public class OneHundred {
             tmp.remove(tmp.size() - 1);
         }
     }
-
 
     /**
      * 40. Combination Sum II
@@ -719,5 +711,359 @@ public class OneHundred {
         }
     }
 
+    /**
+     * 41. First Missing Positive
+     *
+     * @param nums
+     * @return
+     */
+    public int firstMissingPositive(int[] nums) {
+        if (nums == null) {
+            return -1;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+                this.reverseValue(nums, i, nums[i] - 1);
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return nums.length + 1;
+    }
+
+    /**
+     * 42. Trapping Rain Water
+     *
+     * @param height
+     * @return
+     */
+    public int trap(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+
+        int left = 0;
+
+        int right = height.length - 1;
+
+        int result = 0;
+
+
+        while (left < right) {
+            while (left < right && height[left] == 0) {
+                left++;
+
+            }
+            while (left < right && height[right] == 0) {
+                right--;
+            }
+            int minValue = Math.min(height[left], height[right]);
+            for (int i = left; i <= right; i++) {
+                if (height[i] >= minValue) {
+                    height[i] -= minValue;
+                } else {
+                    result += minValue - height[i];
+                    height[i] = 0;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 43. Multiply Strings
+     *
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public String multiply(String num1, String num2) {
+        if (num1 == null || num2 == null) {
+            return "";
+        }
+        int m = num1.length();
+        int n = num2.length();
+
+        int[] position = new int[m + n];
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                int value = (Character.getNumericValue(num1.charAt(i))) * (Character.getNumericValue(num2.charAt(j))) + position[i + j + 1];
+
+                position[i + j + 1] = value % 10;
+
+                position[i + j] += value / 10;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int num : position) {
+            if (!(sb.length() == 0 && num == 0)) {
+                sb.append(num);
+            }
+        }
+        return sb.length() == 0 ? "0" : sb.toString();
+    }
+
+    /**
+     * todo
+     * 44. Wildcard Matching
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatchII(String s, String p) {
+        if (s == null && p == null) {
+            return false;
+        }
+        if (p == null) {
+            return true;
+        }
+        int m = s.length();
+        int n = p.length();
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j - 1];
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    /**
+     * 45. Jump Game II
+     */
+    public int jump(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int step = 0;
+        int furthest = 0;
+        int currentFurthest = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            furthest = Math.max(furthest, i + nums[i]);
+            if (i == currentFurthest) {
+                step++;
+                currentFurthest = furthest;
+            }
+        }
+        return step;
+    }
+
+    /**
+     * 46. Permutations
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return Collections.emptyList();
+        }
+        boolean[] used = new boolean[nums.length];
+        List<List<Integer>> ans = new ArrayList<>();
+        this.permute(ans, new ArrayList<Integer>(), used, nums);
+        return ans;
+    }
+
+    private void permute(List<List<Integer>> ans, ArrayList<Integer> integers, boolean[] used, int[] nums) {
+        if (integers.size() == nums.length) {
+            ans.add(new ArrayList<>(integers));
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            integers.add(nums[i]);
+            used[i] = true;
+            this.permute(ans, integers, used, nums);
+            used[i] = false;
+            integers.remove(integers.size() - 1);
+        }
+
+    }
+
+    /**
+     * 47. Permutations II
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        this.permuteUnique(ans, new ArrayList<Integer>(), used, nums);
+        return ans;
+    }
+
+    private void permuteUnique(List<List<Integer>> ans, ArrayList<Integer> integers, boolean[] used, int[] nums) {
+        if (integers.size() == nums.length) {
+            ans.add(new ArrayList<>(integers));
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            if (i > 0 && !used[i - 1] && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            integers.add(nums[i]);
+            used[i] = true;
+            this.permuteUnique(ans, integers, used, nums);
+            integers.remove(integers.size() - 1);
+            used[i] = false;
+        }
+    }
+
+    /**
+     * 48. Rotate Image
+     *
+     * @param matrix
+     */
+    public void rotate(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return;
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j <= i; j++) {
+                this.swapMatrix(matrix, i, j);
+            }
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            this.reverseArray(matrix[i], 0, matrix.length - 1);
+        }
+    }
+
+    private void swapMatrix(int[][] matrix, int i, int j) {
+        int value = matrix[i][j];
+        matrix[i][j] = matrix[j][i];
+        matrix[j][i] = value;
+    }
+
+    /**
+     * 49. Group Anagrams
+     *
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return Collections.emptyList();
+        }
+        HashMap<String, List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            char[] charArray = str.toCharArray();
+
+            Arrays.sort(charArray);
+
+            String key = String.valueOf(charArray);
+
+            List<String> group = map.getOrDefault(key, new ArrayList<>());
+
+            group.add(str);
+
+            map.put(key, group);
+        }
+        return new ArrayList<>(map.values());
+    }
+
+    /**
+     * 50. Pow(x, n)
+     *
+     * @param x
+     * @param n
+     * @return
+     */
+    public double myPow(double x, int n) {
+        double p = 1;
+
+        long base = Math.abs((long) n);
+
+        while (base > 0) {
+            if ((base % 2) != 0) {
+                p *= x;
+            }
+            x *= x;
+            base /= 2;
+        }
+        if (p > Integer.MAX_VALUE || p < Integer.MIN_VALUE) {
+            return 0;
+        }
+        return n < 0 ? 1 / p : p;
+    }
+
+
+    /**
+     * 51. N-Queens
+     *
+     * @param n
+     * @return
+     */
+    public List<List<String>> solveNQueens(int n) {
+        if (n <= 0) {
+            return Collections.emptyList();
+        }
+        char[][] queen = new char[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                queen[i][j] = '.';
+            }
+        }
+        List<List<String>> ans = new ArrayList<>();
+        this.solveNQueens(ans, 0, n, queen);
+        return ans;
+
+    }
+
+    private void solveNQueens(List<List<String>> ans, int row, int n, char[][] queen) {
+        if (row == n) {
+            List<String> tmp = new ArrayList<>();
+            for (char[] rowValue : queen) {
+                tmp.add(String.valueOf(row));
+            }
+            ans.add(tmp);
+        }
+        for (int i = 0; i < n; i++) {
+            if (this.checkQueen(i, row, queen)) {
+                queen[row][i] = 'Q';
+                this.solveNQueens(ans, row + 1, n, queen);
+                queen[row][i] = '.';
+            }
+        }
+    }
+
+    private boolean checkQueen(int col, int row, char[][] queen) {
+        for (int i = 0; i < row; i++) {
+            if (queen[i][col] == 'Q') {
+                return false;
+
+            }
+        }
+        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+            if (queen[i][j] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = col + 1; i >= 0 && j < queen[0].length; i--, j++) {
+            if (queen[i][j] == 'Q') {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
