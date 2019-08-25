@@ -1033,7 +1033,7 @@ public class OneHundred {
         if (row == n) {
             List<String> tmp = new ArrayList<>();
             for (char[] rowValue : queen) {
-                tmp.add(String.valueOf(row));
+                tmp.add(String.valueOf(rowValue));
             }
             ans.add(tmp);
         }
@@ -1065,5 +1065,292 @@ public class OneHundred {
         }
         return true;
     }
+
+    /**
+     * 52. N-Queens II
+     *
+     * @param n
+     * @return
+     */
+    public int totalNQueens(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int[] dp = new int[n];
+        return this.totalNQueens(dp, 0, n);
+    }
+
+    private int totalNQueens(int[] dp, int row, int n) {
+        int count = 0;
+        if (row == n) {
+            count++;
+            return count;
+        }
+        for (int i = 0; i < n; i++) {
+            if (this.checkNQueens(i, row, n, dp)) {
+                dp[row] = i;
+                count += this.totalNQueens(dp, row + 1, n);
+                dp[row] = -1;
+            }
+        }
+        return count;
+    }
+
+    private boolean checkNQueens(int column, int row, int n, int[] dp) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (dp[i] == column || Math.abs(dp[i] - column) == Math.abs(i - row)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 53. Maximum Subarray
+     *
+     * @param nums
+     * @return
+     */
+    public int maxSubArray(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int result = Integer.MIN_VALUE;
+        int local = 0;
+        for (int i = 0; i < nums.length; i++) {
+            local = local >= 0 ? local + nums[i] : nums[i];
+            result = Math.max(result, local);
+        }
+        return result;
+    }
+
+    /**
+     * 54. Spiral Matrix
+     *
+     * @param matrix
+     * @return
+     */
+    public List<Integer> spiralOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return Collections.emptyList();
+        }
+        int left = 0;
+
+        int right = matrix[0].length - 1;
+
+        int top = 0;
+
+        int bottom = matrix.length - 1;
+
+
+        List<Integer> ans = new ArrayList<>();
+        while (left <= right && top <= bottom) {
+
+            for (int i = left; i <= right; i++) {
+
+                ans.add(matrix[top][i]);
+            }
+            for (int i = top + 1; i <= bottom; i++) {
+                ans.add(matrix[i][right]);
+            }
+            if (top != bottom) {
+                for (int i = right - 1; i >= left; i--) {
+                    ans.add(matrix[bottom][i]);
+                }
+            }
+            if (left != right) {
+                for (int i = bottom - 1; i > left; i--) {
+                    ans.add(matrix[i][left]);
+                }
+            }
+            left++;
+            right--;
+            top++;
+            bottom--;
+        }
+        return ans;
+    }
+
+    /**
+     * 55. Jump Game
+     *
+     * @param nums
+     * @return
+     */
+    public boolean canJump(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int reach = 0;
+
+        for (int i = 0; i < nums.length - 1 && i <= reach; i++) {
+            reach = Math.max(reach, i + nums[i]);
+        }
+        return reach >= nums.length - 1;
+    }
+
+
+    /**
+     * todo
+     * 56. Merge Intervals
+     *
+     * @param intervals
+     * @return
+     */
+    public int[][] merge(int[][] intervals) {
+        if (intervals == null || intervals.length == 0) {
+            return new int[][]{};
+        }
+        return null;
+    }
+
+    /**
+     * 58. Length of Last Word
+     *
+     * @param s
+     * @return
+     */
+    public int lengthOfLastWord(String s) {
+        if (s == null) {
+            return 0;
+        }
+        s = s.trim();
+
+        if (s.isEmpty()) {
+            return 0;
+        }
+        int lastIndex = s.lastIndexOf(" ");
+
+        return s.length() - 1 - lastIndex;
+    }
+
+
+    /**
+     * 59. Spiral Matrix II
+     *
+     * @param n
+     * @return
+     */
+    public int[][] generateMatrix(int n) {
+        if (n <= 0) {
+            return new int[][]{};
+        }
+        int[][] matrix = new int[n][n];
+        int total = 0;
+
+        int left = 0;
+
+        int right = n - 1;
+
+        int top = 0;
+
+        int bottom = n - 1;
+
+        while (left <= right && top <= bottom) {
+
+            for (int i = left; i <= right; i++) {
+                matrix[top][i] = ++total;
+            }
+            for (int i = top + 1; i <= bottom; i++) {
+                matrix[i][right] = ++total;
+            }
+            if (top != bottom) {
+                for (int i = right - 1; i >= left; i--) {
+                    matrix[bottom][i] = ++total;
+                }
+            }
+            if (left != right) {
+                for (int i = bottom - 1; i > top; i--) {
+                    matrix[i][left] = ++total;
+                }
+            }
+            left++;
+            right--;
+            top++;
+            bottom--;
+        }
+
+        return matrix;
+    }
+
+
+    /**
+     * todo
+     * 60. Permutation Sequence
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public String getPermutation(int n, int k) {
+        if (n <= 0 || k < 0) {
+            return "";
+        }
+
+        List<Integer> numbers = new ArrayList<>();
+
+        for (int i = 1; i <= n; i++) {
+            numbers.add(i);
+        }
+
+        int base = 1;
+
+        int[] pos = new int[n + 1];
+
+        pos[0] = 1;
+
+        for (int i = 1; i <= n; i++) {
+            base *= i;
+            pos[i] = base;
+        }
+        StringBuilder sb = new StringBuilder();
+
+        k--;
+
+        for (int i = 0; i < n; i++) {
+
+            int index = k / pos[n - 1 - i];
+
+            sb.append(numbers.get(index));
+
+            numbers.remove(index);
+            k -= index * pos[n - 1 - i];
+        }
+        return sb.toString();
+    }
+
+
+    /**
+     * 61. Rotate List
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode rotateRight(ListNode head, int k) {
+        if (head == null || k <= 0) {
+            return head;
+        }
+        ListNode currNode = head;
+        int count = 1;
+        while (currNode.next != null) {
+            count++;
+            currNode = currNode.next;
+        }
+        currNode.next = head;
+
+        ListNode slow = head;
+
+        if ((k %= count) != 0) {
+            for (int i = 0; i < count - k; i++) {
+                slow = slow.next;
+                currNode = currNode.next;
+            }
+        }
+        currNode.next = null;
+
+        return slow;
+    }
+
 
 }
