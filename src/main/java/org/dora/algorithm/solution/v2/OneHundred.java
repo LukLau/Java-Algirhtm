@@ -1435,5 +1435,142 @@ public class OneHundred {
         return dp[row - 1][column - 1];
     }
 
+    /**
+     * todo
+     * 65. Valid Number
+     *
+     * @param s
+     * @return
+     */
+    public boolean isNumber(String s) {
+        if (s == null || s.length() == 0) {
+            return false;
+        }
+        boolean afterE = true;
+        boolean isNumber = false;
+        boolean afterDot = false;
+
+        return false;
+    }
+
+    /**
+     * 66. Plus One
+     *
+     * @param digits
+     * @return
+     */
+    public int[] plusOne(int[] digits) {
+        if (digits == null || digits.length == 0) {
+            return new int[]{};
+        }
+        for (int i = digits.length - 1; i >= 0; i--) {
+            if (digits[i] == 9) {
+                digits[i] = 0;
+            } else {
+                digits[i]++;
+                return digits;
+            }
+        }
+        int[] ans = new int[digits.length + 1];
+
+        ans[0] = 1;
+
+        return ans;
+    }
+
+
+    /**
+     * 67. Add Binary
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public String addBinary(String a, String b) {
+        int carry = 0;
+        int m = a.length() - 1;
+        int n = b.length() - 1;
+        StringBuilder sb = new StringBuilder();
+        while (m >= 0 || n >= 0 || carry > 0) {
+            int value = (m >= 0 ? Character.getNumericValue(a.charAt(m--)) : 0)
+                    + (n >= 0 ? Character.getNumericValue(b.charAt(n--)) : 0) + carry;
+
+            carry = value / 2;
+
+            sb.append(value % 2);
+        }
+        return sb.reverse().toString();
+
+    }
+
+
+    /**
+     * 68. Text Justification
+     *
+     * @param words
+     * @param maxWidth
+     * @return
+     */
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        if (words == null || words.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+        int startIndex = 0;
+        while (startIndex < words.length) {
+            int line = 0;
+
+            int endIndex = startIndex;
+            while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
+                line += words[endIndex].length() + 1;
+                endIndex++;
+            }
+            StringBuilder sb = new StringBuilder();
+
+            boolean lastRow = endIndex == words.length;
+
+            int wordOfRow = endIndex - startIndex;
+
+            if (wordOfRow == 1) {
+                sb.append(words[startIndex]);
+            } else {
+                int blankOfRow = lastRow ? 1 : 1 + (maxWidth - line + 1) / (wordOfRow - 1);
+
+                int extraBlankOfRow = lastRow ? 0 : (maxWidth - line + 1) % (wordOfRow - 1);
+
+                sb.append(this.construct(words, startIndex, endIndex, blankOfRow, extraBlankOfRow));
+            }
+            String tmp = this.justify(sb.toString(), maxWidth);
+            ans.add(tmp);
+            startIndex = endIndex;
+        }
+        return ans;
+    }
+
+    private String justify(String str, int maxWidth) {
+        while (str.length() > maxWidth) {
+            str = str.substring(0, str.length() - 1);
+        }
+        while (str.length() < maxWidth) {
+            str = str + " ";
+        }
+        return str;
+    }
+
+    private String construct(String[] words, int startIndex, int endIndex, int blankOfRow, int extraBlankOfRow) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = startIndex; i < endIndex; i++) {
+            int tmp = blankOfRow;
+            sb.append(words[i]);
+            while (tmp-- > 0) {
+                sb.append(" ");
+            }
+            if (extraBlankOfRow-- > 0) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString();
+    }
+
 
 }
