@@ -1505,6 +1505,7 @@ public class OneHundred {
 
 
     /**
+     * todo
      * 68. Text Justification
      *
      * @param words
@@ -1516,61 +1517,152 @@ public class OneHundred {
             return new ArrayList<>();
         }
         List<String> ans = new ArrayList<>();
-        int startIndex = 0;
-        while (startIndex < words.length) {
-            int line = 0;
-
-            int endIndex = startIndex;
-            while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
-                line += words[endIndex].length() + 1;
-                endIndex++;
+        for (int i = 0, k, l; i < words.length; i += k) {
+            for (k = 0, l = 0; words[i].length() + l <= maxWidth - k; k++) {
+                l += words[i + k].length();
             }
-            StringBuilder sb = new StringBuilder();
+            String tmp = words[i];
+            for (int j = 0; j < k - 1; j++) {
 
-            boolean lastRow = endIndex == words.length;
-
-            int wordOfRow = endIndex - startIndex;
-
-            if (wordOfRow == 1) {
-                sb.append(words[startIndex]);
-            } else {
-                int blankOfRow = lastRow ? 1 : 1 + (maxWidth - line + 1) / (wordOfRow - 1);
-
-                int extraBlankOfRow = lastRow ? 0 : (maxWidth - line + 1) % (wordOfRow - 1);
-
-                sb.append(this.construct(words, startIndex, endIndex, blankOfRow, extraBlankOfRow));
             }
-            String tmp = this.justify(sb.toString(), maxWidth);
-            ans.add(tmp);
-            startIndex = endIndex;
         }
+
         return ans;
     }
 
     private String justify(String str, int maxWidth) {
+        while (str.length() < maxWidth) {
+            str += " ";
+        }
         while (str.length() > maxWidth) {
             str = str.substring(0, str.length() - 1);
-        }
-        while (str.length() < maxWidth) {
-            str = str + " ";
         }
         return str;
     }
 
-    private String construct(String[] words, int startIndex, int endIndex, int blankOfRow, int extraBlankOfRow) {
-        StringBuilder sb = new StringBuilder();
+    private String construct(String[] words, int startIndex, int endIndex, int blankOfWord, int extraOfWord) {
+        String ans = "";
         for (int i = startIndex; i < endIndex; i++) {
-            int tmp = blankOfRow;
-            sb.append(words[i]);
+            ans += words[i];
+            int tmp = blankOfWord;
             while (tmp-- > 0) {
-                sb.append(" ");
+                ans += " ";
             }
-            if (extraBlankOfRow-- > 0) {
-                sb.append(" ");
+            if (extraOfWord-- > 0) {
+                ans += " ";
             }
         }
-        return sb.toString();
+        return ans;
+
     }
 
+    /**
+     * todo 牛顿平方发
+     * 69. Sqrt(x)
+     *
+     * @param x
+     * @return
+     */
+    public int mySqrt(int x) {
+        double precision = 0.00001;
+        double result = x;
+        while ((result * result - x) > precision) {
+            result = (result + x / result) / 2;
+        }
+        return (int) result;
+    }
+
+
+    /**
+     * 70. Climbing Stairs
+     *
+     * @param n
+     * @return
+     */
+    public int climbStairs(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        if (n == 1) {
+            return 1;
+        }
+        if (n == 2) {
+            return 2;
+        }
+        int sum1 = 1;
+        int sum2 = 2;
+        int sum = 0;
+        for (int i = 3; i <= n; i++) {
+            sum = sum1 + sum2;
+            sum1 = sum2;
+            sum2 = sum;
+        }
+        return sum;
+    }
+
+
+    /**
+     * 71. Simplify Path
+     *
+     * @param path
+     * @return
+     */
+    public String simplifyPath(String path) {
+        if (path == null || path.isEmpty()) {
+            return "";
+        }
+        String[] words = path.split("/");
+        List<String> skip = Arrays.asList("/", ".", "", "..");
+        Deque<String> ans = new LinkedList<>();
+        for (String word : words) {
+            if ("..".equals(word) && !ans.isEmpty()) {
+                ans.pollLast();
+            } else if (!skip.contains(word)) {
+                ans.add(word);
+            }
+        }
+        if (ans.isEmpty()) {
+            return "/";
+        }
+        String str = "";
+        for (String word : ans) {
+            str = str + "/" + word;
+        }
+        return str;
+    }
+
+
+    /**
+     * 72. Edit Distance
+     *
+     * @param word1
+     * @param word2
+     * @return
+     */
+    public int minDistance(String word1, String word2) {
+        if (word1 == null || word2 == null) {
+            return 0;
+        }
+        int m = word1.length();
+        int n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        dp[0][0] = 0;
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j = 1];
+                } else {
+                    dp[i][j] = 1 + Math.min(Math.min(dp[i - 1][j - 1], dp[i - 1][j]), dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[m][n];
+    }
 
 }
