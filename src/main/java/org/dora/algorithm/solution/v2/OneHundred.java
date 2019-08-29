@@ -1665,4 +1665,99 @@ public class OneHundred {
         return dp[m][n];
     }
 
+    /**
+     * 73. Set Matrix Zeroes
+     *
+     * @param matrix
+     */
+    public void setZeroes(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return;
+        }
+        boolean setColumn = false;
+        boolean setRow = false;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j] == 0) {
+                    matrix[i][0] = 0;
+                    matrix[0][j] = 0;
+
+                    if (i == 0) {
+                        setColumn = true;
+                    }
+                    if (j == 0) {
+                        setRow = true;
+                    }
+                }
+            }
+        }
+        for (int i = 1; i < matrix.length; i++) {
+            for (int j = 1; j < matrix[i].length; j++) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        if (setColumn) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                matrix[0][j] = 0;
+            }
+        }
+        if (setRow) {
+            for (int i = 0; i < matrix.length; i++) {
+                matrix[i][0] = 0;
+            }
+        }
+    }
+
+
+    /**
+     * 74. Search a 2D Matrix
+     *
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        int row = matrix.length - 1;
+        int column = matrix[0].length - 1;
+        int i = row;
+        int j = 0;
+        while (i >= 0 && j <= column) {
+            if (matrix[i][j] == target) {
+                return true;
+            } else if (matrix[i][j] < target) {
+                j++;
+            } else {
+                i--;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 75. Sort Colors
+     *
+     * @param nums
+     */
+    public void sortColors(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int red = 0;
+        int blue = nums.length - 1;
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] == 2 & i < blue) {
+                this.reverseValue(nums, i, blue--);
+            }
+            while (nums[i] == 0 && i > red) {
+                this.reverseValue(nums, i, red++);
+            }
+        }
+    }
+
 }
