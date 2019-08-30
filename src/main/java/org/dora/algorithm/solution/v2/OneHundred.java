@@ -1760,4 +1760,146 @@ public class OneHundred {
         }
     }
 
+
+    /**
+     * 76. Minimum Window Substring
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public String minWindow(String s, String t) {
+        if (s == null || t == null) {
+            return "";
+        }
+        int count = t.length();
+
+        int[] hash = new int[256];
+
+        for (int i = 0; i < t.length(); i++) {
+            hash[t.charAt(i) - '0']++;
+        }
+        int end = 0;
+        int begin = 0;
+        int head = 0;
+        int result = Integer.MAX_VALUE;
+        while (end < s.length()) {
+            if (hash[s.charAt(end++) - '0']-- > 0) {
+                count--;
+            }
+            while (count == 0) {
+                if (end - begin < result) {
+                    head = begin;
+                    result = end - begin;
+                }
+                if (hash[s.charAt(begin++) - '0']++ == 0) {
+                    count++;
+                }
+            }
+        }
+        if (result != Integer.MAX_VALUE) {
+            return s.substring(head, head + result);
+        }
+        return "";
+    }
+
+
+    /**
+     * 77. Combinations
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public List<List<Integer>> combine(int n, int k) {
+        if (n <= 0 || k <= 0) {
+            return Collections.emptyList();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        this.combine(ans, new ArrayList<Integer>(), 1, n, k);
+        return ans;
+    }
+
+    private void combine(List<List<Integer>> ans, ArrayList<Integer> integers, int start, int n, int k) {
+        if (integers.size() == k) {
+            ans.add(new ArrayList<>(integers));
+        }
+        for (int i = start; i <= n; i++) {
+            integers.add(i);
+            this.combine(ans, integers, i + 1, n, k);
+            integers.remove(integers.size() - 1);
+        }
+    }
+
+    /**
+     * 78. Subsets
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsets(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        this.subsets(ans, new ArrayList<Integer>(), 0, nums);
+        return ans;
+    }
+
+    private void subsets(List<List<Integer>> ans, ArrayList<Integer> integers, int start, int[] nums) {
+        ans.add(new ArrayList<>(integers));
+        for (int i = start; i < nums.length; i++) {
+            integers.add(nums[i]);
+            this.subsets(ans, integers, i + 1, nums);
+            integers.remove(integers.size() - 1);
+        }
+    }
+
+
+    /**
+     * todo
+     * 79. Word Search
+     *
+     * @param board
+     * @param word
+     * @return
+     */
+    public boolean exist(char[][] board, String word) {
+        if (board == null || board.length == 0) {
+            return false;
+        }
+        int row = board.length;
+        int column = board[0].length;
+        boolean[][] used = new boolean[row][column];
+
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] == word.charAt(0) && this.wordSearch(used, word, board, i, j, 0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean wordSearch(boolean[][] used, String word, char[][] board, int i, int j, int k) {
+        if (k == word.length()) {
+            return true;
+        }
+        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || used[i][j] || board[i][j] != word.charAt(k)) {
+            return false;
+        }
+        used[i][j] = true;
+
+        if (this.wordSearch(used, word, board, i - 1, j, k++) ||
+                this.wordSearch(used, word, board, i + 1, j, k++) ||
+                this.wordSearch(used, word, board, i, j - 1, k++) ||
+                this.wordSearch(used, word, board, i, j + 1, k++)) {
+            return true;
+        }
+        used[i][j] = false;
+        return false;
+    }
+
 }
