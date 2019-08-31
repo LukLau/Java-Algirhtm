@@ -1857,7 +1857,6 @@ public class OneHundred {
 
 
     /**
-     * todo
      * 79. Word Search
      *
      * @param board
@@ -1871,8 +1870,6 @@ public class OneHundred {
         int row = board.length;
         int column = board[0].length;
         boolean[][] used = new boolean[row][column];
-
-
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (board[i][j] == word.charAt(0) && this.wordSearch(used, word, board, i, j, 0)) {
@@ -1887,19 +1884,217 @@ public class OneHundred {
         if (k == word.length()) {
             return true;
         }
-        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || used[i][j] || board[i][j] != word.charAt(k)) {
+        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || used[i][j] || word.charAt(k) != board[i][j]) {
             return false;
         }
         used[i][j] = true;
-
-        if (this.wordSearch(used, word, board, i - 1, j, k++) ||
-                this.wordSearch(used, word, board, i + 1, j, k++) ||
-                this.wordSearch(used, word, board, i, j - 1, k++) ||
-                this.wordSearch(used, word, board, i, j + 1, k++)) {
+        if (this.wordSearch(used, word, board, i - 1, j, k + 1) ||
+                this.wordSearch(used, word, board, i + 1, j, k + 1) ||
+                this.wordSearch(used, word, board, i, j - 1, k + 1) ||
+                this.wordSearch(used, word, board, i, j + 1, k + 1)) {
             return true;
         }
         used[i][j] = false;
         return false;
+    }
+
+    /**
+     * 80. Remove Duplicates from Sorted Array II
+     *
+     * @param nums
+     * @return
+     */
+    public int removeDuplicatesII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int count = 1;
+
+        int index = 1;
+
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] == nums[i - 1]) {
+                count++;
+            } else {
+                count = 1;
+            }
+            if (count > 2) {
+                continue;
+            }
+            nums[index++] = nums[i];
+        }
+        return index;
+    }
+
+    /**
+     * todo 需考虑更多接发
+     * 81. Search in Rotated Sorted Array II
+     */
+    public boolean searchII(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+
+            if (nums[mid] == target) {
+                return true;
+            }
+            if (nums[left] == nums[right]) {
+                left++;
+            } else if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && target >= nums[left]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return nums[left] == target;
+    }
+
+    /**
+     * 82. Remove Duplicates from Sorted List II
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            ListNode currNode = head.next;
+            while (currNode != null && currNode.val == head.val) {
+                currNode = currNode.next;
+            }
+            return this.deleteDuplicates(currNode);
+        } else {
+            head.next = this.deleteDuplicates(head.next);
+            return head;
+        }
+
+    }
+
+    /**
+     * 83. Remove Duplicates from Sorted List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicatesII(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            ListNode currNode = head.next;
+            return this.deleteDuplicatesII(currNode);
+        } else {
+            head.next = this.deleteDuplicatesII(head.next);
+            return head;
+        }
+    }
+
+    /**
+     * 84. Largest Rectangle in Histogram
+     *
+     * @param heights
+     * @return
+     */
+    public int largestRectangleArea(int[] heights) {
+        if (heights == null || heights.length == 0) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        int result = 0;
+        for (int i = 0; i <= heights.length; i++) {
+            int h = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] <= h) {
+                stack.push(i);
+            } else {
+                int index = stack.pop();
+
+                int side = stack.empty() ? i : i - stack.peek() - 1;
+
+                result = Math.max(result, heights[index] * side);
+
+                i--;
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * todo
+     * 85. Maximal Rectangle
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int result = 0;
+
+        int row = matrix.length;
+
+        int column = matrix[0].length;
+
+        int[] height = new int[column];
+
+        int[] left = new int[column];
+
+        int[] right = new int[column];
+        for (int i = 0; i < column; i++) {
+            right[i] = column;
+        }
+        for (int i = 0; i < row; i++) {
+
+            int leftEdge = 0;
+
+            int rightEdge = column;
+
+
+            for (int j = 0; j < column; j++) {
+
+                if (matrix[i][j] == '0') {
+                    height[j] = 0;
+                } else {
+                    height[j]++;
+                }
+                if (matrix[i][j] == '1') {
+                    left[j] = Math.max(left[j], leftEdge);
+                } else {
+                    left[j] = 0;
+                    leftEdge = j + 1;
+                }
+            }
+            for (int j = column - 1; j >= 0; j--) {
+                if (matrix[i][j] == '1') {
+                    right[j] = Math.min(right[j], rightEdge);
+                } else {
+                    right[j] = column;
+                    rightEdge = j;
+
+                }
+
+            }
+
+            for (int j = 0; j < column; j++) {
+                result = Math.max(result, (right[j] - left[j]) * height[j]);
+            }
+        }
+        return result;
     }
 
 }
