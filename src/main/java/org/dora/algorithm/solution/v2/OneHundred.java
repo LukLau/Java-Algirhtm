@@ -1,6 +1,7 @@
 package org.dora.algorithm.solution.v2;
 
 import org.dora.algorithm.datastructe.ListNode;
+import org.dora.algorithm.datastructe.TreeNode;
 
 import java.util.*;
 
@@ -2096,5 +2097,268 @@ public class OneHundred {
         }
         return result;
     }
+
+
+    /**
+     * 86. Partition List
+     *
+     * @param head
+     * @param x
+     * @return
+     */
+    public ListNode partition(ListNode head, int x) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode node1 = new ListNode(0);
+        ListNode d1 = node1;
+
+        ListNode node2 = new ListNode(0);
+        ListNode d2 = node2;
+
+        while (head != null) {
+            if (head.val < x) {
+                d1.next = head;
+                d1 = d1.next;
+            } else {
+                d2.next = head;
+                d2 = d2.next;
+            }
+            head = head.next;
+        }
+        d2.next = null;
+        d1.next = node2.next;
+        return node1.next;
+    }
+
+
+    /**
+     * todo 可以考虑使用动态规划
+     * 87. Scramble String
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public boolean isScramble(String s1, String s2) {
+        if (s1 == null || s2 == null) {
+            return false;
+        }
+        if (s1.equals(s2)) {
+            return true;
+        }
+
+        int m = s1.length();
+
+        int n = s2.length();
+
+        if (m != n) {
+            return false;
+        }
+
+
+        int[] hash = new int[256];
+
+
+        for (int i = 0; i < m; i++) {
+            hash[s1.charAt(i) - '0']--;
+            hash[s2.charAt(i) - '0']++;
+        }
+        for (int i = 0; i < hash.length; i++) {
+            if (hash[i] != 0) {
+                return false;
+            }
+        }
+        for (int i = 1; i < m; i++) {
+            if (this.isScramble(s1.substring(0, i), s2.substring(0, i)) &&
+                    this.isScramble(s1.substring(i), s2.substring(i))) {
+                return true;
+            }
+            if (this.isScramble(s1.substring(i), s2.substring(0, m - i)) && this.isScramble(s1.substring(0, i), s2.substring(m - i))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * 88. Merge Sorted Array
+     *
+     * @param nums1
+     * @param m
+     * @param nums2
+     * @param n
+     */
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int k = m + n - 1;
+        m--;
+        n--;
+        while (m >= 0 && n >= 0) {
+            if (nums1[m] >= nums2[n]) {
+                nums1[k--] = nums1[m--];
+            } else {
+                nums1[k--] = nums2[n--];
+            }
+        }
+        while (n >= 0) {
+            nums1[k--] = nums2[n--];
+        }
+    }
+
+
+    /**
+     * todo 格雷码
+     * 89. Gray Code
+     *
+     * @param n
+     * @return
+     */
+    public List<Integer> grayCode(int n) {
+        return null;
+    }
+
+
+    /**
+     * 90. Subsets II
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+
+        Arrays.sort(nums);
+
+        List<List<Integer>> ans = new ArrayList<>();
+
+        this.subsetsWithDup(ans, new ArrayList<Integer>(), 0, nums);
+        return ans;
+
+    }
+
+    private void subsetsWithDup(List<List<Integer>> ans, List<Integer> integers, int start, int[] nums) {
+        ans.add(new ArrayList<>(integers));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            integers.add(nums[i]);
+            this.subsetsWithDup(ans, integers, i + 1, nums);
+            integers.remove(integers.size() - 1);
+        }
+    }
+
+    /**
+     * todo
+     * 91. Decode Ways
+     *
+     * @param s
+     * @return
+     */
+    public int numDecodings(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        return 0;
+    }
+
+
+    /**
+     * 92. Reverse Linked List II
+     *
+     * @param head
+     * @param m
+     * @param n
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode root = new ListNode(0);
+
+        root.next = head;
+
+        ListNode slow = root;
+
+
+        ListNode fast = root;
+
+
+        for (int i = 0; i < m - 1; i++) {
+            slow = slow.next;
+        }
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+
+        ListNode end = fast.next;
+
+        ListNode first = slow.next;
+
+
+        for (int i = 0; i <= n - m; i++) {
+            ListNode tmp = first.next;
+
+            first.next = end;
+
+
+            end = first;
+
+
+            first = tmp;
+
+        }
+
+        slow.next = end;
+
+        return root.next;
+    }
+
+
+    /**
+     * todo 不会
+     * 93. Restore IP Addresses
+     *
+     * @param s
+     * @return
+     */
+    public List<String> restoreIpAddresses(String s) {
+        return null;
+    }
+
+    /**
+     * 94. Binary Tree Inorder Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> inorderTraversal(TreeNode root) {
+        if (root == null) {
+            return Collections.emptyList();
+        }
+        Stack<TreeNode> stack = new Stack<>();
+
+        List<Integer> ans = new ArrayList<>();
+
+        TreeNode p = root;
+
+        while (!stack.isEmpty() || p != null) {
+
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            ans.add(p.val);
+            p = p.right;
+        }
+        return ans;
+    }
+
 
 }
