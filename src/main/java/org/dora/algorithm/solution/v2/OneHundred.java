@@ -2361,4 +2361,173 @@ public class OneHundred {
     }
 
 
+    /**
+     * 95. Unique Binary Search Trees II
+     *
+     * @param n
+     * @return
+     */
+    public List<TreeNode> generateTrees(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        return this.generateTrees(1, n);
+    }
+
+    private List<TreeNode> generateTrees(int start, int end) {
+        List<TreeNode> ans = new ArrayList<>();
+        if (start == end) {
+            TreeNode root = new TreeNode(start);
+            ans.add(root);
+            return ans;
+        }
+
+        if (start > end) {
+            ans.add(null);
+            return ans;
+        }
+
+        for (int i = start; i <= end; i++) {
+            List<TreeNode> leftNodes = this.generateTrees(start, i - 1);
+            List<TreeNode> rightNodes = this.generateTrees(i + 1, end);
+            for (TreeNode left : leftNodes) {
+                for (TreeNode right : rightNodes) {
+
+                    TreeNode root = new TreeNode(i);
+
+                    root.left = left;
+                    root.right = right;
+                    ans.add(root);
+                }
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * todo xuy
+     * 96. Unique Binary Search Trees
+     *
+     * @param n
+     * @return
+     */
+    public int numTrees(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                dp[i] += dp[j - 1] * dp[i - j];
+            }
+        }
+        return dp[n];
+    }
+
+
+    /**
+     * todo
+     * 97. Interleaving String
+     *
+     * @param s1
+     * @param s2
+     * @param s3
+     * @return
+     */
+    public boolean isInterleave(String s1, String s2, String s3) {
+        return false;
+    }
+
+
+    /**
+     * 98. Validate Binary Search Tree
+     *
+     * @param root
+     * @return
+     */
+    public boolean isValidBST(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        TreeNode prev = null;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+
+            if (prev != null && prev.val >= p.val) {
+                return false;
+            }
+            prev = p;
+            p = p.right;
+        }
+        return true;
+    }
+
+    /**
+     * 99. Recover Binary Search Tree
+     *
+     * @param root
+     */
+    public void recoverTree(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode first = null;
+        TreeNode second = null;
+        TreeNode p = root;
+        TreeNode prev = null;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+
+            if (prev != null) {
+                if (first == null && prev.val >= p.val) {
+                    first = prev;
+                }
+                if (first != null && prev.val >= p.val) {
+                    second = p;
+                }
+            }
+            prev = p;
+            p = p.right;
+        }
+        if (first != null && second != null) {
+            int val = first.val;
+            first.val = second.val;
+            second.val = val;
+        }
+    }
+
+
+    /**
+     * 100. Same Tree
+     *
+     * @param p
+     * @param q
+     * @return
+     */
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) {
+            return true;
+        }
+        if (p == null || q == null) {
+            return false;
+        }
+        if (p.val == q.val) {
+            return this.isSameTree(p.left, q.left) && this.isSameTree(p.right, q.right);
+        }
+        return false;
+    }
+
+
 }
