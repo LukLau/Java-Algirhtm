@@ -17,6 +17,26 @@ public class OneHundred {
         oneHundred.myPow(2.00000, -2147483648);
     }
 
+
+    /**
+     * 4. Median of Two Sorted Arrays
+     *
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        if (nums1 == null || nums2 == null) {
+            return -1;
+        }
+
+        int imin = 0;
+        int imax = 0;
+        return 0;
+
+    }
+
+
     /**
      * 10. Regular Expression Matching
      *

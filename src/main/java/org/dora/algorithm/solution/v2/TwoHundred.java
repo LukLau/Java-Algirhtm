@@ -109,4 +109,59 @@ public class TwoHundred {
         return ans;
     }
 
+    /**
+     * 104. Maximum Depth of Binary Tree
+     *
+     * @param root
+     * @return
+     */
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return 1 + Math.max(this.maxDepth(root.left), this.maxDepth(root.right));
+    }
+
+
+    /**
+     * 105. Construct Binary Tree from Preorder and Inorder Traversal
+     *
+     * @param preorder
+     * @param inorder
+     * @return
+     */
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        if (preorder == null || inorder == null) {
+            return null;
+        }
+        return this.buildTree(0, preorder, 0, inorder.length - 1, inorder);
+    }
+
+    private TreeNode buildTree(int preStart, int[] preorder, int inStart, int inEnd, int[] inorder) {
+        if (preStart >= preorder.length || inStart > inEnd) {
+            return null;
+        }
+
+        TreeNode root = new TreeNode(preorder[preStart]);
+        int index = 0;
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == root.val) {
+                index = i;
+                break;
+            }
+        }
+        root.left = this.buildTree(preStart + 1, preorder, inStart, index - 1, inorder);
+        root.right = this.buildTree(preStart + index - inStart + 1, preorder, index + 1, inEnd, inorder);
+        return root;
+    }
+
+    /**
+     * @param inorder
+     * @param postorder
+     * @return
+     */
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+
+    }
+
 }
