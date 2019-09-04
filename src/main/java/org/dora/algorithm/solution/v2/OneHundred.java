@@ -29,9 +29,24 @@ public class OneHundred {
         if (nums1 == null || nums2 == null) {
             return -1;
         }
+        int m = nums1.length;
 
+        int n = nums2.length;
+
+        if (n < m) {
+            return this.findMedianSortedArrays(nums2, nums1);
+        }
         int imin = 0;
-        int imax = 0;
+        int imax = nums1.length;
+        int leftMax = 0;
+        int rightMin = 0;
+        while (imin <= imax) {
+            int i = imin + (imax - imin) / 2;
+            int j = (m + n + 1) / 2 - i;
+            if (i < m && nums1[i] < nums2[j - 1]) {
+                imin = i + 1;
+            }
+        }
         return 0;
 
     }

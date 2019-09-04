@@ -156,12 +156,91 @@ public class TwoHundred {
     }
 
     /**
+     * 106. Construct Binary Tree from Inorder and Postorder Traversal
+     *
      * @param inorder
      * @param postorder
      * @return
      */
-    public TreeNode buildTree(int[] inorder, int[] postorder) {
+    public TreeNode buildTreeII(int[] inorder, int[] postorder) {
+        if (inorder == null || postorder == null) {
+            return null;
+        }
+        return this.buildTreeII(0, inorder.length - 1, inorder, 0, postorder.length - 1, postorder);
+    }
 
+    private TreeNode buildTreeII(int inStart, int inEnd, int[] inorder, int postStart, int postEnd, int[] postorder) {
+        if (inStart > inEnd || postStart > postEnd) {
+            return null;
+        }
+        TreeNode root = new TreeNode(postorder[postEnd]);
+        int index = 0;
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == root.val) {
+                index = i;
+                break;
+            }
+        }
+        root.left = this.buildTreeII(inStart, index - 1, inorder, postStart, postStart + index - inStart - 1, postorder);
+        root.right = this.buildTreeII(index + 1, inEnd, inorder, postStart + index - inStart, postEnd - 1, postorder);
+        return root;
+    }
+
+    /**
+     * 107. Binary Tree Level Order Traversal II
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrderBottom(TreeNode root) {
+        if (root == null) {
+            return Collections.emptyList();
+        }
+        LinkedList<List<Integer>> ans = new LinkedList<>();
+        LinkedList<TreeNode> list = new LinkedList<>();
+        list.add(root);
+        while (!list.isEmpty()) {
+            int size = list.size();
+            List<Integer> tmp = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = list.poll();
+                tmp.add(node.val);
+                if (node.left != null) {
+                    list.add(node.left);
+                }
+                if (node.right != null) {
+                    list.add(node.right);
+                }
+            }
+            ans.addFirst(tmp);
+        }
+        return ans;
+    }
+
+
+    /**
+     * 108. Convert Sorted Array to Binary Search Tree
+     *
+     * @param nums
+     * @return
+     */
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return null;
+        }
+        return this.sortedArrayToBST(nums, 0, nums.length - 1);
+    }
+
+    private TreeNode sortedArrayToBST(int[] nums, int start, int end) {
+        if (start > end) {
+            return null;
+        }
+        int mid = start + (end - start) / 2;
+
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = this.sortedArrayToBST(nums, start, mid - 1);
+        root.right = this.sortedArrayToBST(nums, mid + 1, end);
+        return root;
     }
 
 }
