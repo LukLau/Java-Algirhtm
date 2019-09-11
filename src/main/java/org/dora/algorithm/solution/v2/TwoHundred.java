@@ -1,12 +1,10 @@
 package org.dora.algorithm.solution.v2;
 
 import org.dora.algorithm.datastructe.ListNode;
+import org.dora.algorithm.datastructe.Node;
 import org.dora.algorithm.datastructe.TreeNode;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author dora
@@ -368,4 +366,224 @@ public class TwoHundred {
         integers.remove(integers.size() - 1);
 
     }
+
+    /**
+     * 114. Flatten Binary Tree to Linked List
+     *
+     * @param root
+     */
+    public void flatten(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+
+        Stack<TreeNode> stack = new Stack<>();
+
+        TreeNode p = root;
+
+        TreeNode prev = null;
+        stack.push(p);
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+            if (node.right != null) {
+                stack.push(node.right);
+            }
+            if (node.left != null) {
+                stack.push(node.left);
+            }
+            if (prev != null) {
+                prev.left = null;
+                prev.right = node;
+            }
+            prev = node;
+        }
+    }
+
+    /**
+     * todo 不懂之处
+     * 115. Distinct Subsequences
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public int numDistinct(String s, String t) {
+        if (s == null || t == null) {
+            return -1;
+        }
+        int m = s.length();
+        int n = t.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                dp[i][j] = (s.charAt(i - 1) == t.charAt(j - 1) ? dp[i - 1][j - 1] : 0) + dp[i - 1][j];
+            }
+        }
+        return dp[m][n];
+
+    }
+
+
+    /**
+     * todo 不懂之处
+     * 116. Populating Next Right Pointers in Each Node
+     *
+     * @param root
+     * @return
+     */
+    public Node connect(Node root) {
+        if (root == null) {
+            return null;
+        }
+        Node head = root;
+        while (head.left != null) {
+            Node next = head.left;
+
+            while (next != null) {
+                next.next = head.right;
+                head = head.next;
+            }
+
+            head = next;
+        }
+        return null;
+    }
+
+    /**
+     * 118. Pascal's Triangle
+     *
+     * @param numRows
+     * @return
+     */
+    public List<List<Integer>> generate(int numRows) {
+        if (numRows <= 0) {
+            return Collections.emptyList();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        for (int i = 0; i < numRows; i++) {
+
+            List<Integer> tmp = new ArrayList<>();
+
+            tmp.add(1);
+            for (int j = 1; j <= i - 1; j++) {
+                int value = ans.get(i - 1).get(j - 1) + ans.get(i - 1).get(j);
+                tmp.add(value);
+            }
+
+            if (i > 0) {
+                tmp.add(i);
+            }
+            ans.add(tmp);
+        }
+        return ans;
+
+    }
+
+
+    /**
+     * 119. Pascal's Triangle II
+     *
+     * @param rowIndex
+     * @return
+     */
+    public List<Integer> getRow(int rowIndex) {
+        if (rowIndex < 0) {
+            return Collections.emptyList();
+        }
+        List<Integer> ans = new ArrayList<>();
+
+        ans.add(1);
+        for (int i = 0; i <= rowIndex; i++) {
+
+
+            for (int j = i - 1; j >= 1; j--) {
+                int value = ans.get(j) + ans.get(j - 1);
+
+                ans.set(j, value);
+            }
+            if (i > 0) {
+                ans.add(1);
+            }
+        }
+        return ans;
+    }
+
+
+    /**
+     * 120. Triangle
+     *
+     * @param triangle
+     * @return
+     */
+    public int minimumTotal(List<List<Integer>> triangle) {
+        if (triangle == null || triangle.isEmpty()) {
+            return 0;
+        }
+        int size = triangle.size();
+        List<Integer> ans = triangle.get(size - 1);
+
+        for (int i = size - 2; i >= 0; i--) {
+
+            for (int j = 0; j < triangle.get(i).size(); j++) {
+
+                int value = Math.min(ans.get(j), ans.get(j + 1)) + triangle.get(i).get(j);
+
+                ans.set(j, value);
+            }
+        }
+        return ans.get(0);
+    }
+
+
+    /**
+     * 121. Best Time to Buy and Sell Stock
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfit(int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        int min = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > min) {
+                result = Math.max(result, prices[i] - min);
+            }
+            prices[i] = min;
+
+        }
+        return result;
+
+    }
+
+
+    /**
+     * 122. Best Time to Buy and Sell Stock II
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfitII(int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int result = 0;
+
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < prices.length; i++) {
+            if (prices[i] < min) {
+                min = prices[i];
+            } else {
+                result += prices[i] - min;
+                min = prices[i];
+            }
+        }
+        return result;
+    }
+
 }
