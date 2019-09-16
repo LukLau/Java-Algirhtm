@@ -12,6 +12,14 @@ import java.util.*;
  */
 public class TwoHundred {
     /**
+     * 124. Binary Tree Maximum Path Sum
+     *
+     * @param root
+     * @return
+     */
+    private int MAX_PATH_SUM = Integer.MIN_VALUE;
+
+    /**
      * 101. Symmetric Tree
      *
      * @param root
@@ -36,7 +44,6 @@ public class TwoHundred {
         }
         return false;
     }
-
 
     /**
      * 102. Binary Tree Level Order Traversal
@@ -68,7 +75,6 @@ public class TwoHundred {
         }
         return ans;
     }
-
 
     /**
      * 103. Binary Tree Zigzag Level Order Traversal
@@ -120,7 +126,6 @@ public class TwoHundred {
         }
         return 1 + Math.max(this.maxDepth(root.left), this.maxDepth(root.right));
     }
-
 
     /**
      * 105. Construct Binary Tree from Preorder and Inorder Traversal
@@ -216,7 +221,6 @@ public class TwoHundred {
         return ans;
     }
 
-
     /**
      * 108. Convert Sorted Array to Binary Search Tree
      *
@@ -271,7 +275,6 @@ public class TwoHundred {
         return root;
     }
 
-
     /**
      * 110. Balanced Binary Tree
      *
@@ -311,7 +314,6 @@ public class TwoHundred {
         return Math.min(leftDepth, rightDepth);
     }
 
-
     /**
      * 112. Path Sum
      *
@@ -328,7 +330,6 @@ public class TwoHundred {
         }
         return this.hasPathSum(root.left, sum - root.val) || this.hasPathSum(root.right, sum - root.val);
     }
-
 
     /**
      * 113. Path Sum II
@@ -426,7 +427,6 @@ public class TwoHundred {
 
     }
 
-
     /**
      * todo 不懂之处
      * 116. Populating Next Right Pointers in Each Node
@@ -482,7 +482,6 @@ public class TwoHundred {
 
     }
 
-
     /**
      * 119. Pascal's Triangle II
      *
@@ -511,7 +510,6 @@ public class TwoHundred {
         return ans;
     }
 
-
     /**
      * 120. Triangle
      *
@@ -537,7 +535,6 @@ public class TwoHundred {
         return ans.get(0);
     }
 
-
     /**
      * 121. Best Time to Buy and Sell Stock
      *
@@ -560,7 +557,6 @@ public class TwoHundred {
         return result;
 
     }
-
 
     /**
      * 122. Best Time to Buy and Sell Stock II
@@ -585,5 +581,212 @@ public class TwoHundred {
         }
         return result;
     }
+
+    /**
+     * todo 比较难需要两边遍历
+     * 123. Best Time to Buy and Sell Stock III
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfitIII(int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int n = prices.length;
+
+        int[] leftProfit = new int[n];
+
+        int leftValue = prices[0];
+
+        int leftResult = 0;
+
+        for (int i = 1; i < n; i++) {
+            if (prices[i] < leftValue) {
+                leftValue = prices[i];
+            }
+
+            leftResult = Math.max(leftResult, prices[i] - leftValue);
+
+            leftProfit[i] = leftResult;
+
+
+        }
+
+        int[] rightProfit = new int[n + 1];
+
+        int rightResult = 0;
+
+        int rightValue = prices[n - 1];
+
+        for (int i = n - 2; i >= 0; i--) {
+            if (prices[i] > rightValue) {
+                rightValue = prices[i];
+            }
+            rightResult = Math.max(rightResult, rightValue - prices[i]);
+
+            rightProfit[i] = rightResult;
+        }
+        int result = 0;
+
+        for (int i = 0; i < n; i++) {
+            result = Math.max(result, leftProfit[i] + rightProfit[i + 1]);
+        }
+        return result;
+    }
+
+    public int maxPathSum(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        this.dfs(root);
+        return MAX_PATH_SUM;
+
+    }
+
+    private int dfs(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int leftValue = this.dfs(root.left);
+        int rightValue = this.dfs(root.right);
+
+        leftValue = Math.max(leftValue, 0);
+
+        rightValue = Math.max(rightValue, 0);
+
+        int value = leftValue + rightValue + root.val;
+
+        MAX_PATH_SUM = Math.max(MAX_PATH_SUM, value);
+
+        return Math.max(leftValue, rightValue) + root.val;
+    }
+
+    /**
+     * 125. Valid Palindrome
+     *
+     * @param s
+     * @return
+     */
+    public boolean isPalindrome(String s) {
+        if (s == null || s.isEmpty()) {
+            return true;
+        }
+        int left = 0;
+
+        int right = s.length() - 1;
+
+        while (left < right) {
+            if (!Character.isLetterOrDigit(s.charAt(left))) {
+                left++;
+            } else if (!Character.isLetterOrDigit(s.charAt(right))) {
+                right--;
+            } else {
+                if (Character.toLowerCase(s.charAt(left)) == Character.toLowerCase(s.charAt(right))) {
+                    left++;
+                    right--;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 126. Word Ladder IIt
+     * todo 太难
+     *
+     * @param beginWord
+     * @param endWord
+     * @param wordList
+     * @return
+     */
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        return null;
+
+    }
+
+    /**
+     * 127. Word Ladder
+     *
+     * @param beginWord
+     * @param endWord
+     * @param wordList
+     * @return
+     */
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        return 0;
+    }
+
+    /**
+     * 128. Longest Consecutive Sequence
+     *
+     * @param nums
+     * @return
+     */
+    public int longestConsecutive(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        HashMap<Integer, Integer> hashMap = new HashMap<>();
+        int result = 0;
+        for (int num : nums) {
+            if (hashMap.containsKey(num)) {
+                continue;
+            }
+            int leftValue = hashMap.getOrDefault(num - 1, 0);
+            int rightValue = hashMap.getOrDefault(num + 1, 0);
+
+            int sum = leftValue + rightValue + 1;
+
+            result = Math.max(result, sum);
+
+            hashMap.put(num - leftValue, sum);
+
+            hashMap.put(num + rightValue, sum);
+
+            hashMap.put(num, sum);
+        }
+        return result;
+    }
+
+
+    /**
+     * 129. Sum Root to Leaf Numbers
+     *
+     * @param root
+     * @return
+     */
+    public int sumNumbers(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null && root.right == null) {
+            return root.val;
+        }
+        return this.sumNumbers(root.left, root.val) + this.sumNumbers(root.right, root.val);
+    }
+
+    private int sumNumbers(TreeNode root, int sum) {
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null && root.right == null) {
+            return sum * 10 + root.val;
+        }
+        return this.sumNumbers(root.left, sum * 10 + root.val) + this.sumNumbers(root.right, sum * 10 + root.val);
+
+    }
+
+    /**
+     * 130. Surrounded Regions
+     *
+     * @param board
+     */
+    public void solve(char[][] board) {
+        return;
+    }
+
 
 }
