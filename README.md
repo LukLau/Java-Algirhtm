@@ -112,3 +112,5 @@
 > [字典树](https://leetcode.com/submissions/detail/226455100/)
 
 > [摩尔投票法](https://www.jianshu.com/p/c19bb428f57a) **关键在于找出候选者**
+
+> [位运算](https://leetcode.com/problems/single-number-ii/) 需要使用两位

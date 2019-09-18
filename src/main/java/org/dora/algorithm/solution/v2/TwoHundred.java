@@ -785,7 +785,291 @@ public class TwoHundred {
      * @param board
      */
     public void solve(char[][] board) {
+        if (board == null || board.length == 0) {
+            return;
+        }
+        int row = board.length;
+
+        int column = board[0].length;
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                boolean match = (i == 0 || i == row - 1 || j == 0 || j == column - 1);
+                if (match && board[i][j] == 'O') {
+                    this.solveMatrix(i, j, board);
+                }
+            }
+        }
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] == '0') {
+                    board[i][j] = 'O';
+                } else if (board[i][j] == 'O') {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+
         return;
+    }
+
+    private void solveMatrix(int row, int column, char[][] board) {
+        if (row < 0 || row >= board.length || column < 0 || column >= board[0].length || board[row][column] != 'O') {
+            return;
+        }
+        board[row][column] = '0';
+        this.solveMatrix(row - 1, column, board);
+        this.solveMatrix(row + 1, column, board);
+        this.solveMatrix(row, column - 1, board);
+        this.solveMatrix(row, column + 1, board);
+
+    }
+
+    /**
+     * todo  完全不懂
+     * 131. Palindrome Partitioning
+     *
+     * @param s
+     * @return
+     */
+    public List<List<String>> partition(String s) {
+        if (s == null || s.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<List<String>> ans = new ArrayList<>();
+        for (int i = 0; i < s.length(); i++) {
+
+        }
+        return null;
+
+    }
+
+    /**
+     * todo 未懂思路
+     * 132. Palindrome Partitioning II
+     *
+     * @param s
+     * @return
+     */
+    public int minCut(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int n = s.length();
+
+        boolean[][] dp = new boolean[n + 1][n + 1];
+
+        int[] cut = new int[n];
+        for (int i = 0; i < n; i++) {
+            int min = i;
+            for (int j = 0; j <= i; j++) {
+                if (s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1])) {
+
+                    dp[j][i] = true;
+
+                    min = j == 0 ? 0 : Math.min(1 + cut[j - 1], min);
+
+                }
+            }
+            cut[i] = min;
+        }
+        return cut[n - 1];
+    }
+
+
+    /**
+     * 134. Gas Station
+     *
+     * @param gas
+     * @param cost
+     * @return
+     */
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        if (gas == null || cost == null) {
+            return 0;
+        }
+        int result = 0;
+
+        int local = 0;
+
+        int current = 0;
+
+        for (int i = 0; i < gas.length; i++) {
+            local += gas[i] - cost[i];
+            result += gas[i] - cost[i];
+            if (local < 0) {
+                local = 0;
+                current = i + 1;
+            }
+        }
+        return result < 0 ? -1 : current;
+
+    }
+
+    /**
+     * 135. Candy
+     *
+     * @param ratings
+     * @return
+     */
+    public int candy(int[] ratings) {
+        if (ratings == null || ratings.length == 0) {
+            return 0;
+        }
+        int n = ratings.length;
+        int[] left = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            left[i] = 1;
+        }
+
+        for (int i = 1; i < n; i++) {
+
+            if (ratings[i] > ratings[i - 1] && left[i] < left[i - 1] + 1) {
+                left[i] = left[i - 1] + 1;
+            }
+        }
+        int[] right = new int[n];
+        for (int i = 0; i < n; i++) {
+            right[i] = 1;
+        }
+        for (int i = n - 2; i >= 0; i--) {
+            if (ratings[i] > ratings[i + 1] && right[i] < right[i + 1] + 1) {
+                right[i] = right[i + 1] + 1;
+            }
+        }
+
+        int result = 0;
+
+        for (int i = 0; i < n; i++) {
+            result += Math.max(left[i], right[i]);
+        }
+        return result;
+    }
+
+
+    /**
+     * 136. Single Number
+     *
+     * @param nums
+     * @return
+     */
+    public int singleNumber(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int result = 0;
+        for (int num : nums) {
+            result ^= num;
+        }
+        return result;
+    }
+
+
+    /**
+     * 137. Single Number II
+     *
+     * @param nums
+     * @return
+     */
+    public int singleNumberII(int[] nums) {
+        return 0;
+    }
+
+
+    /**
+     * 138. Copy List with Random Pointer
+     *
+     * @param head
+     * @return
+     */
+    public Node copyRandomList(Node head) {
+        if (head == null) {
+            return null;
+        }
+        Node current = head;
+        while (current != null) {
+
+            Node node = new Node(current.val, current.next, null);
+
+            current.next = node;
+
+            current = node.next;
+
+        }
+        current = head;
+
+        while (current != null) {
+
+            Node next = current.next;
+
+            if (current.random != null) {
+                next.random = current.random.next;
+            }
+            current = next.next;
+        }
+        current = head;
+
+        Node pHead = current.next;
+
+        while (current.next != null) {
+            Node tmp = current.next;
+
+            current.next = tmp.next;
+
+            current = tmp;
+        }
+        return pHead;
+    }
+
+    /**
+     * 139. Word Break
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        if (s == null || wordDict == null) {
+            return false;
+        }
+        return false;
+    }
+
+
+    /**
+     * 140. Word Break II
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public List<String> wordBreakII(String s, List<String> wordDict) {
+        return null;
+    }
+
+    /**
+     * 141. Linked List Cycle
+     *
+     * @param head
+     * @return
+     */
+    public boolean hasCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode slow = head;
+
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
