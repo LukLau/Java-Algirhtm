@@ -1072,5 +1072,135 @@ public class TwoHundred {
         return false;
     }
 
+    /**
+     * 142. Linked List Cycle II
+     *
+     * @param head
+     * @return
+     */
+    public ListNode detectCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return null;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                fast = head;
+                while (fast != slow) {
+                    slow = slow.next;
+                    fast = fast.next;
+                }
+                return slow;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * todo 太难
+     * 143. Reorder List
+     *
+     * @param head
+     */
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        ListNode mid = slow;
+
+        ListNode current = slow.next;
+
+
+        ListNode prev = this.reverseList(current, null);
+
+        slow.next = prev;
+
+        slow = head;
+
+        fast = mid.next;
+
+
+        return;
+
+    }
+
+    /**
+     * 144. Binary Tree Preorder Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> preorderTraversal(TreeNode root) {
+        if (root == null) {
+            return Collections.emptyList();
+        }
+        List<Integer> ans = new ArrayList<>();
+
+        Stack<TreeNode> stack = new Stack<>();
+
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+            ans.add(node.val);
+            if (node.right != null) {
+                stack.push(node.right);
+            }
+            if (node.left != null) {
+                stack.push(node.left);
+            }
+        }
+        return ans;
+    }
+
+
+    /**
+     * 145. Binary Tree Postorder Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> postorderTraversal(TreeNode root) {
+        if (root == null) {
+            return Collections.emptyList();
+        }
+        LinkedList<Integer> ans = new LinkedList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        while (!stack.isEmpty() || p != null) {
+            if (p != null) {
+                ans.addFirst(p.val);
+                stack.push(p);
+                p = p.right;
+            } else {
+                p = stack.pop();
+                p = p.left;
+            }
+        }
+        return ans;
+    }
+
+
+    private ListNode reverseList(ListNode first, ListNode end) {
+        ListNode prev = null;
+        while (prev != end) {
+            ListNode tmp = first.next;
+
+            first.next = prev;
+
+            prev = first;
+
+            first = tmp;
+        }
+        return prev;
+    }
 
 }
