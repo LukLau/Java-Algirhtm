@@ -19,6 +19,12 @@ public class TwoHundred {
      */
     private int MAX_PATH_SUM = Integer.MIN_VALUE;
 
+    public static void main(String[] args) {
+        String s = "  hello world!  ";
+        TwoHundred twoHundred = new TwoHundred();
+        twoHundred.reverseWords(s);
+    }
+
     /**
      * 101. Symmetric Tree
      *
@@ -751,7 +757,6 @@ public class TwoHundred {
         return result;
     }
 
-
     /**
      * 129. Sum Root to Leaf Numbers
      *
@@ -877,7 +882,6 @@ public class TwoHundred {
         return cut[n - 1];
     }
 
-
     /**
      * 134. Gas Station
      *
@@ -948,7 +952,6 @@ public class TwoHundred {
         return result;
     }
 
-
     /**
      * 136. Single Number
      *
@@ -966,7 +969,6 @@ public class TwoHundred {
         return result;
     }
 
-
     /**
      * 137. Single Number II
      *
@@ -976,7 +978,6 @@ public class TwoHundred {
     public int singleNumberII(int[] nums) {
         return 0;
     }
-
 
     /**
      * 138. Copy List with Random Pointer
@@ -1036,7 +1037,6 @@ public class TwoHundred {
         }
         return false;
     }
-
 
     /**
      * 140. Word Break II
@@ -1161,7 +1161,6 @@ public class TwoHundred {
         return ans;
     }
 
-
     /**
      * 145. Binary Tree Postorder Traversal
      *
@@ -1188,7 +1187,6 @@ public class TwoHundred {
         return ans;
     }
 
-
     private ListNode reverseList(ListNode first, ListNode end) {
         ListNode prev = null;
         while (prev != end) {
@@ -1202,5 +1200,88 @@ public class TwoHundred {
         }
         return prev;
     }
+
+    /**
+     * 147. Insertion Sort List
+     * todo 不懂
+     *
+     * @param head
+     * @return
+     */
+    public ListNode insertionSortList(ListNode head) {
+        return null;
+    }
+
+    /**
+     * todo 不懂
+     * 148. Sort List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+
+
+        return null;
+    }
+
+    /**
+     * 149. Max Points on a Line
+     *
+     * @param points
+     * @return
+     */
+    public int maxPoints(int[][] points) {
+        return 0;
+    }
+
+    /**
+     * 逆波兰
+     * 150. Evaluate Reverse Polish Notation
+     *
+     * @param tokens
+     * @return
+     */
+    public int evalRPN(String[] tokens) {
+        return 0;
+    }
+
+    /**
+     * 151. Reverse Words in a String
+     *
+     * @param s
+     * @return
+     */
+    public String reverseWords(String s) {
+        if (s == null || s.isEmpty()) {
+            return "";
+        }
+        String[] words = s.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for (int i = words.length - 1; i >= 0; i--) {
+            if (words[i].isEmpty()) {
+                continue;
+            }
+            sb.append(words[i]);
+            if (i > 0) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString().trim();
+    }
+
+    /**
+     * 152. Maximum Product Subarray
+     *
+     * @param nums
+     * @return
+     */
+    public int maxProduct(int[] nums) {
+
+    }
+
 
 }
