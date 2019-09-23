@@ -1280,7 +1280,131 @@ public class TwoHundred {
      * @return
      */
     public int maxProduct(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int max = nums[0];
+        int min = nums[0];
+        int result = nums[0];
+        for (int i = 1; i < nums.length; i++) {
 
+            int tmpMax = Math.max(Math.max(max * nums[i], min * nums[i]), nums[i]);
+
+            int tmpMin = Math.min(Math.min(max * nums[i], min * nums[i]), nums[i]);
+
+            result = Math.max(result, tmpMax);
+            max = tmpMax;
+            min = tmpMin;
+        }
+        return result;
+    }
+
+
+    /**
+     * todo 边界条件考虑不到
+     * 153. Find Minimum in Rotated Sorted Array
+     *
+     * @param nums
+     * @return
+     */
+    public int findMin(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+
+        int right = nums.length - 1;
+
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] <= nums[right]) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return nums[left];
+    }
+
+
+    /**
+     * todo 不懂
+     * 154. Find Minimum in Rotated Sorted Array II
+     *
+     * @param nums
+     * @return
+     */
+    public int findMinII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            if (nums[left] == nums[right]) {
+                left++;
+            }
+
+            if (nums[left] < nums[right]) {
+                return nums[left];
+            }
+            int mid = left + (right - left) / 2;
+
+            if (nums[left] <= nums[mid]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+
+        return nums[left];
+    }
+
+    /**
+     * 160. Intersection of Two Linked Lists
+     *
+     * @param headA
+     * @param headB
+     * @return
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null && headB == null) {
+            return null;
+        }
+        ListNode p1 = headA;
+        ListNode p2 = headB;
+        while (p1 != p2) {
+            p1 = p1 == null ? headB : p1.next;
+            p2 = p2 == null ? headA : p2.next;
+        }
+        return p1;
+    }
+
+    /**
+     * 162. Find Peak Element
+     * todo 不懂
+     *
+     * @param nums
+     * @return
+     */
+    public int findPeakElement(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+
+            if (nums[left] < nums[mid]) {
+
+                left = mid + 1;
+
+            } else {
+                right = mid;
+            }
+        }
+        return left;
     }
 
 
