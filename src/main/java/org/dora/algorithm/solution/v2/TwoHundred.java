@@ -5,6 +5,7 @@ import org.dora.algorithm.datastructe.Node;
 import org.dora.algorithm.datastructe.TreeNode;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author dora
@@ -20,9 +21,8 @@ public class TwoHundred {
     private int MAX_PATH_SUM = Integer.MIN_VALUE;
 
     public static void main(String[] args) {
-        String s = "  hello world!  ";
         TwoHundred twoHundred = new TwoHundred();
-        twoHundred.reverseWords(s);
+        twoHundred.compareVersion("0.1", "1.1");
     }
 
     /**
@@ -1393,18 +1393,187 @@ public class TwoHundred {
         }
         int left = 0;
         int right = nums.length - 1;
+
         while (left < right) {
             int mid = left + (right - left) / 2;
-
-            if (nums[left] < nums[mid]) {
-
+            if (nums[mid] < nums[mid + 1]) {
                 left = mid + 1;
-
             } else {
                 right = mid;
             }
         }
         return left;
+    }
+
+    /**
+     * 165. Compare Version Numbers
+     *
+     * @param version1
+     * @param version2
+     * @return
+     */
+    public int compareVersion(String version1, String version2) {
+        String[] word1 = version1.split("\\.");
+        String[] word2 = version2.split("\\.");
+        int index1 = 0;
+        int index2 = 0;
+        while (index1 < word1.length || index2 < word2.length) {
+            String tmp1 = index1 < word1.length ? word1[index1++] : "0";
+
+            String tmp2 = index2 < word2.length ? word2[index2++] : "0";
+
+            int num1 = Integer.parseInt(tmp1);
+            int num2 = Integer.parseInt(tmp2);
+
+            if (num1 != num2) {
+                return num1 - num2 < 0 ? -1 : 1;
+            }
+
+        }
+        return 0;
+    }
+
+    /**
+     * 167. Two Sum II - Input array is sorted
+     *
+     * @param numbers
+     * @param target
+     * @return
+     */
+    public int[] twoSum(int[] numbers, int target) {
+        if (numbers == null || numbers.length == 0) {
+            return new int[]{};
+        }
+        int[] ans = new int[2];
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < numbers.length; i++) {
+            if (map.containsKey(target - numbers[i])) {
+                ans[0] = map.get(target - numbers[i]) + 1;
+                ans[1] = i + 1;
+                break;
+            }
+            map.put(numbers[i], i);
+        }
+        return ans;
+
+    }
+
+    /**
+     * 168. Excel Sheet Column Title
+     *
+     * @param n
+     * @return
+     */
+    public String convertToTitle(int n) {
+        if (n <= 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        while (n > 0) {
+
+            int index = (n - 1) % 26;
+
+            char ch = (char) (index + 'A');
+            sb.append(ch);
+            n = (n - 1) / 26;
+        }
+        return sb.reverse().toString();
+    }
+
+    /**
+     * 169. Majority Element
+     *
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return Integer.MAX_VALUE;
+        }
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            int count = map.getOrDefault(num, 0);
+            count++;
+            map.put(num, count);
+        }
+        for (Map.Entry<Integer, Integer> item : map.entrySet()) {
+            Integer value = item.getValue();
+            if (value > nums.length / 2) {
+                return item.getKey();
+            }
+        }
+        return Integer.MAX_VALUE;
+    }
+
+    /**
+     * todo 未解之迷 数学推理
+     * 172. Factorial Trailing Zeroes
+     *
+     * @param n
+     * @return
+     */
+    public int trailingZeroes(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int count = 0;
+        while (n != 0) {
+            count += n / 5;
+            n /= 5;
+        }
+        return count;
+    }
+
+
+    /**
+     * 174. Dungeon Game
+     *
+     * @param dungeon
+     * @return
+     */
+    public int calculateMinimumHP(int[][] dungeon) {
+        if (dungeon == null || dungeon.length == 0) {
+            return 0;
+        }
+        int row = dungeon.length;
+        int column = dungeon[0].length;
+        int[] dp = new int[column];
+        for (int j = column - 1; j >= 0; j--) {
+            if (j == column - 1) {
+                dp[j] = dungeon[row - 1][j] >= 0 ? 1 : 1 - dungeon[row - 1][j];
+            } else {
+                dp[j] = Math.max(1, 1 - dungeon[row - 1][j]);
+            }
+        }
+        for (int i = row - 2; i >= 0; i--) {
+
+        }
+        return dp[0];
+    }
+
+    /**
+     * 179. Largest Number
+     *
+     * @param nums
+     * @return
+     */
+    public String largestNumber(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return "";
+        }
+        List<String> ans = new ArrayList<>();
+        for (int num : nums) {
+            ans.add(String.valueOf(num));
+        }
+        ans.sort((o1, o2) -> {
+            String tmp1 = o1 + o2;
+            String tmp2 = o2 + o1;
+            return tmp2.compareTo(tmp1);
+        });
+        if (ans.get(0).equals("0")) {
+            return "0";
+        }
+        return ans.stream().collect(Collectors.joining());
     }
 
 
