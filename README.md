@@ -116,3 +116,11 @@
 > [位运算](https://leetcode.com/problems/single-number-ii/) 需要使用两位
 
 > [逆波兰数](https://leetcode.com/problems/reverse-words-in-a-string/)
+
+----
+## 位运算
+------
+
+> [二进制反转](https://leetcode.com/problems/reverse-bits/)
+
+思路: 进行位运算

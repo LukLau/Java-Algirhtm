@@ -1576,5 +1576,147 @@ public class TwoHundred {
         return ans.stream().collect(Collectors.joining());
     }
 
+    /**
+     * todo 难题
+     * 188. Best Time to Buy and Sell Stock IV
+     *
+     * @param k
+     * @param prices
+     * @return
+     */
+    public int maxProfitIIII(int k, int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int tmpMax = -prices[0];
+        return 0;
+    }
+
+    /**
+     * 189. Rotate Array
+     *
+     * @param nums
+     * @param k
+     */
+    public void rotate(int[] nums, int k) {
+        if (nums == null || nums.length <= 0) {
+            return;
+        }
+        k %= nums.length;
+        this.reverseNums(nums, 0, nums.length - 1);
+        this.reverseNums(nums, 0, k - 1);
+        this.reverseNums(nums, k, nums.length - 1);
+
+
+    }
+
+
+    private void reverseNums(int[] nums, int start, int end) {
+        if (start > end) {
+            return;
+        }
+        for (int i = start; i <= (start + end) / 2; i++) {
+            this.swapValue(nums, i, start + end - i);
+        }
+    }
+
+    private void swapValue(int[] nums, int i, int j) {
+        int value = nums[i];
+
+        nums[i] = nums[j];
+
+        nums[j] = value;
+    }
+
+
+    /**
+     * 190. Reverse Bits
+     *
+     * @param n
+     * @return
+     */
+    public int reverseBits(int n) {
+//        int result = 0;
+//
+//        for (int i = 0; i < 32; i++) {
+//            result += n & 1;
+//            n >>= 1;
+//            if (i < 31) {
+//                result <<= 1;
+//            }
+//        }
+//        return result;
+
+        int result = 0;
+        while (n != 0) {
+            result += n & 1;
+            n >>= 1;
+            if (n != 0) {
+                result <<= 1;
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 191. Number of 1 Bits
+     *
+     * @param n
+     * @return
+     */
+    public int hammingWeight(int n) {
+        int result = 0;
+        while (n != 0) {
+            result++;
+            n = n & (n - 1);
+        }
+        return result;
+    }
+
+
+    /**
+     * 198. House Robber
+     *
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            if (i == 1) {
+                dp[i] = Math.max(0, nums[i]);
+            } else {
+                dp[i] = Math.max(dp[i - 2] + nums[i], dp[i - 1]);
+            }
+        }
+        return dp[nums.length - 1];
+    }
+
+
+    /**
+     * 199. Binary Tree Right Side View
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        if (root == null) {
+            return Collections.emptyList();
+        }
+        LinkedList<Integer> ans = new LinkedList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        while (!ans.isEmpty()) {
+            TreeNode p = stack.pop();
+            ans.addLast(p.val);
+            if (p.right != null) {
+
+            }
+        }
+    }
 
 }
