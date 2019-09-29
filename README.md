@@ -103,7 +103,7 @@
 
 > [格雷码以及二进制编码成格雷码](https://baike.baidu.com/item/%E6%A0%BC%E9%9B%B7%E7%A0%81/6510858?fr=aladdin)
 
-
+> [求解质数的个数](https://leetcode.com/submissions/detail/121785675/)
 
 > [约瑟夫环三种解法](https://blog.csdn.net/weixin_38214171/article/details/80352921)
 

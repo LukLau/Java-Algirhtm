@@ -22,7 +22,7 @@ public class TwoHundred {
 
     public static void main(String[] args) {
         TwoHundred twoHundred = new TwoHundred();
-        twoHundred.compareVersion("0.1", "1.1");
+
     }
 
     /**
@@ -1707,16 +1707,75 @@ public class TwoHundred {
     public List<Integer> rightSideView(TreeNode root) {
         if (root == null) {
             return Collections.emptyList();
-        }
-        LinkedList<Integer> ans = new LinkedList<>();
-        Stack<TreeNode> stack = new Stack<>();
-        while (!ans.isEmpty()) {
-            TreeNode p = stack.pop();
-            ans.addLast(p.val);
-            if (p.right != null) {
 
+        }
+        List<Integer> ans = new ArrayList<>();
+
+        Deque<TreeNode> deque = new LinkedList<>();
+
+        deque.add(root);
+
+        TreeNode prev = null;
+
+        while (!deque.isEmpty()) {
+            int size = deque.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode tmp = deque.poll();
+                if (tmp.left != null) {
+                    deque.add(tmp.left);
+                }
+                if (tmp.right != null) {
+                    deque.add(tmp.right);
+                }
+                prev = tmp;
+            }
+            ans.add(prev.val);
+        }
+        return ans;
+    }
+
+
+    /**
+     * 200. Number of Islands
+     *
+     * @param grid
+     * @return
+     */
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        boolean[][] used = new boolean[row][column];
+
+        int count = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (grid[i][j] == '1' && this.checkIslands(i, j, grid, used)) {
+                    count++;
+                }
             }
         }
+        return count;
+    }
+
+    private boolean checkIslands(int i, int j, char[][] grid, boolean[][] used) {
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[i].length || grid[i][j] != '1' || used[i][j]) {
+            return false;
+        }
+        used[i][j] = true;
+
+        this.checkIslands(i - 1, j, grid, used);
+
+        this.checkIslands(i + 1, j, grid, used);
+
+        this.checkIslands(i, j - 1, grid, used);
+
+        this.checkIslands(i, j + 1, grid, used);
+
+        return true;
+
     }
 
 }
