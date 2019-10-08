@@ -111,4 +111,87 @@ public class ThreeHundred {
         }
         return count;
     }
+
+    /**
+     * todo 不懂
+     * 205. Isomorphic Strings
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isIsomorphic(String s, String t) {
+        if (s == null || t == null) {
+            return false;
+        }
+        if (s.length() != t.length()) {
+            return false;
+        }
+        int[] hash1 = new int[256];
+        int[] hash2 = new int[256];
+        for (int i = 0; i < s.length(); i++) {
+            hash1[s.charAt(i) - 'a']++;
+            hash2[t.charAt(i) - 'a']++;
+        }
+        for (int i = 0; i < hash1.length; i++) {
+            if (hash1[i] != hash2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 206. Reverse Linked List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode tmp = head.next;
+
+        ListNode node = this.reverseList(tmp);
+
+        tmp.next = head;
+
+        head.next = null;
+
+        return node;
+
+    }
+
+    /**
+     * todo 不懂
+     * 207. Course Schedule
+     *
+     * @param numCourses
+     * @param prerequisites
+     * @return
+     */
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        return false;
+    }
+
+    /**
+     * 209. Minimum Size Subarray Sum
+     *
+     * @param s
+     * @param nums
+     * @return
+     */
+    public int minSubArrayLen(int s, int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int result = 0;
+        int begin = 0;
+        int end = 0;
+        while (end < nums.length) {
+
+        }
+        return result;
+    }
 }
