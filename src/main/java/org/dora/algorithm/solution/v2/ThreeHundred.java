@@ -2,8 +2,7 @@ package org.dora.algorithm.solution.v2;
 
 import org.dora.algorithm.datastructe.ListNode;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author dora
@@ -176,6 +175,7 @@ public class ThreeHundred {
     }
 
     /**
+     * todo 可以考虑转化 ologn
      * 209. Minimum Size Subarray Sum
      *
      * @param s
@@ -184,14 +184,196 @@ public class ThreeHundred {
      */
     public int minSubArrayLen(int s, int[] nums) {
         if (nums == null || nums.length == 0) {
-            return -1;
+            return 0;
         }
-        int result = 0;
+        int result = Integer.MAX_VALUE;
+
         int begin = 0;
         int end = 0;
+        int local = 0;
         while (end < nums.length) {
+            local += nums[end++];
 
+            while (local >= s) {
+                result = Math.min(result, end - begin);
+
+                local -= nums[begin++];
+            }
         }
-        return result;
+        return result == Integer.MAX_VALUE ? 0 : result;
+
     }
+
+    /**
+     * 210. Course Schedule II
+     *
+     * @param numCourses
+     * @param prerequisites
+     * @return
+     */
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        return null;
+    }
+
+    /**
+     * todo 字典记载
+     * 212. Word Search II
+     *
+     * @param board
+     * @param words
+     * @return
+     */
+    public List<String> findWords(char[][] board, String[] words) {
+        if (board == null || board.length == 0) {
+            return Collections.emptyList();
+        }
+        Trie trie = new Trie();
+        for (String word : words) {
+            trie.insert(word);
+        }
+        List<String> ans = new ArrayList<>();
+
+        for (int i = 0; i < board.length; i++) {
+
+            for (int j = 0; j < board[i].length; j++) {
+
+                if (trie.startsWith(String.valueOf(board[i][j]))) {
+
+                }
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * todo 存在bug
+     * 213. House Robber II
+     *
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        if (nums.length <= 2) {
+            return Math.max(nums[0], nums[nums.length - 1]);
+        }
+        return Math.max(this.intervalRob(nums, 0, nums.length - 2),
+                this.intervalRob(nums, 1, nums.length - 1));
+    }
+
+    private int intervalRob(int[] nums, int i, int j) {
+        int[] dp = new int[nums.length];
+
+        dp[0] = nums[0];
+
+        for (int k = i; k <= j; k++) {
+            if (k == 1) {
+                dp[k] = Math.max(0, nums[1]);
+
+            } else if (k > 1) {
+
+                dp[k] = Math.max(dp[k - 2] + nums[k], dp[k - 1]);
+            }
+        }
+        return dp[j];
+    }
+
+
+    /**
+     * todo 不懂
+     * 214. Shortest Palindrome
+     *
+     * @param s
+     * @return
+     */
+    public String shortestPalindrome(String s) {
+        if (s == null || s.isEmpty()) {
+            return "";
+        }
+        return null;
+    }
+
+
+    /**
+     * 215. Kth Largest Element in an Array
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int findKthLargest(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        k = nums.length - k;
+        k--;
+        int index = this.partition(nums, 0, nums.length - 1);
+        while (index != k) {
+            if (index > k) {
+
+            }
+        }
+        return -1;
+    }
+
+
+    private int partition(int[] nums, int start, int end) {
+        int pivot = nums[start];
+        while (start < end) {
+            while (start < end && nums[end] >= pivot) {
+                end--;
+            }
+            if (start < end) {
+                nums[end] = nums[start];
+                start++;
+            }
+            while (start < end && nums[start] >= pivot) {
+                start++;
+            }
+            if (start < end) {
+                nums[start] = nums[end];
+                end--;
+            }
+        }
+        nums[start] = pivot;
+
+        return start;
+    }
+
+
+    /**
+     * 216. Combination Sum III
+     *
+     * @param k
+     * @param n
+     * @return
+     */
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        if (k <= 0 || n <= 0) {
+            return Collections.emptyList();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        this.combinationSum3(ans, new ArrayList<>(), k, 1, n);
+        return ans;
+    }
+
+    private <E> void combinationSum3(List<List<Integer>> ans, List<Integer> tmp, int k, int start, int n) {
+        if (tmp.size() == k && n == 0) {
+            ans.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i <= 9 && i <= n; i++) {
+            tmp.add(i);
+
+            this.combinationSum3(ans, tmp, k, i + 1, n - i);
+
+            tmp.remove(tmp.size() - 1);
+        }
+
+    }
+
+
 }
