@@ -129,4 +129,93 @@ public class Question {
         }
         return builders[0].toString();
     }
+
+    /**
+     * 8. String to Integer (atoi)
+     *
+     * @param str
+     * @return
+     */
+    public int myAtoi(String str) {
+        if (str == null) {
+            return 0;
+        }
+        str = str.trim();
+        if (str.isEmpty()) {
+            return 0;
+        }
+        int sign = 1;
+        int index = 0;
+        if (str.charAt(index) == '-' || str.charAt(index) == '+') {
+            sign = str.charAt(index) == '-' ? -1 : 1;
+            index++;
+        }
+        long result = 0;
+        while (index < str.length() && Character.isDigit(str.charAt(index))) {
+            int value = Character.getNumericValue(str.charAt(index));
+
+            result = result * 10 + value;
+
+            index++;
+
+            if (result > Integer.MAX_VALUE) {
+                return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+            }
+        }
+        return (int) (sign * result);
+    }
+
+    /**
+     * key case: 集合是任何集合的子集
+     * 10. Regular Expression Matching
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatch(String s, String p) {
+        if (s == null) {
+            return true;
+        }
+        if (p == null) {
+            return false;
+        }
+        int m = s.length();
+        int n = p.length();
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = s.charAt(j - 1) == '*' && dp[0][j - 2];
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+                if (p.charAt(j - 1) == '*') {
+                    if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
+                        dp[i][j] = dp[i][j - 2];
+                    } else {
+                        dp[i][j] = dp[i][j - 2] || dp[i][j - 1] || dp[i - 1][j];
+                    }
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    /**
+     * 12. Integer to Roman
+     *
+     * @param num
+     * @return
+     */
+    public String intToRoman(int num) {
+        if (num <= 0) {
+            return "";
+        }
+        String[] base = new String[]{"I", "II", "III", "IIII", "V", "VI", "VII", "VIII", "VIIII"};
+        return "";
+    }
 }
+
