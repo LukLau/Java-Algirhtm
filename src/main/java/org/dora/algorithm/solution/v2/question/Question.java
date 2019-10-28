@@ -1,5 +1,9 @@
 package org.dora.algorithm.solution.v2.question;
 
+import org.dora.algorithm.datastructe.ListNode;
+
+import java.util.*;
+
 /**
  * @author dora
  * @date 2019/10/23
@@ -214,8 +218,113 @@ public class Question {
         if (num <= 0) {
             return "";
         }
-        String[] base = new String[]{"I", "II", "III", "IIII", "V", "VI", "VII", "VIII", "VIIII"};
-        return "";
+        String[] bit = new String[]{"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+        String[] ten = new String[]{"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+        String[] hundred = new String[]{"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+        String[] thousand = new String[]{"", "M", "MM", "MMM"};
+        StringBuilder builder = new StringBuilder();
+        builder.append(thousand[num / 1000]);
+        builder.append(hundred[(num % 1000) / 100]);
+        builder.append(ten[(num % 100) / 10]);
+        builder.append(bit[num % 10]);
+        return builder.toString();
     }
+
+
+    /**
+     * 13. Roman to Integer
+     *
+     * @param s
+     * @return
+     */
+    public int romanToInt(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int[] ans = new int[s.length()];
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == 'I') {
+                ans[i] = 1;
+            }
+            if (s.charAt(i) == 'V') {
+                ans[i] = 5;
+            }
+            if (s.charAt(i) == 'X') {
+                ans[i] = 10;
+            }
+            if (s.charAt(i) == 'L') {
+                ans[i] = 50;
+            }
+            if (s.charAt(i) == 'C') {
+                ans[i] = 100;
+            }
+            if (s.charAt(i) == 'D') {
+                ans[i] = 500;
+            }
+            if (s.charAt(i) == 'M') {
+                ans[i] = 1000;
+            }
+        }
+        int result = 0;
+        for (int i = 0; i < ans.length; i++) {
+            result += ans[i];
+            if (i > 0 && ans[i] > ans[i - 1]) {
+                result -= 2 * ans[i - 1];
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 17. Letter Combinations of a Phone Number
+     *
+     * @param digits
+     * @return
+     */
+    public List<String> letterCombinations(String digits) {
+        if (digits == null || digits.isEmpty()) {
+            return new ArrayList<>();
+        }
+        String[] map = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        LinkedList<String> ans = new LinkedList<>();
+        ans.add("");
+
+        return ans;
+    }
+
+    /**
+     * 23. Merge k Sorted Lists
+     *
+     * @param lists
+     * @return
+     */
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) {
+            return null;
+        }
+        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(lists.length, Comparator.comparingInt(o -> o.val));
+        for (ListNode node : lists) {
+            if (node != null) {
+                priorityQueue.add(node);
+            }
+        }
+        ListNode root = new ListNode(0);
+
+        ListNode dummy = root;
+        while (!priorityQueue.isEmpty()) {
+            ListNode node = priorityQueue.poll();
+
+            dummy.next = node;
+
+            dummy = dummy.next;
+
+            if (node.next != null) {
+                priorityQueue.add(node.next);
+            }
+        }
+        return root.next;
+    }
+
 }
 
