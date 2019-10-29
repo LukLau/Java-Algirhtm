@@ -1,4 +1,4 @@
-package org.dora.algorithm.solution.v2.question;
+package org.dora.algorithm.question;
 
 import org.dora.algorithm.datastructe.ListNode;
 
@@ -303,28 +303,120 @@ public class Question {
         if (lists == null || lists.length == 0) {
             return null;
         }
-        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(lists.length, Comparator.comparingInt(o -> o.val));
+        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(lists.length, Comparator.comparingInt(o1 -> o1.val));
         for (ListNode node : lists) {
             if (node != null) {
                 priorityQueue.add(node);
             }
         }
         ListNode root = new ListNode(0);
-
         ListNode dummy = root;
         while (!priorityQueue.isEmpty()) {
-            ListNode node = priorityQueue.poll();
-
-            dummy.next = node;
-
+            ListNode poll = priorityQueue.poll();
+            dummy.next = poll;
             dummy = dummy.next;
-
-            if (node.next != null) {
-                priorityQueue.add(node.next);
+            if (poll.next != null) {
+                priorityQueue.add(poll.next);
             }
         }
         return root.next;
     }
 
+    /**
+     * 24. Swap Nodes in Pairs
+     *
+     * @param head
+     * @return
+     */
+    public ListNode swapPairs(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+
+        ListNode dummy = root;
+
+        while (dummy.next != null && dummy.next.next != null) {
+
+            ListNode slow = dummy.next;
+
+            ListNode fast = dummy.next.next;
+
+            slow.next = fast.next;
+            fast.next = slow;
+            dummy.next = fast;
+            dummy = slow;
+        }
+        return root.next;
+    }
+
+
+    /**
+     * 25. Reverse Nodes in k-Group
+     *
+     * @param start
+     * @param end
+     * @return
+     */
+    public ListNode reverseKGroup(ListNode head, int k) {
+        if (head == null || k <= 0) {
+            return head;
+        }
+        ListNode current = head;
+        for (int i = 0; i < k; i++) {
+            if (current == null) {
+                return head;
+            }
+            current = current.next;
+        }
+        ListNode root = this.reverseList(head, current);
+        head.next = this.reverseKGroup(current, k);
+        return root;
+    }
+
+    private ListNode reverseList(ListNode start, ListNode end) {
+        ListNode prev = end;
+        while (start != end) {
+            ListNode tmp = start.next;
+
+            start.next = prev;
+
+            prev = start;
+
+            start = tmp;
+        }
+        return prev;
+    }
+
+    /**
+     * todo KMP 算法
+     * 28. Implement strStr()
+     *
+     * @param haystack
+     * @param needle
+     * @return
+     */
+    public int strStr(String haystack, String needle) {
+        if (haystack == null || needle == null) {
+            return -1;
+        }
+        int m = haystack.length();
+
+        int n = needle.length();
+
+        for (int i = 0; i <= m - n; i++) {
+
+            int j = 0;
+
+            while (j < n && haystack.charAt(i + j) == needle.charAt(j)) {
+                j++;
+            }
+            if (j == n) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }
 

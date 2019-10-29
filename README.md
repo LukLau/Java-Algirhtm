@@ -33,6 +33,8 @@
 
 > [正则表达式匹配](https://leetcode.com/problems/regular-expression-matching/discuss/5651/Easy-DP-Java-Solution-with-detailed-Explanation)
 
+> [KMP算法](https://leetcode.com/problems/implement-strstr/discuss/12956/C%2B%2B-Brute-Force-and-KMP)
+
 
 ## 贪心问题
 

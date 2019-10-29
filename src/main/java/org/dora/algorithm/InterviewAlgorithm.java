@@ -136,4 +136,16 @@ public class InterviewAlgorithm {
         return result;
     }
 
+
+    /**
+     * kmp 算法
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public int kmpAlgorithm(String s, String t) {
+        return -1;
+    }
+
 }
