@@ -1,4 +1,4 @@
-package org.dora.algorithm.question;
+package org.dora.algorithm.solution.v2.question;
 
 import org.dora.algorithm.datastructe.ListNode;
 
@@ -14,7 +14,7 @@ public class Question {
         int[] nums1 = new int[]{1};
         int[] nums2 = new int[]{2, 3};
         Question question = new Question();
-        question.findMedianSortedArrays(nums1, nums2);
+        question.divide(Integer.MIN_VALUE, 1);
     }
 
     /**
@@ -355,8 +355,6 @@ public class Question {
     /**
      * 25. Reverse Nodes in k-Group
      *
-     * @param start
-     * @param end
      * @return
      */
     public ListNode reverseKGroup(ListNode head, int k) {
@@ -417,6 +415,116 @@ public class Question {
             }
         }
         return -1;
+    }
+
+
+    /**
+     * 29. Divide Two Integers
+     *
+     * @param dividend
+     * @param divisor
+     * @return
+     */
+    public int divide(int dividend, int divisor) {
+        int sign = 1;
+        boolean correct = (dividend > 0 && divisor > 0)
+                || (dividend < 0 && divisor < 0);
+        if (!correct) {
+            sign = -1;
+        }
+        long dvd = Math.abs((long) dividend);
+        long dvs = Math.abs((long) divisor);
+
+        if (dvs == 0) {
+            return Integer.MAX_VALUE;
+        }
+
+        if (dvd == 0 || dvd < dvs) {
+            return 0;
+        }
+
+        long sum = this.getDividend(dvd, dvs);
+
+        if (sum > Integer.MAX_VALUE) {
+            return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+        }
+        return (int) sum * sign;
+
+    }
+
+    private long getDividend(long dvd, long dvs) {
+        long result = 0;
+
+        while (dvd >= dvs) {
+            long num = 1;
+
+            long tmp = dvs;
+
+            while (dvd >= (tmp << 1)) {
+
+                tmp <<= 1;
+
+                num <<= 1;
+            }
+            dvd -= tmp;
+
+            result += num;
+        }
+        return result;
+
+    }
+
+    /**
+     * 32. Longest Valid Parentheses
+     *
+     * @param s
+     * @return
+     */
+    public int longestValidParentheses(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                stack.push(i);
+            } else if (!stack.isEmpty() && s.charAt(stack.peek()) == '(') {
+                stack.pop();
+            } else {
+                stack.push(i);
+            }
+        }
+        if (stack.isEmpty()) {
+            return s.length();
+        }
+        int result = 0;
+
+        int now = s.length();
+
+        while (!stack.isEmpty()) {
+
+            int index = stack.pop();
+
+            result = Math.max(result, now - 1 - index);
+
+            now = index;
+        }
+
+        result = Math.max(result, now);
+
+        return result;
+    }
+
+
+    /**
+     * 33. Search in Rotated Sorted Array
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int search(int[] nums, int target) {
+
     }
 }
 
