@@ -524,6 +524,82 @@ public class Question {
      * @return
      */
     public int search(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            }
+            if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && nums[left] <= target) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 34. Find First and Last Position of Element in Sorted Array
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] searchRange(int[] nums, int target) {
+        int[] ans = new int[]{-1, -1};
+        if (nums == null || nums.length == 0) {
+            return ans;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        if (nums[left] != target) {
+            return ans;
+        }
+        ans[0] = left;
+        right = nums.length - 1;
+        while (left < right) {
+            int mid = (left + right) / 2 + 1;
+            if (nums[mid] > target) {
+                right = mid - 1;
+            } else {
+                left = mid;
+            }
+        }
+        ans[1] = left;
+        return ans;
+    }
+
+    /**
+     * 41. First Missing Positive
+     *
+     * @param nums
+     * @return
+     */
+    public int firstMissingPositive(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
 
     }
 }
