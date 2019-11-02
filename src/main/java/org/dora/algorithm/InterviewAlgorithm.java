@@ -148,4 +148,19 @@ public class InterviewAlgorithm {
         return -1;
     }
 
+    /**
+     * 魔法匹配
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatch(String s, String p) {
+        return true;
+    }
+
+    public boolean isMatchII(String s, String p) {
+        return false;
+    }
+
 }

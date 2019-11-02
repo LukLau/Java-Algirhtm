@@ -600,7 +600,161 @@ public class Question {
         if (nums == null || nums.length == 0) {
             return -1;
         }
-
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+                this.swap(nums, i, nums[i] - 1);
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return nums.length + 1;
     }
+
+    private void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+
+
+    /**
+     * 42. Trapping Rain Water
+     *
+     * @param height
+     * @return
+     */
+    public int trap(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = height.length - 1;
+
+        int leftEdge = 0;
+        int rightEdge = 0;
+
+        int result = 0;
+
+        while (left < right) {
+            if (height[left] <= height[right]) {
+                if (height[left] >= leftEdge) {
+                    leftEdge = height[left];
+                } else {
+                    result += leftEdge - height[left];
+                }
+                left++;
+            } else {
+                if (height[right] >= rightEdge) {
+                    rightEdge = height[right];
+                } else {
+                    result += rightEdge - height[right];
+                }
+                right--;
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 43. Multiply Strings
+     *
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public String multiply(String num1, String num2) {
+        if (num1 == null || num2 == null) {
+            return "";
+        }
+        int m = num1.length();
+        int n = num2.length();
+        int[] pos = new int[m + n];
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+
+                int value = (Character.getNumericValue(num1.charAt(i))
+                        * Character.getNumericValue(num2.charAt(j)))
+                        + pos[i + j + 1];
+
+                pos[i + j] += value / 10;
+
+                pos[i + j + 1] = value % 10;
+            }
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int num : pos) {
+            if (!(builder.length() == 0 && num == 0)) {
+                builder.append(num);
+            }
+        }
+        return builder.length() == 0 ? "0" : builder.toString();
+    }
+
+
+    /**
+     * 44. Wildcard Matching
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatchII(String s, String p) {
+        if (s == null) {
+            return true;
+        }
+        if (p == null) {
+            return false;
+        }
+        int m = s.length();
+        int n = p.length();
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j - 1];
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    /**
+     * 45. Jump Game II
+     *
+     * @param nums
+     * @return
+     * @tag
+     */
+    public int jump(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int step = 0;
+        int current = 0;
+        int farthest = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            farthest = Math.max(i + nums[i], farthest);
+
+            if (i == current) {
+
+                step++;
+
+                current = farthest;
+            }
+        }
+        return step;
+    }
+
 }
 
