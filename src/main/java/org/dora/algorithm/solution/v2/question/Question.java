@@ -756,5 +756,227 @@ public class Question {
         return step;
     }
 
+    /**
+     * 49. Group Anagrams
+     *
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return new ArrayList<>();
+        }
+        HashMap<String, List<String>> keyMap = new HashMap<>();
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+
+            String key = String.valueOf(chars);
+
+            List<String> list = keyMap.getOrDefault(key, new ArrayList<>());
+
+            list.add(str);
+
+            keyMap.put(key, list);
+        }
+        return new ArrayList<>(keyMap.values());
+    }
+
+    /**
+     * 53. Maximum Subarray
+     *
+     * @param nums
+     * @return
+     */
+    public int maxSubArray(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int result = Integer.MIN_VALUE;
+        int local = 0;
+        for (int num : nums) {
+            local = local >= 0 ? local + num : num;
+            result = Math.max(result, local);
+        }
+        return result;
+    }
+
+
+    /**
+     * 贪心算法
+     * 55. Jump Game
+     *
+     * @param nums
+     * @return
+     */
+    public boolean canJump(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int furthest = 0;
+        for (int i = 0; i < nums.length - 1 && i <= furthest; i++) {
+            furthest = Math.max(i + nums[i], furthest);
+        }
+        return furthest >= nums.length - 1;
+    }
+
+
+    /**
+     * todo 巍
+     * 56. Merge Intervals
+     *
+     * @param intervals
+     * @return
+     */
+    public int[][] merge(int[][] intervals) {
+        if (intervals == null || intervals.length == 0) {
+            return new int[][]{};
+        }
+        return null;
+    }
+
+    /**
+     * 61. Rotate List
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode rotateRight(ListNode head, int k) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode current = head;
+        int count = 1;
+        while (current.next != null) {
+            current = current.next;
+            count++;
+        }
+        current.next = head;
+        ListNode slow = head;
+        if ((k %= count) != 0) {
+            for (int i = 0; i < count - k; i++) {
+
+                slow = slow.next;
+
+                current = current.next;
+            }
+        }
+        current.next = null;
+
+        return slow;
+
+    }
+
+    /**
+     * 65. Valid Number
+     *
+     * @param s
+     * @return
+     */
+    public boolean isNumber(String s) {
+        if (s == null) {
+            return false;
+        }
+        s = s.trim();
+
+        if (s.length() == 0) {
+            return false;
+        }
+        boolean existSign = false;
+        boolean existDit = false;
+        boolean existE = false;
+
+        for (int i = 0; i < s.length(); i++) {
+            char value = s.charAt(i);
+
+        }
+        return false;
+
+    }
+
+
+    /**
+     * todo 第二种解法
+     * 68. Text Justification
+     *
+     * @param words
+     * @param maxWidth
+     * @return
+     */
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        if (words == null || words.length == 0 || maxWidth <= 0) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+
+        int startIndex = 0;
+        while (startIndex < words.length) {
+            int line = 0;
+            int endIndex = startIndex;
+
+            while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
+
+                line += words[endIndex].length() + 1;
+                endIndex++;
+            }
+            StringBuilder builder = new StringBuilder();
+
+            int lineLen = maxWidth - line + 1;
+
+            int wordNum = endIndex - startIndex;
+
+            boolean lastRow = endIndex == words.length;
+
+            if (endIndex - startIndex == 1) {
+                builder.append(words[startIndex]);
+            } else {
+
+                int countOfWord = lastRow ? 1 : lineLen / (wordNum - 1) + 1;
+
+                int extraOfWord = lastRow ? 0 : lineLen % (wordNum - 1);
+
+                builder.append(this.constructCurrentLine(words, startIndex, endIndex, countOfWord, extraOfWord));
+            }
+            String str = this.fillLen(builder.toString(), maxWidth);
+
+            ans.add(str);
+
+            startIndex = endIndex;
+        }
+        return ans;
+    }
+
+    private String constructCurrentLine(String[] words, int startIndex, int endIndex,
+                                        int countOfWord, int extraOfWord) {
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = startIndex; i < endIndex; i++) {
+            builder.append(words[i]);
+            int tmp = countOfWord;
+
+            while (tmp-- > 0) {
+
+                builder.append(" ");
+            }
+            if (extraOfWord-- > 0) {
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
+    }
+
+
+    private String fillLen(String str, int maxWidth) {
+        while (str.length() < maxWidth) {
+            str = str + " ";
+        }
+        while (str.length() > maxWidth) {
+            str = str.substring(0, str.length() - 1);
+        }
+        return str;
+    }
+
+
 }
 

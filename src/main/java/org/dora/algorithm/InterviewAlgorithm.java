@@ -1,6 +1,9 @@
 package org.dora.algorithm;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * 常见算法
@@ -162,5 +165,108 @@ public class InterviewAlgorithm {
     public boolean isMatchII(String s, String p) {
         return false;
     }
+
+    /**
+     * 51. N-Queens
+     *
+     * @param n
+     * @return
+     */
+    public List<List<String>> solveNQueens(int n) {
+        if (n <= 0) {
+            return Collections.emptyList();
+        }
+        char[][] nQueens = new char[n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                nQueens[i][j] = '.';
+            }
+        }
+        List<List<String>> ans = new ArrayList<>();
+
+        this.checkQueens(ans, 0, nQueens);
+
+        return ans;
+    }
+
+    private void checkQueens(List<List<String>> ans, int row, char[][] nQueens) {
+        if (row == nQueens.length) {
+            List<String> tmp = new ArrayList<>();
+
+            for (char[] rowValue : nQueens) {
+                tmp.add(String.valueOf(rowValue));
+            }
+            ans.add(tmp);
+        }
+
+        for (int j = 0; j < nQueens.length; j++) {
+            if (this.isValidQueens(nQueens, j, row)) {
+                nQueens[row][j] = 'Q';
+                this.checkQueens(ans, row + 1, nQueens);
+                nQueens[row][j] = '.';
+            }
+        }
+    }
+
+    private boolean isValidQueens(char[][] nQueens, int column, int row) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (nQueens[i][column] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = column - 1; i >= 0 && j >= 0; i--, j--) {
+            if (nQueens[i][j] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = column + 1; i >= 0 && j < nQueens.length; i--, j++) {
+            if (nQueens[i][j] == 'Q') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 52. N-Queens II
+     *
+     * @param n
+     * @return
+     */
+    public int totalNQueens(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int[] dp = new int[n];
+        return this.totalNQueens(dp, 0, n);
+    }
+
+    private int totalNQueens(int[] dp, int row, int n) {
+        int count = 0;
+        if (row == n) {
+            count++;
+            return count;
+        }
+        for (int i = 0; i < n; i++) {
+            if (this.isValidTotalNQueens(dp, i, row)) {
+                dp[row] = i;
+                count += this.totalNQueens(dp, row + 1, n);
+                dp[row] = -1;
+            }
+        }
+        return count;
+    }
+
+    private boolean isValidTotalNQueens(int[] dp, int column, int row) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (dp[i] == column || Math.abs(i - row) == Math.abs(dp[i] - column)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 }

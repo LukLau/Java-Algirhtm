@@ -21,6 +21,8 @@
 
 > [课程调度]()
 
+> [八皇后问题](https://leetcode.com/problems/n-queens/)
+
 
 
 ## Dp问题
@@ -36,6 +38,8 @@
 > [正则表达式匹配](https://leetcode.com/problems/regular-expression-matching/discuss/5651/Easy-DP-Java-Solution-with-detailed-Explanation)
 
 > [KMP算法](https://leetcode.com/problems/implement-strstr/discuss/12956/C%2B%2B-Brute-Force-and-KMP)
+
+> [获取八皇后个数](https://leetcode.com/problems/n-queens-ii/)
 
 
 ## 贪心问题
