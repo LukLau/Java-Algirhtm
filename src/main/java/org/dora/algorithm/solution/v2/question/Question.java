@@ -977,6 +977,33 @@ public class Question {
         return str;
     }
 
+    /**
+     * 80. Remove Duplicates from Sorted Array II
+     *
+     * @param nums
+     * @return
+     */
+    public int removeDuplicates(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int count = 1;
+        int index = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (count >= 3) {
+                continue;
+            }
+            if (nums[i] == nums[i - 1]) {
+                index++;
+                count++;
+            } else {
+                count = 1;
+                nums[index++] = nums[i];
+            }
+        }
+        return index;
+    }
+
 
 }
 
