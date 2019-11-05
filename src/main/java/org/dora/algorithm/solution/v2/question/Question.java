@@ -14,7 +14,8 @@ public class Question {
         int[] nums1 = new int[]{1};
         int[] nums2 = new int[]{2, 3};
         Question question = new Question();
-        question.divide(Integer.MIN_VALUE, 1);
+        int[] ans = new int[]{0, 0, 1, 1, 1, 1, 2, 3, 3};
+        question.removeDuplicates(ans);
     }
 
     /**
@@ -987,21 +988,55 @@ public class Question {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-        int count = 1;
         int index = 1;
+
+        int count = 1;
+
         for (int i = 1; i < nums.length; i++) {
-            if (count >= 3) {
-                continue;
-            }
             if (nums[i] == nums[i - 1]) {
-                index++;
                 count++;
             } else {
                 count = 1;
-                nums[index++] = nums[i];
             }
+            if (count > 2) {
+                continue;
+            }
+            // 必须使用这行 替换当前下标的值
+            nums[index++] = nums[i];
         }
         return index;
+    }
+
+
+    /**
+     * 84. Largest Rectangle in Histogram
+     *
+     * @param heights
+     * @return
+     */
+    public int largestRectangleArea(int[] heights) {
+        if (heights == null || heights.length == 0) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        int result = 0;
+        for (int i = 0; i <= heights.length; i++) {
+            int height = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] < height) {
+                stack.push(i);
+            } else {
+                int preIndex = stack.pop();
+
+                int value = heights[preIndex];
+
+                int side = stack.isEmpty() ? i : i - stack.peek() - 1;
+
+                result = Math.max(result, side * value);
+
+                i--;
+            }
+        }
+        return result;
     }
 
 
