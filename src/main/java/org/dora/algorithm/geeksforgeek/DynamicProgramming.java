@@ -1,6 +1,12 @@
 package org.dora.algorithm.geeksforgeek;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
+ * 递归其实是动态规划的另种方式
+ *
  * @author dora
  * @date 2019-04-26
  */
@@ -187,6 +193,7 @@ public class DynamicProgramming {
      * height[i]: 第i列时的最大高度
      * left[i]: 第i列 的左边界
      * right[i]: 第i列 的右边界
+     * 随着层次的遍历 矩形的面积也随着上一层而进行变动
      * 85. Maximal Rectangle
      *
      * @param matrix
@@ -200,8 +207,6 @@ public class DynamicProgramming {
 
         int column = matrix[0].length;
 
-        int leftSide = 0;
-
         int[] height = new int[column];
 
         int[] left = new int[column];
@@ -211,7 +216,14 @@ public class DynamicProgramming {
         for (int i = 0; i < column; i++) {
             right[i] = column;
         }
+        int result = 0;
+
         for (int i = 0; i < row; i++) {
+
+            int leftSide = 0;
+
+            int rightSide = column;
+
             for (int j = 0; j < column; j++) {
                 if (matrix[i][j] == '1') {
                     height[j]++;
@@ -221,12 +233,99 @@ public class DynamicProgramming {
             }
             for (int j = 0; j < column; j++) {
                 if (matrix[i][j] == '1') {
-                    left[j] = Math.max(left[j], leftSide);
+                    left[j] = Math.max(leftSide, left[j]);
                 } else {
                     left[j] = 0;
                     leftSide = j + 1;
                 }
             }
+            for (int j = column - 1; j >= 0; j--) {
+                if (matrix[i][j] == '1') {
+
+                    right[j] = Math.min(rightSide, right[j]);
+                } else {
+                    right[j] = column;
+
+                    rightSide = j;
+                }
+            }
+            for (int j = 0; j < column; j++) {
+                result = Math.max(result, height[j] * (right[j] - left[j]));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * todo 未来考虑使用动态规划
+     * 87. Scramble String
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public boolean isScramble(String s1, String s2) {
+        if (s1 == null || s2 == null) {
+            return false;
+        }
+
+        if (s1.equals(s2)) {
+            return true;
+        }
+        int m = s1.length();
+        int n = s2.length();
+
+        if (m != n) {
+            return false;
+        }
+        int[] hash = new int[256];
+        for (int i = 0; i < m; i++) {
+            hash[s1.charAt(i) - '0']--;
+            hash[s2.charAt(i) - '0']++;
+        }
+        for (int i = 0; i < hash.length; i++) {
+            if (hash[i] != 0) {
+                return false;
+            }
+        }
+        for (int i = 1; i < m; i++) {
+            if (this.isScramble(s1.substring(0, i), s2.substring(0, i)) &&
+                    this.isScramble(s1.substring(i), s2.substring(i))) {
+                return true;
+            }
+            if (this.isScramble(s1.substring(i), s2.substring(0, m - i)) &&
+                    this.isScramble(s1.substring(0, i), s2.substring(m - i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    // ----------递归--------------//
+
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(nums);
+        List<List<Integer>> ans = new ArrayList<>();
+        this.subsetsWithDup(ans, new ArrayList<>(), 0, nums);
+        return ans;
+    }
+
+    private <E> void subsetsWithDup(List<List<Integer>> ans, List<Integer> tmp, int start, int[] nums) {
+        ans.add(new ArrayList<>(tmp));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) {
+                continue;
+            }
+
+            tmp.add(nums[i]);
+
+            this.subsetsWithDup(ans, tmp, i + 1, nums);
+
+            tmp.remove(tmp.size() - 1);
         }
     }
 

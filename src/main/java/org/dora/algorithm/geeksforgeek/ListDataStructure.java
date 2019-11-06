@@ -30,4 +30,60 @@ public class ListDataStructure {
             return head;
         }
     }
+
+
+    /**
+     * 86. Partition List
+     *
+     * @param head
+     * @param x
+     * @return
+     */
+    public ListNode partition(ListNode head, int x) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode smallHead = new ListNode(0);
+        ListNode bigHead = new ListNode(0);
+
+        ListNode dummy1 = smallHead;
+
+        ListNode dummy2 = bigHead;
+
+        while (head != null) {
+            if (head.val < x) {
+                dummy1.next = head;
+                dummy1 = dummy1.next;
+            } else {
+                dummy2.next = head;
+
+                dummy2 = dummy2.next;
+            }
+            head = head.next;
+        }
+        // 这样代码必须添加 否则会导致 链表未拆分
+        dummy2.next = null;
+
+        ListNode next = bigHead.next;
+
+        dummy1.next = next;
+
+        bigHead.next = null;
+
+        return smallHead.next;
+
+    }
+
+
+    /**
+     * 92. Reverse Linked List II
+     *
+     * @param head
+     * @param m
+     * @param n
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+
+    }
 }
