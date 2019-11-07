@@ -84,6 +84,51 @@ public class ListDataStructure {
      * @return
      */
     public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
 
+        root.next = head;
+
+        ListNode slow = root;
+
+        ListNode fast = root;
+
+        for (int i = 0; i < m - 1; i++) {
+            slow = slow.next;
+        }
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+
+        ListNode prev = slow.next;
+
+        ListNode end = fast.next;
+
+        ListNode node = this.reverseListNode(prev, fast);
+
+        slow.next = node;
+
+        prev.next = end;
+
+        return root.next;
+
+    }
+
+
+    private ListNode reverseListNode(ListNode start, ListNode end) {
+        ListNode prev = null;
+
+        while (prev != end) {
+            ListNode tmp = start.next;
+
+            start.next = prev;
+
+            prev = start;
+
+            start = tmp;
+        }
+        return prev;
     }
 }

@@ -1,5 +1,7 @@
 package org.dora.algorithm.geeksforgeek;
 
+import org.dora.algorithm.datastructe.TreeNode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -302,6 +304,46 @@ public class DynamicProgramming {
     }
 
 
+    /**
+     * todo 需要重新考虑
+     * 96. Unique Binary Search Trees
+     *
+     * @param n
+     * @return
+     */
+    public int numTrees(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int[] dp = new int[n + 1];
+
+        dp[0] = dp[1] = 1;
+
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                dp[i] += dp[i - j] * dp[j];
+            }
+
+        }
+        return dp[n];
+    }
+
+
+    /**
+     * 97. Interleaving String
+     *
+     * @param s1
+     * @param s2
+     * @param s3
+     * @return
+     */
+    public boolean isInterleave(String s1, String s2, String s3) {
+        if (s1 == null || s2 == null) {
+            return false;
+        }
+    }
+
+
     // ----------递归--------------//
 
     public List<List<Integer>> subsetsWithDup(int[] nums) {
@@ -327,6 +369,50 @@ public class DynamicProgramming {
 
             tmp.remove(tmp.size() - 1);
         }
+    }
+
+
+    /**
+     * 95. Unique Binary Search Trees II
+     *
+     * @param n
+     * @return
+     */
+    public List<TreeNode> generateTrees(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        return this.generateTrees(1, n);
+    }
+
+    private List<TreeNode> generateTrees(int start, int end) {
+        List<TreeNode> ans = new ArrayList<>();
+        if (start > end) {
+            ans.add(null);
+            return ans;
+        }
+        if (start == end) {
+            TreeNode node = new TreeNode(start);
+            ans.add(node);
+            return ans;
+        }
+        for (int i = start; i <= end; i++) {
+            List<TreeNode> leftNodes = this.generateTrees(start, i - 1);
+            List<TreeNode> rightNodes = this.generateTrees(i + 1, end);
+            for (TreeNode left : leftNodes) {
+                for (TreeNode right : rightNodes) {
+
+                    TreeNode root = new TreeNode(i);
+
+                    root.left = left;
+
+                    root.right = right;
+
+                    ans.add(root);
+                }
+            }
+        }
+        return ans;
     }
 
 }

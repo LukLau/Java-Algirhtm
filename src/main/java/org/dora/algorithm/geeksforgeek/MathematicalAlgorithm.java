@@ -58,7 +58,38 @@ public class MathematicalAlgorithm {
             return 0;
         }
         return 0;
+    }
 
+
+    /**
+     * 93. Restore IP Addresses
+     *
+     * @param s
+     * @return
+     */
+    public List<String> restoreIpAddresses(String s) {
+        if (s == null || s.length() == 0) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+        for (int a = 1; a <= 4; a++) {
+            for (int b = 1; b <= 4; b++) {
+                for (int c = 1; c <= 4; c++) {
+                    for (int d = 1; d <= 4; d++) {
+                        int len = a + b + c + d;
+                        if (len == 12) {
+                            int value1 = Integer.parseInt(s.substring(0, a));
+                            int value2 = Integer.parseInt(s.substring(a, a + b));
+                            int value3 = Integer.parseInt(s.substring(a + b, a + b + c));
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+        return ans;
     }
 
 
