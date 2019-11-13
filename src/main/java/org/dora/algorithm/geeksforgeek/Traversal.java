@@ -126,6 +126,7 @@ public class Traversal {
         }
         Stack<TreeNode> stack = new Stack<>();
         TreeNode p = root;
+<<<<<<<HEAD
         TreeNode prev = null;
         TreeNode first = null;
         TreeNode second = null;
