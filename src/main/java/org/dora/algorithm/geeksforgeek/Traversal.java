@@ -126,7 +126,6 @@ public class Traversal {
         }
         Stack<TreeNode> stack = new Stack<>();
         TreeNode p = root;
-<<<<<<<HEAD
         TreeNode prev = null;
         TreeNode first = null;
         TreeNode second = null;
@@ -232,6 +231,42 @@ public class Traversal {
             }
             ans.add(tmp);
             leftToRight = !leftToRight;
+        }
+        return ans;
+    }
+
+    /**
+     * 107. Binary Tree Level Order Traversal II
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrderBottom(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        LinkedList<List<Integer>> ans = new LinkedList<>();
+
+        Deque<TreeNode> deque = new LinkedList<>();
+
+        deque.add(root);
+
+        while (!deque.isEmpty()) {
+            List<Integer> tmp = new ArrayList<>();
+
+            int size = deque.size();
+
+            for (int i = 0; i < size; i++) {
+                TreeNode poll = deque.poll();
+                tmp.add(poll.val);
+                if (poll.left != null) {
+                    deque.add(poll.left);
+                }
+                if (poll.right != null) {
+                    deque.add(poll.right);
+                }
+            }
+            ans.addFirst(tmp);
         }
         return ans;
     }

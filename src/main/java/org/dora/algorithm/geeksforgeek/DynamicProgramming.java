@@ -417,7 +417,6 @@ public class DynamicProgramming {
         return ans;
     }
 
-<<<<<<<HEAD
 
     /**
      * 100. Same Tree
@@ -491,6 +490,37 @@ public class DynamicProgramming {
         if (inStart > inEnd || postStart > postEnd) {
             return null;
         }
+        TreeNode root = new TreeNode(postorder[postEnd]);
+        int index = 0;
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == root.val) {
+                index = i;
+                break;
+            }
+        }
+        root.left = this.buildTreeII(inStart, index - 1, inorder, postStart, postStart + index - inStart - 1, postorder);
+        root.right = this.buildTreeII(index + 1, inEnd, inorder, postStart + index - inStart, postEnd - 1, postorder);
+        return root;
     }
+
+
+    /**
+     * 108. Convert Sorted Array to Binary Search Tree
+     *
+     * @param nums
+     * @return
+     */
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return null;
+        }
+        return this.sortedArrayToBST(0, nums.length - 1, nums);
+    }
+
+    private TreeNode sortedArrayToBST(int start, int end, int[] nums) {
+
+        return null;
+    }
+
 
 }
