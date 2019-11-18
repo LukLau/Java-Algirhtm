@@ -1,5 +1,6 @@
 package org.dora.algorithm.geeksforgeek;
 
+import org.dora.algorithm.datastructe.ListNode;
 import org.dora.algorithm.datastructe.TreeNode;
 
 import java.util.ArrayList;
@@ -518,8 +519,132 @@ public class DynamicProgramming {
     }
 
     private TreeNode sortedArrayToBST(int start, int end, int[] nums) {
+        if (start > end) {
+            return null;
+        }
+        int mid = start + (end - start) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = this.sortedArrayToBST(start, mid - 1, nums);
+        root.right = this.sortedArrayToBST(mid + 1, end, nums);
+        return root;
+    }
 
-        return null;
+
+    /**
+     * todo
+     * 109. Convert Sorted List to Binary Search Tree
+     *
+     * @param head
+     * @return
+     */
+    public TreeNode sortedListToBST(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        return this.sortedListToBST(head, null);
+    }
+
+    private TreeNode sortedListToBST(ListNode start, ListNode end) {
+        if (start == end) {
+            return null;
+        }
+        ListNode slow = start;
+
+        ListNode fast = start;
+
+        while (fast != end && fast.next != end) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        TreeNode root = new TreeNode(slow.val);
+
+        root.left = this.sortedListToBST(start, slow);
+
+        root.right = this.sortedListToBST(slow.next, end);
+
+        return root;
+    }
+
+
+    /**
+     * 110. Balanced Binary Tree
+     *
+     * @param root
+     * @return
+     */
+    public boolean isBalanced(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        int left = this.treeDepth(root.left);
+        int right = this.treeDepth(root.right);
+        if (Math.abs(left - right) <= 1) {
+            return this.isBalanced(root.left) && this.isBalanced(root.right);
+        }
+        return false;
+
+    }
+
+    private int treeDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return 1 + Math.max(this.treeDepth(root.left), this.treeDepth(root.right));
+    }
+
+
+    /**
+     * 112. Path Sum
+     *
+     * @param root
+     * @param sum
+     * @return
+     */
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if (root == null) {
+            return false;
+        }
+        if (root.left == null && root.right == null && root.val == sum) {
+            return true;
+        }
+        return this.hasPathSum(root.left, sum - root.val)
+                || this.hasPathSum(root.right, sum - root.val);
+    }
+
+    /**
+     * 113. Path Sum II
+     *
+     * @param root
+     * @param sum
+     * @return
+     */
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+
+        this.pathSum(ans, new ArrayList<Integer>(), root, sum);
+
+        return ans;
+    }
+
+    private void pathSum(List<List<Integer>> ans, List<Integer> tmp, TreeNode root, int sum) {
+        if (root == null) {
+            return;
+        }
+        tmp.add(root.val);
+        if (root.left == null && root.right == null && root.val == sum) {
+            ans.add(new ArrayList<>(tmp));
+        } else {
+            if (root.left != null) {
+                this.pathSum(ans, tmp, root.left, sum - root.val);
+            }
+            if (root.right != null) {
+                this.pathSum(ans, tmp, root.right, sum - root.val);
+            }
+        }
+        tmp.remove(tmp.size() - 1);
     }
 
 

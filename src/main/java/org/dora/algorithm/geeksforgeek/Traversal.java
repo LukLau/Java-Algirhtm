@@ -1,5 +1,6 @@
 package org.dora.algorithm.geeksforgeek;
 
+import org.dora.algorithm.datastructe.Node;
 import org.dora.algorithm.datastructe.TreeNode;
 
 import java.util.*;
@@ -269,6 +270,93 @@ public class Traversal {
             ans.addFirst(tmp);
         }
         return ans;
+    }
+
+
+    /**
+     * 114. Flatten Binary Tree to Linked List
+     *
+     * @param root
+     */
+    public void flatten(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+
+
+        TreeNode p = root;
+
+        stack.push(p);
+
+        TreeNode prev = null;
+
+        while (!stack.isEmpty()) {
+            p = stack.pop();
+            if (p.right != null) {
+                stack.push(p.right);
+            }
+            if (p.left != null) {
+                stack.push(p.left);
+            }
+
+            if (prev != null) {
+                prev.right = p;
+
+                prev.left = null;
+            }
+            prev = p;
+        }
+    }
+
+
+    /**
+     * todo
+     * 115. Distinct Subsequences
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public int numDistinct(String s, String t) {
+        if (s == null || t == null) {
+            return 0;
+        }
+        int m = s.length();
+
+        int n = t.length();
+
+        int[][] dp = new int[m + 1][n + 1];
+
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = 1;
+        }
+
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                dp[i][j] = (s.charAt(i - 1) == t.charAt(j - 1) ? dp[i - 1][j - 1] : 0) + dp[i - 1][j];
+            }
+        }
+        return dp[m][n];
+    }
+
+
+    /**
+     * 116. Populating Next Right Pointers in Each Node
+     *
+     * @param root
+     * @return
+     */
+    public Node connect(Node root) {
+        if (root == null || root.left == null) {
+            return root;
+        }
+        Node p = root;
+        while (p.left != null) {
+            Node next = p.left;
+            if (p.left != null) {
+            }
+        }
     }
 
 
