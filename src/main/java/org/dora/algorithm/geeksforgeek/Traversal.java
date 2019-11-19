@@ -352,11 +352,133 @@ public class Traversal {
             return root;
         }
         Node p = root;
+
         while (p.left != null) {
-            Node next = p.left;
-            if (p.left != null) {
+
+            Node nextNode = p.left;
+
+            while (p != null) {
+                p.left.next = p.right;
+
+                if (p.next != null) {
+
+                    p.right.next = p.next.left;
+                }
+                p = p.next;
+            }
+            p = nextNode;
+        }
+        return root;
+    }
+
+
+    /**
+     * todo O1空间
+     * 关键点在于: 找到并设置每一层的头结点
+     * 117. Populating Next Right Pointers in Each Node II
+     *
+     * @param root
+     * @return
+     */
+    public Node connectII(Node root) {
+        if (root == null) {
+            return null;
+        }
+        Node p = root;
+
+        Node levelHead = null;
+
+        Node levelPrev = null;
+
+        while (p != null) {
+
+            while (p != null) {
+                if (p.left != null) {
+                    if (levelPrev != null) {
+                        levelPrev.next = p.left;
+                    } else {
+                        levelHead = p.left;
+                    }
+                    levelPrev = p.left;
+                }
+                if (p.right != null) {
+                    if (levelPrev != null) {
+                        levelPrev.next = p.right;
+                    } else {
+                        levelHead = p.right;
+                    }
+                    levelPrev = p.right;
+                }
+                p = p.next;
+            }
+            p = levelHead;
+
+            levelHead = null;
+
+            levelPrev = null;
+
+        }
+        return root;
+    }
+
+    /**
+     * 118. Pascal's Triangle
+     *
+     * @param numRows
+     * @return
+     */
+    public List<List<Integer>> generate(int numRows) {
+        if (numRows < 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+
+        for (int i = 0; i <= numRows - 1; i++) {
+
+            List<Integer> tmp = new ArrayList<>();
+
+            tmp.add(1);
+
+
+            for (int j = 1; j < i; j++) {
+                int value = ans.get(i - 1).get(j - 1) + ans.get(i - 1).get(j);
+
+                tmp.add(value);
+
+            }
+
+            if (i > 0) {
+                tmp.add(1);
+            }
+            ans.add(tmp);
+        }
+        return ans;
+    }
+
+
+    /**
+     * 119. Pascal's Triangle II
+     *
+     * @param rowIndex
+     * @return
+     */
+    public List<Integer> getRow(int rowIndex) {
+        if (rowIndex < 0) {
+            return new ArrayList<>();
+        }
+        List<Integer> ans = new ArrayList<>();
+        ans.add(1);
+        for (int i = 0; i <= rowIndex; i++) {
+
+            for (int j = i - 1; j >= 1; j--) {
+                int value = ans.get(j) + ans.get(j - 1);
+                ans.set(j, value);
+            }
+            if (i > 0) {
+                ans.add(1);
             }
         }
+        return ans;
     }
 
 

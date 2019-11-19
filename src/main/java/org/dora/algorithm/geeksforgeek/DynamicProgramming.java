@@ -331,7 +331,7 @@ public class DynamicProgramming {
 
 
     /**
-     * todo
+     * todo 动态规划
      * 97. Interleaving String
      *
      * @param s1
@@ -344,6 +344,33 @@ public class DynamicProgramming {
             return false;
         }
         return false;
+    }
+
+
+    /**
+     * 120. Triangle
+     *
+     * @param triangle
+     * @return
+     */
+    public int minimumTotal(List<List<Integer>> triangle) {
+        if (triangle == null || triangle.isEmpty()) {
+            return 0;
+        }
+        int size = triangle.size();
+
+        List<Integer> ans = triangle.get(size - 1);
+
+        for (int i = size - 2; i >= 0; i--) {
+
+            for (int j = 0; j < triangle.get(i).size(); j++) {
+
+                int value = Math.min(ans.get(j), ans.get(j + 1)) + triangle.get(i).get(j);
+
+                ans.set(j, value);
+            }
+        }
+        return ans.get(0);
     }
 
 
