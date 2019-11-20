@@ -15,6 +15,14 @@ import java.util.List;
  */
 public class DynamicProgramming {
     /**
+     * 124. Binary Tree Maximum Path Sum
+     *
+     * @param root
+     * @return
+     */
+    private int max_path_sum = Integer.MIN_VALUE;
+
+    /**
      * 10. Regular Expression Matching
      * dp[i][j] = dp[i-1][j-1] if s[i] == t[j] || t[j] == '.'
      * = dp[i][j-2] if s[i] != t[j] && t[j-2] != '.' example :  s = a t = ab*
@@ -58,7 +66,6 @@ public class DynamicProgramming {
         return dp[m][n];
     }
 
-
     /**
      * 62. Unique Paths
      *
@@ -79,7 +86,6 @@ public class DynamicProgramming {
         }
         return dp[n - 1];
     }
-
 
     /**
      * 63. Unique Paths II
@@ -117,7 +123,6 @@ public class DynamicProgramming {
         }
         return dp[row - 1][column - 1];
     }
-
 
     /**
      * 64. Minimum Path Sum
@@ -304,7 +309,6 @@ public class DynamicProgramming {
         return false;
     }
 
-
     /**
      * todo 需要重新考虑
      * 96. Unique Binary Search Trees
@@ -329,7 +333,6 @@ public class DynamicProgramming {
         return dp[n];
     }
 
-
     /**
      * todo 动态规划
      * 97. Interleaving String
@@ -346,6 +349,8 @@ public class DynamicProgramming {
         return false;
     }
 
+
+    // ----------递归--------------//
 
     /**
      * 120. Triangle
@@ -373,9 +378,6 @@ public class DynamicProgramming {
         return ans.get(0);
     }
 
-
-    // ----------递归--------------//
-
     public List<List<Integer>> subsetsWithDup(int[] nums) {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
@@ -400,7 +402,6 @@ public class DynamicProgramming {
             tmp.remove(tmp.size() - 1);
         }
     }
-
 
     /**
      * 95. Unique Binary Search Trees II
@@ -445,7 +446,6 @@ public class DynamicProgramming {
         return ans;
     }
 
-
     /**
      * 100. Same Tree
      *
@@ -465,7 +465,6 @@ public class DynamicProgramming {
         }
         return false;
     }
-
 
     /**
      * 105. Construct Binary Tree from Preorder and Inorder Traversal
@@ -531,7 +530,6 @@ public class DynamicProgramming {
         return root;
     }
 
-
     /**
      * 108. Convert Sorted Array to Binary Search Tree
      *
@@ -555,7 +553,6 @@ public class DynamicProgramming {
         root.right = this.sortedArrayToBST(mid + 1, end, nums);
         return root;
     }
-
 
     /**
      * todo
@@ -592,7 +589,6 @@ public class DynamicProgramming {
         return root;
     }
 
-
     /**
      * 110. Balanced Binary Tree
      *
@@ -618,7 +614,6 @@ public class DynamicProgramming {
         }
         return 1 + Math.max(this.treeDepth(root.left), this.treeDepth(root.right));
     }
-
 
     /**
      * 112. Path Sum
@@ -672,6 +667,53 @@ public class DynamicProgramming {
             }
         }
         tmp.remove(tmp.size() - 1);
+    }
+
+    public int maxPathSum(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        this.dfsPathSum(root);
+
+        return max_path_sum;
+    }
+
+    private int dfsPathSum(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int leftValue = this.dfsPathSum(root.left);
+
+        leftValue = Math.max(leftValue, 0);
+
+
+        int rightValue = this.dfsPathSum(root.right);
+
+
+        rightValue = Math.max(rightValue, 0);
+
+        max_path_sum = Math.max(max_path_sum, leftValue + rightValue + root.val);
+
+        return Math.max(leftValue, rightValue) + root.val;
+
+    }
+
+
+    /**
+     * 126. Word Ladder II
+     *
+     * @param beginWord
+     * @param endWord
+     * @param wordList
+     * @return
+     */
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        return null;
+    }
+
+
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        return 0;
     }
 
 

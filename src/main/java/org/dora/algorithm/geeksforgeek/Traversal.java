@@ -348,25 +348,23 @@ public class Traversal {
      * @return
      */
     public Node connect(Node root) {
-        if (root == null || root.left == null) {
-            return root;
+        if (root == null) {
+            return null;
         }
         Node p = root;
-
         while (p.left != null) {
-
-            Node nextNode = p.left;
+            Node nextLevel = p.left;
 
             while (p != null) {
                 p.left.next = p.right;
 
                 if (p.next != null) {
-
                     p.right.next = p.next.left;
                 }
                 p = p.next;
             }
-            p = nextNode;
+
+            p = nextLevel;
         }
         return root;
     }
@@ -482,4 +480,63 @@ public class Traversal {
     }
 
 
+    /**
+     * 125. Valid Palindrome
+     *
+     * @param s
+     * @return
+     */
+    public boolean isPalindrome(String s) {
+        if (s == null) {
+            return true;
+        }
+        s = s.trim();
+        if (s.isEmpty()) {
+            return true;
+        }
+        int left = 0;
+
+        int right = s.length() - 1;
+        while (left < right) {
+            while (left < right && !Character.isLetterOrDigit(s.charAt(left))) {
+                left++;
+            }
+            while (left < right && !Character.isLetterOrDigit(s.charAt(right))) {
+                right--;
+            }
+            if (Character.toLowerCase(s.charAt(left)) == Character.toLowerCase(s.charAt(right))) {
+                left++;
+                right--;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 129. Sum Root to Leaf Numbers
+     *
+     * @param root
+     * @return
+     */
+    public int sumNumbers(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return this.sumNumbers(root.left, root.val) + this.sumNumbers(root.right, root.val);
+    }
+
+    private int sumNumbers(TreeNode root, int val) {
+        if (root == null) {
+            return val;
+        }
+        if (root.left == null && root.right == null) {
+            return val * 10 + root.val;
+        }
+        return this.sumNumbers(root.left, val * 10 + root.val)
+                + this.sumNumbers(root.right, val * 10 + root.val);
+    }
 }
+

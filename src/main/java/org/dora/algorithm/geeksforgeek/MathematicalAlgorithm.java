@@ -1,6 +1,7 @@
 package org.dora.algorithm.geeksforgeek;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -93,4 +94,33 @@ public class MathematicalAlgorithm {
     }
 
 
+    /**
+     * 128. Longest Consecutive Sequence
+     *
+     * @param nums
+     * @return
+     */
+    public int longestConsecutive(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            if (map.containsKey(num)) {
+                continue;
+            }
+            int leftEdge = map.getOrDefault(num - 1, 0);
+            int rightEdge = map.getOrDefault(num + 1, 0);
+
+            int val = leftEdge + rightEdge + 1;
+
+            result = Math.max(result, val);
+
+            map.put(num - leftEdge, val);
+            map.put(num + rightEdge, val);
+            map.put(num, val);
+        }
+        return result;
+    }
 }
