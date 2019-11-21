@@ -14,6 +14,8 @@ import java.util.List;
  * @date 2019-04-26
  */
 public class DynamicProgramming {
+
+
     /**
      * 124. Binary Tree Maximum Path Sum
      *
@@ -21,6 +23,41 @@ public class DynamicProgramming {
      * @return
      */
     private int max_path_sum = Integer.MIN_VALUE;
+
+    /**
+     * 5. Longest Palindromic Substring
+     *
+     * @param s
+     * @return
+     */
+    public String longestPalindrome(String s) {
+        if (s == null || s.isEmpty()) {
+            return "";
+        }
+        int n = s.length();
+        boolean[][] dp = new boolean[n][n];
+        int head = 0;
+        int result = Integer.MIN_VALUE;
+        for (int i = 0; i < s.length(); i++) {
+            for (int j = 0; j <= i; j++) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    if (i - j < 2) {
+                        dp[j][i] = true;
+                    } else if (dp[j + 1][i - 1]) {
+                        dp[j][i] = true;
+                    }
+                }
+                if (dp[j][i] && i - j + 1 > result) {
+                    head = j;
+                    result = i - j + 1;
+                }
+            }
+        }
+        if (result != Integer.MIN_VALUE) {
+            return s.substring(head, head + result);
+        }
+        return s;
+    }
 
     /**
      * 10. Regular Expression Matching
@@ -347,6 +384,26 @@ public class DynamicProgramming {
             return false;
         }
         return false;
+    }
+
+
+    /**
+     * 135. Candy
+     *
+     * @param ratings
+     * @return
+     */
+    public int candy(int[] ratings) {
+        if (ratings == null || ratings.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[ratings.length];
+        for (int i = 0; i < ratings.length; i++) {
+            dp[i] = 1;
+        }
+        for (int i = 1; i < ratings.length; i++) {
+
+        }
     }
 
 

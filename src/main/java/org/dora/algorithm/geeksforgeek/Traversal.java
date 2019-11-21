@@ -525,12 +525,15 @@ public class Traversal {
         if (root == null) {
             return 0;
         }
+        if (root.left == null && root.right == null) {
+            return root.val;
+        }
         return this.sumNumbers(root.left, root.val) + this.sumNumbers(root.right, root.val);
     }
 
     private int sumNumbers(TreeNode root, int val) {
         if (root == null) {
-            return val;
+            return 0;
         }
         if (root.left == null && root.right == null) {
             return val * 10 + root.val;
@@ -538,5 +541,53 @@ public class Traversal {
         return this.sumNumbers(root.left, val * 10 + root.val)
                 + this.sumNumbers(root.right, val * 10 + root.val);
     }
+
+    // ---------- 深度优先遍历DFS---------//
+
+    /**
+     * 130. Surrounded Regions
+     *
+     * @param board
+     */
+    public void solve(char[][] board) {
+        if (board == null || board.length == 0) {
+            return;
+        }
+        int row = board.length;
+        int column = board[0].length;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                boolean isEdge = i == 0 || i == row - 1 || j == 0 || j == column - 1;
+                if (board[i][j] == 'O' && isEdge) {
+                    this.solveBoard(i, j, board);
+                }
+            }
+        }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] == 'o') {
+                    board[i][j] = 'O';
+                } else if (board[i][j] == 'O') {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+    }
+
+    private void solveBoard(int i, int j, char[][] board) {
+        if (i < 0 || i >= board.length || j < 0 || j >= board.length || board[i][j] != 'O') {
+            return;
+        }
+        board[i][j] = 'o';
+        this.solveBoard(i - 1, j, board);
+
+        this.solveBoard(i + 1, j, board);
+
+        this.solveBoard(i, j - 1, board);
+
+        this.solveBoard(i, j + 1, board);
+    }
+
+
 }
 

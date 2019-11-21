@@ -1,5 +1,8 @@
 package org.dora.algorithm.geeksforgeek;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author dora
  * @date 2019/11/20
@@ -108,4 +111,85 @@ public class SerialQuestion {
 
 
     }
+
+
+    // ------字符串切割-- //
+
+    /**
+     * 131. Palindrome Partitioning
+     *
+     * @param s
+     * @return
+     */
+    public List<List<String>> partition(String s) {
+        if (s == null || s.length() == 0) {
+            return new ArrayList<>();
+        }
+        List<List<String>> ans = new ArrayList<>();
+        this.partition(ans, new ArrayList<String>(), 0, s);
+        return ans;
+    }
+
+    private void partition(List<List<String>> ans, List<String> tmp, int k, String s) {
+        if (k == s.length()) {
+            ans.add(new ArrayList<>(tmp));
+        }
+        for (int i = k; i < s.length(); i++) {
+            if (this.isValid(s, k, i)) {
+                tmp.add(s.substring(k, i + 1));
+                this.partition(ans, tmp, i + 1, s);
+                tmp.remove(tmp.size() - 1);
+            }
+        }
+    }
+
+    private boolean isValid(String s, int start, int end) {
+        if (start > end) {
+            return false;
+        }
+        while (start < end) {
+            if (s.charAt(start) == s.charAt(end)) {
+                start++;
+                end--;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * cut[i] is the minimum of cut[j - 1] + 1 (j <= i), if [j, i] is palindrome.
+     * If [j, i] is palindrome, [j + 1, i - 1] is palindrome, and c[j] == c[i].
+     * <p>
+     * todo
+     * 132. Palindrome Partitioning II
+     *
+     * @param s
+     * @return
+     */
+    public int minCut(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int n = s.length();
+        int[] cut = new int[n];
+
+        boolean[][] dp = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            int cutNum = i;
+            for (int j = 0; j <= i; j++) {
+                if (s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1])) {
+                    dp[j][i] = true;
+                    cutNum = j == 0 ? 0 : Math.min(cutNum, cut[j - 1] + 1);
+                }
+            }
+            cut[i] = cutNum;
+        }
+        return cut[n - 1];
+
+
+    }
+
 }

@@ -1,5 +1,7 @@
 package org.dora.algorithm.geeksforgeek;
 
+import org.dora.algorithm.datastructe.Node;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,5 +124,18 @@ public class MathematicalAlgorithm {
             map.put(num, val);
         }
         return result;
+    }
+
+
+    // ----------图理论graph----//
+
+    /**
+     * 133. Clone Graph
+     *
+     * @param node
+     * @return
+     */
+    public Node cloneGraph(Node node) {
+
     }
 }

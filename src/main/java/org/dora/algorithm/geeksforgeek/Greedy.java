@@ -23,4 +23,27 @@ public class Greedy {
         }
         return reach >= nums.length - 1;
     }
+
+    // --------卖煤气------//
+
+    /**
+     * 需要数学证明
+     * 134. Gas Station
+     */
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        if (gas == null || cost == null) {
+            return 0;
+        }
+        int result = 0;
+        int current = 0;
+        int begin = 0;
+        for (int i = 0; i < gas.length; i++) {
+            current += gas[i] - cost[i];
+            result += gas[i] - cost[i];
+            if (current < 0) {
+                begin = i + 1;
+            }
+        }
+        return result <= 0 ? -1 : begin;
+    }
 }
