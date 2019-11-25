@@ -388,6 +388,7 @@ public class DynamicProgramming {
 
 
     /**
+     * todo 左右两边姐取最小值
      * 135. Candy
      *
      * @param ratings
@@ -397,13 +398,32 @@ public class DynamicProgramming {
         if (ratings == null || ratings.length == 0) {
             return 0;
         }
-        int[] dp = new int[ratings.length];
-        for (int i = 0; i < ratings.length; i++) {
-            dp[i] = 1;
-        }
-        for (int i = 1; i < ratings.length; i++) {
+        int result = 0;
 
+        int column = ratings.length;
+
+        int[] left = new int[column];
+        for (int i = 0; i < column; i++) {
+            left[i] = 1;
         }
+        for (int i = 1; i < column; i++) {
+            if (ratings[i] > ratings[i - 1] && left[i] < left[i - 1] + 1) {
+                left[i] = left[i - 1] + 1;
+            }
+        }
+        int[] right = new int[column];
+        for (int i = 0; i < column; i++) {
+            right[i] = 1;
+        }
+        for (int i = column - 2; i >= 0; i--) {
+            if (ratings[i] > ratings[i + 1] && right[i] < right[i + 1] + 1) {
+                right[i] = right[i + 1] + 1;
+            }
+        }
+        for (int i = 0; i < column; i++) {
+            result += Math.max(left[i], right[i]);
+        }
+        return result;
     }
 
 

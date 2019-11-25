@@ -1,5 +1,6 @@
 package org.dora.algorithm.geeksforgeek;
 
+import org.dora.algorithm.datastructe.ListNode;
 import org.dora.algorithm.datastructe.Node;
 import org.dora.algorithm.datastructe.TreeNode;
 
@@ -12,6 +13,13 @@ import java.util.*;
  * @date 2019/11/5
  */
 public class Traversal {
+
+    public static void main(String[] args) {
+        Traversal traversal = new Traversal();
+        List<String> ans = Arrays.asList(
+                "cat", "cats", "and", "sand", "dog");
+        traversal.wordBreakII("catsanddog", ans);
+    }
 
     /**
      * 79. Word Search
@@ -59,7 +67,6 @@ public class Traversal {
         return false;
     }
 
-
     /**
      * 94. Binary Tree Inorder Traversal
      *
@@ -84,7 +91,6 @@ public class Traversal {
         }
         return ans;
     }
-
 
     /**
      * 98. Validate Binary Search Tree
@@ -154,7 +160,6 @@ public class Traversal {
             second.val = val;
         }
     }
-
 
     /**
      * 102. Binary Tree Level Order Traversal
@@ -272,7 +277,6 @@ public class Traversal {
         return ans;
     }
 
-
     /**
      * 114. Flatten Binary Tree to Linked List
      *
@@ -309,7 +313,6 @@ public class Traversal {
         }
     }
 
-
     /**
      * todo
      * 115. Distinct Subsequences
@@ -340,7 +343,6 @@ public class Traversal {
         return dp[m][n];
     }
 
-
     /**
      * 116. Populating Next Right Pointers in Each Node
      *
@@ -368,7 +370,6 @@ public class Traversal {
         }
         return root;
     }
-
 
     /**
      * todo O1空间
@@ -453,7 +454,6 @@ public class Traversal {
         return ans;
     }
 
-
     /**
      * 119. Pascal's Triangle II
      *
@@ -478,7 +478,6 @@ public class Traversal {
         }
         return ans;
     }
-
 
     /**
      * 125. Valid Palindrome
@@ -514,7 +513,6 @@ public class Traversal {
         return true;
     }
 
-
     /**
      * 129. Sum Root to Leaf Numbers
      *
@@ -542,7 +540,173 @@ public class Traversal {
                 + this.sumNumbers(root.right, val * 10 + root.val);
     }
 
+    /**
+     * 138. Copy List with Random Pointer
+     *
+     * @param head
+     * @return
+     */
+    public Node copyRandomList(Node head) {
+        if (head == null) {
+            return null;
+        }
+        Node current = head;
+        while (current != null) {
+            Node tmp = current.next;
+
+            Node next = new Node(current.val, current.next, null);
+
+            current.next = next;
+
+            current = tmp;
+        }
+        current = head;
+        while (current != null) {
+            Node random = current.random;
+
+            if (random != null) {
+                current.next.random = random.next;
+            }
+            current = current.next.next;
+        }
+
+        current = head;
+
+        Node copyHead = head.next;
+        while (current.next != null) {
+            Node tmp = current.next;
+
+            current.next = tmp.next;
+
+            current = tmp;
+        }
+        return copyHead;
+    }
+
+
+    /**
+     * 143. Reorder List
+     *
+     * @param head
+     */
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return;
+        }
+        ListNode current = head;
+        ListNode slow = head;
+        while (current.next != null && current.next.next != null) {
+            current = current.next.next;
+            slow = slow.next;
+        }
+        ListNode mid = slow.next;
+        ListNode reverseNode = this.reverseListNode(mid, null);
+
+        slow.next = mid;
+
+        ListNode dummy = head;
+
+        while (dummy != null && reverseNode != null) {
+
+            ListNode nextHead = dummy.next;
+
+            ListNode nextReverse = reverseNode.next;
+
+            dummy.next = reverseNode;
+
+            reverseNode.next = nextHead;
+
+            dummy = nextHead;
+
+            reverseNode = nextReverse;
+        }
+    }
+
+    private ListNode reverseListNode(ListNode start, ListNode end) {
+        if (start == end) {
+            return null;
+        }
+        ListNode prev = null;
+        while (start != end) {
+            ListNode tmp = start.next;
+            start.next = prev;
+            prev = start;
+            start = tmp;
+        }
+        return prev;
+    }
+
+
     // ---------- 深度优先遍历DFS---------//
+
+    /**
+     * 139. Word Break
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        if (s == null) {
+            return false;
+        }
+        if (wordDict.contains(s) || s.isEmpty()) {
+            return true;
+        }
+        HashMap<String, Boolean> notIncluded = new HashMap<>();
+        return this.wordBreakDFS(notIncluded, s, wordDict);
+    }
+
+    private boolean wordBreakDFS(HashMap<String, Boolean> notIncluded, String s, List<String> wordDict) {
+        if (notIncluded.containsKey(s)) {
+            return false;
+        }
+        if (s.isEmpty()) {
+            return true;
+        }
+        for (String word : wordDict) {
+            if (s.startsWith(word) && this.wordBreakDFS(notIncluded, s.substring(word.length()), wordDict)) {
+                return true;
+            }
+        }
+        notIncluded.put(s, false);
+        return false;
+    }
+
+    /**
+     * 140. Word Break II
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public List<String> wordBreakII(String s, List<String> wordDict) {
+        if (s == null || wordDict == null) {
+            return new ArrayList<>();
+        }
+        HashMap<String, List<String>> map = new HashMap<>();
+        return this.wordBreakIIDFS(map, s, wordDict);
+    }
+
+    private List<String> wordBreakIIDFS(HashMap<String, List<String>> map, String s, List<String> wordDict) {
+        if (map.containsKey(s)) {
+            return map.get(s);
+        }
+        List<String> ans = new ArrayList<>();
+        if (s.isEmpty()) {
+            ans.add("");
+            return ans;
+        }
+        for (String word : wordDict) {
+            if (s.startsWith(word)) {
+                List<String> list = this.wordBreakIIDFS(map, s.substring(word.length()), wordDict);
+                for (String val : list) {
+                    ans.add(word + (val.isEmpty() ? "" : " ") + val);
+                }
+            }
+        }
+        return ans;
+    }
 
     /**
      * 130. Surrounded Regions
