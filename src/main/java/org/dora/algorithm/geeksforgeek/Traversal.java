@@ -18,7 +18,14 @@ public class Traversal {
         Traversal traversal = new Traversal();
         List<String> ans = Arrays.asList(
                 "cat", "cats", "and", "sand", "dog");
-        traversal.wordBreakII("catsanddog", ans);
+        ListNode root = new ListNode(1);
+        ListNode prev = root;
+        for (int i = 2; i <= 4; i++) {
+            ListNode node = new ListNode(i);
+            prev.next = node;
+            prev = node;
+        }
+        traversal.reorderList(root);
     }
 
     /**
@@ -585,6 +592,7 @@ public class Traversal {
 
 
     /**
+     * todo
      * 143. Reorder List
      *
      * @param head
@@ -593,32 +601,47 @@ public class Traversal {
         if (head == null || head.next == null) {
             return;
         }
-        ListNode current = head;
+        ListNode fast = head;
+
         ListNode slow = head;
-        while (current.next != null && current.next.next != null) {
-            current = current.next.next;
+
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode mid = slow.next;
-        ListNode reverseNode = this.reverseListNode(mid, null);
 
-        slow.next = mid;
+        ListNode middle = slow;
 
-        ListNode dummy = head;
+        /**
+         * 根据LeetCode
+         */
+        ListNode current = slow.next;
 
-        while (dummy != null && reverseNode != null) {
 
-            ListNode nextHead = dummy.next;
+        ListNode prev = this.reverseListNode(current, null);
 
-            ListNode nextReverse = reverseNode.next;
 
-            dummy.next = reverseNode;
+        slow.next = prev;
 
-            reverseNode.next = nextHead;
 
-            dummy = nextHead;
+        slow = head;
 
-            reverseNode = nextReverse;
+
+        fast = middle.next;
+
+
+        while (slow != middle) {
+            middle.next = fast.next;
+
+            fast.next = slow.next;
+
+            slow.next = fast;
+
+
+            slow = fast.next;
+
+            fast = middle.next;
+
         }
     }
 

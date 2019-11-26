@@ -1,9 +1,12 @@
 package org.dora.algorithm.geeksforgeek;
 
 import org.dora.algorithm.datastructe.ListNode;
+import org.dora.algorithm.datastructe.TreeNode;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @author dora
@@ -244,5 +247,48 @@ public class SerialQuestion {
         }
         return null;
     }
+
+
+    // -------树的遍历---//
+
+    /**
+     * 145. Binary Tree Postorder Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> postorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        LinkedList<Integer> ans = new LinkedList<>();
+        TreeNode p = root;
+        Stack<TreeNode> stack = new Stack<>();
+        while (!stack.isEmpty() || p != null) {
+            if (p != null) {
+                stack.push(p);
+                ans.addFirst(p.val);
+                p = p.right;
+            } else {
+                p = stack.pop();
+                p = p.left;
+            }
+        }
+        return ans;
+    }
+
+    // ----树的排序 //
+
+    /**
+     * 插入排序
+     * 147. Insertion Sort List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode insertionSortList(ListNode head) {
+        return null;
+    }
+
 
 }
