@@ -291,4 +291,104 @@ public class SerialQuestion {
     }
 
 
+    /**
+     * 148. Sort List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode node = slow.next;
+        slow.next = null;
+        ListNode l1 = this.sortList(head);
+        ListNode l2 = this.sortList(node);
+        return this.sortListNode(l1, l2);
+
+    }
+
+    private ListNode sortListNode(ListNode l1, ListNode l2) {
+        if (l1 == null) {
+            return l2;
+        }
+        if (l2 == null) {
+            return l1;
+        }
+        if (l1.val < l2.val) {
+            l1.next = this.sortListNode(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = this.sortListNode(l1, l2.next);
+            return l2;
+        }
+    }
+
+
+    // Olog(N)复杂度 //
+
+    // ------旋转数组 找最小值-----//
+
+    /**
+     * key point: 左边界可能存在两个区域 所以无法很好的做边界条件。
+     * 故使用右边界
+     * 153. Find Minimum in Rotated Sorted Array
+     *
+     * @param nums
+     * @return
+     */
+    public int findMin(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+
+        int right = nums.length - 1;
+
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] <= nums[right]) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return nums[left];
+    }
+
+    /**
+     * todo 未来需要三种
+     * 154. Find Minimum in Rotated Sorted Array II
+     *
+     * @param nums
+     * @return
+     */
+    public int findMinII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == nums[right]) {
+                right--;
+            } else if (nums[mid] < nums[right]) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return nums[left];
+
+    }
+
+
 }

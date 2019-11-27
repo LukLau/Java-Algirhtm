@@ -5,6 +5,7 @@ import org.dora.algorithm.datastructe.Node;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @author dora
@@ -171,5 +172,65 @@ public class MathematicalAlgorithm {
     public int singleNumberII(int[] nums) {
         return 0;
     }
+
+
+    /**
+     * 149. Max Points on a Line
+     *
+     * @param points
+     * @return
+     */
+    public int maxPoints(int[][] points) {
+        return 0;
+    }
+
+
+    // -------- 逆波兰数---//
+
+    /**
+     * 150. Evaluate Reverse Polish Notation
+     *
+     * @param tokens
+     * @return
+     */
+    public int evalRPN(String[] tokens) {
+        if (tokens == null || tokens.length == 0) {
+            return 0;
+        }
+        Stack<Character> signStack = new Stack<>();
+        Stack<Integer> numberStack = new Stack<>();
+        int result = 0;
+        for (String token : tokens) {
+
+        }
+        return result;
+    }
+
+
+    // ----------连续数字最大乘积--//
+
+    /**
+     * 152. Maximum Product Subarray
+     *
+     * @param nums
+     * @return
+     */
+    public int maxProduct(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int preMax = nums[0];
+        int preMin = nums[0];
+        int result = preMax;
+        for (int i = 1; i < nums.length; i++) {
+            int tmpMax = Math.max(Math.max(preMax * nums[i], preMin * nums[i]), nums[i]);
+            int tmpMin = Math.min(Math.min(preMin * nums[i], preMax * nums[i]), nums[i]);
+            result = Math.max(tmpMax, result);
+            preMax = tmpMax;
+            preMin = tmpMin;
+        }
+        return result;
+    }
+
 
 }

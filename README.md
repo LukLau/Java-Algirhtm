@@ -26,6 +26,8 @@
 > [找到被包围的区域三种写法](https://leetcode.com/problems/surrounded-regions/)
 
 
+## 连续序列问题
+> [数组中连续最大乘积 keyCase: 考虑到连续序列](https://leetcode.com/problems/maximum-product-subarray/)
 
 ## Dp问题
 >**动态规划解题关键**
@@ -93,6 +95,7 @@
 > 边界值left <= right 或者 left < right 取决于代码思路
 
 * [34. Find First and Last Position of Element in Sorted Array](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/)
+* [154. Find Minimum in Rotated Sorted Array II](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array-ii/)
 
 
 
@@ -126,6 +129,8 @@
 > [位运算](https://leetcode.com/problems/single-number-ii/) 需要使用两位
 
 > [逆波兰数](https://leetcode.com/problems/reverse-words-in-a-string/)
+
+> [求斜率 keyCase:求斜率](https://leetcode.com/submissions/detail/186532613/)
 
 ----
 ## 位运算
