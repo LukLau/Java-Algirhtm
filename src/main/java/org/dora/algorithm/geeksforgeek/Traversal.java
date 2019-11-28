@@ -660,6 +660,28 @@ public class Traversal {
     }
 
 
+    /**
+     * 160. Intersection of Two Linked Lists
+     *
+     * @param headA
+     * @param headB
+     * @return
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) {
+            return null;
+        }
+        ListNode p1 = headA;
+
+        ListNode p2 = headB;
+        while (p1 != p2) {
+            p1 = p1 == null ? headB : p1.next;
+            p2 = p2 == null ? headA : p2.next;
+        }
+        return p1;
+    }
+
+
     // ---------- 深度优先遍历DFS---------//
 
     /**

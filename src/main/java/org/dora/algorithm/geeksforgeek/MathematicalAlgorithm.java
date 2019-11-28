@@ -5,7 +5,6 @@ import org.dora.algorithm.datastructe.Node;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * @author dora
@@ -184,29 +183,6 @@ public class MathematicalAlgorithm {
         return 0;
     }
 
-
-    // -------- 逆波兰数---//
-
-    /**
-     * 150. Evaluate Reverse Polish Notation
-     *
-     * @param tokens
-     * @return
-     */
-    public int evalRPN(String[] tokens) {
-        if (tokens == null || tokens.length == 0) {
-            return 0;
-        }
-        Stack<Character> signStack = new Stack<>();
-        Stack<Integer> numberStack = new Stack<>();
-        int result = 0;
-        for (String token : tokens) {
-
-        }
-        return result;
-    }
-
-
     // ----------连续数字最大乘积--//
 
     /**
@@ -230,6 +206,31 @@ public class MathematicalAlgorithm {
             preMin = tmpMin;
         }
         return result;
+    }
+
+    /**
+     * 151. Reverse Words in a String
+     *
+     * @param s
+     * @return
+     */
+    public String reverseWords(String s) {
+        if (s == null || s.isEmpty()) {
+            return "";
+        }
+        s = s.trim();
+        String[] split = s.split(" ");
+        StringBuilder builder = new StringBuilder();
+        for (int i = split.length - 1; i >= 0; i--) {
+            if (split[i].isEmpty()) {
+                continue;
+            }
+            builder.append(split[i]);
+            if (i > 0) {
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
     }
 
 
