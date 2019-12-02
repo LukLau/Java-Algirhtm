@@ -674,11 +674,39 @@ public class Traversal {
         ListNode p1 = headA;
 
         ListNode p2 = headB;
+
         while (p1 != p2) {
+
             p1 = p1 == null ? headB : p1.next;
-            p2 = p2 == null ? headA : p2.next;
+            p2 = p2 == null ? headB : p2.next;
         }
         return p1;
+    }
+
+    /**
+     * 165. Compare Version Numbers
+     *
+     * @param version1
+     * @param version2
+     * @return
+     */
+    public int compareVersion(String version1, String version2) {
+        if (version1 == null || version2 == null) {
+            return -1;
+        }
+        String[] split1 = version1.split("\\.");
+        String[] split2 = version2.split("\\.");
+        int index1 = 0;
+        int index2 = 0;
+        while (index1 < split1.length || index2 < split2.length) {
+            Integer value1 = index1 == split1.length ? 0 : Integer.parseInt(split1[index1++]);
+            Integer value2 = index2 == split2.length ? 0 : Integer.parseInt(split2[index2++]);
+
+            if (!value1.equals(value2)) {
+                return value1.compareTo(value2);
+            }
+        }
+        return 0;
     }
 
 

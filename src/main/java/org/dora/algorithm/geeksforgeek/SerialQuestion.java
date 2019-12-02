@@ -3,10 +3,7 @@ package org.dora.algorithm.geeksforgeek;
 import org.dora.algorithm.datastructe.ListNode;
 import org.dora.algorithm.datastructe.TreeNode;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * @author dora
@@ -391,6 +388,30 @@ public class SerialQuestion {
     }
 
 
+    /**
+     * 162. Find Peak Element
+     *
+     * @param nums
+     * @return
+     */
+    public int findPeakElement(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < nums[mid + 1]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+
     // -------- 逆波兰数---//
 
     /**
@@ -429,5 +450,33 @@ public class SerialQuestion {
         return stack.pop();
     }
 
+
+    // --两个数之和--- //
+
+    /**
+     * 167. Two Sum II - Input array is sorted
+     *
+     * @param numbers
+     * @param target
+     * @return
+     */
+    public int[] twoSum(int[] numbers, int target) {
+        if (numbers == null || numbers.length == 0) {
+            return new int[]{};
+        }
+        int[] ans = new int[2];
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < numbers.length; i++) {
+            if (map.containsKey(target - numbers[i])) {
+                int first = map.get(target - numbers[i]) + 1;
+                int second = i + 1;
+                ans[0] = first;
+                ans[1] = second;
+                return ans;
+            }
+            map.put(numbers[i], i);
+        }
+        return ans;
+    }
 
 }

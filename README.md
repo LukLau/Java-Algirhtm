@@ -96,7 +96,7 @@
 
 * [34. Find First and Last Position of Element in Sorted Array](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/)
 * [154. Find Minimum in Rotated Sorted Array II](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array-ii/)
-
+* [162. Find Peak Element](https://leetcode.com/problems/find-peak-element/)
 
 
 
@@ -131,6 +131,8 @@
 > [逆波兰数](https://leetcode.com/problems/reverse-words-in-a-string/)
 
 > [求斜率 keyCase:求斜率](https://leetcode.com/submissions/detail/186532613/)
+
+> [小数到循环小数](https://leetcode.com/problems/fraction-to-recurring-decimal/)
 
 ----
 ## 位运算

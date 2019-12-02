@@ -233,5 +233,18 @@ public class MathematicalAlgorithm {
         return builder.toString();
     }
 
+    // ----- //
+
+    /**
+     * 166. Fraction to Recurring Decimal
+     *
+     * @param numerator
+     * @param denominator
+     * @return
+     */
+    public String fractionToDecimal(int numerator, int denominator) {
+
+    }
+
 
 }
