@@ -479,4 +479,52 @@ public class SerialQuestion {
         return ans;
     }
 
+
+    // ----滑动窗口系列------- //
+    // 滑动窗口固定解题公式-- //
+
+    public static void main(String[] args) {
+        SerialQuestion serialQuestion = new SerialQuestion();
+        int result = serialQuestion.lengthOfLongestSubstringTwoDistinct("ababacccccc");
+        System.out.println(result);
+    }
+
+    /**
+     * 159 Longest Substring with At Most Two Distinct Characters
+     *
+     * @param s: a string
+     * @return: the length of the longest substring T that contains at most 2 distinct characters
+     */
+    public int lengthOfLongestSubstringTwoDistinct(String s) {
+        // Write your code here
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        HashMap<Character, Integer> map = new HashMap<>();
+        int left = 0;
+        int result = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char localCharacter = s.charAt(i);
+            Integer num = map.getOrDefault(localCharacter, 0);
+            num++;
+            map.put(localCharacter, num);
+            while (map.size() > 2) {
+                char leftCharacter = s.charAt(left);
+
+                Integer integer = map.get(leftCharacter);
+
+                integer--;
+
+                map.put(leftCharacter, integer);
+                if (integer == 0) {
+                    map.remove(leftCharacter);
+                }
+                left++;
+            }
+            result = Math.max(result, i - left + 1);
+        }
+        return result;
+    }
+
+
 }

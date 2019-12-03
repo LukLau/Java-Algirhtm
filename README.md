@@ -134,6 +134,8 @@
 
 > [小数到循环小数](https://leetcode.com/problems/fraction-to-recurring-decimal/)
 
+> [计算数字0的个数](https://leetcode.com/problems/factorial-trailing-zeroes/)
+
 ----
 ## 位运算
 ------

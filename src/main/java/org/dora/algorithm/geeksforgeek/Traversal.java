@@ -709,6 +709,23 @@ public class Traversal {
         return 0;
     }
 
+    /**
+     * 171. Excel Sheet Column Number
+     *
+     * @param s
+     * @return
+     */
+    public int titleToNumber(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int result = 0;
+        for (char tmp : s.toCharArray()) {
+            result = result * 26 + (tmp - 'A' + 1);
+        }
+        return result;
+    }
+
 
     // ---------- 深度优先遍历DFS---------//
 

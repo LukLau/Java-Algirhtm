@@ -243,7 +243,57 @@ public class MathematicalAlgorithm {
      * @return
      */
     public String fractionToDecimal(int numerator, int denominator) {
+        return "";
+    }
 
+
+    // ---- 摩尔投票法-- //
+
+    /**
+     * 169. Majority Element
+     *
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        if (nums == null) {
+            return -1;
+        }
+        int count = 1;
+        int value = nums[0];
+        for (int num : nums) {
+            if (num == value) {
+                count++;
+            } else {
+                count--;
+            }
+            if (count == 0) {
+                value = num;
+                count++;
+            }
+        }
+        return value;
+    }
+
+
+    // ---计算一个数 可以拥有0的数量--- //
+
+    /**
+     * 172. Factorial Trailing Zeroes
+     *
+     * @param n
+     * @return
+     */
+    public int trailingZeroes(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int count = 0;
+        while ((n / 5) != 0) {
+            count += (n / 5);
+            n /= 5;
+        }
+        return count;
     }
 
 
