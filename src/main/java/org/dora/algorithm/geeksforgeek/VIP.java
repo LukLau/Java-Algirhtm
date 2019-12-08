@@ -95,7 +95,7 @@ public class VIP {
         return ans;
     }
 
-    public String getRange(int start, int end) {
+    private String getRange(int start, int end) {
         if (start == end) {
             return String.valueOf(start);
         }
@@ -103,4 +103,24 @@ public class VIP {
     }
 
 
+    public List<String> findMissingRangesV2(int[] nums, int lower, int upper) {
+        List<String> ans = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            ans.add(getRange(lower, upper));
+            return ans;
+        }
+        if (nums[0] > lower) {
+            ans.add(getRange(lower, nums[0] - 1));
+        }
+        int prev = nums[0];
+        for (int i = 1; i <= nums.length; i++) {
+            int cur = i == nums.length ? upper + 1 : nums[i];
+            long diff = (long) cur - (long) prev;
+            if (diff > 1) {
+                ans.add(getRange(prev + 1, cur - 1));
+            }
+            prev = cur;
+        }
+        return ans;
+    }
 }

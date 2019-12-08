@@ -3,6 +3,7 @@ package org.dora.algorithm.geeksforgeek;
 import org.dora.algorithm.datastructe.Node;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -280,6 +281,7 @@ public class MathematicalAlgorithm {
 
     /**
      * 172. Factorial Trailing Zeroes
+     * key case 判断拥有五的个数
      *
      * @param n
      * @return
@@ -294,6 +296,58 @@ public class MathematicalAlgorithm {
             n /= 5;
         }
         return count;
+    }
+
+    /**
+     * 168. Excel Sheet Column Title
+     *
+     * @param n
+     * @return
+     */
+    public String convertToTitle(int n) {
+        if (n <= 0) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder();
+        while (n != 0) {
+            char val = (char) (((n - 1) % 26) + 'A');
+            builder.append(val);
+            n = (n - 1) / 26;
+        }
+        return builder.reverse().toString();
+    }
+
+
+    /**
+     * 179. Largest Number
+     *
+     * @param nums
+     * @return
+     */
+    public String largestNumber(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return "";
+        }
+        String[] strs = new String[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+
+            strs[i] = String.valueOf(nums[i]);
+        }
+        Arrays.sort(strs, (o1, o2) -> {
+            String tmp1 = o1 + o2;
+            String tmp2 = o2 + o1;
+            return tmp2.compareTo(tmp1);
+        });
+        if (strs[0].equals("0")) {
+            return "0";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (String str : strs) {
+            builder.append(str);
+        }
+
+
+        return builder.toString();
     }
 
 

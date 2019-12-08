@@ -45,6 +45,8 @@
 
 > [获取八皇后个数](https://leetcode.com/problems/n-queens-ii/)
 
+> [游戏棋盘生命值最少问题](https://leetcode.com/submissions/detail/226063539/)
+
 
 ## 贪心问题
 

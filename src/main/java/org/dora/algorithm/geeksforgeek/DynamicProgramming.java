@@ -794,4 +794,38 @@ public class DynamicProgramming {
     }
 
 
+    /**
+     * 174. Dungeon Game
+     *
+     * @param dungeon
+     * @return
+     */
+    public int calculateMinimumHP(int[][] dungeon) {
+        if (dungeon == null) {
+            return 0;
+        }
+        int row = dungeon.length;
+
+        int column = dungeon[0].length;
+
+        int[] dp = new int[column];
+
+        dp[column - 1] = Math.max(1, 1 - dungeon[row - 1][column - 1]);
+
+        for (int j = column - 2; j >= 0; j--) {
+            dp[j] = Math.max(1, dp[j + 1] - dungeon[row - 1][j]);
+        }
+        for (int i = row - 2; i >= 0; i--) {
+            for (int j = column - 1; j >= 0; j--) {
+                if (j == column - 1) {
+                    dp[j] = Math.max(1, dp[j] - dungeon[i][j]);
+                } else {
+                    dp[j] = Math.max(1, Math.min(dp[j], dp[j + 1]) - dungeon[i][j]);
+                }
+            }
+        }
+        return dp[0];
+    }
+
+
 }

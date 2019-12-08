@@ -25,7 +25,7 @@ public class Traversal {
             prev.next = node;
             prev = node;
         }
-        traversal.reorderList(root);
+        traversal.compareVersion("1", "01");
     }
 
     /**
@@ -701,13 +701,32 @@ public class Traversal {
         while (index1 < split1.length || index2 < split2.length) {
             Integer value1 = index1 == split1.length ? 0 : Integer.parseInt(split1[index1++]);
             Integer value2 = index2 == split2.length ? 0 : Integer.parseInt(split2[index2++]);
-
             if (!value1.equals(value2)) {
                 return value1.compareTo(value2);
             }
         }
         return 0;
     }
+
+    /**
+     * 168. Excel Sheet Column Title
+     *
+     * @param n
+     * @return
+     */
+    public String convertToTitle(int n) {
+        if (n <= 0) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder();
+        while (n != 0) {
+            char val = (char) (((n - 1) % 26) + 'A');
+            builder.append(val);
+            n = (n - 1) / 26;
+        }
+        return builder.reverse().toString();
+    }
+
 
     /**
      * 171. Excel Sheet Column Number
