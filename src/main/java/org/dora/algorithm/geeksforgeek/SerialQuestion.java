@@ -14,6 +14,12 @@ public class SerialQuestion {
 
     //    --- 卖股票 ----- //
 
+    public static void main(String[] args) {
+        SerialQuestion serialQuestion = new SerialQuestion();
+        int result = serialQuestion.lengthOfLongestSubstringTwoDistinct("ababacccccc");
+        System.out.println(result);
+    }
+
     /**
      * 121. Best Time to Buy and Sell Stock
      *
@@ -57,6 +63,48 @@ public class SerialQuestion {
         }
         return result;
     }
+
+
+    /**
+     * key case: 第K次卖出的时候
+     * 188. Best Time to Buy and Sell Stock IV
+     *
+     * @param k
+     * @param prices
+     * @return
+     */
+    public int maxProfitIIII(int k, int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        if (k > prices.length / 2) {
+            return quickProfit(prices);
+        }
+        int[][] dp = new int[k + 1][prices.length];
+        for (int i = 1; i <= k; i++) {
+            int tmp = -prices[0];
+
+            for (int j = 1; j < prices.length; j++) {
+                dp[i][j] = Math.max(dp[i][j - 1], prices[j] + tmp);
+
+                tmp = Math.max(tmp, dp[i - 1][j - 1] - prices[j]);
+            }
+        }
+        return dp[k][prices.length - 1];
+    }
+
+    private int quickProfit(int[] prices) {
+        int result = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > prices[i - 1]) {
+                result += prices[i] - prices[i - 1];
+            }
+        }
+        return result;
+    }
+
+
+    // ------字符串切割-- //
 
     /**
      * todo 股票交易两次
@@ -114,9 +162,6 @@ public class SerialQuestion {
 
     }
 
-
-    // ------字符串切割-- //
-
     /**
      * 131. Palindrome Partitioning
      *
@@ -159,7 +204,6 @@ public class SerialQuestion {
         }
         return true;
     }
-
 
     /**
      * cut[i] is the minimum of cut[j - 1] + 1 (j <= i), if [j, i] is palindrome.
@@ -218,6 +262,8 @@ public class SerialQuestion {
     }
 
 
+    // -------树的遍历---//
+
     /**
      * 142. Linked List Cycle II
      *
@@ -245,8 +291,7 @@ public class SerialQuestion {
         return null;
     }
 
-
-    // -------树的遍历---//
+    // ----树的排序 //
 
     /**
      * 145. Binary Tree Postorder Traversal
@@ -274,8 +319,6 @@ public class SerialQuestion {
         return ans;
     }
 
-    // ----树的排序 //
-
     /**
      * 插入排序
      * 147. Insertion Sort List
@@ -286,7 +329,6 @@ public class SerialQuestion {
     public ListNode insertionSortList(ListNode head) {
         return null;
     }
-
 
     /**
      * 148. Sort List
@@ -312,6 +354,11 @@ public class SerialQuestion {
 
     }
 
+
+    // Olog(N)复杂度 //
+
+    // ------旋转数组 找最小值-----//
+
     private ListNode sortListNode(ListNode l1, ListNode l2) {
         if (l1 == null) {
             return l2;
@@ -327,11 +374,6 @@ public class SerialQuestion {
             return l2;
         }
     }
-
-
-    // Olog(N)复杂度 //
-
-    // ------旋转数组 找最小值-----//
 
     /**
      * key point: 左边界可能存在两个区域 所以无法很好的做边界条件。
@@ -388,6 +430,8 @@ public class SerialQuestion {
     }
 
 
+    // -------- 逆波兰数---//
+
     /**
      * 162. Find Peak Element
      *
@@ -412,7 +456,7 @@ public class SerialQuestion {
     }
 
 
-    // -------- 逆波兰数---//
+    // --两个数之和--- //
 
     /**
      * 150. Evaluate Reverse Polish Notation
@@ -451,7 +495,8 @@ public class SerialQuestion {
     }
 
 
-    // --两个数之和--- //
+    // ----滑动窗口系列------- //
+    // 滑动窗口固定解题公式-- //
 
     /**
      * 167. Two Sum II - Input array is sorted
@@ -477,16 +522,6 @@ public class SerialQuestion {
             map.put(numbers[i], i);
         }
         return ans;
-    }
-
-
-    // ----滑动窗口系列------- //
-    // 滑动窗口固定解题公式-- //
-
-    public static void main(String[] args) {
-        SerialQuestion serialQuestion = new SerialQuestion();
-        int result = serialQuestion.lengthOfLongestSubstringTwoDistinct("ababacccccc");
-        System.out.println(result);
     }
 
     /**
@@ -524,6 +559,54 @@ public class SerialQuestion {
             result = Math.max(result, i - left + 1);
         }
         return result;
+    }
+
+
+    // ---字符串反转问题--//
+
+    /**
+     * 186 Reverse Words in a String II
+     * 不能使用
+     *
+     * @param str: a string
+     * @return: return a string
+     */
+    public char[] reverseWords(char[] str) {
+        // write your code here
+        if (str == null || str.length == 0) {
+            return new char[]{};
+        }
+        return null;
+    }
+
+    // ----房屋抢劫----//
+
+    /**
+     * 198. House Robber
+     *
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int column = nums.length;
+
+        int[] dp = new int[column];
+
+        dp[0] = nums[0];
+
+        for (int i = 1; i < nums.length; i++) {
+            if (i == 1) {
+                dp[i] = Math.max(0, nums[1]);
+            } else {
+                dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
+            }
+
+        }
+        return dp[column - 1];
+
     }
 
 

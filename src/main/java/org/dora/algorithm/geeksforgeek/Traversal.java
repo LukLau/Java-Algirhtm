@@ -746,6 +746,77 @@ public class Traversal {
     }
 
 
+    /**
+     * 189. Rotate Array
+     *
+     * @param nums
+     * @param k
+     */
+    public void rotate(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        k %= nums.length;
+        reverseArray(nums, 0, nums.length - 1);
+        reverseArray(nums, 0, k - 1);
+        reverseArray(nums, k, nums.length - 1);
+
+    }
+
+    private void reverseArray(int[] nums, int start, int end) {
+        if (start > end) {
+            return;
+        }
+        for (int i = start; i <= (start + end) / 2; i++) {
+            swap(nums, i, start + end - i);
+        }
+    }
+
+    private void swap(int[] nums, int start, int end) {
+        int val = nums[start];
+        nums[start] = nums[end];
+        nums[end] = val;
+    }
+
+
+    /**
+     * 199. Binary Tree Right Side View
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<Integer> ans = new ArrayList<>();
+
+        LinkedList<TreeNode> deque = new LinkedList<>();
+
+        deque.add(root);
+
+        while (!deque.isEmpty()) {
+
+            int size = deque.size();
+
+            for (int i = 0; i < size; i++) {
+                TreeNode poll = deque.poll();
+
+                if (i == size - 1) {
+                    ans.add(poll.val);
+                }
+                if (poll.left != null) {
+                    deque.add(poll.left);
+                }
+                if (poll.right != null) {
+                    deque.add(poll.right);
+                }
+            }
+        }
+        return ans;
+    }
+
+
     // ---------- 深度优先遍历DFS---------//
 
     /**
@@ -859,6 +930,47 @@ public class Traversal {
         this.solveBoard(i, j - 1, board);
 
         this.solveBoard(i, j + 1, board);
+    }
+
+
+    /**
+     * 200. Number of Islands
+     *
+     * @param grid
+     * @return
+     */
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+
+        int column = grid[0].length;
+
+        int count = 0;
+
+        for (int i = 0; i < row; i++) {
+
+            for (int j = 0; j < column; j++) {
+
+                if (grid[i][j] == '1') {
+                    validIslands(grid, i, j);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    private void validIslands(char[][] grid, int i, int j) {
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[i].length || grid[i][j] != '1') {
+            return;
+        }
+        grid[i][j] = '0';
+        validIslands(grid, i - 1, j);
+        validIslands(grid, i + 1, j);
+        validIslands(grid, i, j - 1);
+        validIslands(grid, i, j+1);
     }
 
 

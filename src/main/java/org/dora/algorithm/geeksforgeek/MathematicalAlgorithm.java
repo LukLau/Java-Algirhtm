@@ -330,7 +330,6 @@ public class MathematicalAlgorithm {
         }
         String[] strs = new String[nums.length];
         for (int i = 0; i < nums.length; i++) {
-
             strs[i] = String.valueOf(nums[i]);
         }
         Arrays.sort(strs, (o1, o2) -> {
@@ -345,9 +344,46 @@ public class MathematicalAlgorithm {
         for (String str : strs) {
             builder.append(str);
         }
-
-
         return builder.toString();
+    }
+
+
+    /**
+     * 一个int数值 占据32位置
+     * 必须把32位都挪移
+     * 190. Reverse Bits
+     *
+     * @param n
+     * @return
+     */
+    public int reverseBits(int n) {
+        int result = 0;
+        for (int i = 0; i < 32; i++) {
+
+            result += n & 1;
+
+            n >>= 1;
+
+            if (i < 31) {
+                result <<= 1;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 191. Number of 1 Bits
+     *
+     * @param n
+     * @return
+     */
+    public int hammingWeight(int n) {
+        int result = 0;
+        while (n != 0) {
+            result++;
+            n = n & (n - 1);
+        }
+        return result;
     }
 
 
