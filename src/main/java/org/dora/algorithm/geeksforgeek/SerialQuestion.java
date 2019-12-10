@@ -610,4 +610,39 @@ public class SerialQuestion {
     }
 
 
+    // ----区间---//
+
+    /**
+     * 201. Bitwise AND of Numbers Range
+     *
+     * @param m
+     * @param n
+     * @return
+     */
+    public int rangeBitwiseAnd(int m, int n) {
+        return 0;
+    }
+
+
+    // ---课程调度---//
+
+    /**
+     * 207. Course Schedule
+     *
+     * @param numCourses
+     * @param prerequisites
+     * @return
+     */
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        Arrays.sort(prerequisites, new Comparator<int[]>() {
+
+            @Override
+            public int compare(int[] o1, int[] o2) {
+
+                return 0;
+            }
+        });
+    }
+
+
 }

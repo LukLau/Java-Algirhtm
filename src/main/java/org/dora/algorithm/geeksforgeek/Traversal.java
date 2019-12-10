@@ -817,6 +817,89 @@ public class Traversal {
     }
 
 
+    /**
+     * 203. Remove Linked List Element
+     *
+     * @param head
+     * @param val
+     * @return
+     */
+    public ListNode removeElements(ListNode head, int val) {
+        if (head == null) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+
+        ListNode dummy = root;
+
+        while (head != null) {
+
+            if (head.val != val) {
+
+                dummy.next = head;
+
+                dummy = dummy.next;
+            }
+            head = head.next;
+        }
+        dummy.next = null;
+        return root.next;
+    }
+
+
+    /**
+     * 205. Isomorphic Strings
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isIsomorphic(String s, String t) {
+        if (s == null || t == null) {
+            return false;
+        }
+        if (s.length() != t.length()) {
+            return false;
+        }
+        if (s.equals(t)) {
+            return true;
+        }
+        int[] hash1 = new int[256];
+
+        int[] hash2 = new int[256];
+
+        for (int i = 0; i < s.length(); i++) {
+            if (hash1[s.charAt(i)] != hash2[t.charAt(i)]) {
+                return false;
+            }
+            hash1[s.charAt(i)] = i;
+            hash2[t.charAt(i)] = i;
+        }
+        return true;
+    }
+
+
+    /**
+     * 206. Reverse Linked List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+
+        ListNode node = reverseList(head.next);
+
+        head.next.next = head;
+
+        head.next = null;
+
+        return node;
+    }
+
+
     // ---------- 深度优先遍历DFS---------//
 
     /**
@@ -950,11 +1033,9 @@ public class Traversal {
         int count = 0;
 
         for (int i = 0; i < row; i++) {
-
             for (int j = 0; j < column; j++) {
-
                 if (grid[i][j] == '1') {
-                    validIslands(grid, i, j);
+                    checkIslands(grid, i, j);
                     count++;
                 }
             }
@@ -962,15 +1043,15 @@ public class Traversal {
         return count;
     }
 
-    private void validIslands(char[][] grid, int i, int j) {
-        if (i < 0 || i >= grid.length || j < 0 || j >= grid[i].length || grid[i][j] != '1') {
+    private void checkIslands(char[][] grid, int i, int j) {
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[i].length || grid[i][j] == '0') {
             return;
         }
         grid[i][j] = '0';
-        validIslands(grid, i - 1, j);
-        validIslands(grid, i + 1, j);
-        validIslands(grid, i, j - 1);
-        validIslands(grid, i, j+1);
+        checkIslands(grid, i - 1, j);
+        checkIslands(grid, i + 1, j);
+        checkIslands(grid, i, j - 1);
+        checkIslands(grid, i, j + 1);
     }
 
 

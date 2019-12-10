@@ -2,10 +2,7 @@ package org.dora.algorithm.geeksforgeek;
 
 import org.dora.algorithm.datastructe.Node;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author dora
@@ -384,6 +381,63 @@ public class MathematicalAlgorithm {
             n = n & (n - 1);
         }
         return result;
+    }
+
+
+    /**
+     * 202. Happy Number
+     *
+     * @param n
+     * @return
+     */
+    public boolean isHappy(int n) {
+        if (n <= 0) {
+            return false;
+        }
+        Set<Integer> set = new HashSet<>();
+
+        while (n != 0) {
+            int tmp = n;
+
+            int result = 0;
+
+            while (tmp != 0) {
+                int index = tmp % 10;
+
+                result += index * index;
+
+                tmp /= 10;
+            }
+            if (set.contains(result)) {
+                return false;
+            }
+            if (result == 1) {
+                return true;
+            }
+
+            set.add(result);
+
+            n = result;
+        }
+        return false;
+    }
+
+
+    /**
+     * 204. Count Primes
+     *
+     * @param n
+     * @return
+     */
+    public int countPrimes(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int count = 0;
+        for (int i = 0; i < Math.sqrt(n); i++) {
+
+        }
+        return 0;
     }
 
 
