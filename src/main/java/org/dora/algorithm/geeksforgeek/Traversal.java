@@ -899,6 +899,20 @@ public class Traversal {
         return node;
     }
 
+    /**
+     * 215. Kth Largest Element in an Array
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int findKthLargest(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+    }
+
 
     // ---------- 深度优先遍历DFS---------//
 
@@ -1052,6 +1066,51 @@ public class Traversal {
         checkIslands(grid, i + 1, j);
         checkIslands(grid, i, j - 1);
         checkIslands(grid, i, j + 1);
+    }
+
+
+    /**
+     * 212. Word Search II
+     *
+     * @param board
+     * @param words
+     * @return
+     */
+    public List<String> findWords(char[][] board, String[] words) {
+        if (board == null || board.length == 0) {
+            return new ArrayList<>();
+        }
+        Trie trie = new Trie();
+        for (String word : words) {
+            trie.insert(word);
+        }
+        int row = board.length;
+        int column = board[0].length;
+        List<String> ans = new ArrayList<>();
+
+        boolean[][] used = new boolean[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                intervalFindWords(i, j, board, used, trie, "", ans);
+            }
+        }
+        return ans;
+    }
+
+    private void intervalFindWords(int i, int j, char[][] board, boolean[][] used, Trie trie,
+                                   String s, List<String> ans) {
+        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || used[i][j]) {
+            return;
+        }
+        s += board[i][j];
+        if (!trie.startsWith(s)) {
+            return;
+        }
+        if (trie.search(s)) {
+            ans.add(s);
+        }
+        used[i][j] = true;
+
     }
 
 

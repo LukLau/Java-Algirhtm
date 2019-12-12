@@ -562,6 +562,38 @@ public class SerialQuestion {
     }
 
 
+    /**
+     * 209. Minimum Size Subarray Sum
+     *
+     * @param s
+     * @param nums
+     * @return
+     */
+    public int minSubArrayLen(int s, int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int len = Integer.MAX_VALUE;
+
+
+        int end = 0;
+
+        int start = 0;
+
+        int sum = 0;
+        while (end < nums.length) {
+            sum += nums[end++];
+
+            while (sum > s) {
+                len = Math.min(len, end - start);
+
+                sum -= nums[start++];
+            }
+        }
+        return len;
+    }
+
+
     // ---字符串反转问题--//
 
     /**
@@ -610,6 +642,35 @@ public class SerialQuestion {
     }
 
 
+    /**
+     * 213. House Robber II
+     *
+     * @param nums
+     * @return
+     */
+    public int robII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        return Math.max(intervalRob(nums, 0, nums.length - 2),
+                intervalRob(nums, 1, nums.length - 1));
+    }
+
+    private int intervalRob(int[] nums, int start, int end) {
+        int robPre = 0;
+
+        int robNow = 0;
+        for (int i = start; i <= end; i++) {
+            int tmp = robPre;
+            robPre = Math.max(robPre, robNow);
+
+            robNow = tmp + nums[i];
+        }
+
+        return Math.max(robPre, robNow);
+    }
+
+
     // ----区间---//
 
     /**
@@ -643,6 +704,18 @@ public class SerialQuestion {
             }
         });
         return false;
+    }
+
+
+    /**
+     * 210. Course Schedule II
+     *
+     * @param numCourses
+     * @param prerequisites
+     * @return
+     */
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        return new int[]{};
     }
 
 
