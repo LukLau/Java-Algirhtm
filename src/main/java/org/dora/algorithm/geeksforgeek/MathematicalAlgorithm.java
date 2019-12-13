@@ -438,6 +438,22 @@ public class MathematicalAlgorithm {
 
         }
         return 0;
+
+    }
+
+    // ---城市天际线问题---- //
+
+    /**
+     * 218. The Skyline Problem
+     *
+     * @param buildings
+     * @return
+     */
+    public List<List<Integer>> getSkyline(int[][] buildings) {
+        if (buildings == null || buildings.length == 0) {
+            return new ArrayList<>();
+        }
+        return null;
     }
 
 

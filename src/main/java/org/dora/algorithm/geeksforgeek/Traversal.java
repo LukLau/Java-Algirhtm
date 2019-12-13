@@ -16,16 +16,8 @@ public class Traversal {
 
     public static void main(String[] args) {
         Traversal traversal = new Traversal();
-        List<String> ans = Arrays.asList(
-                "cat", "cats", "and", "sand", "dog");
-        ListNode root = new ListNode(1);
-        ListNode prev = root;
-        for (int i = 2; i <= 4; i++) {
-            ListNode node = new ListNode(i);
-            prev.next = node;
-            prev = node;
-        }
-        traversal.compareVersion("1", "01");
+        int[] nums = new int[]{1, 0, 1, 1};
+        traversal.containsNearbyDuplicate(nums, 3);
     }
 
     /**
@@ -910,7 +902,75 @@ public class Traversal {
         if (nums == null || nums.length == 0) {
             return 0;
         }
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<Integer>(k, (o1, o2) -> o2.compareTo(o1));
+        for (int num : nums) {
+            priorityQueue.add(num);
+        }
+        for (int i = 0; i < k - 1; i++) {
+            priorityQueue.remove();
+        }
+        return priorityQueue.remove();
+    }
 
+
+    /**
+     * 217. Contains Duplicate
+     *
+     * @param nums
+     * @return
+     */
+    public boolean containsDuplicate(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            if (map.containsKey(num)) {
+                return true;
+            }
+            map.put(num, 1);
+        }
+        return false;
+    }
+
+    /**
+     * 219. Contains Duplicate II
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        HashMap<Integer, Integer> hashMap = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (hashMap.containsKey(nums[i])) {
+                int diff = i - hashMap.get(nums[i]);
+                if (diff <= k) {
+                    return true;
+                }
+            }
+            hashMap.put(nums[i], i);
+        }
+        return false;
+    }
+
+    /**
+     * 220. Contains Duplicate III
+     *
+     * @param nums
+     * @param k
+     * @param t
+     * @return
+     */
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        HashMap<Integer, Integer> map = new HashMap<>();
+        return false;
     }
 
 

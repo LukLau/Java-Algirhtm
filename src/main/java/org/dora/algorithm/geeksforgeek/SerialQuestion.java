@@ -719,4 +719,34 @@ public class SerialQuestion {
     }
 
 
+    //--- 排列组合问题----//
+
+    /**
+     * 216. Combination Sum III
+     *
+     * @param k
+     * @param n
+     * @return
+     */
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        if (k <= 0 || n <= 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        combinationSum3(ans, new ArrayList<Integer>(), 1, k, n);
+        return ans;
+    }
+
+    private void combinationSum3(List<List<Integer>> ans, List<Integer> integers, int start, int k, int n) {
+        if (n == 0 && integers.size() == k) {
+            ans.add(new ArrayList<>(integers));
+        }
+        for (int i = start; i <= 9 && i <= n; i++) {
+            integers.add(i);
+            combinationSum3(ans, integers, i + 1, k, n - i);
+            integers.remove(integers.size() - 1);
+        }
+    }
+
+
 }
