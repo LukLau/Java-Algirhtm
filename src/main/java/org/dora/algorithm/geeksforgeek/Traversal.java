@@ -16,8 +16,9 @@ public class Traversal {
 
     public static void main(String[] args) {
         Traversal traversal = new Traversal();
-        int[] nums = new int[]{1, 0, 1, 1};
-        traversal.containsNearbyDuplicate(nums, 3);
+        int[] nums = new int[]{1, 5, 9, 1, 5, 9};
+        traversal.containsNearbyAlmostDuplicate(nums, 2, 3);
+
     }
 
     /**
@@ -969,10 +970,111 @@ public class Traversal {
         if (nums == null || nums.length == 0) {
             return false;
         }
-        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = t - 1; i < nums.length; i++) {
+            for (int j = 0; j < i; j++) {
+                long diff = (long) nums[i] - (long) nums[j];
+                if (Math.abs(diff) <= t) {
+                    return true;
+                }
+
+            }
+        }
         return false;
     }
 
+
+    /**
+     * 222. Count Complete Tree Nodes
+     *
+     * @param root
+     * @return
+     */
+    public int countNodes(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+        linkedList.add(root);
+        int count = 0;
+        while (!linkedList.isEmpty()) {
+            int size = linkedList.size();
+            for (int i = 0; i < size; i++) {
+                count++;
+                TreeNode poll = linkedList.poll();
+                if (poll.left != null) {
+                    linkedList.add(poll.left);
+                }
+                if (poll.right != null) {
+                    linkedList.add(poll.right);
+                }
+            }
+        }
+        return count;
+    }
+
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode tmp = root.left;
+        root.left = root.right;
+        root.right = tmp;
+        invertTree(root.left);
+        invertTree(root.right);
+        return root;
+    }
+
+    /**
+     * 228. Summary Ranges
+     *
+     * @param nums
+     * @return
+     */
+    public List<String> summaryRanges(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            int right = i;
+            while (right + 1 < nums.length && nums[right + 1] == nums[right] + 1) {
+                right++;
+            }
+            ans.add(getRange(nums[i], nums[right]));
+            i = right;
+        }
+        return ans;
+    }
+
+
+    private String getRange(long start, long end) {
+        if (start == end) {
+            return String.valueOf(start);
+        }
+        return start + "->" + end;
+    }
+
+
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        List<String> ans = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            ans.add(getRange(lower, upper));
+            return ans;
+        }
+        if (nums[0] > lower) {
+            ans.add(getRange(lower, nums[0] - 1));
+        }
+        long prev = nums[0];
+        for (int i = 1; i <= nums.length; i++) {
+            long current = i == nums.length ? upper + 1 : nums[i];
+            long diff = current - prev;
+            if (diff > 1) {
+                ans.add(getRange(prev + 1, current - 1));
+            }
+            prev = current;
+        }
+        return ans;
+    }
 
     // ---------- 深度优先遍历DFS---------//
 

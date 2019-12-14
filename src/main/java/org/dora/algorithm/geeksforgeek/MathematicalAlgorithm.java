@@ -3,6 +3,7 @@ package org.dora.algorithm.geeksforgeek;
 import org.dora.algorithm.datastructe.Node;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author dora
@@ -454,6 +455,85 @@ public class MathematicalAlgorithm {
             return new ArrayList<>();
         }
         return null;
+    }
+
+
+    // ---矩形面积问题-- //
+
+    /**
+     * 223. Rectangle Area
+     *
+     * @param A
+     * @param B
+     * @param C
+     * @param D
+     * @param E
+     * @param F
+     * @param G
+     * @param H
+     * @return
+     */
+    public int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+        return 0;
+    }
+
+
+    /**
+     * 229. Majority Element II
+     * 摩尔投票法
+     *
+     * @param nums
+     * @return
+     */
+    public List<Integer> majorityElementII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<Integer> ans = new ArrayList<>();
+        int candidateA = nums[0];
+        int countA = 0;
+        int candidateB = nums[0];
+        int countB = 0;
+        for (int num : nums) {
+            if (num == candidateA) {
+                countA++;
+                continue;
+            }
+            if (num == candidateB) {
+                countB++;
+                continue;
+            }
+
+            if (countA == 0) {
+                candidateA = num;
+                countA = 1;
+                continue;
+            } else if (countB == 0) {
+                candidateB = num;
+                countB = 1;
+                continue;
+            }
+            countA--;
+            countB--;
+        }
+
+        countA = 0;
+        countB = 0;
+        for (int num : nums) {
+            if (num == candidateA) {
+                countA++;
+            }
+            if (num == candidateB) {
+                countB++;
+            }
+        }
+        if (countA * 3 > nums.length) {
+            ans.add(candidateA);
+        }
+        if (countB * 3 > nums.length) {
+            ans.add(candidateB);
+        }
+        return ans.stream().distinct().collect(Collectors.toList());
     }
 
 

@@ -16,8 +16,8 @@ public class SerialQuestion {
 
     public static void main(String[] args) {
         SerialQuestion serialQuestion = new SerialQuestion();
-        int result = serialQuestion.lengthOfLongestSubstringTwoDistinct("ababacccccc");
-        System.out.println(result);
+        int calculate = serialQuestion.calculateII("3 * 1");
+        System.out.println(calculate);
     }
 
     /**
@@ -746,6 +746,88 @@ public class SerialQuestion {
             combinationSum3(ans, integers, i + 1, k, n - i);
             integers.remove(integers.size() - 1);
         }
+    }
+
+    // ---逆波兰问题---- //
+
+    /**
+     * 224. Basic Calculator
+     *
+     * @param s
+     * @return
+     */
+    public int calculate(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> numberStack = new Stack<>();
+        int result = 0;
+        int sign = 1;
+        int endIndex = 0;
+        while (endIndex < s.length()) {
+            if (Character.isDigit(s.charAt(endIndex))) {
+                int tmp = 0;
+                while (endIndex < s.length() && Character.isDigit(s.charAt(endIndex))) {
+                    tmp = tmp * 10 + Character.getNumericValue(s.charAt(endIndex++));
+                }
+                result += sign * tmp;
+            } else {
+                if (s.charAt(endIndex) == '+') {
+                    sign = 1;
+                } else if (s.charAt(endIndex) == '-') {
+                    sign = -1;
+                } else if (s.charAt(endIndex) == '(') {
+                    numberStack.push(result);
+                    numberStack.push(sign);
+                    result = 0;
+                    sign = 1;
+                } else if (s.charAt(endIndex) == ')') {
+                    result = numberStack.pop() * result + numberStack.pop();
+                }
+                endIndex++;
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 227. Basic Calculator II
+     * keyCase : 遍历字符串时 延迟定义操作符号
+     *
+     * @param s
+     * @return
+     */
+    public int calculateII(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> digitStack = new Stack<>();
+        char sign = '+';
+        int tmp = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (Character.isDigit(s.charAt(i))) {
+                tmp = tmp * 10 + Character.getNumericValue(s.charAt(i));
+            }
+            if (i == s.length() - 1 || (!Character.isDigit(s.charAt(i)) && s.charAt(i) != ' ')) {
+                if (sign == '+') {
+                    digitStack.push(tmp);
+                } else if (sign == '-') {
+                    digitStack.push(-tmp);
+                } else if (sign == '*') {
+                    digitStack.push(digitStack.pop() * tmp);
+                } else {
+                    digitStack.push(digitStack.pop() / tmp);
+                }
+                tmp = 0;
+                sign = s.charAt(i);
+            }
+        }
+        int result = 0;
+        for (Integer integer : digitStack) {
+            result += integer;
+        }
+        return result;
     }
 
 
