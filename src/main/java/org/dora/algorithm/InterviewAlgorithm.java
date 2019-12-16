@@ -1,9 +1,8 @@
 package org.dora.algorithm;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import org.dora.algorithm.datastructe.TreeNode;
+
+import java.util.*;
 
 /**
  * 常见算法
@@ -266,6 +265,44 @@ public class InterviewAlgorithm {
             }
         }
         return true;
+    }
+
+    /**
+     * 今日头条: S型打印二叉树
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+        linkedList.add(root);
+        boolean leftToRight = true;
+        while (!linkedList.isEmpty()) {
+            int size = linkedList.size();
+            Integer[] tmp = new Integer[size];
+            for (int i = 0; i < size; i++) {
+
+                TreeNode node = linkedList.poll();
+
+                int index = leftToRight ? i : size - 1 - i;
+
+                tmp[index] = node.val;
+
+                if (node.left != null) {
+                    linkedList.add(node.left);
+                }
+                if (node.right != null) {
+                    linkedList.add(node.right);
+                }
+            }
+            leftToRight = !leftToRight;
+            ans.add(Arrays.asList(tmp));
+        }
+        return ans;
     }
 
 

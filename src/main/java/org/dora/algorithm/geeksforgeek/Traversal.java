@@ -993,23 +993,7 @@ public class Traversal {
         if (root == null) {
             return 0;
         }
-        LinkedList<TreeNode> linkedList = new LinkedList<>();
-        linkedList.add(root);
-        int count = 0;
-        while (!linkedList.isEmpty()) {
-            int size = linkedList.size();
-            for (int i = 0; i < size; i++) {
-                count++;
-                TreeNode poll = linkedList.poll();
-                if (poll.left != null) {
-                    linkedList.add(poll.left);
-                }
-                if (poll.right != null) {
-                    linkedList.add(poll.right);
-                }
-            }
-        }
-        return count;
+        return 1 + countNodes(root.left) + countNodes(root.right);
     }
 
     public TreeNode invertTree(TreeNode root) {
@@ -1075,6 +1059,71 @@ public class Traversal {
         }
         return ans;
     }
+
+
+    /**
+     * 230. Kth Smallest Element in a BST
+     *
+     * @param root
+     * @param k
+     * @return
+     */
+    public int kthSmallest(TreeNode root, int k) {
+        if (root == null) {
+            return -1;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        int count = 0;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            count++;
+            if (count == k) {
+                return p.val;
+            }
+
+            p = p.right;
+        }
+        return -1;
+
+    }
+
+    /**
+     * 234. Palindrome Linked List
+     *
+     * @param head
+     * @return
+     */
+    public boolean isPalindrome(ListNode head) {
+
+        if (head == null || head.next == null) {
+            return true;
+        }
+        ListNode fast = head;
+        ListNode mid = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            mid = mid.next;
+        }
+        ListNode reverseNode = reverseList(mid.next);
+        mid.next = reverseNode;
+
+        mid = mid.next;
+        while (mid != null) {
+            if (head.val != mid.val) {
+                return false;
+            }
+
+            head = head.next;
+            mid = mid.next;
+        }
+        return true;
+    }
+
 
     // ---------- 深度优先遍历DFS---------//
 
