@@ -1125,6 +1125,60 @@ public class Traversal {
     }
 
 
+    /**
+     * 237. Delete Node in a Linked List
+     *
+     * @param node
+     */
+    public void deleteNode(ListNode node) {
+        if (node == null) {
+            return;
+        }
+        ListNode next = node.next;
+        if (next == null) {
+            node = null;
+            return;
+        }
+        node.val = next.val;
+        if (next.next == null) {
+            node.next = null;
+            next = null;
+        } else {
+            node.next = next.next;
+            next = null;
+        }
+
+    }
+
+
+    /**
+     * 242. Valid Anagram
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isAnagram(String s, String t) {
+        if (s == null || t == null) {
+            return false;
+        }
+        if (s.length() != t.length()) {
+            return false;
+        }
+        int[] hash = new int[256];
+        for (int i = 0; i < s.length(); i++) {
+            hash[s.charAt(i) - 'a']++;
+            hash[t.charAt(i) - 'a']--;
+        }
+        for (int i = 0; i < 256; i++) {
+            if (hash[i] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     // ---------- 深度优先遍历DFS---------//
 
     /**

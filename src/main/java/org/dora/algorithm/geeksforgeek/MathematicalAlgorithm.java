@@ -560,4 +560,84 @@ public class MathematicalAlgorithm {
     }
 
 
+    /**
+     * 238. Product of Array Except Self
+     *
+     * @param nums
+     * @return
+     */
+    public int[] productExceptSelf(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
+        int[] result = new int[nums.length];
+        int base = 1;
+        for (int i = 0; i < nums.length; i++) {
+            result[i] = base;
+            base *= nums[i];
+        }
+        base = 1;
+        for (int i = nums.length - 1; i >= 0; i--) {
+            result[i] *= base;
+            base *= nums[i];
+        }
+        return result;
+    }
+
+
+    /**
+     * 241. Different Ways to Add Parentheses
+     *
+     * @param input
+     * @return
+     */
+    public List<Integer> diffWaysToCompute(String input) {
+        if (input == null || input.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> ops = new ArrayList<>();
+        for (int i = 0; i < input.length(); i++) {
+            int j = i;
+            while (i < input.length() && Character.isDigit(input.charAt(i))) {
+                i++;
+            }
+            ops.add(input.substring(j, i));
+            if (i != input.length()) {
+                ops.add(input.substring(i, i + 1));
+            }
+        }
+        return intervalCompute(ops, 0, ops.size() - 1);
+    }
+
+    private List<Integer> intervalCompute(List<String> ops, int start, int end) {
+        List<Integer> ans = new ArrayList<>();
+        if (start == end) {
+            ans.add(Integer.parseInt(ops.get(start)));
+            return ans;
+        }
+        for (int i = start + 1; i <= end - 1; i = i + 2) {
+            List<Integer> leftNums = intervalCompute(ops, start, i - 1);
+
+            List<Integer> rightNums = intervalCompute(ops, i + 1, end);
+
+            String sign = ops.get(i);
+
+            for (Integer leftNum : leftNums) {
+                for (Integer rightNum : rightNums) {
+                    if (sign.equals("+")) {
+                        ans.add(leftNum + rightNum);
+                    } else if (sign.equals("-")) {
+                        ans.add(leftNum - rightNum);
+                    } else if (sign.equals("*")) {
+                        ans.add(leftNum * rightNum);
+                    } else if (sign.equals("/")) {
+                        ans.add(leftNum / rightNum);
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+
+
 }

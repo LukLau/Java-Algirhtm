@@ -25,6 +25,8 @@
 
 > [找到被包围的区域三种写法](https://leetcode.com/problems/surrounded-regions/)
 
+> [符号添加不同方式 即遍历方式](https://leetcode.com/problems/different-ways-to-add-parentheses/)
+
 
 ## 连续序列问题
 > [数组中连续最大乘积 keyCase: 考虑到连续序列](https://leetcode.com/problems/maximum-product-subarray/)

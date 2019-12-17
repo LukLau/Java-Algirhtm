@@ -865,13 +865,13 @@ public class SerialQuestion {
      */
     public TreeNode lowestCommonAncestorII(TreeNode root, TreeNode p, TreeNode q) {
         if (root == null || p == null || q == null) {
-            return root;
+            return null;
         }
         if (root == p || root == q) {
             return root;
         }
         TreeNode left = lowestCommonAncestor(root.left, p, q);
-        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        TreeNode right = lowestCommonAncestorII(root.right, p, q);
         if (left != null && right != null) {
             return root;
         } else if (left != null) {
@@ -879,6 +879,70 @@ public class SerialQuestion {
         } else {
             return right;
         }
+    }
+
+
+    /**
+     * todo
+     * 239. Sliding Window Maximum
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
+        int[] result = new int[nums.length];
+        PriorityQueue<Integer> queue = new PriorityQueue<>();
+        for (int i = 0; i < nums.length; i++) {
+            queue.add(nums[i]);
+
+        }
+        return null;
+    }
+
+
+    /**
+     * 240. Search a 2D Matrix II
+     *
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int i = 0;
+        int j = column - 1;
+        while (i < row && j >= 0) {
+            int value = matrix[i][j];
+            if (value == target) {
+                return true;
+            } else if (value < target) {
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return false;
+    }
+
+
+    // ---字符之间的差距系列问题---- //
+
+    /**
+     * @param words: a list of words
+     * @param word1: a string
+     * @param word2: a string
+     * @return: the shortest distance between word1 and word2 in the list
+     */
+    public int shortestDistance(String[] words, String word1, String word2) {
+        // Write your code here
     }
 
 
