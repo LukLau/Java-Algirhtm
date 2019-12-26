@@ -831,6 +831,8 @@ public class SerialQuestion {
     }
 
 
+    // -----树的公共祖先问题----//
+
     /**
      * 235. Lowest Common Ancestor of a Binary Search Tree
      *
@@ -881,9 +883,10 @@ public class SerialQuestion {
         }
     }
 
+    // -----滑动窗口系列----///
 
     /**
-     * todo
+     * todo 太难
      * 239. Sliding Window Maximum
      *
      * @param nums
@@ -894,14 +897,41 @@ public class SerialQuestion {
         if (nums == null || nums.length == 0) {
             return new int[]{};
         }
-        int[] result = new int[nums.length];
-        PriorityQueue<Integer> queue = new PriorityQueue<>();
-        for (int i = 0; i < nums.length; i++) {
-            queue.add(nums[i]);
+        // 用来存放满足窗口限制条件的值
+        List<Integer> tmp = new ArrayList<>();
 
+        // 用作窗口  窗口坐标对应的值 从大到小
+        // 窗口 具有边界
+        LinkedList<Integer> list = new LinkedList<>();
+        for (int i = 0; i < nums.length; i++) {
+            int begin = i - k + 1;
+
+
+            // 当前计算出得左边界 与 窗口的左边界比较是否超过
+            while (!list.isEmpty() && begin > list.peekFirst()) {
+                list.pollFirst();
+            }
+
+            // 更新窗口内的值　
+            while (!list.isEmpty() && nums[list.peekLast()] <= nums[i]) {
+                list.pollLast();
+            }
+            list.add(i);
+
+            // 当前下标到达了窗口的左边界
+            if (begin >= 0) {
+                tmp.add(nums[list.peekFirst()]);
+            }
         }
-        return null;
+        int[] result = new int[tmp.size()];
+        for (int i = 0; i < tmp.size(); i++) {
+            result[i] = tmp.get(i);
+        }
+        return result;
     }
+
+
+    // --排序矩阵搜索目标值----//
 
 
     /**
@@ -936,13 +966,67 @@ public class SerialQuestion {
     // ---字符之间的差距系列问题---- //
 
     /**
+     * #243 Shortest Word Distance
+     *
      * @param words: a list of words
      * @param word1: a string
      * @param word2: a string
      * @return: the shortest distance between word1 and word2 in the list
      */
     public int shortestDistance(String[] words, String word1, String word2) {
+        if (words == null || words.length == 0) {
+            return -1;
+        }
+        int result = Integer.MAX_VALUE;
+        int index1 = -1;
+        int index2 = -1;
+        for (int i = 0; i < words.length; i++) {
+            String tmp = words[i];
+            if (tmp.equals(word1)) {
+                index1 = i;
+            }
+            if (tmp.equals(word2)) {
+                index2 = i;
+            }
+            if (index1 != -1 && index2 != -1) {
+                result = Math.min(result, Math.abs(index1 - index2));
+            }
+        }
         // Write your code here
+        return result;
+    }
+
+
+    /**
+     * #243 Shortest Word DistanceII
+     * 在243基础上优化
+     *
+     * @param words
+     * @param word1
+     * @param word2
+     * @return
+     */
+    public int shortestDistanceII(String[] words, String word1, String word2) {
+        if (words == null || words.length == 0) {
+            return 0;
+        }
+        Map<String, List<Integer>> map = new HashMap<>();
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+
+            boolean exist = word.equals(word1) || word.equals(word2);
+
+            if (exist) {
+
+                List<Integer> tmp = map.getOrDefault(word, new ArrayList<>());
+                tmp.add(i);
+                map.put(word, tmp);
+            }
+        }
+        int result = Integer.MAX_VALUE;
+
+        return 0;
+
     }
 
 

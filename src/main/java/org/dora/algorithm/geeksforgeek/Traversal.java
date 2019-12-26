@@ -1179,6 +1179,60 @@ public class Traversal {
     }
 
 
+    /**
+     * 241. Different Ways to Add Parentheses
+     *
+     * @param input
+     * @return
+     */
+    public List<Integer> diffWaysToCompute(String input) {
+        if (input == null || input.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+        for (int i = 0; i < input.length(); i++) {
+            int tmp = 0;
+            while (i < input.length() && Character.isDigit(input.charAt(i))) {
+                tmp = tmp * 10 + Character.getNumericValue(input.charAt(i));
+                i++;
+            }
+            ans.add(String.valueOf(tmp));
+            if (i != input.length()) {
+                ans.add(input.substring(i, i + 1));
+            }
+        }
+        return computeWays(ans, 0, ans.size() - 1);
+    }
+
+    private List<Integer> computeWays(List<String> ans, int start, int end) {
+        List<Integer> result = new ArrayList<>();
+        if (start == end) {
+            result.add(Integer.parseInt(ans.get(start)));
+            return result;
+        }
+        for (int i = start + 1; i <= end - 1; i = i + 2) {
+            List<Integer> leftWays = computeWays(ans, start, i - 1);
+            List<Integer> rightWays = computeWays(ans, i + 1, end);
+            String sign = ans.get(i);
+            for (Integer leftWay : leftWays) {
+                for (Integer rightWay : rightWays) {
+                    if (sign.equals("+")) {
+                        result.add(leftWay + rightWay);
+                    } else if (sign.equals("-")) {
+                        result.add(leftWay - rightWay);
+                    } else if (sign.equals("*")) {
+                        result.add(leftWay * rightWay);
+                    } else {
+                        result.add(leftWay / rightWay);
+                    }
+
+                }
+            }
+        }
+        return result;
+    }
+
+
     // ---------- 深度优先遍历DFS---------//
 
     /**
