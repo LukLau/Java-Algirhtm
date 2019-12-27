@@ -3,6 +3,7 @@ package org.dora.algorithm.geeksforgeek;
 import org.dora.algorithm.datastructe.TreeNode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -123,4 +124,48 @@ public class VIP {
         }
         return ans;
     }
+
+    /**
+     * 解题思路 单纯构造一个hash表
+     * 247 Strobogrammatic Number II
+     *
+     * @param num
+     * @return
+     */
+    public boolean isStrobogrammatic(String num) {
+        // write your code here
+        if (num == null || num.length() == 0) {
+            return false;
+        }
+        HashMap<Character, Character> map = new HashMap<>();
+        map.put('0', '0');
+        map.put('1', '1');
+        map.put('6', '9');
+        map.put('8', '8');
+        map.put('9', '6');
+        for (int i = 0; i <= num.length() / 2; i++) {
+            Character character = map.getOrDefault(num.charAt(i), ' ');
+            if (character.equals(num.charAt(num.length() - 1 - i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 247 Strobogrammatic Number II
+     *
+     * @param n: the length of strobogrammatic number
+     * @return: All strobogrammatic numbers
+     */
+    public List<String> findStrobogrammatic(int n) {
+        // write your code here
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        
+        return null;
+    }
+
+
 }

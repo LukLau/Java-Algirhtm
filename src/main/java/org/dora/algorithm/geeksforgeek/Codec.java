@@ -9,10 +9,10 @@ import org.dora.algorithm.datastructe.TreeNode;
 public class Codec {
 
     public String serialize(TreeNode root) {
-
+        return null;
     }
 
     public TreeNode deserialize(String data) {
-
+        return null;
     }
 }

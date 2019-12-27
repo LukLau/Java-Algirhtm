@@ -16,8 +16,10 @@ public class SerialQuestion {
 
     public static void main(String[] args) {
         SerialQuestion serialQuestion = new SerialQuestion();
-        int calculate = serialQuestion.calculateII("3 * 1");
-        System.out.println(calculate);
+        String[] words = new String[]{"a", "c", "a", "a", "a"};
+        String word1 = "a";
+        String word2 = "a";
+        serialQuestion.shortestDistanceIII(words, word1, word2);
     }
 
     /**
@@ -1010,23 +1012,68 @@ public class SerialQuestion {
         if (words == null || words.length == 0) {
             return 0;
         }
-        Map<String, List<Integer>> map = new HashMap<>();
+        HashMap<String, List<Integer>> map = new HashMap<>();
         for (int i = 0; i < words.length; i++) {
             String word = words[i];
-
-            boolean exist = word.equals(word1) || word.equals(word2);
-
-            if (exist) {
-
-                List<Integer> tmp = map.getOrDefault(word, new ArrayList<>());
-                tmp.add(i);
-                map.put(word, tmp);
+            boolean match = word.equals(word1) || word.equals(word2);
+            if (match) {
+                List<Integer> index = map.getOrDefault(word, new ArrayList<>());
+                index.add(i);
+                map.put(word, index);
             }
+        }
+        List<Integer> index1 = map.get(word1);
+        List<Integer> index2 = map.get(word2);
+
+        int result = Integer.MAX_VALUE;
+        for (Integer integer : index1) {
+            for (Integer value : index2) {
+                result = Math.min(result, Math.abs(integer - value));
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * #244 Shortest Word DistanceII
+     * * 在243基础上优化
+     *
+     * @param words
+     * @param word1
+     * @param word2
+     * @return
+     */
+    public int shortestDistanceIII(String[] words, String word1, String word2) {
+        if (words == null || words.length == 0) {
+            return 0;
         }
         int result = Integer.MAX_VALUE;
 
-        return 0;
+        int index1 = -1;
 
+        int index2 = -1;
+
+        for (int i = 0; i < words.length; i++) {
+            int tmp = index1;
+
+            String word = words[i];
+
+            if (word.equals(word1)) {
+                index1 = i;
+            }
+            if (word.equals(word2)) {
+                index2 = i;
+            }
+            if (index1 != -1 && index2 != -1) {
+                if (word1.equals(word2) && tmp != -1 && tmp != index1) {
+                    result = Math.min(result, Math.abs(tmp - index2));
+                } else if (index1 != index2) {
+                    result = Math.min(result, Math.abs(index1 - index2));
+                }
+            }
+        }
+        return result;
     }
 
 
