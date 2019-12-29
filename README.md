@@ -54,8 +54,7 @@
 > [求二维数组正方形最大面积](https://leetcode.com/problems/maximal-square/)
 key point: dp[i-1][j-1], dp[i-1][j], dp[i][j-1];
 
-
-
+> [房子刷漆问题](https://www.lintcode.com/problem/paint-house/description)
 
 ## 贪心问题
 
@@ -167,3 +166,5 @@ key point: dp[i-1][j-1], dp[i-1][j], dp[i][j-1];
 > [树层次遍历O(1)空间](https://leetcode.com/problems/populating-next-right-pointers-in-each-node/)
 
 > [树层次遍历II O(1)空间](https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/)
+
+> [判断搜索树的先序遍历是否符合规范](https://www.lintcode.com/problem/verify-preorder-sequence-in-binary-search-tree/description)

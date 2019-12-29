@@ -1233,6 +1233,41 @@ public class Traversal {
     }
 
 
+    /**
+     * 257. Binary Tree Paths
+     *
+     * @param root
+     * @return
+     */
+    public List<String> binaryTreePaths(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<String> ans = new ArrayList<>();
+
+        intervalPaths(ans, root, "");
+
+        return ans;
+    }
+
+    private void intervalPaths(List<String> ans, TreeNode root, String s) {
+
+        String tmp = s + root.val;
+
+        if (root.left == null && root.right == null) {
+            ans.add(tmp);
+            return;
+        }
+
+        if (root.left != null) {
+            intervalPaths(ans, root.left, tmp + "->");
+        }
+        if (root.right != null) {
+            intervalPaths(ans, root.right, tmp + "->");
+        }
+    }
+
+
     // ---------- 深度优先遍历DFS---------//
 
     /**

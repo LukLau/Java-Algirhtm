@@ -22,14 +22,8 @@ public class VIP {
 
     public static void main(String[] args) {
         VIP vip = new VIP();
-        List<Interval> list = new ArrayList<>();
-        Interval one = new Interval(0, 30);
-        Interval two = new Interval(5, 10);
-        Interval three = new Interval(15, 20);
-        list.add(one);
-        list.add(two);
-        list.add(three);
-        vip.minMeetingRooms(list);
+        List<Integer> preOrders = Arrays.asList(5, 2, 1, 3, 6);
+        vip.verifyPreorder(preOrders);
     }
 
     /**
@@ -385,7 +379,6 @@ public class VIP {
         return root.val == val;
     }
 
-
     /**
      * 252 Meeting Rooms
      *
@@ -411,7 +404,6 @@ public class VIP {
         return true;
     }
 
-
     /**
      * 253 Meeting Rooms II
      *
@@ -420,30 +412,131 @@ public class VIP {
      */
     public int minMeetingRooms(List<Interval> intervals) {
         // Write your code here
+        if (intervals == null || intervals.isEmpty()) {
+            return -1;
+        }
+        int len = intervals.size();
+        int[] begin = new int[len];
+        int[] end = new int[len];
+        for (int i = 0; i < intervals.size(); i++) {
+            Interval interval = intervals.get(i);
+            begin[i] = interval.start;
+            end[i] = interval.end;
+        }
+        Arrays.sort(begin);
+        Arrays.sort(end);
+        int result = 0;
+        int pre = 0;
+        for (int i = 1; i < len; i++) {
+            result++;
+            if (begin[i] >= end[pre]) {
+                result--;
+                pre++;
+            }
+        }
+        return result;
+    }
 
-        if (intervals == null || intervals.size() == 0) {
+    /**
+     * 254. Factor Combinations
+     *
+     * @param n
+     * @return
+     */
+    List<List<Integer>> getFactors(int n) {
+        if (n <= 1) {
+            return new ArrayList<>();
+        }
+        if (n % 2 == 1) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+
+        intervalFactors(ans, new ArrayList<>(), 2, n);
+
+        return ans;
+    }
+
+    private void intervalFactors(List<List<Integer>> ans, List<Integer> integers, int start, int end) {
+        if (end == 1) {
+            if (integers.size() > 1) {
+                ans.add(new ArrayList<>(integers));
+            }
+            return;
+        }
+        for (int i = start; i <= end; i++) {
+            if (end % i == 0) {
+                integers.add(i);
+                intervalFactors(ans, integers, i, end / i);
+                integers.remove(integers.size() - 1);
+            }
+        }
+    }
+
+    /**
+     * 255. Verify Preorder Sequence in Binary Search
+     *
+     * @param preorder
+     * @return
+     */
+    public boolean verifyPreorder(List<Integer> preorder) {
+        if (preorder == null || preorder.isEmpty()) {
+            return true;
+        }
+        int pre = Integer.MIN_VALUE;
+        Stack<Integer> stack = new Stack<>();
+        for (Integer item : preorder) {
+            if (item < pre) {
+                return false;
+            }
+            while (!stack.isEmpty() && item > stack.peek()) {
+                pre = stack.pop();
+            }
+            stack.push(item);
+        }
+        return true;
+    }
+
+
+    public boolean verifyPreorderV2(int[] preorder) {
+        if (preorder == null || preorder.length == 0) {
+            return true;
+        }
+        int index = -1;
+        int pre = Integer.MIN_VALUE;
+        for (int i = 0; i < preorder.length; i++) {
+            Integer item = preorder[i];
+            if (item < pre) {
+                return false;
+            }
+            while (index >= 0 && preorder[index] < item) {
+                pre = preorder[index];
+                index--;
+            }
+            preorder[++index] = item;
+        }
+        return true;
+    }
+
+
+    /**
+     * 256 Paint House
+     *
+     * @param costs
+     * @return
+     */
+    public int minCost(int[][] costs) {
+        // write your code here
+        if (costs == null || costs.length == 0) {
             return 0;
         }
-
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
-
-        Collections.sort(intervals, new Comparator<Interval>() {
-
-            @Override
-            public int compare(Interval a, Interval b) {
-                return a.start - b.start;
-            }
-        });
-
-        pq.offer(intervals.get(0).end);
-
-        for (int i = 1; i < intervals.size(); i++) {
-            if (pq.peek() < intervals.get(i).start) {
-                pq.poll();
-            }
-            pq.offer(intervals.get(i).end);
+        int row = costs.length;
+        for (int i = 1; i < costs.length; i++) {
+            costs[i][0] += Math.min(costs[i - 1][1], costs[i - 1][2]);
+            costs[i][1] += Math.min(costs[i - 1][0], costs[i - 1][2]);
+            costs[i][2] += Math.min(costs[i - 1][0], costs[i - 1][1]);
         }
-        return pq.size();
+        return Math.min(Math.min(costs[row - 1][0], costs[row - 1][1]), costs[row - 1][2]);
     }
 
 
