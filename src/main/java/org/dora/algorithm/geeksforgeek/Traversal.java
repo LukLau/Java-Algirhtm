@@ -16,8 +16,9 @@ public class Traversal {
 
     public static void main(String[] args) {
         Traversal traversal = new Traversal();
-        int[] nums = new int[]{1, 5, 9, 1, 5, 9};
-        traversal.containsNearbyAlmostDuplicate(nums, 2, 3);
+//        int[] nums = new int[]{1, 5, 9, 1, 5, 9};
+//        traversal.containsNearbyAlmostDuplicate(nums, 2, 3);
+        System.out.println(traversal.addDigits(38));
 
     }
 
@@ -1244,29 +1245,90 @@ public class Traversal {
             return new ArrayList<>();
         }
         List<String> ans = new ArrayList<>();
-
         intervalPaths(ans, root, "");
-
         return ans;
     }
 
     private void intervalPaths(List<String> ans, TreeNode root, String s) {
-
         String tmp = s + root.val;
 
         if (root.left == null && root.right == null) {
             ans.add(tmp);
             return;
         }
-
         if (root.left != null) {
             intervalPaths(ans, root.left, tmp + "->");
         }
         if (root.right != null) {
             intervalPaths(ans, root.right, tmp + "->");
         }
+
     }
 
+
+    /**
+     * todo 优化间复杂度
+     * 转化成 O(1) 时间复杂度
+     * <p>
+     * result = 1 + (n-1) mod 9;
+     * 258. Add Digits
+     *
+     * @param num
+     * @return
+     */
+    public int addDigits(int num) {
+        if (num <= 0) {
+            return 0;
+        }
+        while (num / 10 > 0) {
+            int result = 0;
+            int tmp = num;
+            while (tmp != 0) {
+                result += tmp % 10;
+                tmp /= 10;
+            }
+            num = result;
+        }
+        return num;
+    }
+
+    /**
+     * 259 3Sum Smaller
+     *
+     * @param nums:   an array of n integers
+     * @param target: a target
+     * @return: the number of index triplets satisfy the condition nums[i] + nums[j] + nums[k] < target
+     */
+    public int threeSumSmaller(int[] nums, int target) {
+        // Write your code here
+        if (nums == null || nums.length == 0) {
+            return Integer.MIN_VALUE;
+        }
+        Arrays.sort(nums);
+
+        int count = 0;
+
+        for (int i = 0; i < nums.length - 2; i++) {
+
+            if (nums[i] > target) {
+                break;
+            }
+            int begin = i + 1;
+
+            int end = nums.length - 1;
+
+            while (begin < end) {
+                int result = nums[i] + nums[begin] + nums[end];
+                if (result <= target) {
+                    count++;
+                    begin++;
+                } else {
+                    end--;
+                }
+            }
+        }
+        return count;
+    }
 
     // ---------- 深度优先遍历DFS---------//
 

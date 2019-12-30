@@ -152,6 +152,9 @@ key point: dp[i-1][j-1], dp[i-1][j], dp[i][j-1];
 
 > [数字中1的个数](https://leetcode.com/problems/number-of-digit-one/) todo
 
+> [一个数位数的个数](https://leetcode.com/problems/add-digits/discuss/68580/Accepted-C%2B%2B-O(1)-time-O(1)-space-1-Line-Solution-with-Detail-Explanations)
+
+key point: digit = 1 + (n-1) mod 9
 ----
 ## 位运算
 ------
