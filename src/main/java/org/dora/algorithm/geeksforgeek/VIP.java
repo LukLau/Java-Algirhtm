@@ -22,8 +22,8 @@ public class VIP {
 
     public static void main(String[] args) {
         VIP vip = new VIP();
-        List<Integer> preOrders = Arrays.asList(5, 2, 1, 3, 6);
-        vip.verifyPreorder(preOrders);
+        int[] nums = new int[]{-2, 0, 1, 3};
+        vip.threeSumSmaller(nums, 2);
     }
 
     /**
@@ -537,6 +537,56 @@ public class VIP {
             costs[i][2] += Math.min(costs[i - 1][0], costs[i - 1][1]);
         }
         return Math.min(Math.min(costs[row - 1][0], costs[row - 1][1]), costs[row - 1][2]);
+    }
+
+
+    /**
+     * 259 3Sum Smaller
+     * key point:
+     * 1、要求 i + j + k < target
+     * 2、求满足条件1的个数
+     * 3、为了找出个数 满足条件1的时候 直接 k - j
+     * https://www.lintcode.com/problem/3sum-smaller/description
+     *
+     * @param nums:   an array of n integers
+     * @param target: a target
+     * @return: the number of index triplets satisfy the condition nums[i] + nums[j] + nums[k] < target
+     */
+    public int threeSumSmaller(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        int len = nums.length;
+        Arrays.sort(nums);
+        for (int i = 0; i < len - 2; i++) {
+            int left = i + 1;
+            int right = len - 1;
+            while (left < right) {
+                int value = nums[i] + nums[left] + nums[right];
+                if (value < target) {
+                    result += right - left;
+                    left++;
+                } else {
+                    right--;
+                }
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 无向图
+     * https://github.com/grandyang/leetcode/issues/261
+     * 261. Graph Valid Tree
+     *
+     * @param n
+     * @param edges
+     * @return
+     */
+    public boolean validTree(int n, int[][] edges) {
+        return false;
     }
 
 

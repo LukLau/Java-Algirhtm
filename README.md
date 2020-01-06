@@ -154,7 +154,12 @@ key point: dp[i-1][j-1], dp[i-1][j], dp[i][j-1];
 
 > [一个数位数的个数](https://leetcode.com/problems/add-digits/discuss/68580/Accepted-C%2B%2B-O(1)-time-O(1)-space-1-Line-Solution-with-Detail-Explanations)
 
+> [数组中查找两个不同的数字](https://leetcode.com/submissions/detail/194395415/)
+
+key point: 将数组分割成两个不同的部分
+
 key point: digit = 1 + (n-1) mod 9
+
 ----
 ## 位运算
 ------
@@ -171,3 +176,7 @@ key point: digit = 1 + (n-1) mod 9
 > [树层次遍历II O(1)空间](https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/)
 
 > [判断搜索树的先序遍历是否符合规范](https://www.lintcode.com/problem/verify-preorder-sequence-in-binary-search-tree/description)
+
+# 数据结构
+树的定义: tree is an undirected graph in which any two vertices are connected by  exactly  one path. In other words, any connected graph without simple cycles is a tree.”
+> [判断无向图是否可以组装成树](https://github.com/grandyang/leetcode/issues/261)

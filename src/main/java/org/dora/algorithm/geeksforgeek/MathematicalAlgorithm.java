@@ -10,6 +10,11 @@ import java.util.*;
  */
 public class MathematicalAlgorithm {
 
+    public static void main(String[] args) {
+        MathematicalAlgorithm algorithm = new MathematicalAlgorithm();
+        algorithm.isUgly(14);
+    }
+
     /**
      * 牛顿平方法来解决
      * 69. Sqrt(x)
@@ -27,7 +32,6 @@ public class MathematicalAlgorithm {
         }
         return (int) result;
     }
-
 
     /**
      * todo 牵扯到格雷码 相关知识
@@ -47,7 +51,6 @@ public class MathematicalAlgorithm {
         return null;
     }
 
-
     /**
      * 91. Decode Ways
      *
@@ -60,7 +63,6 @@ public class MathematicalAlgorithm {
         }
         return 0;
     }
-
 
     /**
      * 93. Restore IP Addresses
@@ -94,6 +96,8 @@ public class MathematicalAlgorithm {
     }
 
 
+    // ----------图理论graph----//
+
     /**
      * 128. Longest Consecutive Sequence
      *
@@ -125,7 +129,7 @@ public class MathematicalAlgorithm {
     }
 
 
-    // ----------图理论graph----//
+    // -------位运算 Bits -----------//
 
     /**
      * 133. Clone Graph
@@ -136,9 +140,6 @@ public class MathematicalAlgorithm {
     public Node cloneGraph(Node node) {
         return null;
     }
-
-
-    // -------位运算 Bits -----------//
 
     /**
      * 136. Single Number
@@ -170,6 +171,7 @@ public class MathematicalAlgorithm {
         return 0;
     }
 
+    // ----------连续数字最大乘积--//
 
     /**
      * 149. Max Points on a Line
@@ -180,8 +182,6 @@ public class MathematicalAlgorithm {
     public int maxPoints(int[][] points) {
         return 0;
     }
-
-    // ----------连续数字最大乘积--//
 
     /**
      * 152. Maximum Product Subarray
@@ -205,6 +205,8 @@ public class MathematicalAlgorithm {
         }
         return result;
     }
+
+    // ----- //
 
     /**
      * 151. Reverse Words in a String
@@ -231,7 +233,8 @@ public class MathematicalAlgorithm {
         return builder.toString();
     }
 
-    // ----- //
+
+    // ---- 摩尔投票法-- //
 
     /**
      * 166. Fraction to Recurring Decimal
@@ -245,7 +248,7 @@ public class MathematicalAlgorithm {
     }
 
 
-    // ---- 摩尔投票法-- //
+    // ---计算一个数 可以拥有0的数量--- //
 
     /**
      * 169. Majority Element
@@ -272,9 +275,6 @@ public class MathematicalAlgorithm {
         }
         return value;
     }
-
-
-    // ---计算一个数 可以拥有0的数量--- //
 
     /**
      * 172. Factorial Trailing Zeroes
@@ -314,7 +314,6 @@ public class MathematicalAlgorithm {
         return builder.reverse().toString();
     }
 
-
     /**
      * 179. Largest Number
      *
@@ -343,7 +342,6 @@ public class MathematicalAlgorithm {
         }
         return builder.toString();
     }
-
 
     /**
      * 一个int数值 占据32位置
@@ -383,7 +381,6 @@ public class MathematicalAlgorithm {
         return result;
     }
 
-
     /**
      * 202. Happy Number
      *
@@ -422,6 +419,7 @@ public class MathematicalAlgorithm {
         return false;
     }
 
+    // ---城市天际线问题---- //
 
     /**
      * 204. Count Primes
@@ -441,7 +439,8 @@ public class MathematicalAlgorithm {
 
     }
 
-    // ---城市天际线问题---- //
+
+    // ---矩形面积问题-- //
 
     /**
      * 218. The Skyline Problem
@@ -455,9 +454,6 @@ public class MathematicalAlgorithm {
         }
         return null;
     }
-
-
-    // ---矩形面积问题-- //
 
     /**
      * 223. Rectangle Area
@@ -475,7 +471,6 @@ public class MathematicalAlgorithm {
     public int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
         return 0;
     }
-
 
     /**
      * 229. Majority Element II
@@ -559,7 +554,6 @@ public class MathematicalAlgorithm {
         return 0;
     }
 
-
     /**
      * 238. Product of Array Except Self
      *
@@ -584,7 +578,6 @@ public class MathematicalAlgorithm {
         return result;
     }
 
-
     /**
      * 241. Different Ways to Add Parentheses
      *
@@ -608,6 +601,8 @@ public class MathematicalAlgorithm {
         }
         return intervalCompute(ops, 0, ops.size() - 1);
     }
+
+    // ----递增子序列---//
 
     private List<Integer> intervalCompute(List<String> ops, int start, int end) {
         List<Integer> ans = new ArrayList<>();
@@ -639,8 +634,6 @@ public class MathematicalAlgorithm {
         return ans;
     }
 
-    // ----递增子序列---//
-
     /**
      * 300. Longest Increasing Subsequence
      *
@@ -668,6 +661,78 @@ public class MathematicalAlgorithm {
             result = Math.max(result, i);
         }
         return result;
+    }
+
+    /**
+     * 260. Single Number III
+     * key point:
+     * 数字里面除了两个不同的数 其他数出现两次
+     * 故将数组分成两个部分。
+     *
+     * @param nums
+     * @return
+     */
+    public int[] singleNumberIII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
+        int[] ans = new int[2];
+
+
+        int value = 0;
+
+
+        for (int num : nums) {
+            value ^= num;
+        }
+//        int index = 0;
+//        for (int i = 0; i < 32; i++) {
+//
+//            if ((value & (1 << i)) != 0) {
+//                index = i;
+//                break;
+//            }
+//        }
+//        int base = 1 << index;
+
+        // ？？？ 不懂为什么
+        // Get its last set bit
+        value &= -value;
+
+        for (int num : nums) {
+
+            int tmp = value & num;
+
+            if (tmp != 0) {
+                ans[0] ^= num;
+            } else {
+                ans[1] ^= num;
+            }
+        }
+        return ans;
+
+    }
+
+    /**
+     * 263. Ugly Number
+     *
+     * @param num
+     * @return
+     */
+    public boolean isUgly(int num) {
+        if (num <= 0) {
+            return false;
+        }
+        if (num < 7) {
+            return true;
+        }
+        for (int i = 2; i < 6 && num > 1; i++) {
+            while (num % i == 0) {
+                num /= i;
+            }
+        }
+        return num == 1;
+
     }
 
 
