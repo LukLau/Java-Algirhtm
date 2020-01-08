@@ -121,6 +121,55 @@ public class TwoHundred {
     }
 
     /**
+     * 103. Binary Tree Zigzag Level Order Traversal
+     *
+     * @param root
+     * @return
+     */
+    private List<List<Integer>> zigzagLevelOrderV2(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+
+        LinkedList<TreeNode> deque = new LinkedList<>();
+
+        deque.add(root);
+
+        boolean leftToRight = true;
+
+        while (!deque.isEmpty()) {
+
+            int size = deque.size();
+
+            Integer[] tmp = new Integer[size];
+
+            for (int i = 0; i < size; i++) {
+
+                int index = leftToRight ? i : size - 1 - i;
+
+
+                TreeNode poll = deque.poll();
+
+                if (poll.left != null) {
+                    deque.add(poll.left);
+                }
+                if (poll.right != null) {
+                    deque.add(poll.right);
+                }
+
+                tmp[index] = poll.val;
+            }
+            result.add(Arrays.asList(tmp));
+
+            leftToRight = !leftToRight;
+        }
+
+        return result;
+
+    }
+
+    /**
      * 104. Maximum Depth of Binary Tree
      *
      * @param root
