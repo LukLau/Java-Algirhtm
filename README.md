@@ -160,6 +160,8 @@ key point: 将数组分割成两个不同的部分
 
 key point: digit = 1 + (n-1) mod 9
 
+> [求出第n个丑数的值](https://leetcode.com/problems/ugly-number-ii/)
+
 ----
 ## 位运算
 ------
