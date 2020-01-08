@@ -12,7 +12,7 @@ public class MathematicalAlgorithm {
 
     public static void main(String[] args) {
         MathematicalAlgorithm algorithm = new MathematicalAlgorithm();
-        algorithm.isUgly(14);
+        algorithm.nthUglyNumber(10);
     }
 
     /**
@@ -727,12 +727,53 @@ public class MathematicalAlgorithm {
             return true;
         }
         for (int i = 2; i < 6 && num > 1; i++) {
+
             while (num % i == 0) {
                 num /= i;
             }
         }
         return num == 1;
+    }
 
+
+    /**
+     * todo
+     * 264. Ugly Number II
+     *
+     * @param n
+     * @return
+     */
+    public int nthUglyNumber(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        if (n < 7) {
+            return n;
+        }
+        int[] result = new int[n];
+
+        result[0] = 1;
+
+        int index2 = 0;
+        int index3 = 0;
+        int index5 = 0;
+        int index = 1;
+
+        while (index < n) {
+            int tmp = Math.min(result[index2] * 2, Math.min(result[index3] * 3, result[index5] * 5));
+
+            if (tmp == result[index2] * 2) {
+                index2++;
+            }
+            if (tmp == result[index3] * 3) {
+                index3++;
+            }
+            if (tmp == result[index5] * 5) {
+                index5++;
+            }
+            result[index++] = tmp;
+        }
+        return result[n - 1];
     }
 
 
