@@ -884,7 +884,7 @@ public class DynamicProgramming {
 
             min2 = -1;
 
-            for (int j = 0; j < column; j++) {
+            for (int j = 0; j < costs[i].length; j++) {
                 if (j != lastMin1) {
                     costs[i][j] += lastMin1 < 0 ? 0 : costs[i - 1][lastMin1];
                 } else {
@@ -899,7 +899,47 @@ public class DynamicProgramming {
                 }
             }
         }
-        return costs[row - 1][min1];
-
-
+        return costs[costs.length - 1][min1];
     }
+
+    public int minCostIIV2(int[][] costs) {
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        int column = costs[0].length;
+
+        int row = costs.length;
+        int result = Integer.MAX_VALUE;
+
+        if (row == 1) {
+            for (int j = 0; j < column; j++) {
+                result = Math.min(result, costs[0][j]);
+            }
+            return result;
+        }
+
+        int[][] dp = new int[row][column];
+
+        for (int j = 0; j < column; j++) {
+            dp[0][j] = costs[0][j];
+        }
+
+        for (int i = 1; i < row; i++) {
+
+            for (int j = 0; j < column; j++) {
+                dp[i][j] = Integer.MAX_VALUE;
+                for (int l = 0; l < column; l++) {
+
+                    if (l != j) {
+                        dp[i][j] = Math.min(dp[i - 1][l] + costs[i][j], dp[i][j]);
+                    }
+                }
+
+                if (i == row - 1) {
+                    result = Math.min(result, dp[i][j]);
+                }
+            }
+        }
+        return result;
+    }
+}
