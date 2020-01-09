@@ -867,28 +867,24 @@ public class DynamicProgramming {
             return 0;
         }
         int row = costs.length;
-
-        int column = costs.length;
+        int column = costs[0].length;
 
         int min1 = -1;
-
         int min2 = -1;
 
         for (int i = 0; i < row; i++) {
+            int last1 = min1;
 
-            int lastMin1 = min1;
-
-            int lastMin2 = min2;
+            int last2 = min2;
 
             min1 = -1;
 
             min2 = -1;
-
             for (int j = 0; j < column; j++) {
-                if (j != lastMin1) {
-                    costs[i][j] += lastMin1 < 0 ? 0 : costs[i - 1][lastMin1];
+                if (j != last1) {
+                    costs[i][j] += last1 < 0 ? 0 : costs[i - 1][last1];
                 } else {
-                    costs[i][j] += lastMin2 < 0 ? 0 : costs[i - 1][lastMin2];
+                    costs[i][j] += last2 < 0 ? 0 : costs[i - 1][last2];
                 }
 
                 if (min1 < 0 || costs[i][j] < costs[i][min1]) {
@@ -900,6 +896,82 @@ public class DynamicProgramming {
             }
         }
         return costs[row - 1][min1];
+    }
 
+    public int minCostIIV2(int[][] costs) {
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        int column = costs[0].length;
+        int row = costs.length;
+
+        int result = Integer.MAX_VALUE;
+
+        if (row == 1) {
+            for (int j = 0; j < column; j++) {
+                result = Math.min(result, costs[0][j]);
+            }
+            return result;
+        }
+        int[][] dp = new int[row][column];
+
+        for (int j = 0; j < column; j++) {
+            dp[0][j] = costs[0][j];
+        }
+        for (int i = 1; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                dp[i][j] = Integer.MAX_VALUE;
+                for (int k = 0; k < column; k++) {
+                    if (j != k) {
+                        dp[i][j] = Math.min(dp[i - 1][k] + costs[i][j], dp[i][j]);
+                    }
+                }
+                if (i == row - 1) {
+                    result = Math.min(result, dp[i][j]);
+                }
+            }
+        }
+        return result;
+    }
+
+    public int minCostIIV3(int[][] costs) {
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        int column = costs[0].length;
+
+        int row = costs.length;
+
+
+        int min1 = -1;
+
+        int min2 = -1;
+
+        int index = 0;
+
+        for (int i = 0; i < row; i++) {
+
+            int tmp1 = Integer.MAX_VALUE;
+            int tmp2 = tmp1;
+            int idx = -1;
+            for (int j = 0; j < column; j++) {
+                costs[i][j] = costs[i][j] + (j == index ? min2 : min1);
+
+                if (costs[i][j] < tmp1) {
+                    tmp2 = tmp1;
+                    tmp1 = costs[i][j];
+                    idx = j;
+                } else if (costs[i][j] < tmp2) {
+                    tmp2 = costs[i][j];
+                }
+            }
+            min1 = tmp1;
+            min2 = tmp2;
+            index = idx;
+        }
+        return min1;
 
     }
+
+
+}

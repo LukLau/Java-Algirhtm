@@ -590,4 +590,56 @@ public class VIP {
     }
 
 
+    /**
+     * 266 Palindrome Permutation
+     *
+     * @param s: the given string
+     * @return: if a permutation of the string could form a palindrome
+     */
+    public boolean canPermutePalindrome(String s) {
+        // write your code here
+        if (s == null || s.isEmpty()) {
+            return true;
+        }
+
+        HashMap<Character, Integer> map = new HashMap<>();
+        Set<Character> sets = new HashSet<>();
+        for (char c : s.toCharArray()) {
+            Integer count = map.getOrDefault(c, 0);
+
+            count++;
+
+            map.put(c, count);
+
+            sets.add(c);
+        }
+
+        boolean existOdd = false;
+
+        for (Character item : sets) {
+            Integer integer = map.get(item);
+
+            boolean oddNum = integer % 2 != 0;
+
+            if (existOdd && oddNum) {
+                return false;
+            }
+            if (oddNum) {
+                existOdd = true;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 267 * Palindrome Permutation II
+     *
+     * @param s
+     * @return
+     */
+    public List<String> generatePalindromes(String s) {
+        // write your code here
+    }
+
+
 }
