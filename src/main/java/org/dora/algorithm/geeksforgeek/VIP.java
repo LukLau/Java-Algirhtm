@@ -23,7 +23,8 @@ public class VIP {
     public static void main(String[] args) {
         VIP vip = new VIP();
         int[] nums = new int[]{-2, 0, 1, 3};
-        vip.threeSumSmaller(nums, 2);
+        String param = "aabbcc";
+        vip.generatePalindromes(param);
     }
 
     /**
@@ -639,7 +640,72 @@ public class VIP {
      */
     public List<String> generatePalindromes(String s) {
         // write your code here
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        HashMap<Character, Integer> map = new HashMap<>();
+        char[] chars = s.toCharArray();
+
+        int oddCount = 0;
+
+        for (char tmp : chars) {
+
+            Integer count = map.getOrDefault(tmp, 0);
+
+            count++;
+
+            map.put(tmp, count);
+
+            oddCount += (count % 2 != 0 ? 1 : -1);
+
+        }
+        List<String> ans = new ArrayList<>();
+
+        if (oddCount > 1) {
+            return ans;
+        }
+        List<Character> tmp = new ArrayList<>();
+
+        String mid = "";
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+
+            Character key = entry.getKey();
+
+            Integer count = entry.getValue();
+
+
+            if (count % 2 != 0) {
+                mid = String.valueOf(key);
+            }
+            for (int j = 0; j < count / 2; j++) {
+                tmp.add(key);
+            }
+        }
+        boolean[] used = new boolean[tmp.size()];
+
+        intervalPalindrome(mid, used, tmp, new StringBuilder(), ans);
+
+        return ans;
     }
 
-
+    private void intervalPalindrome(String mid, boolean[] used, List<Character> tmp, StringBuilder builder, List<String> ans) {
+        if (builder.length() == tmp.size()) {
+            String item = builder.toString() + mid + builder.reverse().toString();
+            ans.add(item);
+            builder.reverse();
+            return;
+        }
+        for (int i = 0; i < tmp.size(); i++) {
+            if (i > 0 && (tmp.get(i).equals(tmp.get(i - 1))) && !used[i - 1]) {
+                continue;
+            }
+            if (!used[i]) {
+                used[i] = true;
+                builder.append(tmp.get(i));
+                intervalPalindrome(mid, used, tmp, builder, ans);
+                used[i] = false;
+                builder.deleteCharAt(builder.length() - 1);
+            }
+        }
+    }
 }

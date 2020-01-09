@@ -18,7 +18,11 @@ public class Traversal {
         Traversal traversal = new Traversal();
 //        int[] nums = new int[]{1, 5, 9, 1, 5, 9};
 //        traversal.containsNearbyAlmostDuplicate(nums, 2, 3);
-        System.out.println(traversal.addDigits(38));
+
+        TreeNode root = new TreeNode(2);
+        root.left = new TreeNode(1);
+        double target = Integer.MAX_VALUE;
+        traversal.closestValue(root, target);
 
     }
 
@@ -1527,6 +1531,73 @@ public class Traversal {
         }
         used[i][j] = true;
 
+    }
+
+
+    /**
+     * 268. Missing Number
+     *
+     * @param nums
+     * @return
+     */
+    public int missingNumber(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        Set<Integer> set = new HashSet<>();
+
+        for (int num : nums) {
+            set.add(num);
+
+        }
+
+        for (int i = 0; i <= nums.length; i++) {
+            if (!set.contains(i)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
+    /**
+     * 270 Closest Binary Search Tree Value
+     *
+     * @param root:   the given BST
+     * @param target: the given target
+     * @return: the value in the BST that is closest to the target
+     */
+    public int closestValue(TreeNode root, double target) {
+        // write your code here
+        if (root == null) {
+            return Integer.MAX_VALUE;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+
+        double result = 0;
+
+        stack.push(root);
+
+        while (!stack.isEmpty()) {
+            TreeNode pop = stack.pop();
+
+            if (root.val == target) {
+                return root.val;
+            }
+
+            if (pop.right != null) {
+                stack.push(pop.right);
+            }
+            if (pop.left != null) {
+                stack.push(pop.left);
+            }
+            if (result == 0) {
+                result = Math.min(pop.val, target);
+            } else if (Math.abs(pop.val - target) < Math.abs(result - target)) {
+                result = pop.val;
+            }
+        }
+        return (int) result;
     }
 
 
