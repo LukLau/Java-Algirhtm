@@ -918,6 +918,7 @@ public class DynamicProgramming {
         for (int j = 0; j < column; j++) {
             dp[0][j] = costs[0][j];
         }
+
         for (int i = 1; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 dp[i][j] = Integer.MAX_VALUE;
