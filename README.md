@@ -8,6 +8,8 @@
 由于存在重复计算问题导致超时、    
 故需考虑记录已经计算的值或者状态、减少次数
 
+> [除法问题](https://leetcode.com/problems/divide-two-integers/)
+ 
 ## 深度、广度优先问题
 > 深度遍历靠栈来实现
 
@@ -19,7 +21,15 @@
 
 > [课程调度]()
 
+> [八皇后问题](https://leetcode.com/problems/n-queens/)
 
+> [找到被包围的区域三种写法](https://leetcode.com/problems/surrounded-regions/)
+
+> [符号添加不同方式 即遍历方式](https://leetcode.com/problems/different-ways-to-add-parentheses/)
+
+
+## 连续序列问题
+> [数组中连续最大乘积 keyCase: 考虑到连续序列](https://leetcode.com/problems/maximum-product-subarray/)
 
 ## Dp问题
 >**动态规划解题关键**
@@ -33,6 +43,18 @@
 
 > [正则表达式匹配](https://leetcode.com/problems/regular-expression-matching/discuss/5651/Easy-DP-Java-Solution-with-detailed-Explanation)
 
+> [KMP算法](https://leetcode.com/problems/implement-strstr/discuss/12956/C%2B%2B-Brute-Force-and-KMP)
+
+> [获取八皇后个数](https://leetcode.com/problems/n-queens-ii/)
+
+> [游戏棋盘生命值最少问题](https://leetcode.com/submissions/detail/226063539/)
+
+> [房屋大盗II](https://leetcode.com/problems/house-robber-ii/)
+
+> [求二维数组正方形最大面积](https://leetcode.com/problems/maximal-square/)
+key point: dp[i-1][j-1], dp[i-1][j], dp[i][j-1];
+
+> [房子刷漆问题](https://www.lintcode.com/problem/paint-house/description)
 
 ## 贪心问题
 
@@ -74,6 +96,8 @@
 
 * [窗口最小数量](https://leetcode.com/problems/minimum-size-subarray-sum/)
 
+* [会议室区间数量]()
+
 
 # 二分搜索
 > trick 数组移动
@@ -83,7 +107,8 @@
 > 边界值left <= right 或者 left < right 取决于代码思路
 
 * [34. Find First and Last Position of Element in Sorted Array](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/)
-
+* [154. Find Minimum in Rotated Sorted Array II](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array-ii/)
+* [162. Find Peak Element](https://leetcode.com/problems/find-peak-element/)
 
 
 
@@ -103,7 +128,7 @@
 
 > [格雷码以及二进制编码成格雷码](https://baike.baidu.com/item/%E6%A0%BC%E9%9B%B7%E7%A0%81/6510858?fr=aladdin)
 
-
+> [求解质数的个数](https://leetcode.com/submissions/detail/121785675/)
 
 > [约瑟夫环三种解法](https://blog.csdn.net/weixin_38214171/article/details/80352921)
 
@@ -112,3 +137,48 @@
 > [字典树](https://leetcode.com/submissions/detail/226455100/)
 
 > [摩尔投票法](https://www.jianshu.com/p/c19bb428f57a) **关键在于找出候选者**
+
+> [位运算](https://leetcode.com/problems/single-number-ii/) 需要使用两位
+
+> [逆波兰数](https://leetcode.com/problems/reverse-words-in-a-string/)
+
+> [求斜率 keyCase:求斜率](https://leetcode.com/submissions/detail/186532613/)
+
+> [小数到循环小数](https://leetcode.com/problems/fraction-to-recurring-decimal/)
+
+> [计算数字0的个数](https://leetcode.com/problems/factorial-trailing-zeroes/)
+
+> [城市天际图](https://leetcode.com/problems/the-skyline-problem/)
+
+> [数字中1的个数](https://leetcode.com/problems/number-of-digit-one/) todo
+
+> [一个数位数的个数](https://leetcode.com/problems/add-digits/discuss/68580/Accepted-C%2B%2B-O(1)-time-O(1)-space-1-Line-Solution-with-Detail-Explanations)
+
+> [数组中查找两个不同的数字](https://leetcode.com/submissions/detail/194395415/)
+
+key point: 将数组分割成两个不同的部分
+
+key point: digit = 1 + (n-1) mod 9
+
+> [求出第n个丑数的值](https://leetcode.com/problems/ugly-number-ii/)
+
+----
+## 位运算
+------
+
+> [二进制反转](https://leetcode.com/problems/reverse-bits/)
+
+思路: 进行位运算
+
+---
+# 遍历问题
+
+> [树层次遍历O(1)空间](https://leetcode.com/problems/populating-next-right-pointers-in-each-node/)
+
+> [树层次遍历II O(1)空间](https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/)
+
+> [判断搜索树的先序遍历是否符合规范](https://www.lintcode.com/problem/verify-preorder-sequence-in-binary-search-tree/description)
+
+# 数据结构
+树的定义: tree is an undirected graph in which any two vertices are connected by  exactly  one path. In other words, any connected graph without simple cycles is a tree.”
+> [判断无向图是否可以组装成树](https://github.com/grandyang/leetcode/issues/261)

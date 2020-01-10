@@ -995,7 +995,7 @@ public class OneHundred {
                 if (p.charAt(j - 1) == '*') {
                     dp[i][j] = dp[i][j - 1] || (i > 0 && dp[i - 1][j]);
                 } else {
-                    dp[i][j] = this.match(s, p, i, j) ? dp[i - 1][j - 1] : false;
+                    dp[i][j] = this.match(s, p, i, j) && dp[i - 1][j - 1];
                 }
             }
         }
@@ -1007,10 +1007,9 @@ public class OneHundred {
             return false;
         } else if (p.charAt(j - 1) == '?') {
             return true;
-        } else if (s.charAt(i - 1) == p.charAt(j - 1)) {
-            return true;
+        } else {
+            return s.charAt(i - 1) == p.charAt(j - 1);
         }
-        return false;
     }
 
     private boolean[][] initDp(String p, int m, int n) {

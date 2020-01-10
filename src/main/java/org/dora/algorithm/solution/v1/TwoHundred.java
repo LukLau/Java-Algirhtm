@@ -1423,11 +1423,8 @@ public class TwoHundred {
      * @return
      */
     public boolean oneEditDistance(String s, String p) {
-        if (s == null || p == null) {
-            return false;
-        }
+        return s != null && p != null;
         // todo
-        return true;
     }
 
     /**
@@ -1635,7 +1632,7 @@ public class TwoHundred {
             }
         });
         if (ans.length == 1) {
-            return ans[0].toString();
+            return ans[0];
         }
         StringBuilder stringBuilder = new StringBuilder();
         for (String s : ans) {

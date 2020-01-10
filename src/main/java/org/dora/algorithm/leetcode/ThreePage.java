@@ -638,10 +638,7 @@ public class ThreePage {
         }
 
         n = n & (n - 1);
-        if (n == 0) {
-            return true;
-        }
-        return false;
+        return n == 0;
     }
 
 
@@ -721,7 +718,7 @@ public class ThreePage {
         if (left == null && right == null) {
             return root;
         } else {
-            return left != null ? left : right != null ? right : null;
+            return left != null ? left : right;
         }
     }
 

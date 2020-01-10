@@ -594,7 +594,7 @@ public class Question {
                 if (p.charAt(j - 1) == '*') {
                     dp[i][j] = dp[i][j - 1] || (i > 0 && dp[i - 1][j]);
                 } else {
-                    dp[i][j] = this.isMatch(s, p, i, j) ? dp[i - 1][j - 1] : false;
+                    dp[i][j] = this.isMatch(s, p, i, j) && dp[i - 1][j - 1];
                 }
             }
         }
@@ -1617,10 +1617,7 @@ public class Question {
     }
 
     private boolean isValid(String s) {
-        if (s.length() > 3 || s.length() == 0 || (s.charAt(0) == '0' && s.length() > 1) || Integer.parseInt(s) > 255) {
-            return false;
-        }
-        return true;
+        return s.length() <= 3 && s.length() != 0 && (s.charAt(0) != '0' || s.length() <= 1) && Integer.parseInt(s) <= 255;
     }
 
     /**

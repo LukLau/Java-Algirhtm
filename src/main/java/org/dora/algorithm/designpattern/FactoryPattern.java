@@ -1,7 +1,7 @@
 package org.dora.algorithm.designpattern;
 
 interface FactoryService {
-    public void service(String name);
+    void service(String name);
 }
 
 /**
