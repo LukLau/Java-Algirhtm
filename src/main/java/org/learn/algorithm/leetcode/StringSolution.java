@@ -118,6 +118,33 @@ public class StringSolution {
         }
     }
 
+
+    /**
+     * 9. Palindrome Number
+     *
+     * @param x
+     * @return
+     */
+    public boolean isPalindrome(int x) {
+        if (x <= 0) {
+            return x == 0;
+        }
+        String word = String.valueOf(x);
+
+        int start = 0;
+
+        int end = word.length() - 1;
+
+        while (start < end) {
+            if (word.charAt(start) != word.charAt(end)) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+
     // 正则表达式//
 
 
@@ -162,7 +189,10 @@ public class StringSolution {
         return dp[m][n];
     }
 
-
+    public static void main(String[] args) {
+        StringSolution solution = new StringSolution();
+        solution.isPalindrome(11);
+    }
 
 
 }

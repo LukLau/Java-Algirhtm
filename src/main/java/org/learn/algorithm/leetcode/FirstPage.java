@@ -98,15 +98,103 @@ public class FirstPage {
         return deque;
     }
 
+
     /**
-     * 18. 4Sum
+     * 8. String to Integer (atoi)
      *
-     * @param nums
-     * @param target
+     * @param str
      * @return
      */
-    public List<List<Integer>> fourSum(int[] nums, int target) {
-        return new ArrayList<>();
+    public int myAtoi(String str) {
+        if (str == null) {
+            return 0;
+        }
+        str = str.trim();
+        if (str.isEmpty()) {
+            return 0;
+        }
+        char[] words = str.toCharArray();
+        int index = 0;
+        int sign = 1;
+        if (words[index] == '+' || words[index] == '-') {
+            sign = words[index] == '+' ? 1 : -1;
+            index++;
+        }
+        long result = 0;
+        while (index < words.length && Character.isDigit(words[index])) {
+            result = result * 10 + Character.getNumericValue(words[index++]);
+            if (result > Integer.MAX_VALUE) {
+                return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+            }
+        }
+        return (int) (result * sign);
+    }
+
+
+    /**
+     * 32. Longest Valid Parentheses
+     *
+     * @param s
+     * @return
+     */
+    public int longestValidParentheses(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        char[] words = s.toCharArray();
+        int result = 0;
+        int left = -1;
+        for (int i = 0; i < words.length; i++) {
+            if (words[i] == '(') {
+                stack.push(i);
+            } else {
+                if (!stack.isEmpty() && words[stack.peek()] == '(') {
+                    stack.pop();
+                } else {
+                    left = i;
+                }
+
+                if (stack.isEmpty()) {
+                    result = Math.max(result, i - left);
+                } else {
+                    result = Math.max(result, i - stack.peek());
+                }
+            }
+        }
+        return result;
+    }
+
+    public int longestValidParenthesesII(String s) {
+        if (s == null) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        char[] words = s.toCharArray();
+        for (int i = 0; i < words.length; i++) {
+            if (words[i] == '(' || stack.isEmpty()) {
+                stack.push(i);
+            } else {
+                if (words[stack.peek()] == '(') {
+                    stack.pop();
+                } else {
+                    stack.push(i);
+                }
+
+            }
+        }
+        if (stack.isEmpty()) {
+            return words.length;
+        }
+        int result = 0;
+        int rightEdge = s.length();
+        while (!stack.isEmpty()) {
+            Integer left = stack.pop();
+            result = Math.max(result, rightEdge - left - 1);
+            rightEdge = left;
+        }
+        result = Math.max(result, rightEdge);
+        return result;
     }
 
 }
