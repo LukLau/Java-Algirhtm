@@ -1,6 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -56,7 +57,7 @@ public class RecursiveSolution {
             index--;
         }
         if (index == 0) {
-            reverseArrays(nums,0,nums.length-1);
+            reverseArrays(nums, 0, nums.length - 1);
             return;
         }
         int end = nums.length - 1;
@@ -90,8 +91,66 @@ public class RecursiveSolution {
 
     public static void main(String[] args) {
         RecursiveSolution solution = new RecursiveSolution();
-        int[] nums = new int[]{3, 2, 1};
-        solution.nextPermutation(nums);
+        int[] nums = new int[]{2, 3, 6, 7};
+        solution.combinationSum(nums, 7);
     }
+
+    // --组合系列问题-//
+
+    /**
+     * 39. Combination Sum
+     *
+     * @param candidates
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        if (candidates == null || candidates.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(candidates);
+        List<List<Integer>> result = new ArrayList<>();
+        intervalCombination(result, new ArrayList<>(), 0, candidates, target);
+        return result;
+    }
+
+    private void intervalCombination(List<List<Integer>> result, List<Integer> tmp, int start, int[] candidates, int target) {
+        if (target == 0) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
+            tmp.add(candidates[i]);
+            intervalCombination(result, tmp, i, candidates, target - candidates[i]);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        if (candidates == null || candidates.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(candidates);
+        intervalCombinationII(ans, new ArrayList<>(), 0, candidates, target);
+        return ans;
+    }
+
+    private void intervalCombinationII(List<List<Integer>> ans, List<Integer> tmp, int start, int[] candidates, int target) {
+        if (target == 0) {
+            ans.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
+            if (i > start && candidates[i] == candidates[i - 1]) {
+                continue;
+            }
+            tmp.add(candidates[i]);
+            intervalCombinationII(ans, tmp, i + 1, candidates, target - candidates[i]);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
 
 }

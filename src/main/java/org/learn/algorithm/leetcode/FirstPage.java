@@ -197,4 +197,66 @@ public class FirstPage {
         return result;
     }
 
+
+    /**
+     * 42. Trapping Rain Water
+     *
+     * @param height
+     * @return
+     */
+    public int trap(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = height.length - 1;
+        int result = 0;
+        int minLeft = 0;
+        int minRight = 0;
+        while (left < right) {
+            if (height[left] <= height[right]) {
+                if (height[left] >= minLeft) {
+                    minLeft = height[left];
+                } else {
+                    result += minLeft - height[left];
+                }
+                left++;
+            } else {
+                if (height[right] >= minRight) {
+                    minRight = height[right];
+                } else {
+                    result += minRight - height[right];
+                }
+                right--;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * todo
+     * 43. Multiply Strings
+     *
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public String multiply(String num1, String num2) {
+        if (num1 == null && num2 == null) {
+            return "";
+        }
+        int m = num1.length();
+        int n = num2.length();
+        int[] nums = new int[m + n];
+        for (int i = m - 1; i>= 0; i--) {
+            for (int j = n-1; j>= 0;j --) {
+
+            }
+        }
+        return "";
+
+
+    }
+
+
 }
