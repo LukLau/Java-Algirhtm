@@ -260,7 +260,6 @@ public class FirstPage {
     }
 
     /**
-     * todo
      * 43. Multiply Strings
      *
      * @param num1
@@ -379,6 +378,37 @@ public class FirstPage {
             deque.offer(intervals[index++]);
         }
         return deque.toArray(new int[][]{});
+    }
+
+    /**
+     * 71. Simplify Path
+     *
+     * @param path
+     * @return
+     */
+    public String simplifyPath(String path) {
+        if (path == null || path.isEmpty()) {
+            return "/";
+        }
+        String[] words = path.split("/");
+        LinkedList<String> deque = new LinkedList<>();
+        for (String word : words) {
+            if (word.isEmpty() || ".".endsWith(word)) {
+                continue;
+            }
+            if ("..".equals(word)) {
+                deque.pollLast();
+            } else {
+                deque.offer(word);
+            }
+        }
+
+        String tmp = "";
+        for (String s : deque) {
+            tmp = tmp + "/" + s;
+        }
+        return tmp.isEmpty() ? "/" : tmp;
+
     }
 
 

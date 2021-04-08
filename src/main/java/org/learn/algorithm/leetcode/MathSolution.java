@@ -1,5 +1,8 @@
 package org.learn.algorithm.leetcode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 数学理论
  *
@@ -74,8 +77,93 @@ public class MathSolution {
         if (s.isEmpty()) {
             return true;
         }
-        return false;
-
+        boolean seenNumber = false;
+        boolean seenNumberAfterE = true;
+        boolean seenDigit = false;
+        boolean seenE = false;
+        char[] words = s.toCharArray();
+        for (int i = 0; i < words.length; i++) {
+            char tmp = words[i];
+            if (Character.isDigit(tmp)) {
+                seenNumber = true;
+                seenNumberAfterE = true;
+            } else if (tmp == 'e' || tmp == 'E') {
+                if (seenE || i == 0) {
+                    return false;
+                }
+                if (!seenNumber) {
+                    return false;
+                }
+                seenE = true;
+                seenNumberAfterE = false;
+            } else if (tmp == '-' || tmp == '+') {
+                if (i > 0 && (words[i - 1] != 'e' && words[i - 1] != 'E')) {
+                    return false;
+                }
+            } else if (tmp == '.') {
+                if (seenE || seenDigit) {
+                    return false;
+                }
+                seenDigit = true;
+            } else {
+                return false;
+            }
+        }
+        return seenNumber && seenNumberAfterE;
     }
+
+
+    /**
+     * todo
+     * 68. Text Justification
+     *
+     * @param words
+     * @param maxWidth
+     * @return
+     */
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        if (words == null || words.length == 0) {
+            return new ArrayList<>();
+        }
+        int startIndex = 0;
+        while (startIndex < words.length) {
+            int endIndex = startIndex;
+            int line = 0;
+            while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
+                line += words[endIndex].length() + 1;
+                endIndex++;
+            }
+            boolean lastRow = endIndex == words.length;
+            int blankSpace = maxWidth - line + 1;
+            int wordCount = endIndex - startIndex;
+            StringBuilder builder = new StringBuilder();
+            if (wordCount == 1) {
+                builder.append(words[startIndex]);
+            } else {
+
+
+            }
+
+
+            startIndex = endIndex;
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * 69. Sqrt(x)
+     *
+     * @param x
+     * @return
+     */
+    public int mySqrt(int x) {
+        double precision = 0.00001;
+        int result = x;
+        while (result * result - x > precision) {
+            result = (result + x / result) / 2;
+        }
+        return result;
+    }
+
 
 }
