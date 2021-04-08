@@ -38,4 +38,44 @@ public class MathSolution {
         }
         return result * sign;
     }
+
+
+    /**
+     * 50. Pow(x, n)
+     *
+     * @param x
+     * @param n
+     * @return
+     */
+    public double myPow(double x, int n) {
+        double result = 1.0;
+        long p = Math.abs((long) n);
+        while (p != 0) {
+            if (p % 2 != 0) {
+                result *= x;
+            }
+            x *= x;
+            p >>= 1;
+        }
+        return n < 0 ? 1 / result : result;
+    }
+
+    /**
+     * 65. Valid Number
+     *
+     * @param s
+     * @return
+     */
+    public boolean isNumber(String s) {
+        if (s == null) {
+            return false;
+        }
+        s = s.trim();
+        if (s.isEmpty()) {
+            return true;
+        }
+        return false;
+
+    }
+
 }

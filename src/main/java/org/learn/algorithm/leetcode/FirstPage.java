@@ -234,6 +234,32 @@ public class FirstPage {
     }
 
     /**
+     * 41. First Missing Positive
+     *
+     * @param nums
+     * @return
+     */
+    public int firstMissingPositive(int[] nums) {
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] >= 1 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+                swapValue(nums, i, nums[i] - 1);
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return nums.length + 1;
+    }
+
+    private void swapValue(int[] tmp, int i, int j) {
+        int val = tmp[i];
+        tmp[i] = tmp[j];
+        tmp[j] = val;
+    }
+
+    /**
      * todo
      * 43. Multiply Strings
      *
@@ -242,20 +268,117 @@ public class FirstPage {
      * @return
      */
     public String multiply(String num1, String num2) {
-        if (num1 == null && num2 == null) {
+        if (num1 == null || num2 == null) {
             return "";
         }
         int m = num1.length();
         int n = num2.length();
         int[] nums = new int[m + n];
-        for (int i = m - 1; i>= 0; i--) {
-            for (int j = n-1; j>= 0;j --) {
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                int val = Character.getNumericValue(num1.charAt(i)) * Character.getNumericValue(num2.charAt(j)) + nums[i + j + 1];
+
+                nums[i + j + 1] = val % 10;
+
+                nums[i + j] += val / 10;
 
             }
         }
-        return "";
+        StringBuilder builder = new StringBuilder();
+        for (int num : nums) {
+            if (!(num == 0 && builder.length() == 0)) {
+                builder.append(num);
+            }
+        }
+        return builder.length() == 0 ? "0" : builder.toString();
+    }
+
+    /**
+     * 49. Group Anagrams
+     *
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        if (strs == null) {
+            return new ArrayList<>();
+        }
+        Map<String, List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            char[] words = str.toCharArray();
+
+            Arrays.sort(words);
+
+            String key = String.valueOf(words);
+
+            List<String> list = map.getOrDefault(key, new ArrayList<>());
+            list.add(str);
+
+            map.put(key, list);
+
+        }
+        return new ArrayList<>(map.values());
+    }
 
 
+    /**
+     * 56. Merge Intervals
+     *
+     * @param intervals
+     * @return
+     */
+    public int[][] merge(int[][] intervals) {
+        if (intervals == null || intervals.length == 0) {
+            return new int[][]{};
+        }
+        PriorityQueue<int[]> queue = new PriorityQueue<>(intervals.length, Comparator.comparingInt(o -> o[0]));
+        for (int[] interval : intervals) {
+            queue.offer(interval);
+        }
+        LinkedList<int[]> linkedList = new LinkedList<>();
+        while (!queue.isEmpty()) {
+            int[] poll = queue.poll();
+            if (linkedList.isEmpty() || linkedList.peekLast()[1] < poll[0]) {
+                linkedList.add(poll);
+            } else {
+                int[] peek = linkedList.peekLast();
+                peek[0] = Math.min(peek[0], poll[0]);
+                peek[1] = Math.max(peek[1], poll[1]);
+            }
+        }
+        return linkedList.toArray(new int[][]{});
+    }
+
+
+    /**
+     * 57. Insert Interval
+     *
+     * @param intervals
+     * @param newInterval
+     * @return
+     */
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        if (intervals == null) {
+            return new int[][]{};
+        }
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+
+        LinkedList<int[]> deque = new LinkedList<>();
+
+        int index = 0;
+        while (index < intervals.length && intervals[index][1] < newInterval[0]) {
+            deque.offer(intervals[index++]);
+        }
+        while (index < intervals.length && intervals[index][0] <= newInterval[1]) {
+            newInterval[0] = Math.min(newInterval[0], intervals[index][0]);
+            newInterval[1] = Math.max(newInterval[1], intervals[index][1]);
+            index++;
+        }
+        deque.offer(newInterval);
+        while (index < intervals.length) {
+            deque.offer(intervals[index++]);
+        }
+        return deque.toArray(new int[][]{});
     }
 
 

@@ -153,4 +153,98 @@ public class RecursiveSolution {
     }
 
 
+    /**
+     * 46. Permutations
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        boolean[] used = new boolean[nums.length];
+        intervalPermute(ans, new ArrayList<>(), used, nums);
+        return ans;
+    }
+
+    private void intervalPermute(List<List<Integer>> ans, List<Integer> tmp, boolean[] used, int[] nums) {
+        if (tmp.size() == nums.length) {
+            ans.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            used[i] = true;
+            tmp.add(nums[i]);
+            intervalPermute(ans, tmp, used, nums);
+            tmp.remove(tmp.size() - 1);
+            used[i] = false;
+        }
+    }
+
+    /**
+     * 47. Permutations II
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        if (nums == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        intervalPermuteUnique(result, new ArrayList<>(), used, nums);
+        return result;
+    }
+
+    private void intervalPermuteUnique(List<List<Integer>> result, List<Integer> tmp, boolean[] used, int[] nums) {
+        if (tmp.size() == nums.length) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            if (used[i]) {
+                continue;
+            }
+            used[i] = true;
+            tmp.add(nums[i]);
+            intervalPermuteUnique(result, tmp, used, nums);
+            tmp.remove(tmp.size() - 1);
+            used[i] = false;
+        }
+    }
+
+
+    /**
+     * 60. Permutation Sequence
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public String getPermutation(int n, int k) {
+        if (n <= 0) {
+            return "";
+        }
+        List<Integer> nums = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            nums.add(i);
+        }
+        k--;
+        while (n-- > 0) {
+
+        }
+        return "";
+    }
+
+
 }

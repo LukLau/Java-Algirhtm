@@ -134,4 +134,35 @@ public class ListSolution {
         }
         return root.next;
     }
+
+
+    /**
+     * 61. Rotate List
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode rotateRight(ListNode head, int k) {
+        if (head == null) {
+            return null;
+        }
+        ListNode fast = head;
+        int count = 1;
+        while (fast.next != null) {
+            fast = fast.next;
+            count++;
+        }
+        fast.next = head;
+        ListNode slow = head;
+        k %= count;
+        if (k != 0) {
+            for (int i = 0; i < count - k; i++) {
+                slow = slow.next;
+                fast = fast.next;
+            }
+        }
+        fast.next = null;
+        return slow;
+    }
 }
