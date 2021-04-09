@@ -147,6 +147,55 @@ public class DynamicSolution {
     }
 
 
+    // ----- //
+
+
+    /**
+     * todo
+     * 85. Maximal Rectangle
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int result = 0;
+        int[] left = new int[column];
+        int[] right = new int[column];
+        int[] height = new int[column];
+        Arrays.fill(right, column);
+        for (int i = 0; i < row; i++) {
+            int leftSide = 0;
+            int rightSide = column;
+            for (int j = 0; j < column; j++) {
+                char tmp = matrix[i][j];
+                if (tmp == '1') {
+                    height[j]++;
+                    left[j] = Math.max(left[j], leftSide);
+                } else {
+                    height[j] = 0;
+                    leftSide = j;
+                }
+            }
+            for (int j = column - 1; j >= 0; j--) {
+                if (matrix[i][j] == '1') {
+                    right[j] = Math.min(right[j], rightSide);
+                } else {
+                    rightSide = j + 1;
+                }
+            }
+            for (int j = 0; j < column; j++) {
+                result = Math.max(result, height[j] * (right[j] - left[j]));
+            }
+        }
+        return result;
+    }
+
+
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
 

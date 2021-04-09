@@ -165,4 +165,54 @@ public class ListSolution {
         fast.next = null;
         return slow;
     }
+
+
+    /**
+     * 86. Partition List
+     *
+     * @param head
+     * @param x
+     * @return
+     */
+    public ListNode partition(ListNode head, int x) {
+        if (head == null) {
+            return null;
+        }
+        ListNode root1 = new ListNode(0);
+        ListNode root2 = new ListNode(0);
+        ListNode dummy1 = root1;
+        ListNode dummy2 = root2;
+        while (head != null) {
+            if (head.val < x) {
+                dummy1.next = head;
+                dummy1 = dummy1.next;
+            } else {
+                dummy2.next = head;
+                dummy2 = dummy2.next;
+            }
+            head = head.next;
+        }
+        dummy1.next = root2.next;
+
+        dummy2.next = null;
+
+        root2.next = null;
+        return root1.next;
+    }
+
+
+    /**
+     * 92. Reverse Linked List II
+     *
+     * @param head
+     * @param m
+     * @param n
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        return null;
+    }
 }

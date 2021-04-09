@@ -166,4 +166,38 @@ public class MathSolution {
     }
 
 
+    /**
+     * 89. Gray Code
+     * todo
+     *
+     * @param n
+     * @return
+     */
+    public List<Integer> grayCode(int n) {
+        return null;
+    }
+
+
+    /**
+     * todo
+     * 91. Decode Ways
+     *
+     * @param s
+     * @return
+     */
+    public int numDecodings(String s) {
+        if (s.startsWith("0")) {
+            s = s.substring(0, s.length() - 1);
+        }
+        int m = s.length();
+        StringBuilder builder = new StringBuilder();
+        for (int i = m - 1; i >= 0; i--) {
+            char tmp = s.charAt(i);
+            char t = (char) ((tmp - '1') % 26 + 'A');
+            builder.append(t);
+        }
+        return builder.length();
+    }
+
+
 }

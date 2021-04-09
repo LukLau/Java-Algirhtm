@@ -225,6 +225,88 @@ public class RecursiveSolution {
 
 
     /**
+     * 77. Combinations
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        intervalCombine(result, new ArrayList<>(), 1, n, k);
+        return result;
+
+    }
+
+    private void intervalCombine(List<List<Integer>> result, List<Integer> tmp, int start, int n, int k) {
+        if (tmp.size() == k) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i <= n; i++) {
+            tmp.add(i);
+            intervalCombine(result, tmp, i + 1, n, k);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    /**
+     * 78. Subsets
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsets(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        intervalSubSets(result, new ArrayList<>(), 0, nums);
+        return result;
+
+    }
+
+    private void intervalSubSets(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
+        result.add(new ArrayList<>(tmp));
+        for (int i = start; i < nums.length; i++) {
+            tmp.add(nums[i]);
+            intervalSubSets(result, tmp, i + 1, nums);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+
+    /**
+     * 90. Subsets II
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        intervalUniqueSet(result, new ArrayList<>(), 0, nums);
+        return result;
+    }
+
+    private void intervalUniqueSet(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
+        result.add(new ArrayList<>(tmp));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            tmp.add(nums[i]);
+            intervalUniqueSet(result, tmp, i + 1, nums);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+
+    /**
+     * todo
      * 60. Permutation Sequence
      *
      * @param n
@@ -244,6 +326,77 @@ public class RecursiveSolution {
 
         }
         return "";
+    }
+
+
+    // --DFS/BFS //
+
+
+    /**
+     * 79. Word Search
+     *
+     * @param board
+     * @param word
+     * @return
+     */
+    public boolean exist(char[][] board, String word) {
+        if (board == null || board.length == 0) {
+            return false;
+        }
+        int row = board.length;
+        int column = board[0].length;
+        boolean[][] used = new boolean[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] == word.charAt(0) && validExist(used, i, j, 0, board, word)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    private boolean validExist(boolean[][] used, int i, int j, int k, char[][] board, String word) {
+        if (k == word.length()) {
+            return true;
+        }
+        if (i < 0 || i >= used.length || j < 0 || j >= used[i].length || board[i][j] != word.charAt(k)) {
+            return false;
+        }
+        if (used[i][j]) {
+            return false;
+        }
+        used[i][j] = true;
+
+        if (validExist(used, i - 1, j, k + 1, board, word) ||
+                validExist(used, i + 1, j, k + 1, board, word) ||
+                validExist(used, i, j - 1, k + 1, board, word) ||
+                validExist(used, i, j + 1, k + 1, board, word)) {
+            return true;
+        }
+        used[i][j] = false;
+        return false;
+    }
+
+
+    // ---- //
+
+
+    /**
+     * todo
+     * 87. Scramble String
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public boolean isScramble(String s1, String s2) {
+        if (s1 == null || s2 == null) {
+            return false;
+        }
+        return false;
+
     }
 
 

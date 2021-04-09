@@ -11,6 +11,53 @@ import java.util.Map;
  */
 public class StringSolution {
 
+    // 滑动窗口系列//
+
+    /**
+     * 76. Minimum Window Substring
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public String minWindow(String s, String t) {
+        if (s == null || t == null) {
+            return "";
+        }
+        int[] hash = new int[256];
+        int n = t.length();
+
+        for (int i = 0; i < n; i++) {
+            hash[t.charAt(i)]++;
+        }
+        int begin = 0;
+        int head = 0;
+        int result = Integer.MAX_VALUE;
+        int end = 0;
+        int m = s.length();
+        while (end < m) {
+            if (hash[s.charAt(end++)]-- > 0) {
+                n--;
+            }
+            while (n == 0) {
+                if (end - begin < result) {
+                    result = end - begin;
+                    head = begin;
+                }
+                if (hash[s.charAt(begin++)]++ == 0) {
+                    n++;
+                }
+            }
+        }
+        if (result != Integer.MAX_VALUE) {
+            return s.substring(head, head + result);
+        }
+        return "";
+    }
+
+
+    // 正则表达式//
+
     /**
      * 10. Regular Expression Matching
      *
@@ -217,8 +264,6 @@ public class StringSolution {
         }
         return true;
     }
-
-    // 正则表达式//
 
 
     public static void main(String[] args) {

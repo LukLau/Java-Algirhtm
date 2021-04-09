@@ -412,4 +412,102 @@ public class FirstPage {
     }
 
 
+    /**
+     * 75. Sort Colors
+     *
+     * @param nums
+     */
+    public void sortColors(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int blue = nums.length - 1;
+        int zero = 0;
+        int index = 0;
+        while (index < nums.length) {
+            while (index < blue && nums[index] == 2) {
+                swapValue(nums, index, blue--);
+            }
+            while (index > zero && nums[index] == 0) {
+                swapValue(nums, index, zero++);
+            }
+            index++;
+        }
+    }
+
+    /**
+     * 82. Remove Duplicates from Sorted List II
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            ListNode node = head.next.next;
+            while (node != null && node.val == head.val) {
+                node = node.next;
+            }
+            return deleteDuplicates(node);
+        }
+        head.next = deleteDuplicates(head.next);
+        return head;
+    }
+
+
+    /**
+     * 84. Largest Rectangle in Histogram
+     *
+     * @param heights
+     * @return
+     */
+    public int largestRectangleArea(int[] heights) {
+        if (heights == null || heights.length == 0) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        int result = 0;
+        for (int i = 0; i <= heights.length; i++) {
+            int h = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] <= h) {
+                stack.push(i);
+            } else {
+                Integer pop = stack.pop();
+                int side = stack.isEmpty() ? i : i - stack.peek() - 1;
+
+                result = Math.max(result, side * heights[pop]);
+                i--;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 88. Merge Sorted Array
+     *
+     * @param nums1
+     * @param m
+     * @param nums2
+     * @param n
+     */
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int k = m + n;
+        m--;
+        n--;
+        k--;
+        while (m >= 0 && n >= 0) {
+            if (nums1[m] < nums2[n]) {
+                nums1[k--] = nums2[n--];
+            } else {
+                nums1[k--] = nums1[m--];
+            }
+        }
+        while (n >= 0) {
+            nums1[k--] = nums2[n--];
+        }
+    }
+
+
 }
