@@ -205,14 +205,45 @@ public class ListSolution {
      * 92. Reverse Linked List II
      *
      * @param head
-     * @param m
-     * @param n
+     * @param left
+     * @param right
      * @return
      */
-    public ListNode reverseBetween(ListNode head, int m, int n) {
+    public ListNode reverseBetween(ListNode head, int left, int right) {
         if (head == null || head.next == null) {
             return head;
         }
-        return null;
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode slow = root;
+        ListNode fast = root;
+        for (int i = 0; i < left - 1; i++) {
+            slow = slow.next;
+        }
+        for (int i = 0; i < right; i++) {
+            fast = fast.next;
+        }
+        ListNode start = slow.next;
+
+        ListNode end = fast.next;
+
+        fast.next = null;
+
+        slow.next = reverse(start);
+
+        start.next = end;
+
+        return root.next;
+    }
+
+    private ListNode reverse(ListNode root) {
+        ListNode prev = null;
+        while (root != null) {
+            ListNode tmp = root.next;
+            root.next = prev;
+            prev = root;
+            root = tmp;
+        }
+        return prev;
     }
 }

@@ -510,4 +510,56 @@ public class FirstPage {
     }
 
 
+    /**
+     * 93. Restore IP Addresses
+     *
+     * @param s
+     * @return
+     */
+    public List<String> restoreIpAddresses(String s) {
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        int len = s.length();
+        for (int i = 1; i <= 3 && i <= len - 3; i++) {
+            for (int j = i + 1; j <= i + 3 && j <= len - 2; j++) {
+                for (int k = j + 1; k < k + 3 && k <= len - 1; k++) {
+                    String a = s.substring(0, i);
+                    String b = s.substring(i, j);
+                    String c = s.substring(j, k);
+                    String d = s.substring(k);
+                    if (validIpSeq(a) && validIpSeq(b) && validIpSeq(c) && validIpSeq(d)) {
+                        String tmp = a + "." + b + "." + c + "." + d;
+                        result.add(tmp);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean validIpSeq(String s) {
+        if (s.isEmpty()) {
+            return false;
+        }
+
+        int len = s.length();
+        if (len > 3) {
+            return false;
+        }
+        int num = Integer.parseInt(s);
+        if (!(num >= 0 && num <= 255)) {
+            return false;
+        }
+        return len <= 1 || s.charAt(0) != '0';
+    }
+
+    public static void main(String[] args) {
+        FirstPage page = new FirstPage();
+        List<String> result = page.restoreIpAddresses("010010");
+        System.out.println(result);
+    }
+
+
 }

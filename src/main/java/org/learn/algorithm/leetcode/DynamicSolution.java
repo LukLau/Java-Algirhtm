@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -178,14 +179,18 @@ public class DynamicSolution {
                     left[j] = Math.max(left[j], leftSide);
                 } else {
                     height[j] = 0;
-                    leftSide = j;
+
+                    left[j] = leftSide;
+
+                    leftSide = j + 1;
                 }
             }
             for (int j = column - 1; j >= 0; j--) {
                 if (matrix[i][j] == '1') {
                     right[j] = Math.min(right[j], rightSide);
                 } else {
-                    rightSide = j + 1;
+                    right[j] = column;
+                    rightSide = j;
                 }
             }
             for (int j = 0; j < column; j++) {
@@ -193,6 +198,41 @@ public class DynamicSolution {
             }
         }
         return result;
+    }
+
+
+    /**
+     * 97. Interleaving String
+     *
+     * @param s1
+     * @param s2
+     * @param s3
+     * @return
+     */
+    public boolean isInterleave(String s1, String s2, String s3) {
+        if (s1 == null || s2 == null) {
+            return false;
+        }
+        int m = s1.length();
+        int n = s2.length();
+        if (m + n != s3.length()) {
+            return false;
+        }
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = s1.charAt(i - 1) == s3.charAt(i - 1) && dp[i - 1][0];
+        }
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = s2.charAt(j - 1) == s3.charAt(j - 1) && dp[0][j - 1];
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                dp[i][j] = (s1.charAt(i - 1) == s3.charAt(i + j - 1) && dp[i - 1][j]) || (s2.charAt(j - 1) == s3.charAt(i + j - 1) && dp[i][j - 1]);
+            }
+        }
+        return dp[m][n];
+
     }
 
 
