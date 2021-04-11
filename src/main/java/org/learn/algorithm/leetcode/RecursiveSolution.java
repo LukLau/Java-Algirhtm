@@ -3,6 +3,7 @@ package org.learn.algorithm.leetcode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * @author luk
@@ -92,7 +93,9 @@ public class RecursiveSolution {
     public static void main(String[] args) {
         RecursiveSolution solution = new RecursiveSolution();
         int[] nums = new int[]{2, 3, 6, 7};
-        solution.combinationSum(nums, 7);
+//        char[][] matrix = new char[][]{{'X', 'X', 'X', 'X'}, {'X', 'O', 'O', 'X'}, {'X', 'X', 'O', 'X'}, {'X', 'O', 'X', 'X'}};
+        char[][] matrix = new char[][]{{'O', 'O', 'O'}, {'O', 'O', 'O'}, {'O', 'O', 'O'}};
+        solution.solve(matrix);
     }
 
     // --组合系列问题-//
@@ -377,6 +380,48 @@ public class RecursiveSolution {
         }
         used[i][j] = false;
         return false;
+    }
+
+
+    /**
+     * 130. Surrounded Regions
+     *
+     * @param board
+     */
+    public void solve(char[][] board) {
+        if (board == null || board.length == 0) {
+            return;
+        }
+        int row = board.length;
+        int column = board[0].length;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                boolean edge = i == 0 || i == row - 1 || j == 0 || j == column - 1;
+                if (edge && board[i][j] == 'O') {
+                    intervalSolve(i, j, board);
+                }
+            }
+        }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] == '1') {
+                    board[i][j] = 'O';
+                } else if (board[i][j] == 'O') {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+    }
+
+    private void intervalSolve(int i, int j, char[][] board) {
+        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || board[i][j] != 'O') {
+            return;
+        }
+        board[i][j] = '1';
+        intervalSolve(i - 1, j, board);
+        intervalSolve(i + 1, j, board);
+        intervalSolve(i, j - 1, board);
+        intervalSolve(i, j + 1, board);
     }
 
 

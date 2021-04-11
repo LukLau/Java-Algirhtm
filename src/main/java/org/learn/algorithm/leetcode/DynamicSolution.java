@@ -1,5 +1,8 @@
 package org.learn.algorithm.leetcode;
 
+import org.learn.algorithm.datastructure.Node;
+
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -236,9 +239,195 @@ public class DynamicSolution {
     }
 
 
+    /**
+     * 115. Distinct Subsequences
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public int numDistinct(String s, String t) {
+        if (s == null || t == null) {
+            return 0;
+        }
+        int m = s.length();
+        int n = t.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                dp[i][j] = dp[i - 1][j] + (s.charAt(i - 1) == t.charAt(j - 1) ? dp[i - 1][j - 1] : 0);
+            }
+        }
+        return dp[m][n];
+    }
+
+    /**
+     * 118. Pascal's Triangle
+     *
+     * @param numRows
+     * @return
+     */
+    public List<List<Integer>> generate(int numRows) {
+        if (numRows < 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> tmp = new ArrayList<>();
+        for (int i = 0; i < numRows; i++) {
+            tmp.add(1);
+            for (int j = i - 1; j >= 1; j--) {
+                int val = result.get(i - 1).get(j) + result.get(i - 1).get(j - 1);
+                tmp.set(j, val);
+            }
+            result.add(new ArrayList<>(tmp));
+        }
+        return result;
+    }
+
+    /**
+     * 119. Pascal's Triangle II
+     *
+     * @param rowIndex
+     * @return
+     */
+    public List<Integer> getRow(int rowIndex) {
+        if (rowIndex < 0) {
+            return new ArrayList<>();
+        }
+        List<Integer> result = new ArrayList<>(rowIndex + 1);
+        result.add(1);
+        for (int i = 0; i <= rowIndex; i++) {
+            for (int j = i - 1; j >= 1; j--) {
+                int val = result.get(j) + result.get(j - 1);
+                result.set(j, val);
+            }
+            if (i > 0) {
+                result.add(1);
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 120. Triangle
+     *
+     * @param triangle
+     * @return
+     */
+    public int minimumTotal(List<List<Integer>> triangle) {
+        int size = triangle.size();
+        List<Integer> lastRow = triangle.get(size - 1);
+        for (int i = size - 2; i >= 0; i--) {
+            List<Integer> current = triangle.get(i);
+            int currentSize = current.size();
+            for (int j = 0; j < currentSize; j++) {
+                int val = current.get(j) + Math.min(lastRow.get(j), lastRow.get(j + 1));
+
+                lastRow.set(j, val);
+            }
+        }
+        return lastRow.get(0);
+    }
+
+
+    // -卖股票系列问题- //
+
+
+    /**
+     * 121. Best Time to Buy and Sell Stock
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfit(int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        int minPrice = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > minPrice) {
+                result = Math.max(result, prices[i] - minPrice);
+            } else {
+                minPrice = prices[i];
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 122. Best Time to Buy and Sell Stock II
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfitII(int[] prices) {
+        if (prices == null) {
+            return 0;
+        }
+        int result = 0;
+        int minPrice = prices[0];
+        for (int i = 0; i < prices.length; i++) {
+            if (prices[i] > minPrice) {
+                result += prices[i] - minPrice;
+            }
+            minPrice = prices[i];
+        }
+        return result;
+    }
+
+    /**
+     * 123. Best Time to Buy and Sell Stock III
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfitIII(int[] prices) {
+        if (prices == null) {
+            return 0;
+        }
+        int column = prices.length;
+        int[] left = new int[column];
+        int[] right = new int[column + 1];
+
+        int minLeft = prices[0];
+        int leftResult = 0;
+        for (int i = 1; i < column; i++) {
+            if (prices[i] > minLeft) {
+                leftResult = Math.max(leftResult, prices[i] - minLeft);
+            } else {
+                minLeft = prices[i];
+            }
+            left[i] = leftResult;
+        }
+        int minRight = prices[column - 1];
+        int rightResult = 0;
+        for (int i = column - 2; i >= 0; i--) {
+            if (minRight > prices[i]) {
+                rightResult = Math.max(rightResult, minRight - prices[i]);
+            } else {
+                minRight = prices[i];
+            }
+            right[i] = rightResult;
+        }
+        int result = 0;
+        for (int i = 0; i < column; i++) {
+            result = Math.max(result, left[i] + right[i]);
+        }
+        return result;
+    }
+
+
+
+
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
 
-        solution.totalNQueens(4);
+        solution.generate(5);
     }
 }

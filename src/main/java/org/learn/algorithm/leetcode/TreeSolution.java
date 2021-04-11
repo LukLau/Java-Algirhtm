@@ -1,8 +1,13 @@
 package org.learn.algorithm.leetcode;
 
+import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
+import org.learn.algorithm.datastructure.ListNode;
+import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.TreeNode;
 
 import javax.naming.ldap.PagedResultsResponseControl;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import java.time.temporal.ValueRange;
 import java.util.*;
 
 /**
@@ -74,6 +79,40 @@ public class TreeSolution {
             }
             leftToRight = !leftToRight;
             result.add(tmp);
+        }
+        return result;
+    }
+
+
+    /**
+     * 107. Binary Tree Level Order Traversal II
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrderBottom(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        LinkedList<TreeNode> deque = new LinkedList<>();
+
+        LinkedList<List<Integer>> result = new LinkedList<>();
+
+        deque.offer(root);
+        while (!deque.isEmpty()) {
+            int size = deque.size();
+            List<Integer> tmp = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = deque.poll();
+                tmp.add(node.val);
+                if (node.left != null) {
+                    deque.offer(node.left);
+                }
+                if (node.right != null) {
+                    deque.offer(node.right);
+                }
+            }
+            result.addFirst(tmp);
         }
         return result;
     }
@@ -211,6 +250,62 @@ public class TreeSolution {
         }
     }
 
+
+    /**
+     * 108. Convert Sorted Array to Binary Search Tree
+     *
+     * @param nums
+     * @return
+     */
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return null;
+        }
+        return intervalSorted(nums, 0, nums.length - 1);
+    }
+
+    private TreeNode intervalSorted(int[] nums, int start, int end) {
+        if (start > end) {
+            return null;
+        }
+        int mid = start + (end - start) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = intervalSorted(nums, start, mid - 1);
+        root.right = intervalSorted(nums, mid + 1, end);
+        return root;
+    }
+
+
+    /**
+     * 109. Convert Sorted List to Binary Search Tree
+     *
+     * @param head
+     * @return
+     */
+    public TreeNode sortedListToBST(ListNode head) {
+        if (head == null || head.next == null) {
+            return head == null ? null : new TreeNode(head.val);
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        ListNode prev = slow;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            prev = slow;
+            slow = slow.next;
+        }
+        TreeNode root = new TreeNode(slow.val);
+
+        prev.next = null;
+
+        root.left = sortedListToBST(head);
+
+        root.right = sortedListToBST(slow.next);
+
+        return root;
+    }
+
+
     // 同一颗树//
 
 
@@ -304,7 +399,27 @@ public class TreeSolution {
      * @return
      */
     public TreeNode buildTreeII(int[] inorder, int[] postorder) {
+        if (inorder == null || postorder == null) {
+            return null;
+        }
+        return intervalBuildTree(0, inorder.length - 1, inorder, 0, postorder.length - 1, postorder);
+    }
 
+    private TreeNode intervalBuildTree(int inStart, int inEnd, int[] inorder, int postStart, int postEnd, int[] postorder) {
+        if (inStart > inEnd || postStart > postEnd) {
+            return null;
+        }
+        TreeNode root = new TreeNode(postorder[postEnd]);
+        int index = 0;
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == root.val) {
+                index = i;
+                break;
+            }
+        }
+        root.left = intervalBuildTree(inStart, index - 1, inorder, postStart, postStart + index - inStart - 1, postorder);
+        root.right = intervalBuildTree(index + 1, inEnd, inorder, postStart + index - inStart, postEnd - 1, postorder);
+        return root;
     }
 
 
@@ -322,7 +437,210 @@ public class TreeSolution {
             return 0;
         }
         return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+    }
 
+
+    /**
+     * 112. Path Sum
+     *
+     * @param root
+     * @param targetSum
+     * @return
+     */
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) {
+            return false;
+        }
+        if (root.left == null && root.right == null && root.val == targetSum) {
+            return true;
+        } else {
+            if (root.left != null && hasPathSum(root.left, targetSum - root.val)) {
+                return true;
+            }
+            return root.right != null && hasPathSum(root.right, targetSum - root.val);
+        }
+    }
+
+
+    /**
+     * 113. Path Sum II
+     *
+     * @param root
+     * @param targetSum
+     * @return
+     */
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        intervalPathSum(result, new ArrayList<>(), root, targetSum);
+        return result;
+    }
+
+    private void intervalPathSum(List<List<Integer>> result, List<Integer> tmp, TreeNode root, int targetSum) {
+        tmp.add(root.val);
+        if (root.left == null && root.right == null && root.val == targetSum) {
+            result.add(new ArrayList<>(tmp));
+        } else {
+            if (root.left != null) {
+                intervalPathSum(result, tmp, root.left, targetSum - root.val);
+            }
+            if (root.right != null) {
+                intervalPathSum(result, tmp, root.right, targetSum - root.val);
+            }
+        }
+        tmp.remove(tmp.size() - 1);
+    }
+
+
+    /**
+     * 114. Flatten Binary Tree to Linked List
+     *
+     * @param root
+     */
+    public void flatten(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        TreeNode prev = null;
+        stack.push(p);
+        while (!stack.isEmpty()) {
+            TreeNode pop = stack.pop();
+            if (pop.right != null) {
+                stack.push(pop.right);
+            }
+            if (pop.left != null) {
+                stack.push(pop.left);
+            }
+            if (prev != null) {
+                prev.right = pop;
+                prev.left = null;
+            }
+            prev = pop;
+        }
+    }
+
+    /**
+     * 116. Populating Next Right Pointers in Each Node
+     *
+     * @param root
+     * @return
+     */
+    public Node connect(Node root) {
+        if (root == null) {
+            return null;
+        }
+        Node current = root;
+        while (current.left != null) {
+            Node nextLevel = current.left;
+            while (current != null) {
+                current.left.next = current.right;
+                if (current.next != null) {
+                    current.right.next = current.next.left;
+                }
+                current = current.next;
+            }
+            current = nextLevel;
+        }
+        return root;
+    }
+
+
+    /**
+     * 117. Populating Next Right Pointers in Each Node II
+     *
+     * @param root
+     * @return
+     */
+    public Node connectII(Node root) {
+        if (root == null) {
+            return null;
+        }
+        Node current = root;
+
+        while (current != null) {
+            Node head = null;
+            Node prev = null;
+            while (current != null) {
+                if (current.left != null) {
+                    if (head == null) {
+                        head = current.left;
+                    } else {
+                        prev.next = current.left;
+                    }
+                    prev = current.left;
+                }
+                if (current.right != null) {
+                    if (head == null) {
+                        head = current.right;
+                    } else {
+                        prev.next = current.right;
+                    }
+                    prev = current.right;
+                }
+            }
+            current = head;
+        }
+        return root;
+    }
+
+
+    /**
+     * 124. Binary Tree Maximum Path Sum
+     *
+     * @param root
+     * @return
+     */
+    private int maxPathSum = Integer.MIN_VALUE;
+
+    public int maxPathSum(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        intervalPathSum(root);
+        return maxPathSum;
+    }
+
+    private int intervalPathSum(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = intervalPathSum(root.left);
+        int right = intervalPathSum(root.right);
+        left = Math.max(left, 0);
+        right = Math.max(right, 0);
+        int val = left + right + root.val;
+        maxPathSum = Math.max(val, maxPathSum);
+        return Math.max(left, right) + root.val;
+    }
+
+
+    /**
+     * 129. Sum Root to Leaf Numb
+     *
+     * @param root
+     * @return
+     */
+    public int sumNumbers(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return intervalSumNumbers(root, 0);
+
+    }
+
+    private int intervalSumNumbers(TreeNode root, int val) {
+        if (root == null) {
+            return 0;
+        }
+        int result = val * 10 + root.val;
+        if (root.left == null && root.right == null) {
+            return result;
+        }
+        return intervalSumNumbers(root.left, result) + intervalSumNumbers(root.right, result);
     }
 
 
