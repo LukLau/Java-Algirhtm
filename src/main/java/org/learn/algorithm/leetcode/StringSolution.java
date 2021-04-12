@@ -59,6 +59,44 @@ public class StringSolution {
     }
 
 
+    /**
+     * 159.Longest Substring with At Most Two Distinct Characters
+     *
+     * @param s: a string
+     * @return: the length of the longest substring T that contains at most 2 distinct characters
+     */
+    public int lengthOfLongestSubstringTwoDistinct(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Map<Character, Integer> map = new HashMap<>();
+        int result = 0;
+        int left = 0;
+        char[] words = s.toCharArray();
+        int end = 0;
+        while (end < words.length) {
+            char word = words[end++];
+            Integer num = map.getOrDefault(word, 0);
+
+            map.put(word, num + 1);
+
+            while (map.size() > 2) {
+                char leftWord = words[left++];
+                Integer tmp = map.get(leftWord);
+                tmp--;
+                if (tmp == 0) {
+                    map.remove(leftWord);
+                } else {
+                    map.put(leftWord, tmp);
+                }
+            }
+            result = Math.max(result, end - left);
+        }
+        return result;
+        // Write your code here
+    }
+
+
     // 正则表达式//
 
     /**

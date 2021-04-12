@@ -255,6 +255,92 @@ public class MathSolution {
 
 
     /**
+     * 152. Maximum Product Subarray
+     *
+     * @param nums
+     * @return
+     */
+    public int maxProduct(int[] nums) {
+        int max = nums[0];
+        int min = nums[0];
+        int result = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int tmpMax = Math.max(Math.max(max * nums[i], min * nums[i]), nums[i]);
+            int tmpMin = Math.min(Math.min(max * nums[i], min * nums[i]), nums[i]);
+            result = Math.max(result, tmpMax);
+            max = tmpMax;
+            min = tmpMin;
+        }
+        return result;
+    }
+
+    // 位运算相关
+
+    // 寻找唯一的一个数 //
+
+    /**
+     * 136. Single Number
+     *
+     * @param nums
+     * @return
+     */
+    public int singleNumber(int[] nums) {
+        int result = 0;
+        for (int num : nums) {
+            result ^= num;
+        }
+        return result;
+    }
+
+
+    /**
+     * 137. Single Number II
+     *
+     * @param nums
+     * @return
+     */
+    public int singleNumberII(int[] nums) {
+        return -1;
+    }
+
+    /**
+     * 190. Reverse Bits
+     *
+     * @param n
+     * @return
+     */
+    public int reverseBits(int n) {
+        int result = 0;
+        for (int i = 0; i < 32; i++) {
+            result <<= 1;
+            if ((n & 1) == 1) {
+                result++;
+            }
+            n >>= 1;
+        }
+        return result;
+    }
+
+
+    /**
+     * 191. Number of 1 Bits
+     *
+     * @param n
+     * @return
+     */
+    public int hammingWeight(int n) {
+        int count = 0;
+        while (n != 0) {
+            count++;
+            n &= (n - 1);
+        }
+        return count;
+    }
+
+
+    // 逆波兰数, 计算器 //
+
+    /**
      * 150. Evaluate Reverse Polish Notation
      *
      * @param tokens
@@ -285,33 +371,29 @@ public class MathSolution {
         return stack.pop();
     }
 
-
-    // 寻找唯一的一个数 //
+    // 摩尔投票法
 
     /**
-     * 136. Single Number
+     * 169. Majority Element
      *
      * @param nums
      * @return
      */
-    public int singleNumber(int[] nums) {
-        int result = 0;
+    public int majorityElement(int[] nums) {
+        int candidate = nums[0];
+        int count = 0;
         for (int num : nums) {
-            result ^= num;
+            if (num == candidate) {
+                count++;
+            } else {
+                count--;
+                if (count == 0) {
+                    candidate = num;
+                    count = 1;
+                }
+            }
         }
-        return result;
-    }
-
-
-    /**
-     * 137. Single Number II
-     *
-     * @param nums
-     * @return
-     */
-    public int singleNumberII(int[] nums) {
-        return -1;
-
+        return candidate;
     }
 
 
