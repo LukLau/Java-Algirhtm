@@ -1,5 +1,7 @@
 package org.learn.algorithm.leetcode;
 
+import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
+
 import java.util.*;
 
 /**
@@ -255,34 +257,23 @@ public class MathSolution {
 
 
     /**
-     * 150. Evaluate Reverse Polish Notation
+     * 152. Maximum Product Subarray
      *
-     * @param tokens
+     * @param nums
      * @return
      */
-    public int evalRPN(String[] tokens) {
-        if (tokens == null || tokens.length == 0) {
-            return 0;
+    public int maxProduct(int[] nums) {
+        int max = nums[0];
+        int min = nums[0];
+        int result = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int tmpMax = Math.max(Math.max(max * nums[i], min * nums[i]), nums[i]);
+            int tmpMin = Math.min(Math.min(max * nums[i], min * nums[i]),nums[i]);
+            result = Math.max(result, tmpMax);
+            max = tmpMax;
+            min = tmpMin;
         }
-        Stack<Integer> stack = new Stack<>();
-        for (String token : tokens) {
-            if ("+".equals(token)) {
-                stack.push(stack.pop() + stack.pop());
-            } else if ("-".equals(token)) {
-                Integer first = stack.pop();
-                Integer second = stack.pop();
-                stack.push(second - first);
-            } else if ("*".equals(token)) {
-                stack.push(stack.pop() * stack.pop());
-            } else if ("/".equals(token)) {
-                Integer first = stack.pop();
-                Integer second = stack.pop();
-                stack.push(second / first);
-            } else {
-                stack.push(Integer.parseInt(token));
-            }
-        }
-        return stack.pop();
+        return result;
     }
 
 
@@ -312,6 +303,40 @@ public class MathSolution {
     public int singleNumberII(int[] nums) {
         return -1;
 
+    }
+
+
+    // 逆波兰数, 计算器 //
+
+    /**
+     * 150. Evaluate Reverse Polish Notation
+     *
+     * @param tokens
+     * @return
+     */
+    public int evalRPN(String[] tokens) {
+        if (tokens == null || tokens.length == 0) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        for (String token : tokens) {
+            if ("+".equals(token)) {
+                stack.push(stack.pop() + stack.pop());
+            } else if ("-".equals(token)) {
+                Integer first = stack.pop();
+                Integer second = stack.pop();
+                stack.push(second - first);
+            } else if ("*".equals(token)) {
+                stack.push(stack.pop() * stack.pop());
+            } else if ("/".equals(token)) {
+                Integer first = stack.pop();
+                Integer second = stack.pop();
+                stack.push(second / first);
+            } else {
+                stack.push(Integer.parseInt(token));
+            }
+        }
+        return stack.pop();
     }
 
 
