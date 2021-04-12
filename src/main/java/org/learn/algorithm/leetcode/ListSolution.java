@@ -1,6 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
+import org.learn.algorithm.datastructure.Node;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -246,4 +247,133 @@ public class ListSolution {
         }
         return prev;
     }
+
+
+    /**
+     * 138. Copy List with Random Pointer
+     *
+     * @param head
+     * @return
+     */
+    public Node copyRandomList(Node head) {
+        if (head == null) {
+            return null;
+        }
+        Node current = head;
+        while (current != null) {
+            Node tmp = new Node(current.val);
+            tmp.next = current.next;
+            current.next = tmp;
+            current = tmp.next;
+        }
+        current = head;
+        while (current != null) {
+            Node next = current.next;
+            if (current.random != null) {
+                next.random = current.random.next;
+            }
+            current = next.next;
+        }
+
+        current = head;
+        Node copyHead = current.next;
+        while (current.next != null) {
+            Node tmp = current.next;
+            current.next = tmp.next;
+            current = tmp;
+        }
+        return copyHead;
+    }
+
+
+    /**
+     * 141. Linked List Cycle
+     *
+     * @param head
+     * @return
+     */
+    public boolean hasCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == slow) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 142. Linked List Cycle II
+     *
+     * @param head
+     * @return
+     */
+    public ListNode detectCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return null;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                fast = head;
+                while (fast != slow) {
+                    fast = fast.next;
+                    slow = slow.next;
+                }
+                return fast;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 143. Reorder List
+     *
+     * @param head
+     */
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+
+            slow = slow.next;
+        }
+        ListNode reverse = reverse(slow.next);
+
+        slow.next = null;
+
+        fast = head;
+
+        while (fast != null && reverse != null) {
+            ListNode tmp = fast.next;
+
+            ListNode reverseTmp = reverse.next;
+
+            fast.next = reverse;
+
+            reverse.next = tmp;
+
+            fast = tmp;
+
+            reverse = reverseTmp;
+        }
+
+
+    }
+
 }

@@ -1,9 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import org.learn.algorithm.datastructure.Node;
-
-import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -334,6 +330,37 @@ public class DynamicSolution {
     }
 
 
+    /**
+     * 135. Candy
+     *
+     * @param ratings
+     * @return
+     */
+    public int candy(int[] ratings) {
+        if (ratings == null || ratings.length == 0) {
+            return 0;
+        }
+        int len = ratings.length;
+        int[] dp = new int[len];
+        Arrays.fill(dp, 1);
+        for (int i = 1; i < len; i++) {
+            if (ratings[i - 1] < ratings[i] && dp[i] < dp[i - 1] + 1) {
+                dp[i] = dp[i - 1] + 1;
+            }
+        }
+        for (int i = len - 2; i >= 0; i--) {
+            if (ratings[i] > ratings[i + 1] && dp[i] < dp[i + 1] + 1) {
+                dp[i] = dp[i + 1] + 1;
+            }
+        }
+        int result = 0;
+        for (int num : dp) {
+            result += num;
+        }
+        return result;
+    }
+
+
     // -卖股票系列问题- //
 
 
@@ -421,8 +448,6 @@ public class DynamicSolution {
         }
         return result;
     }
-
-
 
 
     public static void main(String[] args) {

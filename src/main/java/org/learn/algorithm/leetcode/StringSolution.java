@@ -1,6 +1,8 @@
 package org.learn.algorithm.leetcode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -241,6 +243,83 @@ public class StringSolution {
 
 
     /**
+     * 131. Palindrome Partitioning
+     *
+     * @param s
+     * @return
+     */
+    public List<List<String>> partition(String s) {
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<List<String>> result = new ArrayList<>();
+        intervalPartition(result, new ArrayList<>(), 0, s);
+        return result;
+    }
+
+    private void intervalPartition(List<List<String>> result, List<String> tmp, int start, String s) {
+        if (start == s.length()) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i < s.length(); i++) {
+            if (validPalindrome(s, start, i)) {
+                String substring = s.substring(start, i + 1);
+                tmp.add(substring);
+                intervalPartition(result, tmp, i + 1, s);
+                tmp.remove(tmp.size() - 1);
+            }
+        }
+    }
+
+    private boolean validPalindrome(String s, int i, int j) {
+        if (i > j) {
+            return false;
+        }
+        while (i < j) {
+            if (s.charAt(i) != s.charAt(j)) {
+                return false;
+            }
+            i++;
+            j--;
+        }
+        return true;
+    }
+
+
+    /**
+     * todo
+     * 132. Palindrome Partitioning II
+     *
+     * @param s
+     * @return
+     */
+    public int minCut(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int m = s.length();
+        int[] cut = new int[m];
+        boolean[][] dp = new boolean[m][m];
+        for (int i = 1; i < m; i++) {
+            int minCut = i;
+            for (int j = 0; j <= i; j++) {
+                dp[j][i] = s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1]);
+                if (dp[j][i]) {
+                    if (j == 0) {
+                        minCut = 0;
+                    } else {
+                        minCut = Math.min(minCut, 1 + cut[j - 1]);
+                    }
+                }
+            }
+            cut[i] = minCut;
+        }
+        return cut[m - 1];
+    }
+
+
+    /**
      * 9. Palindrome Number
      *
      * @param x
@@ -269,7 +348,7 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.isPalindrome(11);
+        solution.minCut("aab");
     }
 
 

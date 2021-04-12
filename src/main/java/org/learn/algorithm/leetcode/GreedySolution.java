@@ -33,4 +33,32 @@ public class GreedySolution {
         }
         return step;
     }
+
+
+    // 卖煤气问题//
+
+    /**
+     * 134. Gas Station
+     *
+     * @param gas
+     * @param cost
+     * @return
+     */
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        if (gas == null || cost == null) {
+            return -1;
+        }
+        int global = 0;
+        int remain = 0;
+        int index = 0;
+        for (int i = 0; i < gas.length; i++) {
+            global += gas[i] - cost[i];
+            remain += gas[i] - cost[i];
+            if (remain < 0) {
+                index = i + 1;
+                remain = 0;
+            }
+        }
+        return global >= 0 ? index : -1;
+    }
 }
