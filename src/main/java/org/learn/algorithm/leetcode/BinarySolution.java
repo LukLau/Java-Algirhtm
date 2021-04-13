@@ -1,5 +1,7 @@
 package org.learn.algorithm.leetcode;
 
+import ch.qos.logback.classic.filter.LevelFilter;
+
 /**
  * @author luk
  * @date 2021/4/8
@@ -124,6 +126,79 @@ public class BinarySolution {
         result[1] = left;
         return result;
     }
+
+
+    /**
+     * 153. Find Minimum in Rotated Sorted Array
+     *
+     * @param nums
+     * @return
+     */
+    public int findMin(int[] nums) {
+        int start = 0;
+        int end = nums.length - 1;
+        while (start < end) {
+            int mid = start + (end - start) / 2;
+            if (nums[mid] > nums[end]) {
+                start = mid + 1;
+            } else {
+                end = mid;
+            }
+        }
+        return nums[start];
+    }
+
+    /**
+     * todo key case
+     * 154. Find Minimum in Rotated Sorted Array II
+     *
+     * @param nums
+     * @return
+     */
+    public int findMinII(int[] nums) {
+        int start = 0;
+        int end = nums.length - 1;
+        while (start < end) {
+            if (nums[start] == nums[end]) {
+                start++;
+                continue;
+            }
+            if (nums[start] < nums[end]) {
+                break;
+            }
+            int mid = start + (end - start) / 2;
+            if (nums[mid] > nums[end]) {
+                start = mid + 1;
+            } else {
+                end = mid;
+            }
+        }
+        return nums[start];
+    }
+
+    /**
+     * 162. Find Peak Element
+     *
+     * @param nums
+     * @return
+     */
+    public int findPeakElement(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < nums[mid + 1]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
 
     // --OlogN 复杂度//
 

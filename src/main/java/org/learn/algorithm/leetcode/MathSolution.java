@@ -1,7 +1,8 @@
 package org.learn.algorithm.leetcode;
 
-import java.util.ArrayList;
-import java.util.List;
+import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
+
+import java.util.*;
 
 /**
  * 数学理论
@@ -197,6 +198,205 @@ public class MathSolution {
             builder.append(t);
         }
         return builder.length();
+    }
+
+    /**
+     * todo
+     * 149. Max Points on a Line
+     *
+     * @param points
+     * @return
+     */
+    public int maxPoints(int[][] points) {
+        if (points == null || points.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        for (int i = 0; i < points.length; i++) {
+            int overflow = 0;
+            Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
+            int count = 0;
+            for (int j = i + 1; j < points.length; j++) {
+                int x = points[j][0] - points[i][0];
+                int y = points[j][1] - points[i][1];
+
+                if (x == 0 && y == 0) {
+                    overflow++;
+                    continue;
+                }
+                int gcd = gcd(x, y);
+
+                x /= gcd;
+
+                y /= gcd;
+
+                if (!map.containsKey(x)) {
+                    Map<Integer, Integer> tmp = new HashMap<>();
+                    tmp.put(y, 1);
+                    map.put(x, tmp);
+                } else {
+                    Map<Integer, Integer> tmp = map.get(x);
+
+                    Integer num = tmp.getOrDefault(y, 0);
+
+                    tmp.put(y, num + 1);
+                }
+                count = Math.max(count, map.get(x).get(y));
+            }
+            result = Math.max(result, count + 1 + overflow);
+        }
+        return result;
+    }
+
+    private int gcd(int a, int b) {
+        if (b == 0) {
+            return a;
+        }
+        return gcd(b, a % b);
+    }
+
+
+    /**
+     * 152. Maximum Product Subarray
+     *
+     * @param nums
+     * @return
+     */
+    public int maxProduct(int[] nums) {
+        int max = nums[0];
+        int min = nums[0];
+        int result = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int tmpMax = Math.max(Math.max(max * nums[i], min * nums[i]), nums[i]);
+            int tmpMin = Math.min(Math.min(max * nums[i], min * nums[i]), nums[i]);
+            result = Math.max(result, tmpMax);
+            max = tmpMax;
+            min = tmpMin;
+        }
+        return result;
+    }
+
+    // 位运算相关
+
+    // 寻找唯一的一个数 //
+
+    /**
+     * 136. Single Number
+     *
+     * @param nums
+     * @return
+     */
+    public int singleNumber(int[] nums) {
+        int result = 0;
+        for (int num : nums) {
+            result ^= num;
+        }
+        return result;
+    }
+
+
+    /**
+     * 137. Single Number II
+     *
+     * @param nums
+     * @return
+     */
+    public int singleNumberII(int[] nums) {
+        return -1;
+    }
+
+    /**
+     * 190. Reverse Bits
+     *
+     * @param n
+     * @return
+     */
+    public int reverseBits(int n) {
+        int result = 0;
+        for (int i = 0; i < 32; i++) {
+            result <<= 1;
+            if ((n & 1) == 1) {
+                result++;
+            }
+            n >>= 1;
+        }
+        return result;
+    }
+
+
+    /**
+     * 191. Number of 1 Bits
+     *
+     * @param n
+     * @return
+     */
+    public int hammingWeight(int n) {
+        int count = 0;
+        while (n != 0) {
+            count++;
+            n &= (n - 1);
+        }
+        return count;
+    }
+
+
+    // 摩尔投票法
+
+    /**
+     * 169. Majority Element
+     *
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        int candidate = nums[0];
+        int count = 0;
+        for (int num : nums) {
+            if (num == candidate) {
+                count++;
+            } else {
+                count--;
+                if (count == 0) {
+                    candidate = num;
+                    count = 1;
+                }
+            }
+        }
+        return candidate;
+    }
+
+
+    // 逆波兰数, 计算器 //
+
+    /**
+     * 150. Evaluate Reverse Polish Notation
+     *
+     * @param tokens
+     * @return
+     */
+    public int evalRPN(String[] tokens) {
+        if (tokens == null || tokens.length == 0) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        for (String token : tokens) {
+            if ("+".equals(token)) {
+                stack.push(stack.pop() + stack.pop());
+            } else if ("-".equals(token)) {
+                Integer first = stack.pop();
+                Integer second = stack.pop();
+                stack.push(second - first);
+            } else if ("*".equals(token)) {
+                stack.push(stack.pop() * stack.pop());
+            } else if ("/".equals(token)) {
+                Integer first = stack.pop();
+                Integer second = stack.pop();
+                stack.push(second / first);
+            } else {
+                stack.push(Integer.parseInt(token));
+            }
+        }
+        return stack.pop();
     }
 
 

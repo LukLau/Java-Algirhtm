@@ -1,9 +1,6 @@
 package org.learn.algorithm.leetcode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Level;
+import java.util.*;
 
 /**
  * @author luk
@@ -467,6 +464,82 @@ public class RecursiveSolution {
             }
         }
         return false;
+    }
+
+
+    /**
+     * 139. Word Break
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        if (s == null || s.isEmpty()) {
+            return false;
+        }
+        Map<String, Boolean> map = new HashMap<>();
+        return intervalWordBreak(map, s, wordDict);
+    }
+
+    private boolean intervalWordBreak(Map<String, Boolean> map, String s, List<String> wordDict) {
+        if (s.isEmpty()) {
+            return true;
+        }
+        if (map.containsKey(s)) {
+            return map.get(s);
+        }
+        for (String word : wordDict) {
+            if (!s.startsWith(word)) {
+                continue;
+            }
+            String tmp = s.substring(word.length());
+            if (intervalWordBreak(map, tmp, wordDict)) {
+                return true;
+            }
+        }
+        map.put(s, false);
+        return false;
+    }
+
+
+    /**
+     * 140. Word Break II
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public List<String> wordBreakII(String s, List<String> wordDict) {
+        if (s == null) {
+            return new ArrayList<>();
+        }
+        Map<String, List<String>> map = new HashMap<>();
+        return intervalWordBreakII(map, s, wordDict);
+    }
+
+    private List<String> intervalWordBreakII(Map<String, List<String>> map, String s, List<String> wordDict) {
+        if (map.containsKey(s)) {
+            return map.get(s);
+        }
+        List<String> result = new ArrayList<>();
+        if (s.isEmpty()) {
+            result.add("");
+            return result;
+        }
+        for (String word : wordDict) {
+            if (!s.startsWith(word)) {
+                continue;
+            }
+            String tmp = s.substring(word.length());
+            List<String> breaks = intervalWordBreakII(map, tmp, wordDict);
+            for (String wordBreak : breaks) {
+                String t = word + (wordBreak.isEmpty() ? "" : " ") + wordBreak;
+                result.add(t);
+            }
+        }
+        map.put(s, result);
+        return result;
     }
 
 

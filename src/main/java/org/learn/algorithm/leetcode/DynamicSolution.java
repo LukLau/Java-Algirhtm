@@ -1,9 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import org.learn.algorithm.datastructure.Node;
-
-import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +13,12 @@ import java.util.List;
 public class DynamicSolution {
 
     // 八皇后问题 //
+
+    public static void main(String[] args) {
+        DynamicSolution solution = new DynamicSolution();
+
+        solution.generate(5);
+    }
 
     /**
      * @param n
@@ -74,7 +76,6 @@ public class DynamicSolution {
         return true;
     }
 
-
     /**
      * 52. N-Queens II
      *
@@ -105,6 +106,8 @@ public class DynamicSolution {
         return count;
     }
 
+    // --编辑距离问题 //
+
     private boolean isValidTotalQueens(int[] dp, int col, int row, int n) {
         for (int i = row - 1; i >= 0; i--) {
             if (dp[i] == col || Math.abs(dp[i] - col) == Math.abs(i - row)) {
@@ -114,7 +117,8 @@ public class DynamicSolution {
         return true;
     }
 
-    // --编辑距离问题 //
+
+    // ----- //
 
     /**
      * 72. Edit Distance
@@ -149,10 +153,6 @@ public class DynamicSolution {
 
 
     }
-
-
-    // ----- //
-
 
     /**
      * todo
@@ -203,7 +203,6 @@ public class DynamicSolution {
         return result;
     }
 
-
     /**
      * 97. Interleaving String
      *
@@ -237,7 +236,6 @@ public class DynamicSolution {
         return dp[m][n];
 
     }
-
 
     /**
      * 115. Distinct Subsequences
@@ -311,7 +309,6 @@ public class DynamicSolution {
         return result;
     }
 
-
     /**
      * 120. Triangle
      *
@@ -336,6 +333,35 @@ public class DynamicSolution {
 
     // -卖股票系列问题- //
 
+    /**
+     * 135. Candy
+     *
+     * @param ratings
+     * @return
+     */
+    public int candy(int[] ratings) {
+        if (ratings == null || ratings.length == 0) {
+            return 0;
+        }
+        int len = ratings.length;
+        int[] dp = new int[len];
+        Arrays.fill(dp, 1);
+        for (int i = 1; i < len; i++) {
+            if (ratings[i - 1] < ratings[i] && dp[i] < dp[i - 1] + 1) {
+                dp[i] = dp[i - 1] + 1;
+            }
+        }
+        for (int i = len - 2; i >= 0; i--) {
+            if (ratings[i] > ratings[i + 1] && dp[i] < dp[i + 1] + 1) {
+                dp[i] = dp[i + 1] + 1;
+            }
+        }
+        int result = 0;
+        for (int num : dp) {
+            result += num;
+        }
+        return result;
+    }
 
     /**
      * 121. Best Time to Buy and Sell Stock
@@ -358,7 +384,6 @@ public class DynamicSolution {
         }
         return result;
     }
-
 
     /**
      * 122. Best Time to Buy and Sell Stock II
@@ -422,12 +447,85 @@ public class DynamicSolution {
         return result;
     }
 
+    // 房屋抢劫系列
 
 
+    /**
+     * 198. House Robber
+     *
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        int robCurrent = 0;
+        int robPre = 0;
+        for (int num : nums) {
+            int tmp = robCurrent;
+            robCurrent = Math.max(robCurrent, robPre + num);
+            robPre = tmp;
+        }
+        return Math.max(robCurrent, robPre);
 
-    public static void main(String[] args) {
-        DynamicSolution solution = new DynamicSolution();
+    }
 
-        solution.generate(5);
+
+    // 普通题
+
+    /**
+     * todo
+     * 188. Best Time to Buy and Sell Stock IV
+     * 卖股票问题iv
+     *
+     * @param k
+     * @param prices
+     * @return
+     */
+    public int maxProfitIV(int k, int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int[][] dp = new int[k + 1][prices.length];
+        for (int i = 1; i <= k; i++) {
+            int cost = -prices[0];
+            for (int j = 1; j < prices.length; j++) {
+                dp[i][j] = Math.max(cost + prices[j], dp[i][j - 1]);
+                cost = Math.max(cost, dp[i - 1][j - 1] - prices[j]);
+            }
+        }
+        return dp[k][prices.length - 1];
+
+    }
+
+    /**
+     * 174. Dungeon Game
+     *
+     * @param dungeon
+     * @return
+     */
+    public int calculateMinimumHP(int[][] dungeon) {
+        if (dungeon == null || dungeon.length == 0) {
+            return 0;
+        }
+        int row = dungeon.length;
+        int column = dungeon[0].length;
+        int[][] dp = new int[row][column];
+
+        for (int j = column - 1; j >= 0; j--) {
+            if (j == column - 1) {
+                dp[row - 1][j] = Math.max(1, 1 - dungeon[row - 1][j]);
+            } else {
+                dp[row - 1][j] = Math.max(1, dp[row - 1][j + 1] - dungeon[row - 1][j]);
+            }
+        }
+        for (int i = row - 2; i >= 0; i--) {
+            for (int j = column - 1; j >= 0; j--) {
+                if (j == column - 1) {
+                    dp[i][j] = Math.max(1, dp[i + 1][j] - dungeon[i][j]);
+                } else {
+                    dp[i][j] = Math.max(1, Math.min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j]);
+                }
+            }
+        }
+        return dp[0][0];
     }
 }

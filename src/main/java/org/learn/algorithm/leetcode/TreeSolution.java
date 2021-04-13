@@ -1,14 +1,13 @@
 package org.learn.algorithm.leetcode;
 
-import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.TreeNode;
 
-import javax.naming.ldap.PagedResultsResponseControl;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import java.time.temporal.ValueRange;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 
 /**
  * 树的解决方案
@@ -17,6 +16,65 @@ import java.util.*;
  * @date 2021/4/10
  */
 public class TreeSolution {
+
+    // 排序系列//
+
+    /**
+     * todo 插入排序
+     * 147. Insertion Sort List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode insertionSortList(ListNode head) {
+        return null;
+    }
+
+    /**
+     * 148. Sort List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        ListNode next = slow.next;
+
+        slow.next = null;
+
+        ListNode first = sortList(head);
+
+        ListNode second = sortList(next);
+
+        return merge(first, second);
+    }
+
+    private ListNode merge(ListNode first, ListNode second) {
+        if (first == null && second == null) {
+            return null;
+        }
+        if (first == null) {
+            return second;
+        }
+        if (second == null) {
+            return first;
+        }
+        if (first.val <= second.val) {
+            first.next = merge(first.next, second);
+            return first;
+        } else {
+            second.next = merge(first, second.next);
+            return second;
+        }
+    }
 
     // 树的遍历//
 
@@ -115,6 +173,35 @@ public class TreeSolution {
             result.addFirst(tmp);
         }
         return result;
+    }
+
+
+    /**
+     * 145. Binary Tree Postorder Traversal
+     *
+     * @param root
+     * @return
+     */
+
+    public List<Integer> postorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        LinkedList<Integer> result = new LinkedList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        while (!stack.isEmpty() || p != null) {
+            if (p != null) {
+                stack.push(p);
+                result.addFirst(p.val);
+                p = p.right;
+            } else {
+                p = stack.pop();
+                p = p.left;
+            }
+        }
+        return result;
+
     }
 
 
