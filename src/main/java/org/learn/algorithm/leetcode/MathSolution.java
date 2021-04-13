@@ -1,5 +1,7 @@
 package org.learn.algorithm.leetcode;
 
+import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
+
 import java.util.*;
 
 /**
@@ -338,6 +340,32 @@ public class MathSolution {
     }
 
 
+    // 摩尔投票法
+
+    /**
+     * 169. Majority Element
+     *
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        int candidate = nums[0];
+        int count = 0;
+        for (int num : nums) {
+            if (num == candidate) {
+                count++;
+            } else {
+                count--;
+                if (count == 0) {
+                    candidate = num;
+                    count = 1;
+                }
+            }
+        }
+        return candidate;
+    }
+
+
     // 逆波兰数, 计算器 //
 
     /**
@@ -369,31 +397,6 @@ public class MathSolution {
             }
         }
         return stack.pop();
-    }
-
-    // 摩尔投票法
-
-    /**
-     * 169. Majority Element
-     *
-     * @param nums
-     * @return
-     */
-    public int majorityElement(int[] nums) {
-        int candidate = nums[0];
-        int count = 0;
-        for (int num : nums) {
-            if (num == candidate) {
-                count++;
-            } else {
-                count--;
-                if (count == 0) {
-                    candidate = num;
-                    count = 1;
-                }
-            }
-        }
-        return candidate;
     }
 
 
