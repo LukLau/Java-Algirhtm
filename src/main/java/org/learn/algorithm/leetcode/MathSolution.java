@@ -10,6 +10,52 @@ import java.util.*;
  */
 public class MathSolution {
 
+    public static void main(String[] args) {
+        MathSolution solution = new MathSolution();
+        solution.countPrimes(2);
+    }
+
+    // 素数相关
+
+    /**
+     * todo
+     * 204. Count Primes
+     *
+     * @param n
+     * @return
+     */
+    public int countPrimes(int n) {
+        if (n <= 1) {
+            return 0;
+        }
+        boolean[] dp = new boolean[n];
+        int count = 0;
+        for (int i = 2; i < n; i++) {
+            if (!dp[i]) {
+                count++;
+                for (int j = 2; i * j < n; j++) {
+                    dp[j * i] = true;
+                }
+
+            }
+        }
+        return count;
+//        int count = 0;
+//        for (int i = 2; i <= n; i++) {
+//            boolean isPrime = true;
+//            for (int j = 2; j * j <= i; j++) {
+//                if (i % j != 0) {
+//                    isPrime = false;
+//                    break;
+//                }
+//            }
+//            if (isPrime) {
+//                count++;
+//            }
+//        }
+//        return count;
+    }
+
 
     /**
      * 29. Divide Two Integers

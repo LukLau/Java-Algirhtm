@@ -2,8 +2,8 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
 
-import java.util.HashSet;
-import java.util.Set;
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
+import java.util.*;
 
 /**
  * 第三页
@@ -47,8 +47,80 @@ public class ThreePage {
         if (head == null) {
             return null;
         }
-        return null;
-
+        if (head.val == val) {
+            return removeElements(head.next, val);
+        }
+        head.next = removeElements(head.next, val);
+        return head;
     }
+
+
+    /**
+     * 205. Isomorphic Strings
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isIsomorphic(String s, String t) {
+        if (s == null || t == null) {
+            return false;
+        }
+        int m = s.length();
+        int n = t.length();
+        if (m != n) {
+            return false;
+        }
+        Map<Character, Integer> map1 = new HashMap<>();
+        Map<Character, Integer> map2 = new HashMap<>();
+        for (int i = 0; i < m; i++) {
+            if (!Objects.equals(map1.put(s.charAt(i), i), map2.put(t.charAt(i), i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 206. Reverse Linked List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode node = reverseList(head.next);
+        head.next.next = head;
+        head.next = null;
+        return node;
+    }
+
+
+    /**
+     * todo use OlogN
+     * 209. Minimum Size Subarray Sum
+     *
+     * @param target
+     * @param nums
+     * @return
+     */
+    public int minSubArrayLen(int target, int[] nums) {
+        int left = 0;
+        int right = 0;
+        int local = 0;
+        int result = Integer.MAX_VALUE;
+        while (right < nums.length) {
+            local += nums[right++];
+            while (left < right && local >= target) {
+                result = Math.min(result, right - left);
+                local -= nums[left++];
+            }
+        }
+        return result == Integer.MAX_VALUE ? 0 : result;
+    }
+
 
 }
