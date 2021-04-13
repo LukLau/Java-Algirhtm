@@ -1,7 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
-
 import java.util.*;
 
 /**
@@ -337,6 +335,19 @@ public class MathSolution {
             n &= (n - 1);
         }
         return count;
+    }
+
+
+    /**
+     * 201. Bitwise AND of Numbers Range
+     * todo
+     *
+     * @param m
+     * @param n
+     * @return
+     */
+    public int rangeBitwiseAnd(int m, int n) {
+        return -1;
     }
 
 

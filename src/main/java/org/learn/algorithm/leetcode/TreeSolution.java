@@ -205,6 +205,33 @@ public class TreeSolution {
     }
 
 
+    /**
+     * 199. Binary Tree Right Side View
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+
+        intervalRightSideView(root, result, 0);
+
+        return result;
+    }
+
+    private void intervalRightSideView(TreeNode root, List<Integer> result, int currentLevel) {
+        if (root == null) {
+            return;
+        }
+        if (result.size() == currentLevel) {
+            result.add(root.val);
+        }
+        intervalRightSideView(root.right, result, currentLevel + 1);
+
+        intervalRightSideView(root.left, result, currentLevel + 1);
+    }
+
+
     // --生成树系列 //
 
 
