@@ -12,7 +12,7 @@ public class MathSolution {
 
     public static void main(String[] args) {
         MathSolution solution = new MathSolution();
-        solution.calculate("-(1+(2+1))");
+        System.out.println(solution.calculate("-(1+(2+1))"));
     }
 
     // 素数相关
@@ -476,9 +476,6 @@ public class MathSolution {
         int result = 0;
         Stack<Integer> stack = new Stack<>();
         while (endIndex < words.length) {
-            while (endIndex < words.length && words[endIndex] == ' ') {
-                endIndex++;
-            }
             if (Character.isDigit(words[endIndex])) {
                 int tmp = 0;
                 while (endIndex < words.length && Character.isDigit(words[endIndex])) {
@@ -492,18 +489,15 @@ public class MathSolution {
                 }
                 if (words[endIndex] == '(') {
                     stack.push(result);
+                    stack.push(sign);
                     sign = 1;
                     result = 0;
                 }
+                if (words[endIndex] == ')') {
+                    result = result * stack.pop() + stack.pop();
+                }
                 endIndex++;
             }
-            if (endIndex == words.length || words[endIndex] == ')') {
-                Integer pop = stack.pop();
-                stack.push(pop * sign + stack.pop());
-            }
-        }
-        for (Integer integer : stack) {
-            result += integer;
         }
         return result;
     }
