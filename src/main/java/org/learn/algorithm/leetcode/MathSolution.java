@@ -12,7 +12,8 @@ public class MathSolution {
 
     public static void main(String[] args) {
         MathSolution solution = new MathSolution();
-        System.out.println(solution.calculate("-(1+(2+1))"));
+//        System.out.println(solution.calculate("-(1+(2+1))"));
+        solution.countPrimes(10);
     }
 
     // 素数相关
@@ -28,15 +29,30 @@ public class MathSolution {
         if (n <= 1) {
             return 0;
         }
-        boolean[] dp = new boolean[n];
+//        boolean[] dp = new boolean[n];
+//        int count = 0;
+//        for (int i = 2; i < n; i++) {
+//            if (!dp[i]) {
+//                count++;
+//                for (int j = 2; i * j < n; j++) {
+//                    dp[j * i] = true;
+//                }
+//
+//            }
+//        }
+//        return count;
         int count = 0;
         for (int i = 2; i < n; i++) {
-            if (!dp[i]) {
-                count++;
-                for (int j = 2; i * j < n; j++) {
-                    dp[j * i] = true;
+            int sqrt = (int) Math.sqrt(i);
+            boolean isPrime = true;
+            for (int j = 2; j <= sqrt; j++) {
+                if (i % j == 0) {
+                    isPrime = false;
+                    break;
                 }
-
+            }
+            if (isPrime) {
+                count++;
             }
         }
         return count;
