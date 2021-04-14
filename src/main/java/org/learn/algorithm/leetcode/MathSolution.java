@@ -12,7 +12,7 @@ public class MathSolution {
 
     public static void main(String[] args) {
         MathSolution solution = new MathSolution();
-        solution.countPrimes(2);
+        solution.calculate("-(1+(2+1))");
     }
 
     // 素数相关
@@ -454,6 +454,58 @@ public class MathSolution {
             }
         }
         return stack.pop();
+    }
+
+    /**
+     * 224. Basic Calculator
+     *
+     * @param s
+     * @return
+     */
+    public int calculate(String s) {
+        if (s == null) {
+            return 0;
+        }
+        s = s.trim();
+        if (s.isEmpty()) {
+            return 0;
+        }
+        int sign = 1;
+        char[] words = s.toCharArray();
+        int endIndex = 0;
+        int result = 0;
+        Stack<Integer> stack = new Stack<>();
+        while (endIndex < words.length) {
+            while (endIndex < words.length && words[endIndex] == ' ') {
+                endIndex++;
+            }
+            if (Character.isDigit(words[endIndex])) {
+                int tmp = 0;
+                while (endIndex < words.length && Character.isDigit(words[endIndex])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[endIndex]);
+                    endIndex++;
+                }
+                result += tmp * sign;
+            } else {
+                if (words[endIndex] == '+' || words[endIndex] == '-') {
+                    sign = words[endIndex] == '+' ? 1 : -1;
+                }
+                if (words[endIndex] == '(') {
+                    stack.push(result);
+                    sign = 1;
+                    result = 0;
+                }
+                endIndex++;
+            }
+            if (endIndex == words.length || words[endIndex] == ')') {
+                Integer pop = stack.pop();
+                stack.push(pop * sign + stack.pop());
+            }
+        }
+        for (Integer integer : stack) {
+            result += integer;
+        }
+        return result;
     }
 
 

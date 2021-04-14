@@ -1,5 +1,7 @@
 package org.learn.algorithm.leetcode;
 
+import org.learn.algorithm.datastructure.Trie;
+
 import java.util.*;
 
 /**
@@ -329,6 +331,35 @@ public class RecursiveSolution {
     }
 
 
+    /**
+     * 216. Combination Sum III
+     *
+     * @param k
+     * @param n
+     * @return
+     */
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        if (k <= 0 || n <= 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        intervalCombinationIII(result, new ArrayList<>(), 1, k, n);
+        return result;
+    }
+
+    private void intervalCombinationIII(List<List<Integer>> result, List<Integer> tmp, int start, int k, int target) {
+        if (tmp.size() == k && target == 0) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i <= 9 && i <= target; i++) {
+            tmp.add(i);
+            intervalCombinationIII(result, tmp, i + 1, k, target - i);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+
     // --DFS/BFS //
 
 
@@ -377,6 +408,57 @@ public class RecursiveSolution {
         }
         used[i][j] = false;
         return false;
+    }
+
+
+    /**
+     * todo
+     * 212. Word Search II
+     *
+     * @param board
+     * @param words
+     * @return
+     */
+    public List<String> findWords(char[][] board, String[] words) {
+        if (board == null || board.length == 0) {
+            return new ArrayList<>();
+        }
+        Trie trie = new Trie();
+        for (String word : words) {
+            trie.insert(String.valueOf(word));
+        }
+        List<String> result = new ArrayList<>();
+        int row = board.length;
+        int column = board[0].length;
+        boolean[][] used = new boolean[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                String s = String.valueOf(board[i][j]);
+                if (trie.startsWith(s)) {
+                    intervalFindWords(result, trie, used, s, i, j, board);
+                }
+            }
+        }
+        return result;
+    }
+
+    private void intervalFindWords(List<String> result, Trie trie, boolean[][] used, String s, int i, int j, char[][] board) {
+        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || used[i][j]) {
+            return;
+        }
+        s += board[i][j];
+        if (trie.search(s)) {
+            result.add(s);
+        }
+        if (!trie.startsWith(s)) {
+            return;
+        }
+        used[i][j] = true;
+        intervalFindWords(result, trie, used, s, i - 1, j, board);
+        intervalFindWords(result, trie, used, s, i + 1, j, board);
+        intervalFindWords(result, trie, used, s, i, j - 1, board);
+        intervalFindWords(result, trie, used, s, i, j + 1, board);
+        used[i][j] = false;
     }
 
 
@@ -453,7 +535,7 @@ public class RecursiveSolution {
         }
         grid[i][j] = '0';
         intervalIslands(grid, i - 1, j);
-        intervalIslands(grid, i +1, j);
+        intervalIslands(grid, i + 1, j);
         intervalIslands(grid, i, j - 1);
         intervalIslands(grid, i, j + 1);
     }

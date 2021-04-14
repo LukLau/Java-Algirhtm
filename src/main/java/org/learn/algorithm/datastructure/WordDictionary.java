@@ -1,8 +1,5 @@
 package org.learn.algorithm.datastructure;
 
-import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
-import javax.xml.stream.FactoryConfigurationError;
-
 /**
  * 字典
  *
@@ -31,7 +28,15 @@ public class WordDictionary {
         if (word == null) {
             return false;
         }
-        return false;
+        return trie.searchV2(word);
+    }
+
+
+    public static void main(String[] args) {
+        WordDictionary dictionary = new WordDictionary();
+
+        dictionary.addWord("a");
+        dictionary.search(".a");
     }
 
 }

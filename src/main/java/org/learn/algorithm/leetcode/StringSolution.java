@@ -384,6 +384,22 @@ public class StringSolution {
     }
 
 
+    /**
+     * todo kmp
+     * 214. Shortest Palindrome
+     * @param s
+     * @return
+     */
+    public String shortestPalindrome(String s) {
+        if (s == null || s.isEmpty()) {
+            return "";
+        }
+        String reverse = new StringBuilder(s).reverse().toString();
+        return "";
+    }
+
+
+
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
         solution.minCut("aab");

@@ -1,7 +1,5 @@
 package org.learn.algorithm.datastructure;
 
-import com.sun.java.swing.action.NextAction;
-
 /**
  * 字典树
  *
@@ -72,6 +70,37 @@ public class Trie {
             p = p.next[prefixWord - 'a'];
         }
         return true;
+    }
+
+    public boolean searchV2(String word) {
+        if (word == null || word.isEmpty()) {
+            return false;
+        }
+        TrieNode p = root;
+        return intervalSearchV2(p, word);
+    }
+
+    private boolean intervalSearchV2(TrieNode p, String word) {
+        int m = word.length();
+
+        for (int i = 0; i < m; i++) {
+            char tmp = word.charAt(i);
+            if (tmp != '.') {
+                int index = tmp - 'a';
+                if (p.next[index] == null) {
+                    return false;
+                }
+                p = p.next[index];
+            } else {
+                for (TrieNode trieNode : p.next) {
+                    if (trieNode != null && intervalSearchV2(trieNode, word.substring(i + 1))) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+        return p.word != null;
     }
 
 

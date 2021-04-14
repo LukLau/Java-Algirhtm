@@ -1,8 +1,8 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
+import org.learn.algorithm.datastructure.TreeNode;
 
-import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 import java.util.*;
 
 /**
@@ -120,6 +120,108 @@ public class ThreePage {
             }
         }
         return result == Integer.MAX_VALUE ? 0 : result;
+    }
+
+    /**
+     * 215. Kth Largest Element in an Array
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int findKthLargest(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        PriorityQueue<Integer> queue = new PriorityQueue<>(nums.length, Comparator.reverseOrder());
+        for (int num : nums) {
+            queue.offer(num);
+        }
+        int iterator = 1;
+        while (iterator < k) {
+            Integer poll = queue.poll();
+            iterator++;
+        }
+        return queue.poll();
+    }
+
+
+    /**
+     * 218. The Skyline Problem
+     * todo
+     *
+     * @param buildings
+     * @return
+     */
+    public List<List<Integer>> getSkyline(int[][] buildings) {
+        return null;
+    }
+
+
+    /**
+     * 219. Contains Duplicate II
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        Set<Integer> set = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (i > k) {
+                set.remove(nums[i - 1 - k]);
+            }
+            if (!set.add(nums[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * todo
+     * 220. Contains Duplicate III
+     *
+     * @param nums
+     * @param k
+     * @param t
+     * @return
+     */
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        return false;
+    }
+
+    /**
+     * 222. Count Complete Tree Nodes
+     *
+     * @param root
+     * @return
+     */
+    public int countNodes(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return 1 + countNodes(root.left) + countNodes(root.right);
+    }
+
+
+    /**
+     * todo
+     * 223. Rectangle Area
+     *
+     * @param A
+     * @param B
+     * @param C
+     * @param D
+     * @param E
+     * @param F
+     * @param G
+     * @param H
+     * @return
+     */
+    public int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+        return -1;
     }
 
 
