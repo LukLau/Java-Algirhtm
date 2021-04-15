@@ -13,7 +13,7 @@ public class MathSolution {
     public static void main(String[] args) {
         MathSolution solution = new MathSolution();
 //        System.out.println(solution.calculate("-(1+(2+1))"));
-        solution.countPrimes(10);
+        solution.calculateII("1-1-1");
     }
 
     // 素数相关
@@ -26,50 +26,17 @@ public class MathSolution {
      * @return
      */
     public int countPrimes(int n) {
-        if (n <= 1) {
-            return 0;
-        }
-//        boolean[] dp = new boolean[n];
-//        int count = 0;
-//        for (int i = 2; i < n; i++) {
-//            if (!dp[i]) {
-//                count++;
-//                for (int j = 2; i * j < n; j++) {
-//                    dp[j * i] = true;
-//                }
-//
-//            }
-//        }
-//        return count;
         int count = 0;
+        boolean[] dp = new boolean[n];
         for (int i = 2; i < n; i++) {
-            int sqrt = (int) Math.sqrt(i);
-            boolean isPrime = true;
-            for (int j = 2; j <= sqrt; j++) {
-                if (i % j == 0) {
-                    isPrime = false;
-                    break;
-                }
-            }
-            if (isPrime) {
+            if (!dp[i]) {
                 count++;
+                for (int j = 2; j * i < n; j++) {
+                    dp[i * j] = true;
+                }
             }
         }
         return count;
-//        int count = 0;
-//        for (int i = 2; i <= n; i++) {
-//            boolean isPrime = true;
-//            for (int j = 2; j * j <= i; j++) {
-//                if (i % j != 0) {
-//                    isPrime = false;
-//                    break;
-//                }
-//            }
-//            if (isPrime) {
-//                count++;
-//            }
-//        }
-//        return count;
     }
 
 
@@ -514,6 +481,69 @@ public class MathSolution {
                 }
                 endIndex++;
             }
+        }
+        return result;
+    }
+
+
+    /**
+     * 227. Basic Calculator II
+     *
+     * @param s
+     * @return
+     */
+    public int calculateII(String s) {
+        if (s == null) {
+            return 0;
+        }
+        s = s.trim();
+
+        // trim blank space
+        if (s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        int sign;
+
+        // virtual prefix sign e.g, 1-2/2 => +1-2/2
+        char character = '+';
+        int endIndex = 0;
+        char[] words = s.toCharArray();
+        while (endIndex < words.length) {
+
+            // from previous sign -> next sign
+            // get number
+            if (Character.isDigit(words[endIndex])) {
+                int num = 0;
+                while (endIndex < words.length && Character.isDigit(words[endIndex])) {
+                    num = num * 10 + Character.getNumericValue(words[endIndex]);
+                    endIndex++;
+                }
+                stack.push(num);
+            }
+            // number need sign
+            // character mean prefix sign
+            if (endIndex == words.length || words[endIndex] != ' ') {
+                if (character == '+' || character == '-') {
+                    sign = character == '+' ? 1 : -1;
+                    stack.push(sign * stack.pop());
+                } else if (character == '*') {
+                    Integer pop = stack.pop();
+                    stack.push(pop * stack.pop());
+                } else if (character == '/') {
+                    Integer second = stack.pop();
+                    Integer first = stack.pop();
+                    stack.push(first / second);
+                }
+                if (endIndex != words.length) {
+                    character = words[endIndex];
+                }
+            }
+            endIndex++;
+        }
+        int result = 0;
+        for (Integer tmp : stack) {
+            result += tmp;
         }
         return result;
     }

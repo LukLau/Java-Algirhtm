@@ -674,7 +674,6 @@ public class TreeSolution {
             return null;
         }
         Node current = root;
-
         while (current != null) {
             Node head = null;
             Node prev = null;
@@ -695,6 +694,7 @@ public class TreeSolution {
                     }
                     prev = current.right;
                 }
+                current = current.next;
             }
             current = head;
         }

@@ -320,14 +320,25 @@ public class RecursiveSolution {
             return "";
         }
         List<Integer> nums = new ArrayList<>();
-        for (int i = 0; i <= n; i++) {
+        for (int i = 1; i <= n; i++) {
             nums.add(i);
         }
-        k--;
-        while (n-- > 0) {
-
+        int[] factors = new int[n + 1];
+        factors[0] = 1;
+        int base = 1;
+        for (int i = 1; i <= n; i++) {
+            base *= i;
+            factors[i] = i;
         }
-        return "";
+        StringBuilder builder = new StringBuilder();
+        k--;
+        for (int i = 0; i < n; i++) {
+            int index = k / factors[n - 1 - i];
+            builder.append(index);
+            nums.remove(index);
+            k -= index * factors[n - 1 - i];
+        }
+        return builder.toString();
     }
 
 
