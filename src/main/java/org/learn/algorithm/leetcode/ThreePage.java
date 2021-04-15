@@ -238,4 +238,64 @@ public class ThreePage {
     }
 
 
+    /**
+     * 228. Summary Ranges
+     *
+     * @param nums
+     * @return
+     */
+    public List<String> summaryRanges(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        int lower = nums[0];
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] != nums[i - 1] + 1) {
+                result.add(range(lower, nums[i - 1]));
+                lower = nums[i];
+            }
+        }
+        if (lower <= nums[nums.length - 1]) {
+            result.add(range(lower, nums[nums.length - 1]));
+        }
+        return result;
+    }
+
+    private String range(int start, int end) {
+        return start == end ? String.valueOf(start) : start + "->" + end;
+    }
+
+
+    /**
+     * 234. Palindrome Linked List
+     *
+     * @param head
+     * @return
+     */
+    public boolean isPalindrome(ListNode head) {
+        if (head == null || head.next == null) {
+            return true;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode mid = slow.next;
+        slow.next = null;
+        ListNode reverse = reverseList(mid);
+
+        while (head != null && reverse != null) {
+            if (head.val != reverse.val) {
+                return false;
+            }
+            head = head.next;
+            reverse = reverse.next;
+        }
+        return true;
+    }
+
+
 }

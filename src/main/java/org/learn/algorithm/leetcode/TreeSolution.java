@@ -232,6 +232,45 @@ public class TreeSolution {
     }
 
 
+    /**
+     * 230. Kth Smallest Element in a BST
+     *
+     * @param root
+     * @param k
+     * @return
+     */
+    public int kthSmallest(TreeNode root, int k) {
+        if (root == null) {
+            return -1;
+        }
+        List<Integer> result = inorderTraversal(root);
+        return result.get(k - 1);
+    }
+
+    public int kthSmallestV2(TreeNode root, int k) {
+        if (root == null) {
+            return -1;
+        }
+        k--;
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode q = root;
+        int iterator = 0;
+        while (!stack.isEmpty() || q != null) {
+            while (q != null) {
+                stack.push(q);
+                q = q.left;
+            }
+            q = stack.pop();
+            if (iterator == k) {
+                return q.val;
+            }
+            iterator++;
+            q = q.right;
+        }
+        return -1;
+    }
+
+
     // --生成树系列 //
 
 
@@ -533,6 +572,29 @@ public class TreeSolution {
         }
         root.left = intervalBuildTree(inStart, index - 1, inorder, postStart, postStart + index - inStart - 1, postorder);
         root.right = intervalBuildTree(index + 1, inEnd, inorder, postStart + index - inStart, postEnd - 1, postorder);
+        return root;
+    }
+
+
+    // 公共祖先lca
+
+    /**
+     * 235. Lowest Common Ancestor of a Binary Search Tree
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == q || root == p) {
+            return root;
+        }
+        if (p.val < root.val && q.val < root.val) {
+            return lowestCommonAncestor(root.left, p, q);
+        } else if (p.val > root.val && q.val > root.val) {
+            return lowestCommonAncestor(root.right, p, q);
+        }
         return root;
     }
 

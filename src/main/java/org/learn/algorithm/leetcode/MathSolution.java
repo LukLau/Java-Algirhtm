@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 import java.util.*;
 
 /**
@@ -368,6 +369,17 @@ public class MathSolution {
 
 
     /**
+     * 231. Power of Two
+     *
+     * @param n
+     * @return
+     */
+    public boolean isPowerOfTwo(int n) {
+        return n > 0 && (n & (n - 1)) == 0;
+    }
+
+
+    /**
      * 201. Bitwise AND of Numbers Range
      * todo
      *
@@ -376,6 +388,19 @@ public class MathSolution {
      * @return
      */
     public int rangeBitwiseAnd(int m, int n) {
+        return -1;
+    }
+
+
+    /**
+     * 233. Number of Digit One
+     * todo
+     *
+     * @param n
+     * @return
+     */
+    public int countDigitOne(int n) {
+        String s = String.valueOf(n);
         return -1;
     }
 
@@ -403,6 +428,63 @@ public class MathSolution {
             }
         }
         return candidate;
+    }
+
+
+    /**
+     * 229. Majority Element II
+     *
+     * @param nums
+     * @return
+     */
+    public List<Integer> majorityElementII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<Integer> result = new ArrayList<>();
+        int candidateA = nums[0];
+        int candidateB = nums[0];
+        int countA = 0;
+        int countB = 0;
+        for (int num : nums) {
+            if (num == candidateA) {
+                countA++;
+                continue;
+            }
+            if (num == candidateB) {
+                countB++;
+                continue;
+            }
+            if (countA == 0) {
+                countA = 1;
+                candidateA = num;
+                continue;
+            }
+            if (countB == 0) {
+                countB = 1;
+                candidateB = num;
+                continue;
+            }
+            countA--;
+            countB--;
+        }
+        countA = 0;
+        countB = 0;
+        for (int num : nums) {
+            if (num == candidateA) {
+                countA++;
+            } else if (num == candidateB) {
+                countB++;
+            }
+        }
+        if (3 * countA > nums.length) {
+            result.add(candidateA);
+        }
+        if (3 * countB > nums.length) {
+            result.add(candidateB);
+        }
+        return result;
+
     }
 
 
