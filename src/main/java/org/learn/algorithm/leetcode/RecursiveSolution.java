@@ -94,7 +94,7 @@ public class RecursiveSolution {
         int[] nums = new int[]{2, 3, 6, 7};
 //        char[][] matrix = new char[][]{{'X', 'X', 'X', 'X'}, {'X', 'O', 'O', 'X'}, {'X', 'X', 'O', 'X'}, {'X', 'O', 'X', 'X'}};
         char[][] matrix = new char[][]{{'O', 'O', 'O'}, {'O', 'O', 'O'}, {'O', 'O', 'O'}};
-        solution.solve(matrix);
+        solution.diffWaysToCompute("11");
     }
 
     // --组合系列问题-//
@@ -669,6 +669,68 @@ public class RecursiveSolution {
             }
         }
         map.put(s, result);
+        return result;
+    }
+
+
+    /**
+     * 241. Different Ways to Add Parentheses
+     *
+     * @param expression
+     * @return
+     */
+    public List<Integer> diffWaysToCompute(String expression) {
+        if (expression == null || expression.isEmpty()) {
+            return new ArrayList<>();
+        }
+        char[] words = expression.toCharArray();
+        List<String> params = new ArrayList<>();
+        int endIndex = 0;
+        while (endIndex < words.length) {
+            if (Character.isDigit(words[endIndex])) {
+                int tmp = 0;
+                while (endIndex < words.length && Character.isDigit(words[endIndex])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[endIndex++]);
+                }
+                params.add(String.valueOf(tmp));
+            } else {
+                params.add(String.valueOf(words[endIndex++]));
+            }
+        }
+        String[] expressions = params.toArray(new String[]{});
+        return intervalDiffWays(expressions, 0, expressions.length - 1);
+
+    }
+
+    private List<Integer> intervalDiffWays(String[] words, int start, int end) {
+        List<Integer> result = new ArrayList<>();
+        if (start == end) {
+            result.add(Integer.parseInt(words[start]));
+            return result;
+        }
+        if (start > end) {
+            return result;
+        }
+        for (int i = start + 1; i <= end - 1; i = i + 2) {
+            List<Integer> leftNums = intervalDiffWays(words, start, i - 1);
+            List<Integer> rightNums = intervalDiffWays(words, i + 1, end);
+            String sign = words[i];
+            for (Integer leftNum : leftNums) {
+                int val = 0;
+                for (Integer rightNum : rightNums) {
+                    if ("+".equals(sign)) {
+                        val = leftNum + rightNum;
+                    } else if ("-".equals(sign)) {
+                        val = leftNum - rightNum;
+                    } else if ("*".equals(sign)) {
+                        val = leftNum * rightNum;
+                    } else if ("/".equals(sign)) {
+                        val = leftNum / rightNum;
+                    }
+                    result.add(val);
+                }
+            }
+        }
         return result;
     }
 

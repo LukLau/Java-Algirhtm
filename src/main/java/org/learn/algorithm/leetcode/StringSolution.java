@@ -1,9 +1,6 @@
 package org.learn.algorithm.leetcode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 字符串系列问题
@@ -56,6 +53,40 @@ public class StringSolution {
             return s.substring(head, head + result);
         }
         return "";
+    }
+
+
+    /**
+     * 239. Sliding Window Maximum
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
+        LinkedList<Integer> deque = new LinkedList<>();
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            int index = i - k + 1;
+            if (!deque.isEmpty() && index > deque.peekFirst()) {
+                deque.pollFirst();
+            }
+            while (!deque.isEmpty() && nums[i] >= nums[deque.peekLast()]) {
+                deque.pollLast();
+            }
+            deque.offer(i);
+            if (index >= 0) {
+                result.add(nums[deque.peekFirst()]);
+            }
+        }
+        int[] ans = new int[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            ans[i] = result.get(i);
+        }
+        return ans;
     }
 
 
@@ -387,6 +418,7 @@ public class StringSolution {
     /**
      * todo kmp
      * 214. Shortest Palindrome
+     *
      * @param s
      * @return
      */
@@ -397,7 +429,6 @@ public class StringSolution {
         String reverse = new StringBuilder(s).reverse().toString();
         return "";
     }
-
 
 
     public static void main(String[] args) {

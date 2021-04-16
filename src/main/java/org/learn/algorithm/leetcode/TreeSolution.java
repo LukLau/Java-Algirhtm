@@ -599,6 +599,30 @@ public class TreeSolution {
     }
 
 
+    /**
+     * 236. Lowest Common Ancestor of a Binary Tree
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestorII(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == q || root == p) {
+            return root;
+        }
+        TreeNode left = lowestCommonAncestorII(root.left, p, q);
+
+        TreeNode right = lowestCommonAncestorII(root.right, p, q);
+        if (left != null && right != null) {
+            return root;
+        } else if (left == null && right != null) {
+            return right;
+        } else {
+            return left;
+        }
+    }
+
     // --- //
 
 

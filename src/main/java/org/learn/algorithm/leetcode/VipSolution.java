@@ -2,8 +2,7 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.TreeNode;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Vip 题目
@@ -147,11 +146,122 @@ public class VipSolution {
         str[j] = tmp;
     }
 
+    // 单词最短距离
+
+
+    /**
+     * #243 Shortest Word Distance
+     *
+     * @param words
+     * @param word1
+     * @param word2
+     * @return
+     */
+    public int shortestDistance(String[] words, String word1, String word2) {
+        // Write your code here
+        int index1 = -1;
+        int index2 = -1;
+        int result = Integer.MAX_VALUE;
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            if (word.equals(word1)) {
+                index1 = i;
+            } else if (word.equals(word2)) {
+                index2 = i;
+            }
+            if (index1 != -1 && index2 != -1) {
+                result = Math.min(result, Math.abs(index1 - index2));
+            }
+        }
+        return result;
+    }
+
+    // 反转数系列
+
+
+    /**
+     * 246 Strobogrammatic Number
+     *
+     * @param num
+     * @return
+     */
+    public boolean isStrobogrammatic(String num) {
+        if (num == null || num.isEmpty()) {
+            return false;
+        }
+        Map<Character, Character> map = getNum();
+        int len = num.length();
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            char tmp = num.charAt(i);
+            Character reverse = map.get(tmp);
+            if (reverse == null) {
+                return false;
+            }
+            builder.append(reverse);
+        }
+        return num.equals(builder.reverse().toString());
+    }
+
+    private Map<Character, Character> getNum() {
+        Map<Character, Character> map = new HashMap<>();
+        map.put('1', '1');
+        map.put('6', '9');
+        map.put('8', '8');
+        map.put('9', '6');
+        map.put('0', '0');
+        return map;
+    }
+
+
+    /**
+     * #247 Strobogrammatic Number II
+     * Medium
+     *
+     * @param n: the length of strobogrammatic number
+     * @return: All strobogrammatic numbers
+     */
+    public List<String> findStrobogrammatic(int n) {
+        // write your code here
+        if (n < 0) {
+            return new ArrayList<>();
+        }
+        if (n == 1) {
+            return Arrays.asList("0", "1", "8");
+        }
+        List<String> result = new ArrayList<>();
+        intervalFind(result, "", n);
+        intervalFind(result, "1", n);
+        intervalFind(result, "8", n);
+        intervalFind(result, "0", n);
+        return result;
+    }
+
+    private void intervalFind(List<String> result, String s, int n) {
+        if (s.length() == n) {
+            result.add(s);
+            return;
+        }
+        if (s.length() > n - 2) {
+            return;
+        }
+
+        if (s.length() != n - 2) {
+            intervalFind(result, "0" + s + "0", n);
+        }
+        intervalFind(result, "1" + s + "1", n);
+        intervalFind(result, "6" + s + "9", n);
+        intervalFind(result, "8" + s + "8", n);
+        intervalFind(result, "9" + s + "6", n);
+    }
+
 
     public static void main(String[] args) {
         VipSolution solution = new VipSolution();
         String s = "the sky is blue";
-        System.out.println(String.valueOf(solution.reverseWords(s.toCharArray())));
+
+        solution.findStrobogrammatic(3);
+
     }
 
 

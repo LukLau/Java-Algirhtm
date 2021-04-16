@@ -298,4 +298,45 @@ public class ThreePage {
     }
 
 
+    /**
+     * 237. Delete Node in a Linked List
+     *
+     * @param node
+     */
+    public void deleteNode(ListNode node) {
+        if (node.next.next == null) {
+            node.val = node.next.val;
+            node.next = null;
+            return;
+        }
+        node.val = node.next.val;
+        node.next = node.next.next;
+    }
+
+
+    /**
+     * 238. Product of Array Except Self
+     *
+     * @param nums
+     * @return
+     */
+    public int[] productExceptSelf(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
+        int[] result = new int[nums.length];
+        int base = 1;
+        for (int i = 0; i < nums.length; i++) {
+            result[i] = base;
+            base *= nums[i];
+        }
+        base = 1;
+        for (int i = nums.length - 1; i >= 0; i--) {
+            result[i] *= base;
+            base *= nums[i];
+        }
+        return result;
+    }
+
+
 }
