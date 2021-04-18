@@ -2,6 +2,7 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.Trie;
 
+import java.time.temporal.Temporal;
 import java.util.*;
 
 /**
@@ -94,7 +95,8 @@ public class RecursiveSolution {
         int[] nums = new int[]{2, 3, 6, 7};
 //        char[][] matrix = new char[][]{{'X', 'X', 'X', 'X'}, {'X', 'O', 'O', 'X'}, {'X', 'X', 'O', 'X'}, {'X', 'O', 'X', 'X'}};
         char[][] matrix = new char[][]{{'O', 'O', 'O'}, {'O', 'O', 'O'}, {'O', 'O', 'O'}};
-        solution.diffWaysToCompute("11");
+//        solution.diffWaysToCompute("11");
+        solution.getFactors(12);
     }
 
     // --组合系列问题-//
@@ -366,6 +368,39 @@ public class RecursiveSolution {
         for (int i = start; i <= 9 && i <= target; i++) {
             tmp.add(i);
             intervalCombinationIII(result, tmp, i + 1, k, target - i);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+
+    /**
+     * 254
+     * Factor Combinations
+     *
+     * @param n: a integer
+     * @return: return a 2D array
+     */
+    public List<List<Integer>> getFactors(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        // write your code here
+        intervalFactors(result, new ArrayList<>(), 2, n);
+        return result;
+    }
+
+    private void intervalFactors(List<List<Integer>> result, List<Integer> tmp, int start, int n) {
+        if (n == 1 && tmp.size() > 1) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i <= n; i++) {
+            if (n % i != 0) {
+                continue;
+            }
+            tmp.add(i);
+            intervalFactors(result, tmp, i, n / i);
             tmp.remove(tmp.size() - 1);
         }
     }

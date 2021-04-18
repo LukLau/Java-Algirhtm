@@ -1,6 +1,8 @@
 package org.learn.algorithm.leetcode;
 
+import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.TreeNode;
+import sun.jvm.hotspot.ui.tree.RevPtrsTreeNodeAdapter;
 
 import java.util.*;
 
@@ -256,11 +258,210 @@ public class VipSolution {
     }
 
 
+    /**
+     * todo
+     * 248 Strobogrammatic Number III
+     *
+     * @param low
+     * @param high
+     * @return
+     */
+    public int strobogrammaticInRange(String low, String high) {
+        if (low == null || high == null) {
+            return 0;
+        }
+        int m = low.length();
+        int n = high.length();
+        int count = 0;
+        for (int i = m; i <= n; i++) {
+            count += countStrobogrammatic("", i, low, high);
+            count += countStrobogrammatic("0", i, low, high);
+            count += countStrobogrammatic("1", i, low, high);
+            count += countStrobogrammatic("8", i, low, high);
+        }
+        return count;
+    }
+
+    private int countStrobogrammatic(String path, int len, String low, String high) {
+        int count = 0;
+        int m = path.length();
+        if (m >= len) {
+            if (m > len || (len > 1 && path.charAt(0) == '0')) {
+                return 0;
+            }
+            if (len == low.length() && path.compareTo(low) < 0) {
+                return 0;
+            }
+            if (len == high.length() && path.compareTo(high) > 0) {
+                return 0;
+            }
+            count++;
+        }
+        count += countStrobogrammatic("0" + path + "0", len, low, high);
+        count += countStrobogrammatic("1" + path + "1", len, low, high);
+        count += countStrobogrammatic("6" + path + "9", len, low, high);
+        count += countStrobogrammatic("8" + path + "8", len, low, high);
+        count += countStrobogrammatic("9" + path + "6", len, low, high);
+        return count;
+    }
+
+
+    /**
+     * 249 Group Shifted Strings
+     *
+     * @param strings
+     * @return
+     */
+    public List<List<String>> groupStrings(String[] strings) {
+        if (strings == null || strings.length == 0) {
+            return new ArrayList<>();
+        }
+        Map<String, List<String>> map = new HashMap<>();
+        for (String word : strings) {
+            String shiftStr = shiftStr(word);
+            List<String> tmp = map.getOrDefault(shiftStr, new ArrayList<>());
+            tmp.add(word);
+            map.put(shiftStr, tmp);
+        }
+        return new ArrayList<>(map.values());
+    }
+
+    private String shiftStr(String str) {
+        StringBuilder buffer = new StringBuilder();
+        char[] words = str.toCharArray();
+        int dist = str.charAt(0) - 'a';
+        for (char c : words) {
+            char t = (char) ((c - 'a' - dist + 26) % 26 + 'a');
+            buffer.append(t);
+        }
+        return buffer.toString();
+    }
+
+
+    /**
+     * 250
+     * Count Univalue Subtrees
+     *
+     * @param root: the given tree
+     * @return: the number of uni-value subtrees.
+     */
+    public int countUnivalSubtrees(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int count = 0;
+        if (isUnivalSubTree(root, root.val)) {
+            count++;
+        }
+        count += countUnivalSubtrees(root.left);
+        count += countUnivalSubtrees(root.right);
+        // write your code here
+        return count;
+    }
+
+    private boolean isUnivalSubTree(TreeNode root, int val) {
+        if (root == null) {
+            return true;
+        }
+        return root.val == val && isUnivalSubTree(root.left, root.val) && isUnivalSubTree(root.right, val);
+    }
+
+
+    /**
+     * 252
+     * Meeting Rooms
+     *
+     * @param intervals: an array of meeting time intervals
+     * @return: if a person could attend all meetings
+     */
+    public boolean canAttendMeetings(List<Interval> intervals) {
+        // Write your code here
+        if (intervals == null || intervals.isEmpty()) {
+            return true;
+        }
+        intervals.sort(Comparator.comparingInt(o -> o.start));
+        int len = intervals.size();
+        for (int i = 1; i < len; i++) {
+            Interval current = intervals.get(i);
+            Interval pre = intervals.get(i - 1);
+            if (current.start < pre.end) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * todo
+     * 253
+     * Meeting Rooms II
+     *
+     * @param intervals: an array of meeting time intervals
+     * @return: the minimum number of conference rooms required
+     */
+    public int minMeetingRooms(List<Interval> intervals) {
+        if (intervals == null || intervals.isEmpty()) {
+            return 0;
+        }
+        intervals.sort(Comparator.comparingInt(o -> o.start));
+        PriorityQueue<Interval> queue = new PriorityQueue<>(Comparator.comparing(item -> item.end));
+        for (Interval interval : intervals) {
+            if (!queue.isEmpty() && interval.start >= queue.peek().end) {
+                queue.poll();
+            }
+            queue.offer(interval);
+        }
+        return queue.size();
+        // Write your code here
+    }
+
+
+    /**
+     * 255
+     * Verify Preorder Sequence in Binary Search Tree
+     *
+     * @param preorder: List[int]
+     * @return: return a boolean
+     */
+    public boolean verifyPreorder(int[] preorder) {
+        if (preorder == null || preorder.length == 0) {
+            return true;
+        }
+        return intervalVerifyPreorder(Integer.MIN_VALUE, 0, preorder.length - 1, preorder, Integer.MAX_VALUE);
+        // write your code here
+    }
+
+    private boolean intervalVerifyPreorder(int minValue, int start, int end, int[] preorder, int maxValue) {
+        if (start == end) {
+            return true;
+        }
+        if (start <= 0 || end >= preorder.length) {
+            return true;
+        }
+        if (preorder[start] < minValue || preorder[end] > maxValue) {
+            return false;
+        }
+        int index = start;
+        for (int i = start; i <= end; i++) {
+            if (preorder[i] > preorder[start]) {
+                index = i;
+                break;
+            }
+        }
+        return intervalVerifyPreorder(minValue, start, index - 1, preorder, preorder[index]) &&
+                intervalVerifyPreorder(preorder[index], index + 1, end, preorder, maxValue);
+    }
+
+
     public static void main(String[] args) {
         VipSolution solution = new VipSolution();
         String s = "the sky is blue";
-
-        solution.findStrobogrammatic(3);
+        List<Interval> list = new ArrayList<>();
+        list.add(new Interval(0, 30));
+        list.add(new Interval(5, 10));
+        list.add(new Interval(15, 20));
+        solution.minMeetingRooms(list);
 
     }
 
