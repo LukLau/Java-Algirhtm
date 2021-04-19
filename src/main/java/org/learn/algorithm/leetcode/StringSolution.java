@@ -1,5 +1,7 @@
 package org.learn.algorithm.leetcode;
 
+import sun.jvm.hotspot.opto.InlineTree;
+
 import java.util.*;
 
 /**
@@ -445,6 +447,9 @@ public class StringSolution {
 
 
     /**
+     * 267
+     * Palindrome Permutation II
+     *
      * @param s: the given string
      * @return: all the palindromic permutations (without duplicates) of it
      */
@@ -456,7 +461,6 @@ public class StringSolution {
         List<String> result = new ArrayList<>();
         Map<Character, Integer> map = new HashMap<>();
         char[] words = s.toCharArray();
-        List<Character> odds = new ArrayList<>();
         for (char word : words) {
             Integer count = map.getOrDefault(word, 0);
             count++;
@@ -478,8 +482,35 @@ public class StringSolution {
                 builder.append(key);
             }
         }
+        char[] items = builder.toString().toCharArray();
+        List<String> itemList = new ArrayList<>();
+        constructItem(itemList, 0, items);
+        for (String item : itemList) {
+            String reverse = new StringBuilder(item).reverse().toString();
+            result.add(item + (oddCharacter == null ? reverse : oddCharacter + reverse));
+        }
         return result;
+    }
 
+    private void constructItem(List<String> itemList, int start, char[] items) {
+        if (start == items.length) {
+            itemList.add(String.valueOf(items));
+            return;
+        }
+        for (int i = start; i < items.length; i++) {
+            if (i > start && items[i] == items[i-1]) {
+                continue;
+            }
+            swapItem(items, i, start);
+            constructItem(itemList, start + 1, items);
+            swapItem(items, i, start);
+        }
+    }
+
+    private void swapItem(char[] words, int start, int end) {
+        char tmp = words[start];
+        words[start] = words[end];
+        words[end] = tmp;
     }
 
 
@@ -501,7 +532,7 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.canPermutePalindrome("aab");
+        solution.generatePalindromes("aabbcc");
     }
 
 

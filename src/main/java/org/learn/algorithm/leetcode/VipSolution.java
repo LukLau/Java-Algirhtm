@@ -452,7 +452,7 @@ public class VipSolution {
 
 
     /**
-     * todosi
+     * todo
      * #259 3Sum Smaller
      * Medium
      *
@@ -481,6 +481,37 @@ public class VipSolution {
         }
         return count;
         // Write your code here
+    }
+
+
+    /**
+     * 270
+     * Closest Binary Search Tree Value
+     *
+     * @param root:   the given BST
+     * @param target: the given target
+     * @return: the value in the BST that is closest to the target
+     */
+    public int closestValue(TreeNode root, double target) {
+        int result = Integer.MIN_VALUE;
+        while (root != null) {
+            if (result == Integer.MIN_VALUE) {
+                result = root.val;
+            } else {
+                double diff = Math.abs(root.val - target);
+                double last = Math.abs(result - target);
+                if (last < diff) {
+                    result = root.val;
+                }
+            }
+            if (root.val < target) {
+                root = root.right;
+            } else {
+                root = root.left;
+            }
+        }
+        return result;
+        // write your code here
     }
 
 
