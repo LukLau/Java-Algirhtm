@@ -416,6 +416,74 @@ public class StringSolution {
 
 
     /**
+     * 266
+     * Palindrome Permutation
+     *
+     * @param s: the given string
+     * @return: if a permutation of the string could form a palindrome
+     */
+    public boolean canPermutePalindrome(String s) {
+        if (s == null || s.isEmpty()) {
+            return true;
+        }
+        boolean odd = false;
+        char[] words = s.toCharArray();
+        int[] hash = new int[256];
+        for (char word : words) {
+            hash[word - 'a']++;
+        }
+        for (int num : hash) {
+            if (num % 2 != 0) {
+                if (odd) {
+                    return false;
+                }
+                odd = true;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * @param s: the given string
+     * @return: all the palindromic permutations (without duplicates) of it
+     */
+    public List<String> generatePalindromes(String s) {
+        // write your code here
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        Map<Character, Integer> map = new HashMap<>();
+        char[] words = s.toCharArray();
+        List<Character> odds = new ArrayList<>();
+        for (char word : words) {
+            Integer count = map.getOrDefault(word, 0);
+            count++;
+            map.put(word, count);
+        }
+        Character oddCharacter = null;
+        StringBuilder builder = new StringBuilder();
+        Set<Map.Entry<Character, Integer>> entry = map.entrySet();
+        for (Map.Entry<Character, Integer> item : entry) {
+            Character key = item.getKey();
+            Integer count = item.getValue();
+            if (count % 2 == 1) {
+                if (oddCharacter != null) {
+                    return result;
+                }
+                oddCharacter = key;
+            }
+            for (int i = 0; i < count / 2; i++) {
+                builder.append(key);
+            }
+        }
+        return result;
+
+    }
+
+
+    /**
      * todo kmp
      * 214. Shortest Palindrome
      *
@@ -433,7 +501,7 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.minCut("aab");
+        solution.canPermutePalindrome("aab");
     }
 
 

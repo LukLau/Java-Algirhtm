@@ -1,6 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 import java.util.*;
 
 /**
@@ -333,6 +332,40 @@ public class MathSolution {
         return -1;
     }
 
+
+    /**
+     * 260. Single Number III
+     *
+     * @param nums
+     * @return
+     */
+    public int[] singleNumberIII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
+        int[] result = new int[2];
+        int base = 0;
+        for (int num : nums) {
+            base ^= num;
+        }
+        int index = 0;
+        for (int i = 0; i < 32; i++) {
+            if ((base & 1 << i) != 0) {
+                index = i;
+                break;
+            }
+        }
+        for (int num : nums) {
+            if ((num & (1 << index)) != 0) {
+                result[0] ^= num;
+            } else {
+                result[1] ^= num;
+            }
+        }
+        return result;
+    }
+
+
     /**
      * 190. Reverse Bits
      *
@@ -628,6 +661,80 @@ public class MathSolution {
             result += tmp;
         }
         return result;
+    }
+
+
+    // 丑数相关
+
+
+    /**
+     * 263. Ugly Number
+     *
+     * @param num
+     * @return
+     */
+    public boolean isUgly(int num) {
+        if (num <= 1) {
+            return false;
+        }
+        while (true) {
+            if (num == 2 || num == 3 || num == 5) {
+                return true;
+            }
+            if (num % 5 == 0) {
+                num /= 5;
+            } else if (num % 3 == 0) {
+                num /= 3;
+            } else if (num % 2 == 0) {
+                num /= 2;
+            } else {
+                return false;
+            }
+        }
+    }
+
+
+    public boolean isUglyV2(int num) {
+        while (num > 0 && num % 2 == 0) {
+            num /= 2;
+        }
+        while (num > 0 && num % 3 == 0) {
+            num /= 3;
+        }
+        while (num > 0 && num % 5 == 0) {
+            num /= 5;
+        }
+        return num == 1;
+    }
+
+
+    /**
+     * 264. Ugly Number II
+     *
+     * @param n
+     * @return
+     */
+    public int nthUglyNumber(int n) {
+        if (n < 1) {
+            return 0;
+        }
+        int idx2 = 0, idx3 = 0, idx5 = 0, i = 1;
+        int[] ans = new int[n];
+        ans[0] = 1;
+        while (i < n) {
+            int tmp = Math.min(Math.min(ans[idx2] * 2, ans[idx3] * 3), ans[idx5] * 5);
+            if (tmp == ans[idx2] * 2) {
+                idx2++;
+            } else if (tmp == ans[idx3] * 3) {
+                idx3++;
+            } else if (tmp == ans[idx5] * 5) {
+                idx5++;
+            }
+            ans[i++] = tmp;
+
+        }
+        return ans[n - 1];
+
     }
 
 

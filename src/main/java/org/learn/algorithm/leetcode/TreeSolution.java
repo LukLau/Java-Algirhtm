@@ -623,6 +623,39 @@ public class TreeSolution {
         }
     }
 
+
+    /**
+     * 257. Binary Tree Paths
+     *
+     * @param root
+     * @return
+     */
+    public List<String> binaryTreePaths(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        intervalTreePaths(result, "", root);
+        return result;
+    }
+
+    private void intervalTreePaths(List<String> result, String s, TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        if (s.isEmpty()) {
+            s += root.val;
+        } else {
+            s = s + "->" + root.val;
+        }
+        if (root.left == null && root.right == null) {
+            result.add(s);
+            return;
+        }
+        intervalTreePaths(result, s, root.left);
+        intervalTreePaths(result, s, root.right);
+    }
+
     // --- //
 
 

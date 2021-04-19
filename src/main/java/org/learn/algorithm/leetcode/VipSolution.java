@@ -2,7 +2,6 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.TreeNode;
-import sun.jvm.hotspot.ui.tree.RevPtrsTreeNodeAdapter;
 
 import java.util.*;
 
@@ -436,21 +435,52 @@ public class VipSolution {
         if (start == end) {
             return true;
         }
-        if (start <= 0 || end >= preorder.length) {
-            return true;
-        }
-        if (preorder[start] < minValue || preorder[end] > maxValue) {
+        int val = preorder[start];
+        if (val <= minValue || val >= maxValue) {
             return false;
         }
-        int index = start;
-        for (int i = start; i <= end; i++) {
-            if (preorder[i] > preorder[start]) {
-                index = i;
+        int i = 0;
+        for (i = start + 1; i <= end; ++i) {
+            if (preorder[i] >= val) {
                 break;
             }
         }
-        return intervalVerifyPreorder(minValue, start, index - 1, preorder, preorder[index]) &&
-                intervalVerifyPreorder(preorder[index], index + 1, end, preorder, maxValue);
+        return intervalVerifyPreorder(minValue, start, i - 1, preorder, val)
+                && intervalVerifyPreorder(val, i, end, preorder, maxValue);
+
+    }
+
+
+    /**
+     * todosi
+     * #259 3Sum Smaller
+     * Medium
+     *
+     * @param nums:   an array of n integers
+     * @param target: a target
+     * @return: the number of index triplets satisfy the condition nums[i] + nums[j] + nums[k] < target
+     */
+    public int threeSumSmaller(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        Arrays.sort(nums);
+        int count = 0;
+        for (int i = 0; i < nums.length - 2; i++) {
+            int start = i + 1;
+            int end = nums.length - 1;
+            while (start < end) {
+                int val = nums[i] + nums[start] + nums[end];
+                if (val < target) {
+                    count += end - start;
+                    start++;
+                } else {
+                    end--;
+                }
+            }
+        }
+        return count;
+        // Write your code here
     }
 
 

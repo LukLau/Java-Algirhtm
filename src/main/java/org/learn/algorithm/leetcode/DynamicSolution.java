@@ -17,7 +17,11 @@ public class DynamicSolution {
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
 
-        solution.generate(5);
+//        int[][] cost = new int[][]{{14, 2, 11}, {11, 14, 5}, {14, 3, 10}};
+
+        int[][] cost = new int[][]{{1, 2, 3}, {1, 4, 6}};
+
+        solution.minCostII(cost);
     }
 
     /**
@@ -527,6 +531,67 @@ public class DynamicSolution {
             pre = tmp;
         }
         return Math.max(pre, current);
+    }
+
+    // 房子颜色问题
+
+    /**
+     * @param costs: n x 3 cost matrix
+     * @return: An integer, the minimum cost to paint all houses
+     */
+    public int minCost(int[][] costs) {
+        // write your code here
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        int row = costs.length;
+        for (int i = 1; i < row; i++) {
+            costs[i][0] = Math.min(costs[i - 1][1], costs[i - 1][2]) + costs[i][0];
+            costs[i][1] = Math.min(costs[i - 1][2], costs[i - 1][0]) + costs[i][1];
+            costs[i][2] = Math.min(costs[i - 1][1], costs[i - 1][0]) + costs[i][2];
+        }
+        return Math.min(Math.min(costs[row - 1][0], costs[row - 1][1]), costs[row - 1][2]);
+    }
+
+
+    /**
+     * 265 Paint House II
+     * Hard
+     *
+     * @param costs: n x k cost matrix
+     * @return: an integer, the minimum cost to paint all houses
+     */
+    public int minCostII(int[][] costs) {
+        // write your code here
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        int firstIndex = -1;
+        int secondIndex = -1;
+        int row = costs.length;
+        int column = costs[0].length;
+        for (int i = 0; i < row; i++) {
+            int index1 = -1;
+            int index2 = -1;
+            for (int j = 0; j < column; j++) {
+                if (firstIndex >= 0) {
+                    if (j != firstIndex) {
+                        costs[i][j] += costs[i - 1][firstIndex];
+                    } else {
+                        costs[i][j] += costs[i - 1][secondIndex];
+                    }
+                }
+                if (index1 == -1 || costs[i][j] < costs[i][index1]) {
+                    index2 = index1;
+                    index1 = j;
+                } else if (index2 == -1 || costs[i][j] < costs[i][index2]) {
+                    index2 = j;
+                }
+            }
+            firstIndex = index1;
+            secondIndex = index2;
+        }
+        return costs[row - 1][firstIndex];
     }
 
 
