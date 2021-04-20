@@ -2,7 +2,6 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.Trie;
 
-import java.time.temporal.Temporal;
 import java.util.*;
 
 /**
@@ -96,7 +95,7 @@ public class RecursiveSolution {
 //        char[][] matrix = new char[][]{{'X', 'X', 'X', 'X'}, {'X', 'O', 'O', 'X'}, {'X', 'X', 'O', 'X'}, {'X', 'O', 'X', 'X'}};
         char[][] matrix = new char[][]{{'O', 'O', 'O'}, {'O', 'O', 'O'}, {'O', 'O', 'O'}};
 //        solution.diffWaysToCompute("11");
-        solution.getFactors(12);
+        solution.addOperators("123", 6);
     }
 
     // --组合系列问题-//
@@ -767,6 +766,45 @@ public class RecursiveSolution {
             }
         }
         return result;
+    }
+
+
+    /**
+     * 282. Expression Add Operators
+     *
+     * @param num
+     * @param target
+     * @return
+     */
+    public List<String> addOperators(String num, int target) {
+        if (num == null || num.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        intervalAdd(result, 0, 0, 0, num, target, "");
+        return result;
+    }
+
+    private void intervalAdd(List<String> result, long val, int pos, long multi, String num, int target, String s) {
+        if (pos == num.length() && val == target) {
+            result.add(s);
+            return;
+        }
+        for (int i = pos; i < num.length(); i++) {
+            if (i > pos && num.charAt(pos) == '0') {
+                continue;
+            }
+            String substring = num.substring(pos, i + 1);
+            long parseInt = Long.parseLong(substring);
+            if (pos == 0) {
+                intervalAdd(result, parseInt, i + 1, parseInt, num, target, s + parseInt);
+            } else {
+                intervalAdd(result, val + parseInt, i + 1, parseInt, num, target, s + "+" + parseInt);
+                intervalAdd(result, val - parseInt, i + 1, -parseInt, num, target, s + "-" + parseInt);
+                intervalAdd(result, val - multi + multi * parseInt, i + 1, multi * parseInt, num, target, s + "*" + parseInt);
+            }
+
+        }
     }
 
 

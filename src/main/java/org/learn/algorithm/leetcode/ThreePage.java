@@ -341,12 +341,14 @@ public class ThreePage {
 
     /**
      * todo
+     *
      * @param num
      * @return
      */
     public String numberToWords(int num) {
+        String[] oneDigits = new String[]{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+        String[] twoDights = new String[]{"ten", "twenty", ""};
         return "";
     }
-
 
 }

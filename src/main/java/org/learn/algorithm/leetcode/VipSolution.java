@@ -514,6 +514,49 @@ public class VipSolution {
         // write your code here
     }
 
+    /**
+     * @param nums: A list of integers
+     * @return: nothing
+     */
+    public void wiggleSort(int[] nums) {
+        // write your code here
+        if (nums == null || nums.length <= 1) {
+            return;
+        }
+        Arrays.sort(nums);
+        for (int i = 1; i < nums.length; i = i + 2) {
+            if (nums[i] > nums[i - 1]) {
+                swap(nums, i, i - 1);
+            }
+        }
+    }
+
+    public void wiggleSortV2(int[] nums) {
+        if (nums == null || nums.length <= 1) {
+            return;
+        }
+        for (int i = 1; i < nums.length; i++) {
+            boolean odd = i % 2 == 1;
+            boolean errorFormat = false;
+            if (odd && nums[i] < nums[i - 1]) {
+                errorFormat = true;
+            }
+            if (!odd && nums[i] > nums[i - 1]) {
+                errorFormat = true;
+            }
+            if (errorFormat) {
+                swap(nums, i, i - 1);
+            }
+
+        }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int val = nums[i];
+        nums[i] = nums[j];
+        nums[j] = val;
+    }
+
 
     public static void main(String[] args) {
         VipSolution solution = new VipSolution();
@@ -523,7 +566,6 @@ public class VipSolution {
         list.add(new Interval(5, 10));
         list.add(new Interval(15, 20));
         solution.minMeetingRooms(list);
-
     }
 
 

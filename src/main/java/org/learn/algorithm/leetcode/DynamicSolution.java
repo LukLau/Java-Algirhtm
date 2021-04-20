@@ -12,7 +12,6 @@ import java.util.List;
  */
 public class DynamicSolution {
 
-    // 八皇后问题 //
 
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
@@ -23,6 +22,39 @@ public class DynamicSolution {
 
         solution.minCostII(cost);
     }
+
+
+    // 序列问题
+
+    /**
+     * 300. Longest Increasing Subsequence
+     *
+     * @param nums
+     * @return
+     */
+    public int lengthOfLIS(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[nums.length];
+        Arrays.fill(dp, 1);
+        for (int i = 1; i < nums.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[i] > dp[j] && dp[i] < dp[j] + 1) {
+                    dp[i] = dp[j] + 1;
+                }
+            }
+        }
+        int result = 0;
+        for (int tmp : dp) {
+            result = Math.max(result, tmp);
+        }
+        return result;
+    }
+
+
+    // 八皇后问题 //
+
 
     /**
      * @param n
@@ -653,5 +685,31 @@ public class DynamicSolution {
             }
         }
         return dp[0][0];
+    }
+
+
+    /**
+     * todo
+     * 279. Perfect Squares
+     *
+     * @param n
+     * @return
+     */
+    public int numSquares(int n) {
+        if (n == 1) {
+            return 1;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            int tmp = i;
+            for (int j = 1; j * j <= i; j++) {
+                tmp = Math.min(tmp, 1 + dp[i - j * j]);
+            }
+            dp[i] = tmp;
+        }
+        return dp[n];
+
     }
 }

@@ -1,7 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import sun.jvm.hotspot.opto.InlineTree;
-
 import java.util.*;
 
 /**
@@ -11,6 +9,8 @@ import java.util.*;
  * @date 2021/4/6
  */
 public class StringSolution {
+
+    // 子序列问题
 
 
     // 滑动窗口系列//
@@ -498,7 +498,7 @@ public class StringSolution {
             return;
         }
         for (int i = start; i < items.length; i++) {
-            if (i > start && items[i] == items[i-1]) {
+            if (i > start && items[i] == items[i - 1]) {
                 continue;
             }
             swapItem(items, i, start);
