@@ -4,10 +4,7 @@ import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.TreeNode;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * 树的解决方案
@@ -268,6 +265,79 @@ public class TreeSolution {
             q = q.right;
         }
         return -1;
+    }
+
+
+    /**
+     * 285
+     * Inorder Successor in BST
+     *
+     * @param root: The root of the BST.
+     * @param p:    You need find the successor node of p.
+     * @return: Successor of p.
+     */
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        // write your code here
+        if (root == null || p == null) {
+            return null;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode q = root;
+        TreeNode prev = null;
+        while (!stack.isEmpty() || q != null) {
+            while (q != null) {
+                stack.push(q);
+                q = q.left;
+            }
+            q = stack.pop();
+            if (prev != null && prev == p) {
+                return q;
+            }
+            prev = q;
+            q = q.right;
+        }
+        return null;
+    }
+
+    /**
+     * todo
+     * @param root
+     * @param p
+     * @return
+     */
+    public TreeNode inorderSuccessorV2(TreeNode root, TreeNode p) {
+        if (root == null || p == null) {
+            return null;
+        }
+        return intervalNode(root, p);
+    }
+
+    private TreeNode intervalNode(TreeNode root, TreeNode p) {
+        if (root == null) {
+            return null;
+        }
+        if (root == p) {
+            p = p.right;
+            while (p.left != null) {
+                p = p.left;
+            }
+            return p;
+        }
+        if (root.left == p) {
+            return root;
+        }
+        if (root.right == p) {
+            return root;
+        }
+        TreeNode node = intervalNode(root.left, p);
+        if (node != null) {
+            return node;
+        }
+        TreeNode rightNode = intervalNode(root.right, p);
+        if (rightNode != null) {
+            return root;
+        }
+        return null;
     }
 
 

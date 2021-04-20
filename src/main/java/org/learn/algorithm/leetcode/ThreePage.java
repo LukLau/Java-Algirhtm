@@ -346,9 +346,37 @@ public class ThreePage {
      * @return
      */
     public String numberToWords(int num) {
-        String[] oneDigits = new String[]{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
-        String[] twoDights = new String[]{"ten", "twenty", ""};
+        if (num < 0) {
+            return "";
+        }
         return "";
     }
+
+
+    /**
+     * 283. Move Zeroes
+     *
+     * @param nums
+     */
+    public void moveZeroes(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int index = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0) {
+                nums[index++] = nums[i];
+            }
+        }
+        while (index < nums.length) {
+            nums[index++] = 0;
+        }
+
+    }
+
+
+//    private String convertToWord(int num) {
+//        String[] words = new String[] {"ZERO", "ONE"};
+//    }
 
 }

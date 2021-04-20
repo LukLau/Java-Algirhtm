@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+import com.sun.tools.hat.internal.model.Root;
 import org.learn.algorithm.datastructure.Trie;
 
 import java.util.*;
@@ -583,6 +584,20 @@ public class RecursiveSolution {
         intervalIslands(grid, i + 1, j);
         intervalIslands(grid, i, j - 1);
         intervalIslands(grid, i, j + 1);
+    }
+
+    /**
+     * 286
+     * Walls and Gates
+     *
+     * @param rooms: m x n 2D grid
+     * @return: nothing
+     */
+    public void wallsAndGates(int[][] rooms) {
+        if (rooms == null || rooms.length == 0) {
+
+        }
+        // write your code here
     }
 
 
