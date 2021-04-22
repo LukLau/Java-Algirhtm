@@ -1,6 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import com.sun.tools.hat.internal.model.Root;
 import org.learn.algorithm.datastructure.Trie;
 
 import java.util.*;
@@ -96,6 +95,7 @@ public class RecursiveSolution {
 //        char[][] matrix = new char[][]{{'X', 'X', 'X', 'X'}, {'X', 'O', 'O', 'X'}, {'X', 'X', 'O', 'X'}, {'X', 'O', 'X', 'X'}};
         char[][] matrix = new char[][]{{'O', 'O', 'O'}, {'O', 'O', 'O'}, {'O', 'O', 'O'}};
 //        solution.diffWaysToCompute("11");
+
         solution.addOperators("123", 6);
     }
 
@@ -595,9 +595,34 @@ public class RecursiveSolution {
      */
     public void wallsAndGates(int[][] rooms) {
         if (rooms == null || rooms.length == 0) {
-
+            return;
+        }
+        int row = rooms.length;
+        int column = rooms[0].length;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (rooms[i][j] == 0) {
+                    intervalWallsAndGates(i, j, rooms, 0);
+                }
+            }
         }
         // write your code here
+    }
+
+    private void intervalWallsAndGates(int i, int j, int[][] rooms, int distance) {
+        if (i < 0 || i >= rooms.length || j < 0 || j >= rooms[i].length || rooms[i][j] == -1) {
+            return;
+        }
+        if (rooms[i][j] < distance) {
+            return;
+        }
+        if (rooms[i][j] == Integer.MAX_VALUE || rooms[i][j] > distance) {
+            rooms[i][j] = distance;
+        }
+        intervalWallsAndGates(i - 1, j, rooms, distance + 1);
+        intervalWallsAndGates(i + 1, j, rooms, distance + 1);
+        intervalWallsAndGates(i, j - 1, rooms, distance + 1);
+        intervalWallsAndGates(i, j + 1, rooms, distance + 1);
     }
 
 

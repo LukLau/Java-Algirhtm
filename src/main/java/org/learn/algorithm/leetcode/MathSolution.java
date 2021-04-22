@@ -12,8 +12,8 @@ public class MathSolution {
 
     public static void main(String[] args) {
         MathSolution solution = new MathSolution();
-//        System.out.println(solution.calculate("-(1+(2+1))"));
-        solution.calculateII("1-1-1");
+        int[] nums = new int[]{5, 4, 4, 3, 2, 1};
+        solution.findDuplicate(nums);
     }
 
     // 素数相关
@@ -434,6 +434,26 @@ public class MathSolution {
      */
     public int countDigitOne(int n) {
         String s = String.valueOf(n);
+        return -1;
+    }
+
+
+    /**
+     * @param nums: an array containing n + 1 integers which is between 1 and n
+     * @return: the duplicate one
+     */
+    public int findDuplicate(int[] nums) {
+        // write your code here
+        int base = 0;
+        for (int num : nums) {
+            int remain = num & Integer.MAX_VALUE;
+
+            boolean exist = (base & (1 << remain)) != 0;
+            if (exist) {
+                return num;
+            }
+            base = base ^ (1 << remain);
+        }
         return -1;
     }
 
