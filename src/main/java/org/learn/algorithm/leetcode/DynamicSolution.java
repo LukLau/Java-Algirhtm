@@ -689,6 +689,56 @@ public class DynamicSolution {
 
 
     /**
+     * 289. Game of Life
+     *
+     * @param board
+     */
+    public void gameOfLife(int[][] board) {
+        if (board == null || board.length == 0) {
+            return;
+        }
+        int row = board.length;
+        int column = board[0].length;
+        int[][] matrix = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                intervalGame(i, j, board, matrix);
+            }
+        }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] == -1) {
+                    board[i][j] = 0;
+                } else if (board[i][j] == -2) {
+                    board[i][j] = 1;
+                }
+            }
+        }
+
+    }
+
+    private void intervalGame(int i, int j, int[][] board, int[][] matrix) {
+        int liveCount = 0;
+        for (int[] item : matrix) {
+            int x = i + item[0];
+            int y = j + item[1];
+            if (x < 0 || x == board.length || y < 0 || y == board[x].length) {
+                continue;
+            }
+            if (Math.abs(board[x][y]) == 1) {
+                liveCount++;
+            }
+        }
+        if (board[i][j] == 1 && !(liveCount == 2 || liveCount == 3)) {
+            board[i][j] = -1;
+        }
+        if (board[i][j] == 0 && liveCount == 3) {
+            board[i][j] = -2;
+        }
+    }
+
+
+    /**
      * todo
      * 279. Perfect Squares
      *
