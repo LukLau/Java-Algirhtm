@@ -374,9 +374,29 @@ public class ThreePage {
 
     }
 
-
-//    private String convertToWord(int num) {
-//        String[] words = new String[] {"ZERO", "ONE"};
-//    }
+    /**
+     * 290. Word Pattern
+     *
+     * @param pattern
+     * @param s
+     * @return
+     */
+    public boolean wordPattern(String pattern, String s) {
+        if (pattern == null || s == null) {
+            return false;
+        }
+        String[] words = s.split(" ");
+        if (pattern.length() != words.length) {
+            return false;
+        }
+        Map<String, Integer> map2 = new HashMap<>();
+        Map<Character, Integer> map1 = new HashMap<>();
+        for (int i = 0; i < words.length; i++) {
+            if (!Objects.equals(map1.put(pattern.charAt(i), i), map2.put(words[i], i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }

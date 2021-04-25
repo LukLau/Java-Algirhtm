@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+import org.apache.catalina.User;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.TreeNode;
 
@@ -557,15 +558,103 @@ public class VipSolution {
         nums[j] = val;
     }
 
+    /**
+     * todo
+     * 291
+     * Word Pattern II
+     *
+     * @param pattern: a string,denote pattern string
+     * @param str:     a string, denote matching string
+     * @return: a boolean
+     */
+    public boolean wordPatternMatch(String pattern, String str) {
+        if (pattern == null || str == null) {
+            return false;
+        }
+        Map<Character, String> map = new HashMap<>();
+        Set<String> used = new HashSet<>();
+        return intervalWordPattern(map, used, pattern, str);
+        // write your code here
+    }
 
-    public static void main(String[] args) {
-        VipSolution solution = new VipSolution();
-        String s = "the sky is blue";
-        List<Interval> list = new ArrayList<>();
-        list.add(new Interval(0, 30));
-        list.add(new Interval(5, 10));
-        list.add(new Interval(15, 20));
-        solution.minMeetingRooms(list);
+    private boolean intervalWordPattern(Map<Character, String> map, Set<String> used, String pattern, String str) {
+        if (pattern.isEmpty()) {
+            return str.isEmpty();
+        }
+        char charAt = pattern.charAt(0);
+        int len = str.length();
+        if (map.containsKey(charAt)) {
+            String tmp = map.get(charAt);
+            if (!str.startsWith(tmp)) {
+                return false;
+            }
+            return intervalWordPattern(map, used, pattern.substring(1), str.substring(tmp.length()));
+        }
+        for (int i = 0; i < len; i++) {
+            String tmp = str.substring(0, i + 1);
+            if (used.contains(tmp)) {
+                continue;
+            }
+            map.put(charAt, tmp);
+            used.add(tmp);
+            if (intervalWordPattern(map, used, pattern.substring(1), str.substring(i + 1))) {
+                return true;
+            }
+            map.remove(charAt);
+            used.remove(tmp);
+        }
+        return false;
+    }
+
+
+    /**
+     * 293
+     * Flip Game
+     *
+     * @param s: the given string
+     * @return: all the possible states of the string after one valid move
+     */
+    public List<String> generatePossibleNextMoves(String s) {
+        List<String> result = new ArrayList<>();
+        if (s == null) {
+            return result;
+        }
+        int len = s.length();
+        if (len <= 1) {
+            return result;
+        }
+        int endIndex = 0;
+        while (endIndex < len) {
+            int index = s.indexOf("++", endIndex);
+            if (index == -1) {
+                break;
+            }
+            String tmp = s.substring(0, index) + "--" + s.substring(index + 2);
+            result.add(tmp);
+            endIndex = index + 1;
+        }
+        return result;
+        // write your code here
+    }
+
+
+    /**
+     * 294
+     * Flip Game II
+     *
+     * @param s: the given string
+     * @return: if the starting player can guarantee a win
+     */
+    public boolean canWin(String s) {
+        if (s == null) {
+            return false;
+        }
+        int len = s.length();
+        for (int i = 0; i < len - 1; i++) {
+
+        }
+        return false;
+        // write your code here
     }
 
 
