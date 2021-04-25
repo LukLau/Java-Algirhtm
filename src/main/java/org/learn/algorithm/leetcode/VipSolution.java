@@ -1,6 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import org.apache.catalina.User;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.TreeNode;
 
@@ -13,6 +12,12 @@ import java.util.*;
  * @date 2021/4/12
  */
 public class VipSolution {
+
+    public static void main(String[] args) {
+        VipSolution solution = new VipSolution();
+        String s = "++++";
+        System.out.println(solution.canWin(s));
+    }
 
     /**
      * 156 Binary Tree Upside Down
@@ -646,15 +651,99 @@ public class VipSolution {
      * @return: if the starting player can guarantee a win
      */
     public boolean canWin(String s) {
+        // write your code here
         if (s == null) {
             return false;
         }
         int len = s.length();
-        for (int i = 0; i < len - 1; i++) {
-
+        if (len < 2) {
+            return false;
+        }
+        for (int i = 0; i < len; i++) {
+            if (s.startsWith("++", i)) {
+                String t = s.substring(0, i) + "--" + s.substring(i + 2);
+                if (!canWin(t)) {
+                    return true;
+                }
+            }
         }
         return false;
+    }
+
+
+    /**
+     * 曼哈顿距离法
+     * 296
+     * Best Meeting Point
+     *
+     * @param grid: a 2D grid
+     * @return: the minimize travel distance
+     */
+    public int minTotalDistance(int[][] grid) {
+        // Write your code here
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        List<Integer> pointRow = new ArrayList<>();
+        List<Integer> pointColumn = new ArrayList<>();
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (grid[i][j] == 1) {
+                    pointRow.add(i);
+                    pointColumn.add(j);
+
+                }
+            }
+        }
+        return getDistance(pointRow) + getDistance(pointColumn);
+    }
+
+    private int getDistance(List<Integer> tmp) {
+        tmp.sort(Comparator.comparingInt(o -> o));
+        int start = 0;
+        int end = tmp.size() - 1;
+        int distance = 0;
+        while (start < end) {
+            distance += tmp.get(start) + tmp.get(end);
+
+            start++;
+            end--;
+        }
+        return distance;
+    }
+
+
+    /**
+     * 298
+     * Binary Tree Longest Consecutive Sequence
+     *
+     * @param root: the root of binary tree
+     * @return: the length of the longest consecutive sequence path
+     */
+    private int longestV2 = 0;
+
+    public int longestConsecutive2(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return intervalConsecutive(root, root);
         // write your code here
+    }
+
+    private int intervalConsecutive(TreeNode root, TreeNode prev) {
+        if (root == null) {
+            return 0;
+        }
+        if (Math.abs(prev.val - root.val) == 1) {
+            return 1;
+        }
+        int left = intervalConsecutive(root.left, root);
+
+        int right = intervalConsecutive(root.right, root);
+
+
     }
 
 
