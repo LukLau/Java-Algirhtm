@@ -13,6 +13,11 @@ import java.util.*;
  */
 public class ThreePage {
 
+    public static void main(String[] args) {
+        ThreePage page = new ThreePage();
+        page.getHint("1807", "7810");
+    }
+
 
     /**
      * 202. Happy Number
@@ -397,6 +402,38 @@ public class ThreePage {
             }
         }
         return true;
+    }
+
+
+    /**
+     * todo
+     * 299. Bulls and Cows
+     *
+     * @param secret
+     * @param guess
+     * @return
+     */
+    public String getHint(String secret, String guess) {
+        int bulls = 0;
+        int cows = 0;
+        char[] secretWords = secret.toCharArray();
+        char[] guessWords = guess.toCharArray();
+        int[] hash = new int[10];
+        for (int i = 0; i < secretWords.length; i++) {
+            char secretWord = secretWords[i];
+            char guessWord = guessWords[i];
+            if (secretWord == guessWord) {
+                bulls++;
+            } else {
+                if (hash[Character.getNumericValue(secretWord)]-- > 0) {
+                    cows++;
+                }
+                if (hash[Character.getNumericValue(guessWord)]++ < 0) {
+                    cows++;
+                }
+            }
+        }
+        return bulls + "A" + cows + "B";
     }
 
 }

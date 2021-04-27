@@ -16,7 +16,22 @@ public class VipSolution {
     public static void main(String[] args) {
         VipSolution solution = new VipSolution();
         String s = "++++";
-        System.out.println(solution.canWin(s));
+        TreeNode root = new TreeNode(1);
+
+        TreeNode left = new TreeNode(2);
+
+        left.left = new TreeNode(3);
+
+        TreeNode right = new TreeNode(0);
+        root.left = left;
+        root.right = right;
+
+        TreeNode r1 = new TreeNode(3);
+        r1.left = new TreeNode(2);
+        r1.right = new TreeNode(2);
+
+
+        solution.longestConsecutive2(r1);
     }
 
     /**
@@ -716,6 +731,7 @@ public class VipSolution {
 
 
     /**
+     * todo
      * 298
      * Binary Tree Longest Consecutive Sequence
      *
@@ -728,22 +744,77 @@ public class VipSolution {
         if (root == null) {
             return 0;
         }
-        return intervalConsecutive(root, root);
+        intervalConsecutive(root, null, root.right);
+        return longestV2;
         // write your code here
     }
 
-    private int intervalConsecutive(TreeNode root, TreeNode prev) {
+    private int intervalConsecutive(TreeNode root, TreeNode prev, TreeNode reverse) {
         if (root == null) {
             return 0;
         }
-        if (Math.abs(prev.val - root.val) == 1) {
-            return 1;
+        TreeNode reverseRight = null;
+        TreeNode reverseLeft = null;
+        if (prev != null) {
+            reverseRight = prev.right;
+            reverseLeft = prev.left;
         }
-        int left = intervalConsecutive(root.left, root);
+        int left = intervalConsecutive(root.left, root, reverseRight);
 
-        int right = intervalConsecutive(root.right, root);
+        if (prev != null && Math.abs(prev.val - root.val) != 1) {
+            return 0;
+        }
+        int right = intervalConsecutive(root.right, root, reverseLeft);
+
+        if (reverse != null && reverse.val != root.val) {
+            longestV2 = Math.max(longestV2, left + right + 1);
+        } else {
+            longestV2 = Math.max(longestV2, Math.max(left, right) + 1);
+        }
+
+        return Math.max(left, right) + 1;
+    }
+
+    private int intervalConsecutive(TreeNode root, TreeNode prev, int count) {
+        if (root == null) {
+            return count;
+        }
+        if (prev != null && Math.abs(prev.val - root.val) != 1) {
+            return intervalConsecutive(root, null, 1);
+        }
+        TreeNode preLeft = prev == null ? null : prev.left;
+        TreeNode preRight = prev == null ? null : prev.right;
+        if (preLeft != null && preRight != null && preLeft.val == preRight.val) {
+            return Math.max(intervalConsecutive(root.left, root, count + 1), intervalConsecutive(root.left, root, count + 1));
+        }
+        return 0;
+    }
 
 
+    /**
+     * 302
+     * Smallest Rectangle Enclosing Black Pixels
+     *
+     * @param image: a binary matrix with '0' and '1'
+     * @param x:     the location of one of the black pixels
+     * @param y:     the location of one of the black pixels
+     * @return: an integer
+     */
+    public int minArea(char[][] image, int x, int y) {
+        // write your code here
+        int row = image.length - 1;
+
+        int column = image[0].length - 1;
+
+        int left = getAreaEdge(image, 0, row, 0, y, true);
+        int right = getAreaEdge(image, 0, row, y, column, true);
+        int top = getAreaEdge(image, 0, column, 0, x, false);
+        int bottom = getAreaEdge(image, 0, column, x + 1, row, true);
+        return (right - left) * (bottom - top);
+    }
+
+    private int getAreaEdge(char[][] image, int i, int row, int y, int column, boolean vertical) {
+        return 0;
     }
 
 
