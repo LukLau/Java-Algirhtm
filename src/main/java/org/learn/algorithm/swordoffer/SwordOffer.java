@@ -512,7 +512,7 @@ public class SwordOffer {
     public int[] solve(int[] xianxu, int[] zhongxu) {
         // write code here
         if (xianxu == null || zhongxu == null) {
-            return new int[];
+            return new int[]{};
         }
         return new int[]{};
     }
