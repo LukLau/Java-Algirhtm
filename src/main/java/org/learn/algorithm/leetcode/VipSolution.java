@@ -742,8 +742,7 @@ public class VipSolution {
         int left = intervalConsecutive(root.left, root);
 
         int right = intervalConsecutive(root.right, root);
-
-
+        return -1;
     }
 
 

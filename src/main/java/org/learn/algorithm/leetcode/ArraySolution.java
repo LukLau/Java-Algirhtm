@@ -1,6 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import com.sun.corba.se.impl.oa.poa.POAPolicyMediatorImpl_NR_USM;
 
 /**
  * 数组系列问题
@@ -23,8 +22,8 @@ public class ArraySolution {
         }
         int count = 1;
         int index = 1;
-        for (int i = 1; i < nums.length ; i++) {
-            if (nums[i] == nums[i-1]) {
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] == nums[i - 1]) {
                 count++;
                 if (count == 3) {
                     continue;
