@@ -153,6 +153,7 @@ public class MathSolution {
         if (words == null || words.length == 0) {
             return new ArrayList<>();
         }
+        List<String> result = new ArrayList<>();
         int startIndex = 0;
         while (startIndex < words.length) {
             int endIndex = startIndex;
@@ -168,14 +169,39 @@ public class MathSolution {
             if (wordCount == 1) {
                 builder.append(words[startIndex]);
             } else {
-
-
+                int space = lastRow ? 1 : 1 + blankSpace / (wordCount - 1);
+                int extra = lastRow ? 0 : blankSpace % (wordCount - 1);
+                builder.append(constructRow(words, startIndex, endIndex, space, extra));
             }
-
-
+            result.add(trimRow(builder.toString(), maxWidth));
             startIndex = endIndex;
         }
-        return new ArrayList<>();
+        return result;
+    }
+
+    private String trimRow(String tmp, int maxWidth) {
+        while (tmp.length() > maxWidth) {
+            tmp = tmp.substring(0, tmp.length() - 1);
+        }
+        while (tmp.length() < maxWidth) {
+            tmp = tmp + " ";
+        }
+        return tmp;
+    }
+
+    private String constructRow(String[] words, int startIndex, int endIndex, int blankCount, int extraCount) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = startIndex; i < endIndex; i++) {
+            int tmp = blankCount;
+            builder.append(words[i]);
+            while (tmp-- > 0) {
+                builder.append(" ");
+            }
+            if (extraCount-- > 0) {
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
     }
 
     /**

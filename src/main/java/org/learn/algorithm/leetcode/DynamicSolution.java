@@ -518,6 +518,51 @@ public class DynamicSolution {
         return result;
     }
 
+    /**
+     * todo
+     * 188. Best Time to Buy and Sell Stock IV
+     * 卖股票问题iv
+     *
+     * @param k
+     * @param prices
+     * @return
+     */
+    public int maxProfitIV(int k, int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int[][] dp = new int[k + 1][prices.length];
+        for (int i = 1; i <= k; i++) {
+            int cost = -prices[0];
+            for (int j = 1; j < prices.length; j++) {
+                dp[i][j] = Math.max(cost + prices[j], dp[i][j - 1]);
+                cost = Math.max(cost, dp[i - 1][j - 1] - prices[j]);
+            }
+        }
+        return dp[k][prices.length - 1];
+    }
+
+
+    /**
+     * todo
+     * 309. Best Time to Buy and Sell Stock with Cooldown
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfitV(int[] prices) {
+        int len = prices.length;
+        int[] sell = new int[len];
+        int[] buy = new int[len];
+        buy[0] = -prices[0];
+        for (int i = 1; i < len; i++) {
+            sell[i] = Math.max(sell[i - 1], buy[i - 1] + prices[i]);
+            buy[i] = Math.max(buy[i - 1], i == 1 ? -prices[i] : sell[i - 2] - prices[i]);
+        }
+        return sell[len - 1];
+    }
+
+
     // 房屋抢劫系列
 
 
@@ -628,31 +673,6 @@ public class DynamicSolution {
 
 
     // 普通题
-
-    /**
-     * todo
-     * 188. Best Time to Buy and Sell Stock IV
-     * 卖股票问题iv
-     *
-     * @param k
-     * @param prices
-     * @return
-     */
-    public int maxProfitIV(int k, int[] prices) {
-        if (prices == null || prices.length == 0) {
-            return 0;
-        }
-        int[][] dp = new int[k + 1][prices.length];
-        for (int i = 1; i <= k; i++) {
-            int cost = -prices[0];
-            for (int j = 1; j < prices.length; j++) {
-                dp[i][j] = Math.max(cost + prices[j], dp[i][j - 1]);
-                cost = Math.max(cost, dp[i - 1][j - 1] - prices[j]);
-            }
-        }
-        return dp[k][prices.length - 1];
-
-    }
 
     /**
      * 174. Dungeon Game

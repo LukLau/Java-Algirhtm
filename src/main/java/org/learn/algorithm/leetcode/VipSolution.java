@@ -1,6 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.Interval;
+import org.learn.algorithm.datastructure.Point;
 import org.learn.algorithm.datastructure.TreeNode;
 
 import java.util.*;
@@ -812,6 +813,20 @@ public class VipSolution {
 
     private int getAreaEdge(char[][] image, int i, int row, int y, int column, boolean vertical) {
         return 0;
+    }
+
+
+    /**
+     * 305
+     * Number of Islands II
+     *
+     * @param n:         An integer
+     * @param m:         An integer
+     * @param operators: an array of point
+     * @return: an integer array
+     */
+    public List<Integer> numIslands2(int n, int m, Point[] operators) {
+        // write your code here
     }
 
 

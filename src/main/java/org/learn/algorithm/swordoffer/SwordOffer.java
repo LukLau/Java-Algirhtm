@@ -1,5 +1,6 @@
 package org.learn.algorithm.swordoffer;
 
+import com.sun.tools.classfile.CharacterRangeTable_attribute;
 import jdk.internal.org.objectweb.asm.tree.MultiANewArrayInsnNode;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.ListNode;
@@ -25,8 +26,9 @@ public class SwordOffer {
         SwordOffer offer = new SwordOffer();
         String[] param = new String[]{"1", "1", "2", "3"};
         int[] num = new int[]{1, 3, 5, 2, 2};
-        String s = "(3+4)*(5+(2-3))";
-        System.out.println(offer.basicCalculator(s));
+        String s = "- (3 + (4 + 5))";
+//        System.out.println(offer.basicCalculator(s));
+        System.out.println(offer.calculate(s));
     }
 
     /**
@@ -1572,13 +1574,18 @@ public class SwordOffer {
             }
             // 达到字符串末尾 或者达到下一个 符号位的时候 处理前面的表达式
             // 1 - 2 * 3  达到-符号位时
-            if (index == words.length || (words[index] != '(' && words[index] != ')')) {
+            if (index == words.length || ((words[index] != '(' && words[index] != ')') && words[index] != ' ')) {
                 if (sign == '+') {
                     stack.push(stack.pop());
                 } else if (sign == '-') {
                     stack.push(-stack.pop());
                 } else if (sign == '*') {
                     stack.push(stack.pop() * stack.pop());
+                } else if (sign == '/') {
+                    int dividend = stack.pop();
+                    int divisor = stack.pop();
+                    stack.push(divisor / dividend);
+
                 }
                 if (index != words.length) {
                     sign = words[index];
@@ -1607,6 +1614,106 @@ public class SwordOffer {
             index++;
         }
         return -1;
+    }
+
+
+    /**
+     * 227. Basic Calculator II
+     *
+     * @param s
+     * @return
+     */
+    public int calculateII(String s) {
+        if (s == null) {
+            return 0;
+        }
+        s = s.trim();
+        if (s.isEmpty()) {
+            return 0;
+        }
+        char[] words = s.toCharArray();
+        int result = 0;
+        char sign = '+';
+        int endIndex = 0;
+        Stack<Integer> stack = new Stack<>();
+        while (endIndex < words.length) {
+            if (Character.isDigit(words[endIndex])) {
+                int tmp = 0;
+                while (endIndex < words.length && Character.isDigit(words[endIndex])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[endIndex]);
+                    endIndex++;
+                }
+                stack.push(tmp);
+            }
+            if (endIndex == words.length || words[endIndex] != ' ') {
+                if (sign == '+') {
+                    stack.push(stack.pop());
+                } else if (sign == '-') {
+                    stack.push(stack.pop() * -1);
+                } else if (sign == '*') {
+                    stack.push(stack.pop() * stack.pop());
+                } else if (sign == '/') {
+                    int dividend = stack.pop();
+                    int divisor = stack.pop();
+                    stack.push(divisor / dividend);
+                }
+                if (endIndex != words.length && words[endIndex] != ' ') {
+                    sign = words[endIndex];
+                }
+            }
+            endIndex++;
+        }
+        for (Integer tmp : stack) {
+            result += tmp;
+        }
+        return result;
+    }
+
+
+    public int calculate(String s) {
+        if (s == null) {
+            return 0;
+        }
+        if (s.isEmpty()) {
+            return 0;
+        }
+        char[] words = s.toCharArray();
+        int result = 0;
+        int endIndex = 0;
+        int sign = 1;
+        Stack<Integer> stack = new Stack<>();
+        while (endIndex < words.length) {
+            if (Character.isDigit(words[endIndex])) {
+                int tmp = 0;
+                while (endIndex < words.length && Character.isDigit(words[endIndex])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[endIndex]);
+                    endIndex++;
+                }
+                result += sign * tmp;
+            }
+            if (endIndex == words.length || words[endIndex] != ' ') {
+                if (endIndex != words.length) {
+                    char currentSign = words[endIndex];
+                    if (currentSign == '+') {
+                        sign = 1;
+                    } else if (currentSign == '-') {
+                        sign = -1;
+                    }
+                    if (currentSign == '(') {
+                        stack.push(result);
+                        stack.push(sign);
+                        result = 0;
+                        sign = 1;
+                    }
+                    if (currentSign == ')') {
+                        Integer pop = stack.pop();
+                        result = pop * result + stack.pop();
+                    }
+                }
+            }
+            endIndex++;
+        }
+        return result;
     }
 
 
