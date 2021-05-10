@@ -1,8 +1,8 @@
 package org.learn.algorithm.leetcode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.learn.algorithm.datastructure.TreeNode;
+
+import java.util.*;
 
 /**
  * 动态规划问题
@@ -780,6 +780,65 @@ public class DynamicSolution {
             dp[i] = tmp;
         }
         return dp[n];
+    }
 
+
+    /**
+     * todo
+     * 312. Burst Balloons
+     *
+     * @param nums: A list of integer
+     * @return: An integer, maximum coins
+     */
+    public int maxCoins(int[] nums) {
+        // write your code here
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int len = nums.length;
+        int[] dp = new int[len + 2];
+        dp[0] = 1;
+        dp[len + 1] = 1;
+        for (int i = 1; i <= len; i++) {
+        }
+        for (int i = 1; i <= len; i++) {
+            dp[i] = nums[i - 1];
+        }
+        return -1;
+    }
+
+
+    /**
+     * 314
+     * Binary Tree Vertical Order Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> verticalOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Queue<Integer> columnQueue = new LinkedList<>();
+        Map<Integer, List<Integer>> map = new TreeMap<>();
+        columnQueue.offer(0);
+        Queue<TreeNode> nodeQueue = new LinkedList<>();
+        nodeQueue.add(root);
+        while (!nodeQueue.isEmpty()) {
+            Integer poll = columnQueue.poll();
+            TreeNode node = nodeQueue.poll();
+            List<Integer> tmp = map.getOrDefault(poll, new ArrayList<>());
+            tmp.add(node.val);
+            map.put(poll, tmp);
+            if (node.left != null) {
+                columnQueue.offer(poll - 1);
+                nodeQueue.offer(node.left);
+            }
+            if (node.right != null) {
+                columnQueue.offer(poll + 1);
+                nodeQueue.offer(node.right);
+            }
+        }
+        return new ArrayList<>(map.values());
     }
 }

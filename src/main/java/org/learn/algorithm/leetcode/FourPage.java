@@ -1,5 +1,7 @@
 package org.learn.algorithm.leetcode;
 
+import org.thymeleaf.expression.Strings;
+
 import java.util.*;
 
 /**
@@ -12,8 +14,8 @@ public class FourPage {
 
     public static void main(String[] args) {
         FourPage fourPage = new FourPage();
-
-        System.out.println(fourPage.removeInvalidParentheses("()())()"));
+        String s = "cbacdcbc";
+        System.out.println(fourPage.removeDuplicateLetters(s));
     }
 
 
@@ -76,5 +78,55 @@ public class FourPage {
             }
         }
         return count == 0;
+    }
+
+
+    public boolean isAdditiveNumber(String num) {
+        if (num == null || num.isEmpty()) {
+            return true;
+        }
+        int len = num.length();
+        for (int i = 1; i < len; i++) {
+            if (num.charAt(0) == '0' && i > 1) {
+                return false;
+            }
+            for (int j = i + 1; len - j >= j - i && len - j >= i; j++) {
+                if (num.charAt(j) == '0' && j - i > 2) {
+                    break;
+                }
+                long num1 = Long.parseLong(num.substring(0, i));
+                long num2 = Long.parseLong(num.substring(i, i + j));
+                if (isAdditive(num.substring(i + j), num1, num2)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isAdditive(String substring, long num1, long num2) {
+        if (substring.isEmpty()) {
+            return true;
+        }
+        long sum = num1 + num2;
+        String value = String.valueOf(sum);
+        if (!substring.startsWith(value)) {
+            return false;
+        }
+        return isAdditiveNumber(substring.substring(value.length()));
+    }
+
+
+    /**
+     * 316. Remove Duplicate Letters
+     *
+     * @param s
+     * @return
+     */
+    public String removeDuplicateLetters(String s) {
+        if (s == null || s.isEmpty()) {
+            return "";
+        }
+        return "";
     }
 }

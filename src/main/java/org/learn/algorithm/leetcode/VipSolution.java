@@ -817,6 +817,7 @@ public class VipSolution {
 
 
     /**
+     * todo 并查集
      * 305
      * Number of Islands II
      *
@@ -827,6 +828,41 @@ public class VipSolution {
      */
     public List<Integer> numIslands2(int n, int m, Point[] operators) {
         // write your code here
+        int[][] matrix = new int[n][m];
+        List<Integer> result = new ArrayList<>();
+        PriorityQueue<Point> queue = new PriorityQueue<>(new Comparator<Point>() {
+            @Override
+            public int compare(Point o1, Point o2) {
+                if (o1.x == o2.x) {
+                    return o1.y - o2.y;
+                }
+                return o1.x - o2.x;
+            }
+        });
+        for (Point operator : operators) {
+            if (queue.isEmpty()) {
+                queue.offer(operator);
+            } else {
+
+
+            }
+            result.add(queue.size());
+        }
+        return result;
+    }
+
+
+    /**
+     * 311.
+     * 稀疏矩阵乘法
+     *
+     * @param A: a sparse matrix
+     * @param B: a sparse matrix
+     * @return: the result of A * B
+     */
+    public int[][] multiply(int[][] A, int[][] B) {
+        // write your code here
+        return null;
     }
 
 

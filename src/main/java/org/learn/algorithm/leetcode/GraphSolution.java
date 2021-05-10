@@ -2,6 +2,8 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.Node;
 
+import java.util.List;
+
 /**
  * 图相关
  *
@@ -38,6 +40,7 @@ public class GraphSolution {
     /**
      * todo
      * 210. Course Schedule II
+     *
      * @param numCourses
      * @param prerequisites
      * @return
@@ -46,6 +49,18 @@ public class GraphSolution {
         return null;
     }
 
+
+    /**
+     * todo
+     * 310. Minimum Height Trees
+     *
+     * @param n
+     * @param edges
+     * @return
+     */
+    public List<Integer> findMinHeightTrees(int n, int[][] edges) {
+        return null;
+    }
 
 
 }
