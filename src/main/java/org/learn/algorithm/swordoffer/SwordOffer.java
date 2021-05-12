@@ -1,11 +1,10 @@
 package org.learn.algorithm.swordoffer;
 
 import org.learn.algorithm.datastructure.ListNode;
+import org.learn.algorithm.datastructure.RandomListNode;
 import org.learn.algorithm.datastructure.TreeNode;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * @author luk
@@ -14,15 +13,10 @@ import java.util.Stack;
 public class SwordOffer {
 
     public static void main(String[] args) {
-        ListNode dummy = new ListNode(1);
-        dummy.next = new ListNode(2);
-
-        dummy.next.next = new ListNode(3);
-
-        dummy.next.next.next = new ListNode(4);
 
         SwordOffer offer = new SwordOffer();
-        offer.printListFromTailToHead(dummy);
+
+        System.out.println(offer.PermutationV2("ab"));
     }
 
     public boolean Find(int target, int[][] array) {
@@ -170,11 +164,11 @@ public class SwordOffer {
     }
 
     private boolean intervalVerify(int[] sequence, int start, int end) {
-        if (start == end) {
-            return true;
-        }
         if (start > end) {
             return false;
+        }
+        if (start == end) {
+            return true;
         }
         int leftIndex = start;
         while (leftIndex < end && sequence[leftIndex] < sequence[end]) {
@@ -187,7 +181,10 @@ public class SwordOffer {
         if (rightIndex != end) {
             return false;
         }
-        return intervalVerify(sequence, start, leftIndex - 1) && this.intervalVerify(sequence, leftIndex, end - 1);
+        if (leftIndex == start || leftIndex == end) {
+            return true;
+        }
+        return intervalVerify(sequence, start, leftIndex - 1) && intervalVerify(sequence, leftIndex, end - 1);
     }
 
     public ArrayList<ArrayList<Integer>> FindPath(TreeNode root, int target) {
@@ -203,7 +200,6 @@ public class SwordOffer {
         tmp.add(root.val);
         if (root.left == null && root.right == null && root.val == target) {
             result.add(new ArrayList<>(tmp));
-            return;
         } else {
             if (root.left != null) {
                 intervalPath(result, tmp, root.left, target - root.val);
@@ -215,5 +211,171 @@ public class SwordOffer {
         tmp.remove(tmp.size() - 1);
     }
 
+
+    public RandomListNode Clone(RandomListNode pHead) {
+        if (pHead == null) {
+            return null;
+        }
+        RandomListNode current = pHead;
+        while (current != null) {
+
+            RandomListNode next = current.next;
+
+            RandomListNode node = new RandomListNode(current.label);
+
+            node.next = next;
+
+            current.next = node;
+
+            current = next;
+        }
+        current = pHead;
+        while (current != null) {
+            RandomListNode next = current.next;
+            if (current.random != null) {
+                next.random = current.random.next;
+            }
+            current = next.next;
+        }
+        current = pHead;
+        RandomListNode copyHead = current.next;
+        while (current.next != null) {
+            RandomListNode next = current.next;
+            current.next = next.next;
+            current = next;
+        }
+        return copyHead;
+    }
+
+    public TreeNode Convert(TreeNode pRootOfTree) {
+        if (pRootOfTree == null) {
+            return null;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode prev = null;
+        TreeNode root = null;
+        TreeNode p = pRootOfTree;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            if (root == null) {
+                root = p;
+            }
+            if (prev != null) {
+                prev.right = p;
+                p.left = prev;
+            }
+            prev = p;
+            p = p.right;
+        }
+        return root;
+    }
+
+
+    public ArrayList<String> Permutation(String str) {
+        if (str == null || str.isEmpty()) {
+            return new ArrayList<>();
+        }
+        char[] words = str.toCharArray();
+        Arrays.sort(words);
+        ArrayList<String> result = new ArrayList<>();
+        intervalPermutation(result, 0, words);
+        result.sort(String::compareTo);
+        return result;
+    }
+
+    private void intervalPermutation(ArrayList<String> result, int start, char[] words) {
+        if (start == words.length) {
+            result.add(String.valueOf(words));
+            return;
+        }
+        for (int i = start; i < words.length; i++) {
+            if (i > start && words[i] == words[start]) {
+                continue;
+            }
+            swapWord(words, i, start);
+            intervalPermutation(result, start + 1, words);
+            swapWord(words, i, start);
+        }
+    }
+
+    private void swapWord(char[] words, int i, int j) {
+        char tmp = words[i];
+        words[i] = words[j];
+        words[j] = tmp;
+    }
+
+    public ArrayList<String> PermutationV2(String str) {
+        if (str == null) {
+            return new ArrayList<>();
+        }
+        ArrayList<String> result = new ArrayList<>();
+        char[] words = str.toCharArray();
+        Arrays.sort(words);
+        boolean[] used = new boolean[words.length];
+        intervalPermutation(result, words, "", used);
+        return result;
+
+    }
+
+    private void intervalPermutation(List<String> result, char[] words, String s, boolean[] used) {
+        if (s.length() == words.length) {
+            result.add(s);
+            return;
+        }
+        for (int i = 0; i < words.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            if (i > 0 && words[i] == words[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            s += words[i];
+            used[i] = true;
+            intervalPermutation(result, words, s, used);
+            s = s.substring(0, s.length() - 1);
+            used[i] = false;
+        }
+    }
+
+    public int MoreThanHalfNum_Solution(int[] array) {
+        int candidate = array[0];
+        int count = 0;
+        for (int num : array) {
+            if (num == candidate) {
+                count++;
+            } else {
+                count--;
+                if (count == 0) {
+                    candidate = num;
+                    count = 1;
+                }
+            }
+        }
+        count = 0;
+        for (int num : array) {
+            if (candidate == num) {
+                count++;
+            }
+        }
+        return 2 * count > array.length ? candidate : 0;
+    }
+
+    public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
+        if (input == null || input.length == 0 || k <= 0 || k > input.length) {
+            return new ArrayList<>();
+        }
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Comparator.reverseOrder());
+        for (int tmp : input) {
+            priorityQueue.offer(tmp);
+            if (priorityQueue.size() > k) {
+                priorityQueue.poll();
+            }
+        }
+        return new ArrayList<>(priorityQueue);
+    }
 
 }
