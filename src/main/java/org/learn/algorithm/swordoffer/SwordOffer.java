@@ -1,5 +1,6 @@
 package org.learn.algorithm.swordoffer;
 
+import jdk.nashorn.internal.ir.ReturnNode;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.RandomListNode;
 import org.learn.algorithm.datastructure.TreeNode;
@@ -16,7 +17,9 @@ public class SwordOffer {
 
         SwordOffer offer = new SwordOffer();
 
-        System.out.println(offer.PermutationV2("ab"));
+        int[] nums = new int[]{1, 3, 0, 5, 0};
+
+        offer.IsContinuous(nums);
     }
 
     public boolean Find(int target, int[][] array) {
@@ -377,5 +380,272 @@ public class SwordOffer {
         }
         return new ArrayList<>(priorityQueue);
     }
+
+
+    public int GetNumberOfK(int[] array, int k) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = array.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (array[mid] < k) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        if (array[left] != k) {
+            return 0;
+        }
+        int firstIndex = left;
+        right = array.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2 + 1;
+            if (array[mid] > k) {
+                right = mid - 1;
+            } else {
+                left = mid;
+            }
+        }
+        return left - firstIndex + 1;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param array int整型一维数组
+     * @return int整型一维数组
+     */
+    public int[] FindNumsAppearOnce(int[] array) {
+        // write code here
+        if (array == null || array.length <= 2) {
+            return array;
+        }
+        int result = 0;
+        for (int num : array) {
+            result ^= num;
+        }
+        int index = 0;
+        for (int i = 0; i < 32; i++) {
+            if ((result & (1 << i)) != 0) {
+                index = i;
+                break;
+            }
+        }
+        int[] ans = new int[2];
+        for (int num : array) {
+            if ((num & (1 << index)) != 0) {
+                ans[0] ^= num;
+            } else {
+                ans[1] ^= num;
+            }
+        }
+        return ans;
+    }
+
+
+    public String LeftRotateString(String str, int n) {
+        int len = str.length();
+        if (len < n) {
+            return "";
+        }
+        str += str;
+        return str.substring(n, n + len);
+    }
+
+    public String ReverseSentence(String str) {
+        if (str == null || str.isEmpty()) {
+            return "";
+        }
+        String[] words = str.split(" ");
+        StringBuilder builder = new StringBuilder();
+        for (int i = words.length - 1; i >= 0; i--) {
+            builder.append(words[i]);
+            if (i != 0) {
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
+    }
+
+
+    public boolean IsContinuous(int[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return false;
+        }
+        Arrays.sort(numbers);
+        int max = 0;
+        int min = 14;
+        int zeroCount = 0;
+        for (int i = 0; i < numbers.length; i++) {
+            int val = numbers[i];
+            if (val == 0) {
+                zeroCount++;
+                continue;
+            }
+
+            if (i > 0 && val == numbers[i - 1]) {
+                return false;
+            }
+            if (val > max) {
+                max = val;
+            }
+            if (val < min) {
+                min = val;
+            }
+        }
+        if (zeroCount >= 4) {
+            return true;
+        }
+        return max - min >= 5;
+    }
+
+    public int LastRemaining_Solution(int n, int m) {
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            result.add(i);
+        }
+        int current = 0;
+        while (result.size() > 1) {
+            int len = result.size();
+            int index = (current + m - 1) % len;
+            result.remove(index);
+            current = index % (len - 1);
+        }
+        return result.isEmpty() ? -1 : result.get(0);
+    }
+
+    public int Sum_Solution(int n) {
+        int sum = n;
+        boolean format = sum > 0 && (sum += Sum_Solution(n - 1)) > 0;
+        return sum;
+    }
+
+    /**
+     * todo
+     *
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public int Add(int num1, int num2) {
+        return -1;
+    }
+
+    public int StrToInt(String str) {
+        if (str == null) {
+            return 0;
+        }
+        str = str.trim();
+        if (str.isEmpty()) {
+            return 0;
+        }
+        char[] words = str.toCharArray();
+        int sign = 1;
+        int index = 0;
+        if (words[index] == '+' || words[index] == '-') {
+            sign = words[index] == '+' ? 1 : -1;
+            index++;
+        }
+        long result = 0;
+        while (index < words.length && Character.isDigit(words[index])) {
+            result = result * 10 + Character.getNumericValue(words[index]);
+
+            if (result > Integer.MAX_VALUE) {
+                return 0;
+            }
+            index++;
+        }
+        if (index != words.length) {
+            return 0;
+        }
+        return (int) (result * sign);
+    }
+
+    public int[] multiply(int[] A) {
+        if (A == null || A.length == 0) {
+            return A;
+        }
+        int len = A.length;
+        int base = 1;
+        int[] result = new int[len];
+        for (int i = 0; i < A.length; i++) {
+            result[i] = base;
+            base *= A[i];
+        }
+        base = 1;
+        for (int i = A.length - 1; i >= 0; i--) {
+            result[i] *= base;
+            base *= A[i];
+        }
+        return result;
+    }
+
+
+    /**
+     * todo
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param str     string字符串
+     * @param pattern string字符串
+     * @return bool布尔型
+     */
+    public boolean match(String str, String pattern) {
+        // write code here
+        if (pattern.isEmpty()) {
+            return str.isEmpty();
+        }
+        int m = str.length();
+        int n = pattern.length();
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int i = 1; i <= n; i++) {
+            if (pattern.charAt(i - 1) == '*') {
+                dp[0][i] = true;
+            }
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (str.charAt(i - 1) == pattern.charAt(j - 1) || pattern.charAt(j - 1) == '.') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (pattern.charAt(j - 1) == '*') {
+                    if (str.charAt(i - 1) == pattern.charAt(j - 2) || pattern.charAt(j - 2) == '.') {
+                        dp[i][j] = dp[i][j - 1];
+                    } else {
+                        dp[i][j] = dp[i - 1][j] || dp[i - 1][j - 1] || dp[i][j - 1];
+                    }
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param str string字符串
+     * @return bool布尔型
+     */
+    public boolean isNumeric(String str) {
+        // write code here
+        return false;
+    }
+
+    public ListNode EntryNodeOfLoop(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return null;
+        }
+        ListNode fast = pHead;
+        ListNode slow = pHead;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+
+    }
+
 
 }
