@@ -68,4 +68,52 @@ public class Codec {
         root.right = intervalDeserialize(deque);
         return root;
     }
+
+
+    public String Serialize(TreeNode root) {
+        if (root == null) {
+            return "#,";
+        }
+        StringBuilder builder = new StringBuilder();
+        intervalBuilder(builder, root);
+        return builder.toString();
+    }
+
+    private void intervalBuilder(StringBuilder builder, TreeNode root) {
+        if (root == null) {
+            builder.append("#,");
+        }
+        builder.append(root.val).append(",");
+        intervalBuilder(builder, root.left);
+        intervalBuilder(builder, root.right);
+
+    }
+
+    public TreeNode Deserialize(String str) {
+        if (str == null || str.isEmpty()) {
+            return null;
+        }
+        LinkedList<String> queue = new LinkedList<>();
+        String[] words = str.split(",");
+        for (String word : words) {
+            queue.offer(word);
+        }
+        return Deserialize(queue);
+
+    }
+
+    private TreeNode Deserialize(LinkedList<String> queue) {
+        if (queue.isEmpty()) {
+            return null;
+        }
+        String poll = queue.poll();
+        if ("#".equals(poll)) {
+            return null;
+        }
+        TreeNode root = new TreeNode(Integer.parseInt(poll));
+        root.left = Deserialize(queue);
+        root.right = Deserialize(queue);
+        return root;
+    }
+
 }

@@ -1,8 +1,8 @@
 package org.learn.algorithm.swordoffer;
 
-import jdk.nashorn.internal.ir.ReturnNode;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.RandomListNode;
+import org.learn.algorithm.datastructure.TreeLinkNode;
 import org.learn.algorithm.datastructure.TreeNode;
 
 import java.util.*;
@@ -643,7 +643,76 @@ public class SwordOffer {
         while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
+            if (slow == fast) {
+                fast = pHead;
+                while (slow != fast) {
+                    fast = fast.next;
+                    slow = slow.next;
+                    ;
+                }
+                return slow;
+            }
         }
+        return null;
+    }
+
+    public ListNode deleteDuplication(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return pHead;
+        }
+        if (pHead.val == pHead.next.val) {
+            ListNode current = pHead.next.next;
+            while (current != null && current.val == pHead.val) {
+                current = current.next;
+            }
+            return deleteDuplication(current);
+        }
+        pHead.next = deleteDuplication(pHead.next);
+        return pHead;
+    }
+
+    public TreeLinkNode GetNext(TreeLinkNode pNode) {
+        if (pNode == null) {
+            return null;
+        }
+        TreeLinkNode right = pNode.right;
+        if (right != null) {
+            while (right.left != null) {
+                right = right.left;
+            }
+            return right;
+        }
+        while (pNode.next != null) {
+            if (pNode.next.left == pNode) {
+                return pNode.next;
+            }
+            pNode = pNode.next;
+        }
+        return null;
+    }
+
+    public boolean isSymmetrical(TreeNode pRoot) {
+        if (pRoot == null) {
+            return false;
+        }
+        return intervalSymmetrical(pRoot.left, pRoot.right);
+    }
+
+    private boolean intervalSymmetrical(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
+        }
+        if (left == null || right == null) {
+            return false;
+        }
+        if (left.val != right.val) {
+            return false;
+        }
+        return intervalSymmetrical(left.left, right.right) && intervalSymmetrical(left.right, right.left);
+    }
+
+
+    public int cutRope(int target) {
 
     }
 
