@@ -14,8 +14,7 @@ public class FourPage {
 
     public static void main(String[] args) {
         FourPage fourPage = new FourPage();
-        String s = "cbacdcbc";
-        System.out.println(fourPage.removeDuplicateLetters(s));
+        fourPage.generateAbbreviations("word");
     }
 
 
@@ -129,4 +128,74 @@ public class FourPage {
         }
         return "";
     }
+
+    /**
+     * 318. Maximum Product of Word Lengths
+     * todo
+     *
+     * @param words
+     * @return
+     */
+    public int maxProduct(String[] words) {
+        if (words == null || words.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        for (String word : words) {
+            for (String s : words) {
+                if (s.equals(word)) {
+                    continue;
+                }
+                boolean isPrefix = false;
+                char[] tmp = s.toCharArray();
+                for (char t : tmp) {
+                    if (word.indexOf(t) != -1) {
+                        isPrefix = true;
+                        break;
+                    }
+                }
+                if (!isPrefix) {
+                    result = Math.max(result, word.length() * s.length());
+                }
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * todo
+     * 320
+     * Generalized Abbreviation
+     *
+     * @param word: the given word
+     * @return: the generalized abbreviations of a word
+     */
+    public List<String> generateAbbreviations(String word) {
+        // Write your code here
+        if (word == null || word.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        intervalGenerate(result, 0, 0, "", word);
+        return result;
+    }
+
+    private void intervalGenerate(List<String> result, int count, int pos, String s, String word) {
+        if (pos == word.length()) {
+            if (count > 0) {
+                s += count;
+            }
+            result.add(s);
+            return;
+        }
+        intervalGenerate(result, count + 1, pos + 1, s, word);
+        if (count > 0) {
+            s = s + count + word.charAt(pos);
+        } else {
+            s = s + word.charAt(pos);
+        }
+        intervalGenerate(result, 0, pos + 1, s, word);
+    }
+
 }
