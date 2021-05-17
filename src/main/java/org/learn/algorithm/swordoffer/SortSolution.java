@@ -1,12 +1,7 @@
 package org.learn.algorithm.swordoffer;
 
-import com.sun.corba.se.impl.oa.NullServantImpl;
-import com.sun.org.apache.bcel.internal.generic.LNEG;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 
 import java.util.Random;
-import java.util.logging.Level;
 
 /**
  * 常用排序问题

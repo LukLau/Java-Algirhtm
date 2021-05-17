@@ -5,7 +5,10 @@ import org.learn.algorithm.datastructure.RandomListNode;
 import org.learn.algorithm.datastructure.TreeLinkNode;
 import org.learn.algorithm.datastructure.TreeNode;
 
+import javax.swing.plaf.SliderUI;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 
 /**
  * @author luk
@@ -54,6 +57,7 @@ public class SwordOffer {
         if (s == null || s.isEmpty()) {
             return "";
         }
+        Thread
         String[] words = s.split(" ", -1);
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < words.length; i++) {
@@ -125,6 +129,7 @@ public class SwordOffer {
         if (pushA == null || popA == null) {
             return false;
         }
+
         Stack<Integer> stack = new Stack<>();
         int j = 0;
         for (int i = 0; i < pushA.length; i++) {
@@ -715,4 +720,57 @@ public class SwordOffer {
     }
 
 
+    public double Power(double base, int exponent) {
+        if (exponent == 0) {
+            return 1;
+        }
+        if (exponent < 0) {
+            exponent = -exponent;
+            base = 1 / base;
+        }
+        return exponent % 2 == 0 ? Power(base * base, exponent / 2) : base * Power(base * base, exponent / 2);
+    }
+
+    public ListNode FindKthToTail(ListNode pHead, int k) {
+        if (pHead == null || k <= 0) {
+            return null;
+        }
+        int count = 1;
+        ListNode fast = pHead;
+        while (fast.next != null) {
+            fast = fast.next;
+            count++;
+        }
+        if (count < k) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+        root.next = pHead;
+        fast = root;
+        for (int i = 0; i < count - k; i++) {
+            fast = fast.next;
+        }
+        return fast.next;
+    }
+
+
+    public boolean HasSubtree(TreeNode root1, TreeNode root2) {
+        if (root1 == null || root2 == null) {
+            return false;
+        }
+        return isSubTree(root1, root2) || HasSubtree(root1.left, root2) || HasSubtree(root1.right, root2);
+    }
+
+    private boolean isSubTree(TreeNode root1, TreeNode root2) {
+        if (root2 == null) {
+            return true;
+        }
+        if (root1 == null) {
+            return false;
+        }
+        if (root1.val == root2.val) {
+            return isSubTree(root1.left, root2.left) && isSubTree(root1.right, root2.right);
+        }
+        return false;
+    }
 }
