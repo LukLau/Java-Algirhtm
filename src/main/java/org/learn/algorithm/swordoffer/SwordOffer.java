@@ -19,7 +19,7 @@ public class SwordOffer {
 
         int[] nums = new int[]{1, 3, 0, 5, 0};
 
-        offer.IsContinuous(nums);
+        offer.cutRope(4);
     }
 
     public boolean Find(int target, int[][] array) {
@@ -712,8 +712,104 @@ public class SwordOffer {
     }
 
 
-    public int cutRope(int target) {
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param matrix char字符型二维数组
+     * @param word   string字符串
+     * @return bool布尔型
+     */
+    public boolean hasPath(char[][] matrix, String word) {
+        // write code here
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        int row = matrix.length;
 
+        int column = matrix[0].length;
+
+        boolean[][] used = new boolean[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (matrix[i][j] == word.charAt(0) && checkPath(i, j, row, column, matrix, 0, word, used)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkPath(int i, int j, int row, int column, char[][] matrix, int start, String word, boolean[][] used) {
+        if (start == word.length()) {
+            return true;
+        }
+        if (i < 0 || i == row || j < 0 || j == column || used[i][j] || matrix[i][j] != word.charAt(start)) {
+            return false;
+        }
+        used[i][j] = true;
+        if (checkPath(i - 1, j, row, column, matrix, start + 1, word, used)
+                || checkPath(i + 1, j, row, column, matrix, start + 1, word, used)
+                || checkPath(i, j - 1, row, column, matrix, start + 1, word, used)
+                || checkPath(i, j + 1, row, column, matrix, start + 1, word, used)) {
+            return true;
+        }
+        used[i][j] = false;
+        return false;
+    }
+
+    public int movingCount(int threshold, int rows, int cols) {
+        if (threshold <= 0) {
+            return 0;
+        }
+        boolean[][] used = new boolean[rows][cols];
+        return count(used, 0, 0, rows, cols, threshold);
+    }
+
+    private int count(boolean[][] used, int i, int j, int rows, int cols, int threshold) {
+        if (i < 0 || i == rows || j < 0 || j == cols || used[i][j]) {
+            return 0;
+        }
+        int count = 1;
+        used[i][j] = true;
+        int val = getNum(i) + getNum(j);
+        if (val > threshold) {
+            return 0;
+        }
+        count += count(used, i - 1, j, rows, cols, threshold);
+        count += count(used, i + 1, j, rows, cols, threshold);
+        count += count(used, i, j - 1, rows, cols, threshold);
+        count += count(used, i, j + 1, rows, cols, threshold);
+        return count;
+    }
+
+    private int getNum(int num) {
+        int count = 0;
+        while (num != 0) {
+            count += num % 10;
+            num /= 10;
+        }
+        return count;
+    }
+
+
+    public int cutRope(int target) {
+        if (target == 2) {
+            return 1;
+        }
+        if (target == 3) {
+            return 2;
+        }
+        int[] cut = new int[target + 1];
+        cut[0] = 1;
+        cut[1] = 1;
+        cut[2] = 2;
+        cut[3] = 3;
+        for (int i = 4; i < cut.length; i++) {
+            for (int j = 1; j <= i / 2; j++) {
+                cut[i] = Math.max(cut[i], cut[i - j] * cut[j]);
+            }
+        }
+        return cut[target];
     }
 
 
