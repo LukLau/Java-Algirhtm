@@ -595,15 +595,15 @@ public class InterviewOffer {
         ArrayList<Integer> result = new ArrayList<>();
         LinkedList<Integer> linkedList = new LinkedList<>();
         for (int i = 0; i < num.length; i++) {
-            int k = i - size + 1;
-            if (!linkedList.isEmpty() && linkedList.peekFirst() < k) {
-                linkedList.pollFirst();
+            int index = i - size + 1;
+            if (!linkedList.isEmpty() && linkedList.peek() < index) {
+                linkedList.poll();
             }
             while (!linkedList.isEmpty() && num[linkedList.peekLast()] <= num[i]) {
                 linkedList.pollLast();
             }
             linkedList.offer(i);
-            if (k >= 0) {
+            if (index >= 0) {
                 result.add(num[linkedList.peekFirst()]);
             }
         }
