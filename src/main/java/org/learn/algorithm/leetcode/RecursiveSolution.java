@@ -1,5 +1,7 @@
 package org.learn.algorithm.leetcode;
 
+import org.learn.algorithm.datastructure.Trie;
+
 import java.util.*;
 
 /**
@@ -92,7 +94,9 @@ public class RecursiveSolution {
         int[] nums = new int[]{2, 3, 6, 7};
 //        char[][] matrix = new char[][]{{'X', 'X', 'X', 'X'}, {'X', 'O', 'O', 'X'}, {'X', 'X', 'O', 'X'}, {'X', 'O', 'X', 'X'}};
         char[][] matrix = new char[][]{{'O', 'O', 'O'}, {'O', 'O', 'O'}, {'O', 'O', 'O'}};
-        solution.solve(matrix);
+//        solution.diffWaysToCompute("11");
+
+        solution.addOperators("123", 6);
     }
 
     // --组合系列问题-//
@@ -318,14 +322,87 @@ public class RecursiveSolution {
             return "";
         }
         List<Integer> nums = new ArrayList<>();
-        for (int i = 0; i <= n; i++) {
+        for (int i = 1; i <= n; i++) {
             nums.add(i);
         }
-        k--;
-        while (n-- > 0) {
-
+        int[] factors = new int[n + 1];
+        factors[0] = 1;
+        int base = 1;
+        for (int i = 1; i <= n; i++) {
+            base *= i;
+            factors[i] = i;
         }
-        return "";
+        StringBuilder builder = new StringBuilder();
+        k--;
+        for (int i = 0; i < n; i++) {
+            int index = k / factors[n - 1 - i];
+            builder.append(index);
+            nums.remove(index);
+            k -= index * factors[n - 1 - i];
+        }
+        return builder.toString();
+    }
+
+
+    /**
+     * 216. Combination Sum III
+     *
+     * @param k
+     * @param n
+     * @return
+     */
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        if (k <= 0 || n <= 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        intervalCombinationIII(result, new ArrayList<>(), 1, k, n);
+        return result;
+    }
+
+    private void intervalCombinationIII(List<List<Integer>> result, List<Integer> tmp, int start, int k, int target) {
+        if (tmp.size() == k && target == 0) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i <= 9 && i <= target; i++) {
+            tmp.add(i);
+            intervalCombinationIII(result, tmp, i + 1, k, target - i);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+
+    /**
+     * 254
+     * Factor Combinations
+     *
+     * @param n: a integer
+     * @return: return a 2D array
+     */
+    public List<List<Integer>> getFactors(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        // write your code here
+        intervalFactors(result, new ArrayList<>(), 2, n);
+        return result;
+    }
+
+    private void intervalFactors(List<List<Integer>> result, List<Integer> tmp, int start, int n) {
+        if (n == 1 && tmp.size() > 1) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i <= n; i++) {
+            if (n % i != 0) {
+                continue;
+            }
+            tmp.add(i);
+            intervalFactors(result, tmp, i, n / i);
+            tmp.remove(tmp.size() - 1);
+        }
     }
 
 
@@ -381,6 +458,57 @@ public class RecursiveSolution {
 
 
     /**
+     * todo
+     * 212. Word Search II
+     *
+     * @param board
+     * @param words
+     * @return
+     */
+    public List<String> findWords(char[][] board, String[] words) {
+        if (board == null || board.length == 0) {
+            return new ArrayList<>();
+        }
+        Trie trie = new Trie();
+        for (String word : words) {
+            trie.insert(String.valueOf(word));
+        }
+        List<String> result = new ArrayList<>();
+        int row = board.length;
+        int column = board[0].length;
+        boolean[][] used = new boolean[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                String s = String.valueOf(board[i][j]);
+                if (trie.startsWith(s)) {
+                    intervalFindWords(result, trie, used, s, i, j, board);
+                }
+            }
+        }
+        return result;
+    }
+
+    private void intervalFindWords(List<String> result, Trie trie, boolean[][] used, String s, int i, int j, char[][] board) {
+        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || used[i][j]) {
+            return;
+        }
+        s += board[i][j];
+        if (trie.search(s)) {
+            result.add(s);
+        }
+        if (!trie.startsWith(s)) {
+            return;
+        }
+        used[i][j] = true;
+        intervalFindWords(result, trie, used, s, i - 1, j, board);
+        intervalFindWords(result, trie, used, s, i + 1, j, board);
+        intervalFindWords(result, trie, used, s, i, j - 1, board);
+        intervalFindWords(result, trie, used, s, i, j + 1, board);
+        used[i][j] = false;
+    }
+
+
+    /**
      * 130. Surrounded Regions
      *
      * @param board
@@ -419,6 +547,82 @@ public class RecursiveSolution {
         intervalSolve(i + 1, j, board);
         intervalSolve(i, j - 1, board);
         intervalSolve(i, j + 1, board);
+    }
+
+
+    /**
+     * 200. Number of Islands
+     *
+     * @param grid
+     * @return
+     */
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        int count = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (grid[i][j] == '1') {
+                    intervalIslands(grid, i, j);
+                    count++;
+                }
+            }
+        }
+        return count;
+
+    }
+
+    private void intervalIslands(char[][] grid, int i, int j) {
+        if (i < 0 || i >= grid.length || j < 0 || j == grid[i].length || grid[i][j] != '1') {
+            return;
+        }
+        grid[i][j] = '0';
+        intervalIslands(grid, i - 1, j);
+        intervalIslands(grid, i + 1, j);
+        intervalIslands(grid, i, j - 1);
+        intervalIslands(grid, i, j + 1);
+    }
+
+    /**
+     * 286
+     * Walls and Gates
+     *
+     * @param rooms: m x n 2D grid
+     * @return: nothing
+     */
+    public void wallsAndGates(int[][] rooms) {
+        if (rooms == null || rooms.length == 0) {
+            return;
+        }
+        int row = rooms.length;
+        int column = rooms[0].length;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (rooms[i][j] == 0) {
+                    intervalWallsAndGates(i, j, rooms, 0);
+                }
+            }
+        }
+        // write your code here
+    }
+
+    private void intervalWallsAndGates(int i, int j, int[][] rooms, int distance) {
+        if (i < 0 || i >= rooms.length || j < 0 || j >= rooms[i].length || rooms[i][j] == -1) {
+            return;
+        }
+        if (rooms[i][j] < distance) {
+            return;
+        }
+        if (rooms[i][j] == Integer.MAX_VALUE || rooms[i][j] > distance) {
+            rooms[i][j] = distance;
+        }
+        intervalWallsAndGates(i - 1, j, rooms, distance + 1);
+        intervalWallsAndGates(i + 1, j, rooms, distance + 1);
+        intervalWallsAndGates(i, j - 1, rooms, distance + 1);
+        intervalWallsAndGates(i, j + 1, rooms, distance + 1);
     }
 
 
@@ -540,6 +744,107 @@ public class RecursiveSolution {
         }
         map.put(s, result);
         return result;
+    }
+
+
+    /**
+     * 241. Different Ways to Add Parentheses
+     *
+     * @param expression
+     * @return
+     */
+    public List<Integer> diffWaysToCompute(String expression) {
+        if (expression == null || expression.isEmpty()) {
+            return new ArrayList<>();
+        }
+        char[] words = expression.toCharArray();
+        List<String> params = new ArrayList<>();
+        int endIndex = 0;
+        while (endIndex < words.length) {
+            if (Character.isDigit(words[endIndex])) {
+                int tmp = 0;
+                while (endIndex < words.length && Character.isDigit(words[endIndex])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[endIndex++]);
+                }
+                params.add(String.valueOf(tmp));
+            } else {
+                params.add(String.valueOf(words[endIndex++]));
+            }
+        }
+        String[] expressions = params.toArray(new String[]{});
+        return intervalDiffWays(expressions, 0, expressions.length - 1);
+
+    }
+
+    private List<Integer> intervalDiffWays(String[] words, int start, int end) {
+        List<Integer> result = new ArrayList<>();
+        if (start == end) {
+            result.add(Integer.parseInt(words[start]));
+            return result;
+        }
+        if (start > end) {
+            return result;
+        }
+        for (int i = start + 1; i <= end - 1; i = i + 2) {
+            List<Integer> leftNums = intervalDiffWays(words, start, i - 1);
+            List<Integer> rightNums = intervalDiffWays(words, i + 1, end);
+            String sign = words[i];
+            for (Integer leftNum : leftNums) {
+                int val = 0;
+                for (Integer rightNum : rightNums) {
+                    if ("+".equals(sign)) {
+                        val = leftNum + rightNum;
+                    } else if ("-".equals(sign)) {
+                        val = leftNum - rightNum;
+                    } else if ("*".equals(sign)) {
+                        val = leftNum * rightNum;
+                    } else if ("/".equals(sign)) {
+                        val = leftNum / rightNum;
+                    }
+                    result.add(val);
+                }
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 282. Expression Add Operators
+     *
+     * @param num
+     * @param target
+     * @return
+     */
+    public List<String> addOperators(String num, int target) {
+        if (num == null || num.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        intervalAdd(result, 0, 0, 0, num, target, "");
+        return result;
+    }
+
+    private void intervalAdd(List<String> result, long val, int pos, long multi, String num, int target, String s) {
+        if (pos == num.length() && val == target) {
+            result.add(s);
+            return;
+        }
+        for (int i = pos; i < num.length(); i++) {
+            if (i > pos && num.charAt(pos) == '0') {
+                continue;
+            }
+            String substring = num.substring(pos, i + 1);
+            long parseInt = Long.parseLong(substring);
+            if (pos == 0) {
+                intervalAdd(result, parseInt, i + 1, parseInt, num, target, s + parseInt);
+            } else {
+                intervalAdd(result, val + parseInt, i + 1, parseInt, num, target, s + "+" + parseInt);
+                intervalAdd(result, val - parseInt, i + 1, -parseInt, num, target, s + "-" + parseInt);
+                intervalAdd(result, val - multi + multi * parseInt, i + 1, multi * parseInt, num, target, s + "*" + parseInt);
+            }
+
+        }
     }
 
 

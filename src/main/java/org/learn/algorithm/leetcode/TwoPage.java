@@ -129,15 +129,16 @@ public class TwoPage {
      * @return
      */
     public List<String> findRepeatedDnaSequences(String s) {
-        Set<String> seen = new HashSet();
-        Set<String> repeated = new HashSet();
-        for (int i = 0; i + 9 < s.length(); i++) {
-            String ten = s.substring(i, i + 10);
-            if (!seen.add(ten)) {
-                repeated.add(ten);
+        Set<String> seen = new HashSet<>();
+        Set<String> result = new HashSet<>();
+        int m = s.length();
+        for (int i = 0; i < m - 9; i++) {
+            String substring = s.substring(i, i + 10);
+            if (!seen.add(substring)) {
+                result.add(substring);
             }
         }
-        return new ArrayList<>(repeated);
+        return new ArrayList<>(result);
     }
 
 

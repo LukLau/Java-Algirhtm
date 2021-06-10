@@ -1,9 +1,6 @@
 package org.learn.algorithm.leetcode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 字符串系列问题
@@ -12,6 +9,8 @@ import java.util.Map;
  * @date 2021/4/6
  */
 public class StringSolution {
+
+    // 子序列问题
 
 
     // 滑动窗口系列//
@@ -56,6 +55,40 @@ public class StringSolution {
             return s.substring(head, head + result);
         }
         return "";
+    }
+
+
+    /**
+     * 239. Sliding Window Maximum
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
+        LinkedList<Integer> deque = new LinkedList<>();
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            int index = i - k + 1;
+            if (!deque.isEmpty() && index > deque.peekFirst()) {
+                deque.pollFirst();
+            }
+            while (!deque.isEmpty() && nums[i] >= nums[deque.peekLast()]) {
+                deque.pollLast();
+            }
+            deque.offer(i);
+            if (index >= 0) {
+                result.add(nums[deque.peekFirst()]);
+            }
+        }
+        int[] ans = new int[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            ans[i] = result.get(i);
+        }
+        return ans;
     }
 
 
@@ -384,9 +417,122 @@ public class StringSolution {
     }
 
 
+    /**
+     * 266
+     * Palindrome Permutation
+     *
+     * @param s: the given string
+     * @return: if a permutation of the string could form a palindrome
+     */
+    public boolean canPermutePalindrome(String s) {
+        if (s == null || s.isEmpty()) {
+            return true;
+        }
+        boolean odd = false;
+        char[] words = s.toCharArray();
+        int[] hash = new int[256];
+        for (char word : words) {
+            hash[word - 'a']++;
+        }
+        for (int num : hash) {
+            if (num % 2 != 0) {
+                if (odd) {
+                    return false;
+                }
+                odd = true;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 267
+     * Palindrome Permutation II
+     *
+     * @param s: the given string
+     * @return: all the palindromic permutations (without duplicates) of it
+     */
+    public List<String> generatePalindromes(String s) {
+        // write your code here
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        Map<Character, Integer> map = new HashMap<>();
+        char[] words = s.toCharArray();
+        for (char word : words) {
+            Integer count = map.getOrDefault(word, 0);
+            count++;
+            map.put(word, count);
+        }
+        Character oddCharacter = null;
+        StringBuilder builder = new StringBuilder();
+        Set<Map.Entry<Character, Integer>> entry = map.entrySet();
+        for (Map.Entry<Character, Integer> item : entry) {
+            Character key = item.getKey();
+            Integer count = item.getValue();
+            if (count % 2 == 1) {
+                if (oddCharacter != null) {
+                    return result;
+                }
+                oddCharacter = key;
+            }
+            for (int i = 0; i < count / 2; i++) {
+                builder.append(key);
+            }
+        }
+        char[] items = builder.toString().toCharArray();
+        List<String> itemList = new ArrayList<>();
+        constructItem(itemList, 0, items);
+        for (String item : itemList) {
+            String reverse = new StringBuilder(item).reverse().toString();
+            result.add(item + (oddCharacter == null ? reverse : oddCharacter + reverse));
+        }
+        return result;
+    }
+
+    private void constructItem(List<String> itemList, int start, char[] items) {
+        if (start == items.length) {
+            itemList.add(String.valueOf(items));
+            return;
+        }
+        for (int i = start; i < items.length; i++) {
+            if (i > start && items[i] == items[i - 1]) {
+                continue;
+            }
+            swapItem(items, i, start);
+            constructItem(itemList, start + 1, items);
+            swapItem(items, i, start);
+        }
+    }
+
+    private void swapItem(char[] words, int start, int end) {
+        char tmp = words[start];
+        words[start] = words[end];
+        words[end] = tmp;
+    }
+
+
+    /**
+     * todo kmp
+     * 214. Shortest Palindrome
+     *
+     * @param s
+     * @return
+     */
+    public String shortestPalindrome(String s) {
+        if (s == null || s.isEmpty()) {
+            return "";
+        }
+        String reverse = new StringBuilder(s).reverse().toString();
+        return "";
+    }
+
+
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.minCut("aab");
+        solution.generatePalindromes("aabbcc");
     }
 
 

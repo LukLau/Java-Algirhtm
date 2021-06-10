@@ -1,7 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import ch.qos.logback.classic.filter.LevelFilter;
-
 /**
  * @author luk
  * @date 2021/4/8
@@ -149,7 +147,6 @@ public class BinarySolution {
     }
 
     /**
-     * todo key case
      * 154. Find Minimum in Rotated Sorted Array II
      *
      * @param nums
@@ -175,6 +172,26 @@ public class BinarySolution {
         }
         return nums[start];
     }
+
+    public int findMinIIV2(int[] nums) {
+        if (nums == null) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == nums[right]) {
+                right--;
+            } else if (nums[mid] > nums[right]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return nums[left];
+    }
+
 
     /**
      * 162. Find Peak Element
@@ -231,6 +248,36 @@ public class BinarySolution {
         }
         return false;
     }
+
+
+    /**
+     * 240. Search a 2D Matrix II
+     *
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean searchMatrixII(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        int column = matrix[0].length;
+        int row = matrix.length;
+        int i = 0;
+        int j = column - 1;
+        while (i < row && j >= 0) {
+            int val = matrix[i][j];
+            if (val == target) {
+                return true;
+            } else if (val < target) {
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return true;
+    }
+
 
     public static void main(String[] args) {
         BinarySolution solution = new BinarySolution();

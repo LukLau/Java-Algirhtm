@@ -1,7 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
-
 import java.util.*;
 
 /**
@@ -11,6 +9,35 @@ import java.util.*;
  * @date 2021/4/7
  */
 public class MathSolution {
+
+    public static void main(String[] args) {
+        MathSolution solution = new MathSolution();
+        int[] nums = new int[]{5, 4, 4, 3, 2, 1};
+        solution.findDuplicate(nums);
+    }
+
+    // 素数相关
+
+    /**
+     * todo
+     * 204. Count Primes
+     *
+     * @param n
+     * @return
+     */
+    public int countPrimes(int n) {
+        int count = 0;
+        boolean[] dp = new boolean[n];
+        for (int i = 2; i < n; i++) {
+            if (!dp[i]) {
+                count++;
+                for (int j = 2; j * i < n; j++) {
+                    dp[i * j] = true;
+                }
+            }
+        }
+        return count;
+    }
 
 
     /**
@@ -126,6 +153,7 @@ public class MathSolution {
         if (words == null || words.length == 0) {
             return new ArrayList<>();
         }
+        List<String> result = new ArrayList<>();
         int startIndex = 0;
         while (startIndex < words.length) {
             int endIndex = startIndex;
@@ -141,14 +169,39 @@ public class MathSolution {
             if (wordCount == 1) {
                 builder.append(words[startIndex]);
             } else {
-
-
+                int space = lastRow ? 1 : 1 + blankSpace / (wordCount - 1);
+                int extra = lastRow ? 0 : blankSpace % (wordCount - 1);
+                builder.append(constructRow(words, startIndex, endIndex, space, extra));
             }
-
-
+            result.add(trimRow(builder.toString(), maxWidth));
             startIndex = endIndex;
         }
-        return new ArrayList<>();
+        return result;
+    }
+
+    private String trimRow(String tmp, int maxWidth) {
+        while (tmp.length() > maxWidth) {
+            tmp = tmp.substring(0, tmp.length() - 1);
+        }
+        while (tmp.length() < maxWidth) {
+            tmp = tmp + " ";
+        }
+        return tmp;
+    }
+
+    private String constructRow(String[] words, int startIndex, int endIndex, int blankCount, int extraCount) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = startIndex; i < endIndex; i++) {
+            int tmp = blankCount;
+            builder.append(words[i]);
+            while (tmp-- > 0) {
+                builder.append(" ");
+            }
+            if (extraCount-- > 0) {
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
     }
 
     /**
@@ -305,6 +358,40 @@ public class MathSolution {
         return -1;
     }
 
+
+    /**
+     * 260. Single Number III
+     *
+     * @param nums
+     * @return
+     */
+    public int[] singleNumberIII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
+        int[] result = new int[2];
+        int base = 0;
+        for (int num : nums) {
+            base ^= num;
+        }
+        int index = 0;
+        for (int i = 0; i < 32; i++) {
+            if ((base & 1 << i) != 0) {
+                index = i;
+                break;
+            }
+        }
+        for (int num : nums) {
+            if ((num & (1 << index)) != 0) {
+                result[0] ^= num;
+            } else {
+                result[1] ^= num;
+            }
+        }
+        return result;
+    }
+
+
     /**
      * 190. Reverse Bits
      *
@@ -340,6 +427,63 @@ public class MathSolution {
     }
 
 
+    /**
+     * 231. Power of Two
+     *
+     * @param n
+     * @return
+     */
+    public boolean isPowerOfTwo(int n) {
+        return n > 0 && (n & (n - 1)) == 0;
+    }
+
+
+    /**
+     * 201. Bitwise AND of Numbers Range
+     * todo
+     *
+     * @param m
+     * @param n
+     * @return
+     */
+    public int rangeBitwiseAnd(int m, int n) {
+        return -1;
+    }
+
+
+    /**
+     * 233. Number of Digit One
+     * todo
+     *
+     * @param n
+     * @return
+     */
+    public int countDigitOne(int n) {
+        String s = String.valueOf(n);
+        return -1;
+    }
+
+
+    /**
+     * @param nums: an array containing n + 1 integers which is between 1 and n
+     * @return: the duplicate one
+     */
+    public int findDuplicate(int[] nums) {
+        // write your code here
+        int base = 0;
+        for (int num : nums) {
+            int remain = num & Integer.MAX_VALUE;
+
+            boolean exist = (base & (1 << remain)) != 0;
+            if (exist) {
+                return num;
+            }
+            base = base ^ (1 << remain);
+        }
+        return -1;
+    }
+
+
     // 摩尔投票法
 
     /**
@@ -363,6 +507,63 @@ public class MathSolution {
             }
         }
         return candidate;
+    }
+
+
+    /**
+     * 229. Majority Element II
+     *
+     * @param nums
+     * @return
+     */
+    public List<Integer> majorityElementII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<Integer> result = new ArrayList<>();
+        int candidateA = nums[0];
+        int candidateB = nums[0];
+        int countA = 0;
+        int countB = 0;
+        for (int num : nums) {
+            if (num == candidateA) {
+                countA++;
+                continue;
+            }
+            if (num == candidateB) {
+                countB++;
+                continue;
+            }
+            if (countA == 0) {
+                countA = 1;
+                candidateA = num;
+                continue;
+            }
+            if (countB == 0) {
+                countB = 1;
+                candidateB = num;
+                continue;
+            }
+            countA--;
+            countB--;
+        }
+        countA = 0;
+        countB = 0;
+        for (int num : nums) {
+            if (num == candidateA) {
+                countA++;
+            } else if (num == candidateB) {
+                countB++;
+            }
+        }
+        if (3 * countA > nums.length) {
+            result.add(candidateA);
+        }
+        if (3 * countB > nums.length) {
+            result.add(candidateB);
+        }
+        return result;
+
     }
 
 
@@ -397,6 +598,203 @@ public class MathSolution {
             }
         }
         return stack.pop();
+    }
+
+    /**
+     * 224. Basic Calculator
+     *
+     * @param s
+     * @return
+     */
+    public int calculate(String s) {
+        if (s == null) {
+            return 0;
+        }
+        s = s.trim();
+        if (s.isEmpty()) {
+            return 0;
+        }
+        int sign = 1;
+        char[] words = s.toCharArray();
+        int endIndex = 0;
+        int result = 0;
+        Stack<Integer> stack = new Stack<>();
+        while (endIndex < words.length) {
+            if (Character.isDigit(words[endIndex])) {
+                int tmp = 0;
+                while (endIndex < words.length && Character.isDigit(words[endIndex])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[endIndex]);
+                    endIndex++;
+                }
+                result += tmp * sign;
+            } else {
+                if (words[endIndex] == '+' || words[endIndex] == '-') {
+                    sign = words[endIndex] == '+' ? 1 : -1;
+                }
+                if (words[endIndex] == '(') {
+                    stack.push(result);
+                    stack.push(sign);
+                    sign = 1;
+                    result = 0;
+                }
+                if (words[endIndex] == ')') {
+                    result = result * stack.pop() + stack.pop();
+                }
+                endIndex++;
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 227. Basic Calculator II
+     *
+     * @param s
+     * @return
+     */
+    public int calculateII(String s) {
+        if (s == null) {
+            return 0;
+        }
+        s = s.trim();
+
+        // trim blank space
+        if (s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        int sign;
+
+        // virtual prefix sign e.g, 1-2/2 => +1-2/2
+        char character = '+';
+        int endIndex = 0;
+        char[] words = s.toCharArray();
+        while (endIndex < words.length) {
+
+            // from previous sign -> next sign
+            // get number
+            if (Character.isDigit(words[endIndex])) {
+                int num = 0;
+                while (endIndex < words.length && Character.isDigit(words[endIndex])) {
+                    num = num * 10 + Character.getNumericValue(words[endIndex]);
+                    endIndex++;
+                }
+                stack.push(num);
+            }
+            // number need sign
+            // character mean prefix sign
+            if (endIndex == words.length || words[endIndex] != ' ') {
+                if (character == '+' || character == '-') {
+                    sign = character == '+' ? 1 : -1;
+                    stack.push(sign * stack.pop());
+                } else if (character == '*') {
+                    Integer pop = stack.pop();
+                    stack.push(pop * stack.pop());
+                } else if (character == '/') {
+                    Integer second = stack.pop();
+                    Integer first = stack.pop();
+                    stack.push(first / second);
+                }
+                if (endIndex != words.length) {
+                    character = words[endIndex];
+                }
+            }
+            endIndex++;
+        }
+        int result = 0;
+        for (Integer tmp : stack) {
+            result += tmp;
+        }
+        return result;
+    }
+
+
+    // 丑数相关
+
+
+    /**
+     * 263. Ugly Number
+     *
+     * @param num
+     * @return
+     */
+    public boolean isUgly(int num) {
+        if (num <= 1) {
+            return false;
+        }
+        while (true) {
+            if (num == 2 || num == 3 || num == 5) {
+                return true;
+            }
+            if (num % 5 == 0) {
+                num /= 5;
+            } else if (num % 3 == 0) {
+                num /= 3;
+            } else if (num % 2 == 0) {
+                num /= 2;
+            } else {
+                return false;
+            }
+        }
+    }
+
+
+    public boolean isUglyV2(int num) {
+        while (num > 0 && num % 2 == 0) {
+            num /= 2;
+        }
+        while (num > 0 && num % 3 == 0) {
+            num /= 3;
+        }
+        while (num > 0 && num % 5 == 0) {
+            num /= 5;
+        }
+        return num == 1;
+    }
+
+
+    /**
+     * 264. Ugly Number II
+     *
+     * @param n
+     * @return
+     */
+    public int nthUglyNumber(int n) {
+        if (n < 1) {
+            return 0;
+        }
+        int idx2 = 0, idx3 = 0, idx5 = 0, i = 1;
+        int[] ans = new int[n];
+        ans[0] = 1;
+        while (i < n) {
+            int tmp = Math.min(Math.min(ans[idx2] * 2, ans[idx3] * 3), ans[idx5] * 5);
+            if (tmp == ans[idx2] * 2) {
+                idx2++;
+            } else if (tmp == ans[idx3] * 3) {
+                idx3++;
+            } else if (tmp == ans[idx5] * 5) {
+                idx5++;
+            }
+            ans[i++] = tmp;
+
+        }
+        return ans[n - 1];
+
+    }
+
+
+    /**
+     * todo
+     * 319
+     * Bulb Switcher
+     *
+     * @param n: a Integer
+     * @return: how many bulbs are on after n rounds
+     */
+    public int bulbSwitch(int n) {
+        // Write your code here
+        return -1;
     }
 
 

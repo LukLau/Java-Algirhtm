@@ -4,10 +4,7 @@ import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.TreeNode;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * 树的解决方案
@@ -202,6 +199,145 @@ public class TreeSolution {
         }
         return result;
 
+    }
+
+
+    /**
+     * 199. Binary Tree Right Side View
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+
+        intervalRightSideView(root, result, 0);
+
+        return result;
+    }
+
+    private void intervalRightSideView(TreeNode root, List<Integer> result, int currentLevel) {
+        if (root == null) {
+            return;
+        }
+        if (result.size() == currentLevel) {
+            result.add(root.val);
+        }
+        intervalRightSideView(root.right, result, currentLevel + 1);
+
+        intervalRightSideView(root.left, result, currentLevel + 1);
+    }
+
+
+    /**
+     * 230. Kth Smallest Element in a BST
+     *
+     * @param root
+     * @param k
+     * @return
+     */
+    public int kthSmallest(TreeNode root, int k) {
+        if (root == null) {
+            return -1;
+        }
+        List<Integer> result = inorderTraversal(root);
+        return result.get(k - 1);
+    }
+
+    public int kthSmallestV2(TreeNode root, int k) {
+        if (root == null) {
+            return -1;
+        }
+        k--;
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode q = root;
+        int iterator = 0;
+        while (!stack.isEmpty() || q != null) {
+            while (q != null) {
+                stack.push(q);
+                q = q.left;
+            }
+            q = stack.pop();
+            if (iterator == k) {
+                return q.val;
+            }
+            iterator++;
+            q = q.right;
+        }
+        return -1;
+    }
+
+
+    /**
+     * 285
+     * Inorder Successor in BST
+     *
+     * @param root: The root of the BST.
+     * @param p:    You need find the successor node of p.
+     * @return: Successor of p.
+     */
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        // write your code here
+        if (root == null || p == null) {
+            return null;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode q = root;
+        TreeNode prev = null;
+        while (!stack.isEmpty() || q != null) {
+            while (q != null) {
+                stack.push(q);
+                q = q.left;
+            }
+            q = stack.pop();
+            if (prev != null && prev == p) {
+                return q;
+            }
+            prev = q;
+            q = q.right;
+        }
+        return null;
+    }
+
+    /**
+     * todo
+     * @param root
+     * @param p
+     * @return
+     */
+    public TreeNode inorderSuccessorV2(TreeNode root, TreeNode p) {
+        if (root == null || p == null) {
+            return null;
+        }
+        return intervalNode(root, p);
+    }
+
+    private TreeNode intervalNode(TreeNode root, TreeNode p) {
+        if (root == null) {
+            return null;
+        }
+        if (root == p) {
+            p = p.right;
+            while (p.left != null) {
+                p = p.left;
+            }
+            return p;
+        }
+        if (root.left == p) {
+            return root;
+        }
+        if (root.right == p) {
+            return root;
+        }
+        TreeNode node = intervalNode(root.left, p);
+        if (node != null) {
+            return node;
+        }
+        TreeNode rightNode = intervalNode(root.right, p);
+        if (rightNode != null) {
+            return root;
+        }
+        return null;
     }
 
 
@@ -510,6 +646,86 @@ public class TreeSolution {
     }
 
 
+    // 公共祖先lca
+
+    /**
+     * 235. Lowest Common Ancestor of a Binary Search Tree
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == q || root == p) {
+            return root;
+        }
+        if (p.val < root.val && q.val < root.val) {
+            return lowestCommonAncestor(root.left, p, q);
+        } else if (p.val > root.val && q.val > root.val) {
+            return lowestCommonAncestor(root.right, p, q);
+        }
+        return root;
+    }
+
+
+    /**
+     * 236. Lowest Common Ancestor of a Binary Tree
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestorII(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == q || root == p) {
+            return root;
+        }
+        TreeNode left = lowestCommonAncestorII(root.left, p, q);
+
+        TreeNode right = lowestCommonAncestorII(root.right, p, q);
+        if (left != null && right != null) {
+            return root;
+        } else if (left == null && right != null) {
+            return right;
+        } else {
+            return left;
+        }
+    }
+
+
+    /**
+     * 257. Binary Tree Paths
+     *
+     * @param root
+     * @return
+     */
+    public List<String> binaryTreePaths(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        intervalTreePaths(result, "", root);
+        return result;
+    }
+
+    private void intervalTreePaths(List<String> result, String s, TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        if (s.isEmpty()) {
+            s += root.val;
+        } else {
+            s = s + "->" + root.val;
+        }
+        if (root.left == null && root.right == null) {
+            result.add(s);
+            return;
+        }
+        intervalTreePaths(result, s, root.left);
+        intervalTreePaths(result, s, root.right);
+    }
+
     // --- //
 
 
@@ -647,7 +863,6 @@ public class TreeSolution {
             return null;
         }
         Node current = root;
-
         while (current != null) {
             Node head = null;
             Node prev = null;
@@ -668,6 +883,7 @@ public class TreeSolution {
                     }
                     prev = current.right;
                 }
+                current = current.next;
             }
             current = head;
         }

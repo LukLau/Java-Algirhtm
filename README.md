@@ -1,2 +1,4 @@
-# Java-Algirhtm
+# Java-Algorithm
 A Training Project for Algorithm
+
+-----
