@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.async.ByteArrayFeeder;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
 
+import javax.sound.sampled.ReverbType;
 import javax.swing.plaf.metal.MetalTheme;
+import javax.xml.stream.FactoryConfigurationError;
 import java.lang.annotation.ElementType;
 import java.util.HashMap;
 import java.util.Map;
@@ -133,5 +135,142 @@ public class NormalSolution {
         }
         return result;
     }
+
+
+    /**
+     * @param head ListNode类
+     * @param k    int整型
+     * @return ListNode类
+     */
+    public ListNode reverseKGroupV2(ListNode head, int k) {
+        // write code here
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode current = head;
+        int count = 0;
+        while (current != null && count != k) {
+            current = current.next;
+            count++;
+        }
+        if (count == k) {
+            ListNode reverseNode = reverseKGroup(current, k);
+            while (count-- > 0) {
+                ListNode tmp = head.next;
+                head.next = reverseNode;
+                reverseNode = head;
+                head = tmp;
+            }
+            head = reverseNode;
+        }
+        return head;
+
+    }
+
+
+    public ListNode reverseKGroup(ListNode head, int k) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode node = head;
+        for (int i = 0; i < k; i++) {
+            if (node == null) {
+                return head;
+            }
+            node = node.next;
+        }
+        ListNode reverse = reverse(head, node);
+
+        head.next = reverseKGroup(node, k);
+
+        return reverse;
+    }
+
+    private ListNode reverse(ListNode start, ListNode end) {
+        ListNode prev = end;
+        while (start != end) {
+            ListNode tmp = start.next;
+            start.next = prev;
+            prev = start;
+            start = tmp;
+        }
+        return prev;
+    }
+
+
+    /**
+     * @param x int整型
+     * @return int整型
+     */
+    public int sqrt(int x) {
+        // write code here
+        double precision = 0.0001;
+        double result = x;
+        while (result * result - x > precision) {
+            result = (result + x / result) / 2;
+        }
+        return (int) result;
+    }
+
+
+    /**
+     * @param head ListNode类
+     * @param n    int整型
+     * @return ListNode类
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        // write code here
+        if (head == null) {
+            return null;
+        }
+        int count = 1;
+        ListNode node = head;
+        while (node.next != null) {
+            count++;
+            node = node.next;
+        }
+        ListNode root = new ListNode(0);
+
+        root.next = head;
+
+        ListNode fast = root;
+        for (int i = 0; i < count - n; i++) {
+            fast = fast.next;
+        }
+        fast.next = fast.next.next;
+
+        return root.next;
+    }
+
+    /**
+     * @param strs string字符串一维数组
+     * @return string字符串
+     */
+    public String longestCommonPrefix(String[] strs) {
+        // write code here
+
+        if (strs == null || strs.length == 0) {
+            return "";
+        }
+        String prefix = strs[0];
+        for (int i = 1; i < strs.length; i++) {
+            while (strs[i].indexOf(prefix) != 0) {
+                prefix = prefix.substring(0, prefix.length() - 1);
+            }
+        }
+        return prefix;
+    }
+
+    /**
+     * return topK string
+     *
+     * @param strings string字符串一维数组 strings
+     * @param k       int整型 the k
+     * @return string字符串二维数组
+     */
+    public String[][] topKstrings(String[] strings, int k) {
+        // write code here
+    }
+
 
 }
