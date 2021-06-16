@@ -19,7 +19,6 @@ public class SortSolution {
         for (int i = 0; i < n; i++) {
             nums[i] = random.nextInt(100);
         }
-//        sortSolution.heapSort(nums, 0, nums.length - 1);
         sortSolution.heapSort(nums);
         for (int num : nums) {
             System.out.println(num + " ");
@@ -125,7 +124,7 @@ public class SortSolution {
             if (i + 1 < len && nums[i] < nums[i + 1]) {
                 i = i + 1;
             }
-            if (nums[i] < nums[k]) {
+            if (nums[i] < tmp) {
                 break;
             }
             swap(nums, i, k);
