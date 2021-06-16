@@ -13,7 +13,8 @@ public class NormalSolution {
 
     public static void main(String[] args) {
         NormalSolution solution = new NormalSolution();
-        solution.solve("1", "99");
+        String[] para = new String[]{"a", "b", "c", "b"};
+        solution.topKstrings(para, 2);
     }
 
     public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
@@ -429,6 +430,193 @@ public class NormalSolution {
     public ListNode reverseKGroup(ListNode head, int k) {
         // write code here
         return null;
+    }
+
+
+    /**
+     * return topK string
+     *
+     * @param strings string字符串一维数组 strings
+     * @param k       int整型 the k
+     * @return string字符串二维数组
+     */
+    public String[][] topKstrings(String[] strings, int k) {
+        // write code here
+        if (strings == null || strings.length == 0) {
+            return new String[][]{};
+        }
+        Map<String, Integer> map = new HashMap<>();
+        PriorityQueue<String> queue = new PriorityQueue<>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                Integer count1 = map.getOrDefault(o1, 0);
+                Integer count2 = map.getOrDefault(o2, 0);
+                if (count1.equals(count2)) {
+                    return o2.compareTo(o1);
+                }
+                return count1.compareTo(count2);
+            }
+        });
+        for (String item : strings) {
+            Integer count = map.getOrDefault(item, 0);
+            map.put(item, count + 1);
+        }
+        for (Map.Entry<String, Integer> item : map.entrySet()) {
+            String key = item.getKey();
+            queue.offer(key);
+            if (queue.size() > k) {
+                queue.poll();
+            }
+        }
+        String[][] result = new String[k][2];
+        int iterator = k - 1;
+        while (!queue.isEmpty()) {
+            String tmp = queue.poll();
+            result[iterator][0] = tmp;
+            result[iterator][1] = map.get(tmp) + "";
+            iterator--;
+        }
+        return result;
+    }
+
+
+    /**
+     * @param l1 ListNode类
+     * @param l2 ListNode类
+     * @return ListNode类
+     */
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        // write code here
+        if (l1 == null && l2 == null) {
+            return null;
+        }
+        if (l1 == null) {
+            return l2;
+        }
+        if (l2 == null) {
+            return l1;
+        }
+        if (l1.val <= l2.val) {
+            l1.next = mergeTwoLists(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = mergeTwoLists(l1, l2.next);
+            return l2;
+        }
+    }
+
+
+    /**
+     * @param head ListNode类 the head node
+     * @return ListNode类
+     */
+    public ListNode sortInList(ListNode head) {
+        // write code here
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        ListNode next = slow.next;
+
+        slow.next = null;
+
+        ListNode first = sortInList(head);
+
+        ListNode second = sortInList(next);
+
+        return mergeTwoLists(first, second);
+    }
+
+
+    /**
+     * @param head ListNode类 the head
+     * @return bool布尔型
+     */
+    public boolean isPail(ListNode head) {
+        // write code here
+        if (head == null || head.next == null) {
+            return true;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        ListNode tmp = slow.next;
+        slow.next = null;
+        ListNode reverse = reverse(tmp);
+
+        while (head != null && reverse != null) {
+            if (head.val != reverse.val) {
+                return false;
+            }
+            head = head.next;
+            reverse = reverse.next;
+        }
+        return true;
+    }
+
+
+    /**
+     * max increasing subsequence
+     *
+     * @param arr int整型一维数组 the array
+     * @return int整型
+     */
+    public int MLS(int[] arr) {
+        // write code here
+        if (arr == null) {
+            return 0;
+        }
+        int result = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : arr) {
+            if (!map.containsKey(num)) {
+                Integer left = map.getOrDefault(num - 1, 0);
+
+                Integer right = map.getOrDefault(num + 1, 0);
+                int val = left + right + 1;
+
+                result = Math.max(result, val);
+
+
+                map.put(num, val);
+                map.put(num - left, val);
+                map.put(num + right, val);
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * todo
+     * retrun the longest increasing subsequence
+     *
+     * @param arr int整型一维数组 the array
+     * @return int整型一维数组
+     */
+    public int[] LIS(int[] arr) {
+        // write code here
+        return null;
+    }
+
+
+    /**
+     * 判断岛屿数量
+     *
+     * @param grid char字符型二维数组
+     * @return int整型
+     */
+    public int solve(char[][] grid) {
+        // write code here
+        return -1;
     }
 
 
