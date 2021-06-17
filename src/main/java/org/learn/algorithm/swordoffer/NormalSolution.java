@@ -1,15 +1,8 @@
 package org.learn.algorithm.swordoffer;
 
-import com.fasterxml.jackson.core.async.ByteArrayFeeder;
-import jdk.nashorn.internal.ir.ReturnNode;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
-import org.learn.algorithm.leetcode.StringSolution;
 
-import javax.sound.sampled.ReverbType;
-import javax.swing.plaf.metal.MetalTheme;
-import javax.xml.stream.FactoryConfigurationError;
-import java.lang.annotation.ElementType;
 import java.util.*;
 
 /**
@@ -985,7 +978,7 @@ public class NormalSolution {
      * @param str2 string字符串 the string
      * @return string字符串
      */
-    public String LCS(String str1, String str2) {
+    public String LCSII(String str1, String str2) {
         // write code here
         if (str1 == null || str2 == null) {
             return "";
@@ -993,14 +986,187 @@ public class NormalSolution {
         int m = str1.length();
         int n = str2.length();
         int[][] dp = new int[m + 1][n + 1];
+        int max = 0;
+        int index = 0;
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
                     dp[i][j] = 1 + dp[i - 1][j - 1];
                 }
+                if (dp[i][j] > max) {
+                    max = dp[i][j];
+                    index = i;
+                }
             }
         }
-        return "";
+        if (max == 0) {
+            return "";
+        }
+        return str1.substring(index - max, index);
+    }
+
+
+    public int reverse(int x) {
+        // write code here
+        int result = 0;
+        while (x != 0) {
+            if (result > Integer.MAX_VALUE / 10 || result < Integer.MIN_VALUE / 10) {
+                return 0;
+            }
+            result = result * 10 + x % 10;
+
+            x /= 10;
+        }
+        return result;
+    }
+
+
+    /**
+     * 最大正方形
+     *
+     * @param matrix char字符型二维数组
+     * @return int整型
+     */
+    public int solveMatrix(char[][] matrix) {
+        // write code here
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int[][] dp = new int[row + 1][column + 1];
+        int result = 0;
+        for (int i = 1; i <= row; i++) {
+            for (int j = 1; j <= column; j++) {
+                if (matrix[i - 1][j - 1] != '0') {
+                    dp[i][j] = 1 + Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]);
+                }
+                if (dp[i][j] != 0) {
+                    result = Math.max(result, dp[i][j] * dp[i][j]);
+
+                }
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param s string字符串 第一个整数
+     * @param t string字符串 第二个整数
+     * @return string字符串
+     */
+    public String solveMulti(String s, String t) {
+        // write code here
+        if (s == null || t == null) {
+            return "";
+        }
+        int m = s.length();
+        int n = t.length();
+        int[] pos = new int[m + n];
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+
+                int val = Character.getNumericValue(s.charAt(i)) * Character.getNumericValue(t.charAt(j))
+                        + pos[i + j + 1];
+
+                pos[i + j + 1] = val % 10;
+
+                pos[i + j] += val / 10;
+            }
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int num : pos) {
+
+            if (!(builder.length() == 0 && num == 0)) {
+                builder.append(num);
+            }
+        }
+        return builder.length() == 0 ? "0" : builder.toString();
+    }
+
+
+    /**
+     * todo
+     * 解码
+     *
+     * @param nums string字符串 数字串
+     * @return int整型
+     */
+    public int solveDecode(String nums) {
+        // write code here
+        if (nums == null || nums.length() == 0) {
+            return 0;
+        }
+        return -1;
+    }
+
+
+    /**
+     * 进制转换
+     *
+     * @param M int整型 给定整数
+     * @param N int整型 转换到的进制
+     * @return string字符串
+     */
+    public String solveBit(int M, int N) {
+        // write code here
+    }
+
+    public ArrayList<ArrayList<Integer>> threeSum(int[] num) {
+        if (num == null || num.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(num);
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        for (int i = 0; i < num.length - 2; i++) {
+            if (i > 0 && num[i] == num[i - 1]) {
+                continue;
+            }
+            int left = i + 1;
+            int right = num.length - 1;
+            while (left < right) {
+                int val = num[i] + num[left] + num[right];
+                if (val == 0) {
+                    ArrayList<Integer> tmp = new ArrayList<>();
+                    tmp.add(num[i]);
+                    tmp.add(num[left]);
+                    tmp.add(num[right]);
+                    while (left < right && num[left] == num[left + 1]) {
+                        left++;
+                    }
+                    while (left < right && num[right] == num[right - 1]) {
+                        right--;
+                    }
+
+                    result.add(tmp);
+                    left++;
+                    right--;
+                } else if (val < 0) {
+                    left++;
+                } else {
+                    right--;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * todo
+     * 最大乘积
+     *
+     * @param A int整型一维数组
+     * @return long长整型
+     */
+    public long solveThreeNum(int[] A) {
+        // write code here
+        if (A == null || A.length == 0) {
+            return 0;
+        }
+        return 0;
     }
 
 
