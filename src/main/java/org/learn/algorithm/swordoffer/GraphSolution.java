@@ -7,6 +7,7 @@ package org.learn.algorithm.swordoffer;
 public class GraphSolution {
 
     /**
+     * todo
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      *
      * @param n     int 顶点数
@@ -16,6 +17,7 @@ public class GraphSolution {
      */
     public int findShortestPath(int n, int m, int[][] graph) {
         // write code here
+        return -1;
     }
 
 }

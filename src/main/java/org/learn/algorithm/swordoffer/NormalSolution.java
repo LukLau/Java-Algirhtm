@@ -2,14 +2,25 @@ package org.learn.algorithm.swordoffer;
 
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
+import org.slf4j.event.SubstituteLoggingEvent;
+import org.springframework.util.ResourceUtils;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * @author dora
  * @date 2021/6/10
  */
 public class NormalSolution {
+    public static void main(String[] args) {
+        NormalSolution solution = new NormalSolution();
+
+        String param = "25525522135";
+
+        solution.restoreIpAddresses(param);
+    }
 
     public ListNode ReverseList(ListNode head) {
         if (head == null || head.next == null) {
@@ -1113,6 +1124,7 @@ public class NormalSolution {
      */
     public String solveBit(int M, int N) {
         // write code here
+        return "";
     }
 
     public ArrayList<ArrayList<Integer>> threeSum(int[] num) {
@@ -1163,10 +1175,541 @@ public class NormalSolution {
      */
     public long solveThreeNum(int[] A) {
         // write code here
-        if (A == null || A.length == 0) {
+        if (A == null || A.length < 3) {
             return 0;
         }
-        return 0;
+        int max1 = Integer.MIN_VALUE;
+        int max2 = Integer.MIN_VALUE;
+        int max3 = Integer.MIN_VALUE;
+        int min1 = Integer.MAX_VALUE;
+        int min2 = Integer.MAX_VALUE;
+        for (int num : A) {
+            if (num > max1 || num > max2 || num > max3) {
+                if (num > max1) {
+                    max3 = max2;
+                    max2 = max1;
+                    max1 = num;
+                } else if (num > max2) {
+                    max3 = max2;
+                    max2 = num;
+                } else {
+                    max3 = num;
+                }
+            }
+            if (num < min1 || num < min2) {
+                if (num < min1) {
+                    min2 = min1;
+                    min1 = num;
+                } else {
+                    min2 = num;
+                }
+            }
+        }
+        return Math.max((long) min1 * min2 * max1, (long) max1 * max2 * max3);
+    }
+
+    public int minNumberInRotateArray(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = array.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (array[mid] == array[right]) {
+                right--;
+            } else if (array[mid] > array[right]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return array[left];
+    }
+
+    /**
+     * @param root TreeNode类
+     * @param sum  int整型
+     * @return bool布尔型
+     */
+    public boolean hasPathSum(TreeNode root, int sum) {
+        // write code here
+        if (root == null) {
+            return false;
+        }
+        return intervalHasPath(root, sum);
+    }
+
+    private boolean intervalHasPath(TreeNode root, int sum) {
+        if (root == null) {
+            return false;
+        }
+        if (root.left == null && root.right == null && sum == root.val) {
+            return true;
+        }
+        return intervalHasPath(root.left, sum - root.val) || intervalHasPath(root.right, sum - root.val);
+    }
+
+
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        ListNode next = slow.next;
+        slow.next = null;
+        ListNode reverse = reverse(next);
+
+        ListNode node = head;
+
+        while (node != null && reverse != null) {
+            ListNode tmp = node.next;
+
+            ListNode reverseNext = reverse.next;
+
+            node.next = reverse;
+
+            reverse.next = tmp;
+
+            node = tmp;
+
+            reverse = reverseNext;
+        }
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param root TreeNode类
+     * @return int整型一维数组
+     */
+    public int[] inorderTraversal(TreeNode root) {
+        // write code here
+        if (root == null) {
+            return new int[]{};
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        List<Integer> list = new ArrayList<>();
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            list.add(p.val);
+            p = p.right;
+        }
+        int[] result = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
+        }
+        return result;
+    }
+
+
+    public boolean isMatch(String s, String p) {
+        if (p.isEmpty()) {
+            return s.isEmpty();
+        }
+        int m = s.length();
+        int n = p.length();
+        boolean[][] dp = new boolean[m + 1][n + 1];
+
+        dp[0][0] = true;
+        for (int i = 1; i <= n; i++) {
+            dp[0][i] = p.charAt(i - 1) == '*' && dp[0][i - 1];
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 两次交易所能获得的最大收益
+     *
+     * @param prices int整型一维数组 股票每一天的价格
+     * @return int整型
+     */
+    public int maxProfitIII(int[] prices) {
+        // write code here
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int[][] dp = new int[3][prices.length];
+
+        for (int i = 1; i <= 2; i++) {
+            int cost = -prices[0];
+            for (int j = 1; j < prices.length; j++) {
+                dp[i][j] = Math.max(dp[i][j - 1], cost + prices[j]);
+                cost = Math.max(dp[i - 1][j - 1] - prices[j], cost);
+            }
+        }
+        return dp[2][prices.length - 1];
+    }
+
+    public int maxProfitIV(int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int[][] dp = new int[2][prices.length];
+
+        int cost = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > cost) {
+                dp[0][i] = prices[i] - cost;
+            } else {
+                cost = prices[i];
+            }
+        }
+        cost = -prices[0];
+        for (int j = 1; j < prices.length; j++) {
+            dp[1][j] = Math.max(dp[1][j - 1], cost + prices[j]);
+            cost = Math.max(dp[0][j - 1] - prices[j], cost);
+        }
+        return Math.max(dp[0][prices.length - 1], dp[1][prices.length - 1]);
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param nums int一维数组
+     * @return int二维数组
+     */
+    public int[][] foundMonotoneStack(int[] nums) {
+        // write code here
+        if (nums == null || nums.length == 0) {
+            return new int[][]{};
+        }
+        int len = nums.length;
+        int[][] result = new int[len][2];
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < nums.length; i++) {
+            while (!stack.isEmpty() && nums[stack.peek()] > nums[i]) {
+                stack.pop();
+            }
+            if (stack.isEmpty()) {
+                result[i][0] = -1;
+            } else {
+                result[i][0] = stack.peek();
+            }
+            stack.push(i);
+        }
+        stack.clear();
+        for (int i = nums.length - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && nums[stack.peek()] > nums[i]) {
+                stack.pop();
+            }
+            if (stack.isEmpty()) {
+                result[i][1] = -1;
+            } else {
+                result[i][1] = stack.peek();
+            }
+            stack.push(i);
+        }
+        return result;
+    }
+
+    /**
+     * @param head ListNode类
+     * @param x    int整型
+     * @return ListNode类
+     */
+    public ListNode partition(ListNode head, int x) {
+        // write code here
+        if (head == null) {
+            return null;
+        }
+        ListNode slow = new ListNode(0);
+        ListNode s1 = slow;
+
+        ListNode fast = new ListNode(0);
+        ListNode f1 = fast;
+
+        while (head != null) {
+            if (head.val < x) {
+                s1.next = head;
+                s1 = s1.next;
+            } else {
+                f1.next = head;
+                f1 = f1.next;
+            }
+            head = head.next;
+        }
+        f1.next = null;
+
+        s1.next = fast.next;
+
+        return slow.next;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param pHead ListNode类
+     * @param k     int整型
+     * @return ListNode类
+     */
+    public ListNode FindKthToTail(ListNode pHead, int k) {
+        // write code here
+        if (pHead == null) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+        root.next = pHead;
+        ListNode fast = root;
+
+        for (int i = 0; i < k; i++) {
+            fast = fast.next;
+            if (fast == null) {
+                return null;
+            }
+        }
+
+        ListNode slow = root;
+
+        while (fast.next != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+
+        return slow.next;
+    }
+
+    /**
+     * todo
+     * 寻找最后的山峰
+     *
+     * @param a int整型一维数组
+     * @return int整型
+     */
+    public int solveFindPeek(int[] a) {
+        // write code here
+        int index = a.length - 1;
+        while (index >= 0) {
+            if (index == a.length - 1) {
+                if (a[index] > a[index - 1]) {
+                    return index;
+                }
+            } else if (index == 0) {
+                if (a[index] > a[index + 1]) {
+                    return index;
+                }
+            } else {
+                if (a[index] >= a[index + 1] && a[index - 1] <= a[index]) {
+                    return index;
+                }
+            }
+            index--;
+        }
+        return -1;
+    }
+
+    /**
+     * return the min number
+     *
+     * @param arr int整型一维数组 the array
+     * @return int整型
+     */
+    public int minNumberdisappered(int[] arr) {
+        // write code here
+        if (arr == null || arr.length == 0) {
+            return -1;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            while (arr[i] > 0 && arr[i] <= arr.length && arr[i] != arr[arr[i] - 1]) {
+                swap(arr, i, arr[i] - 1);
+            }
+        }
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return -1;
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int val = nums[i];
+        nums[i] = nums[j];
+        nums[j] = val;
+    }
+
+
+    /**
+     * the number of 0
+     *
+     * @param n long长整型 the number
+     * @return long长整型
+     */
+    public long thenumberof0(long n) {
+        // write code here
+
+        long count = 0;
+
+        while (n / 5 != 0) {
+            count += n / 5;
+            n /= 5;
+        }
+        return count;
+    }
+
+    /**
+     * @param s string字符串
+     * @return string字符串ArrayList
+     */
+    public ArrayList<String> restoreIpAddresses(String s) {
+        // write code here
+        if (s == null || s.length() < 4) {
+            return new ArrayList<>();
+        }
+        ArrayList<String> result = new ArrayList<>();
+
+        int len = s.length();
+        for (int i = 1; i < 4 && i < len - 2; i++) {
+            for (int j = i + 1; j < i + 4 && j < len - 1; j++) {
+                for (int k = j + 1; k < j + 4 && k < len; k++) {
+                    String a = s.substring(0, i);
+                    String b = s.substring(i, j);
+                    String c = s.substring(j, k);
+                    String d = s.substring(k);
+                    if (checkValid(a) && checkValid(b) && checkValid(c) && checkValid(d)) {
+                        result.add(a + "." + b + "." + c + "." + d);
+                    }
+                }
+            }
+        }
+        return result;
+
+    }
+
+    private boolean checkValid(String s) {
+        if (s.isEmpty()) {
+            return false;
+        }
+        int val = Integer.parseInt(s);
+        if (val < 0 || val > 255) {
+            return false;
+        }
+        int m = s.length();
+        return m <= 1 || s.charAt(0) != '0';
+    }
+
+    /**
+     * todo
+     * max length of the subarray sum = k
+     *
+     * @param arr int整型一维数组 the array
+     * @param k   int整型 target
+     * @return int整型
+     */
+    public int maxlenEqualK(int[] arr, int k) {
+        // write code here
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        Arrays.sort(arr);
+        for (int i = 0; i < arr.length; i++) {
+            if (i > 0 && arr[i] == arr[i - 1]) {
+                continue;
+            }
+            int left = i + 1;
+            int right = arr.length - 1;
+            while (left < right) {
+                int val = arr[i] + arr[left] + arr[right];
+                if (val < k) {
+                    left++;
+                } else if (val > k) {
+                    right--;
+                } else {
+                }
+            }
+        }
+        return -1;
+    }
+
+    public ArrayList<ArrayList<Integer>> subsets(int[] S) {
+        if (S == null || S.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(S);
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        intervalSubSet(result, new ArrayList<Integer>(), 0, S);
+        return result;
+    }
+
+    private void intervalSubSet(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> integers, int start, int[] s) {
+        result.add(new ArrayList<>(integers));
+        for (int i = start; i < s.length; i++) {
+            integers.add(s[i]);
+            intervalSubSet(result, integers, i + 1, s);
+            integers.remove(integers.size() - 1);
+        }
+    }
+
+
+    /**
+     * @param x int整型
+     * @return bool布尔型
+     */
+    public boolean isPalindrome(int x) {
+        // write code here
+        if (x < 0) {
+            return false;
+        }
+        if (x == 0) {
+            return true;
+        }
+        int result = 0;
+        while (x > result) {
+            result = result * 10 + x % 10;
+            x /= 10;
+        }
+        return x == result || result / 10 == x;
+    }
+
+
+    /**
+     * @param m int整型
+     * @param n int整型
+     * @return int整型
+     */
+    public int uniquePaths(int m, int n) {
+        // write code here
+        int[][] dp = new int[m][n];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = 1;
+                } else if (i == 0) {
+                    dp[i][j] = dp[i][j - 1];
+                } else if (j == 0) {
+                    dp[i][j] = dp[i - 1][j];
+                } else {
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+                }
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    public double maxProduct(double[] arr) {
+        double max = arr[0];
     }
 
 
