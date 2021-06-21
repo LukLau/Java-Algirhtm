@@ -2,12 +2,9 @@ package org.learn.algorithm.swordoffer;
 
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
-import org.slf4j.event.SubstituteLoggingEvent;
-import org.springframework.util.ResourceUtils;
+import sun.util.resources.cldr.es.CalendarData_es_NI;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 /**
  * @author dora
@@ -17,9 +14,9 @@ public class NormalSolution {
     public static void main(String[] args) {
         NormalSolution solution = new NormalSolution();
 
-        String param = "25525522135";
+        String param = "ababc";
 
-        solution.restoreIpAddresses(param);
+        System.out.println(solution.solveNotRepeatSubString(param));
     }
 
     public ListNode ReverseList(ListNode head) {
@@ -1710,7 +1707,122 @@ public class NormalSolution {
 
     public double maxProduct(double[] arr) {
         double max = arr[0];
+        double min = arr[0];
+        double result = arr[0];
+
+        for (int i = 1; i < arr.length; i++) {
+            double val = arr[i];
+            double tmpMax = Math.max(Math.max(max * val, val * min), val);
+            double tmpMin = Math.min(Math.min(max * val, val * min), val);
+            result = Math.max(result, tmpMax);
+            max = tmpMax;
+            min = tmpMin;
+        }
+        return result;
     }
 
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param a string字符串 待计算字符串
+     * @return int整型
+     */
+    public int solveNotRepeatSubString(String a) {
+        // write code here
+        if (a == null || a.isEmpty()) {
+            return 0;
+        }
+        int m = a.length();
+        int result = 0;
+        char[] words = a.toCharArray();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (checkValid(words, j, i) && i - j + 1 > result) {
+                    result = i - j + 1;
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean checkValid(char[] words, int start, int end) {
+        if (start == end) {
+            return false;
+        }
+        Map<Character, Integer> map = new HashMap<>();
+        for (int i = start; i <= end; i++) {
+            Integer count = map.getOrDefault(words[i], 0);
+            map.put(words[i], count + 1);
+        }
+        for (Map.Entry<Character, Integer> item : map.entrySet()) {
+            Integer count = item.getValue();
+            if (count % 2 != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * 比较版本号
+     *
+     * @param version1 string字符串
+     * @param version2 string字符串
+     * @return int整型
+     */
+    public int compareVersion(String version1, String version2) {
+        // write code here
+        String[] word1 = version1.split("\\.");
+        String[] word2 = version2.split("\\.");
+        int index1 = 0;
+        int index2 = 0;
+        while (index1 < word1.length || index2 < word2.length) {
+            int v1 = index1 == word1.length ? 0 : Integer.parseInt(word1[index1++]);
+            int v2 = index2 == word2.length ? 0 : Integer.parseInt(word2[index2++]);
+            if (v1 != v2) {
+                return v1 - v2 < 0 ? -1 : 1;
+            }
+        }
+        return 1;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param str string字符串 待判断的字符串
+     * @return bool布尔型
+     */
+    public boolean judge(String str) {
+        // write code here
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        char[] words = str.toCharArray();
+        int start = 0;
+        int end = words.length - 1;
+        while (start < end) {
+            if (words[start] != words[end]) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+
+    public int MoreThanHalfNum_Solution(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int candidate = array[0];
+        int count = 0;
+        for (int num : array) {
+        }
+
+    }
 
 }
