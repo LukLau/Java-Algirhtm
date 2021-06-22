@@ -1821,8 +1821,219 @@ public class NormalSolution {
         int candidate = array[0];
         int count = 0;
         for (int num : array) {
+            if (candidate == num) {
+                count++;
+            } else {
+                count--;
+            }
+            if (count == 0) {
+                candidate = num;
+                count = 1;
+            }
+        }
+        count = 0;
+        for (int num : array) {
+            if (num == candidate) {
+                count++;
+            }
+        }
+        return 2 * count > array.length ? candidate : -1;
+    }
+
+    public ArrayList<ArrayList<Integer>> combinationSum2(int[] num, int target) {
+        if (num == null || num.length == 0) {
+            return new ArrayList<>();
+        }
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        Arrays.sort(num);
+        intervalCombine(result, new ArrayList<Integer>(), 0, num, target);
+        return result;
+    }
+
+    private void intervalCombine(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> integers, int start, int[] num, int target) {
+        if (target == 0) {
+            result.add(new ArrayList<>(integers));
+            return;
+        }
+        for (int i = start; i < num.length && target >= num[i]; i++) {
+            if (i > start && num[i] == num[i - 1]) {
+                continue;
+            }
+            integers.add(num[i]);
+            intervalCombine(result, integers, i + 1, num, target - num[i]);
+            integers.remove(integers.size() - 1);
+        }
+    }
+
+
+    /**
+     * 验证IP地址
+     *
+     * @param IP string字符串 一个IP地址字符串
+     * @return string字符串
+     */
+    public String solveipv6(String IP) {
+        // write code here
+        if (IP == null || IP.isEmpty()) {
+            return "Neither";
+        }
+        if (IP.contains(".")) {
+            String[] words = IP.split("\\.");
+            if (words.length != 4) {
+                return "Neither";
+            }
+            for (String word : words) {
+                if (!checkValid(word)) {
+                    return "Neither";
+                }
+            }
+            return "IPV4";
+        }
+        if (IP.contains(":")) {
+            String[] words = IP.split(":");
+            if (words.length != 8) {
+                return "Neither";
+            }
+            for (String word : words) {
+                if (!checkValidIPV6(word)) {
+                    return "Neither";
+                }
+            }
+            return "IPV6";
+        }
+        return "Neither";
+    }
+
+    private boolean checkValidIPV6(String word) {
+        if (word == null || word.isEmpty()) {
+            return false;
+        }
+        return word.indexOf("00") != 0;
+    }
+
+    public boolean IsContinuous(int[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return false;
+        }
+        Arrays.sort(numbers);
+
+        int zeroCount = 0;
+
+        int min = 14;
+
+        int max = -1;
+
+        for (int i = 0; i < numbers.length; i++) {
+            int number = numbers[i];
+            if (number == 0) {
+                zeroCount++;
+                continue;
+            }
+            if (i > 0 && number == numbers[i - 1] - 1) {
+                return false;
+            }
+            if (number > max) {
+                max = number;
+            }
+            if (number < min) {
+                min = number;
+            }
+        }
+        if (zeroCount >= 4) {
+            return true;
+        }
+        return max - min <= 4;
+    }
+
+
+    /**
+     * @param root TreeNode类
+     * @return int整型
+     */
+    public int maxDepth(TreeNode root) {
+        // write code here
+        if (root == null) {
+            return 0;
+        }
+        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+    }
+
+
+    /**
+     * @param n int整型
+     * @param m int整型
+     * @return int整型
+     */
+    public int ysf(int n, int m) {
+        // write code here
+        List<Integer> result = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            result.add(i);
+        }
+        int current = 0;
+
+        while (result.size() > 1) {
+
+            int index = (current + m - 1) % result.size();
+
+            result.remove(index);
+
+            current = index % result.size();
+        }
+        return result.get(0);
+    }
+
+    public ListNode mergeKLists(ArrayList<ListNode> lists) {
+        if (lists == null || lists.isEmpty()) {
+            return null;
+        }
+        PriorityQueue<ListNode> queue = new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
+
+        ListNode root = new ListNode(0);
+
+        ListNode dummy = root;
+
+        for (ListNode list : lists) {
+            if (list != null) {
+                queue.offer(list);
+            }
+        }
+        while (!queue.isEmpty()) {
+            ListNode node = queue.poll();
+
+            dummy.next = node;
+
+            dummy = dummy.next;
+
+            if (node.next != null) {
+                queue.offer(node.next);
+            }
+        }
+        return root.next;
+    }
+
+
+    public ArrayList<String> Permutation(String str) {
+        if (str == null || str.isEmpty()) {
+            return new ArrayList<>();
+        }
+        ArrayList<String> result = new ArrayList<>();
+
+        char[] words = str.toCharArray();
+
+        intervalPermute(result, words, 0);
+
+        return result;
+
+    }
+
+    private void intervalPermute(ArrayList<String> result, char[] words, int start) {
+        if (start == words.length) {
+            result.add(String.valueOf(words));
+            return;
         }
 
     }
+
 
 }
