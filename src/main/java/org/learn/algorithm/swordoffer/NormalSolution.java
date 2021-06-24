@@ -2,7 +2,6 @@ package org.learn.algorithm.swordoffer;
 
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
-import sun.util.resources.cldr.es.CalendarData_es_NI;
 
 import java.util.*;
 
@@ -16,7 +15,7 @@ public class NormalSolution {
 
         String param = "ababc";
 
-        System.out.println(solution.solveNotRepeatSubString(param));
+        System.out.println(solution.Permutation("abc"));
     }
 
     public ListNode ReverseList(ListNode head) {
@@ -2014,26 +2013,63 @@ public class NormalSolution {
 
 
     public ArrayList<String> Permutation(String str) {
-        if (str == null || str.isEmpty()) {
+        if (str == null) {
             return new ArrayList<>();
         }
         ArrayList<String> result = new ArrayList<>();
-
         char[] words = str.toCharArray();
-
-        intervalPermute(result, words, 0);
-
+        Arrays.sort(words);
+        boolean[] used = new boolean[words.length];
+        intervalPermute(result, words, "", used);
         return result;
-
     }
 
-    private void intervalPermute(ArrayList<String> result, char[] words, int start) {
-        if (start == words.length) {
-            result.add(String.valueOf(words));
+    private void intervalPermute(ArrayList<String> result, char[] words, String s, boolean[] used) {
+        if (s.length() == words.length) {
+            result.add(s);
             return;
         }
+        for (int i = 0; i < words.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            if (i > 0 && words[i] == words[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            s += words[i];
 
+            used[i] = true;
+
+            intervalPermute(result, words, s, used);
+            used[i] = false;
+            s = s.substring(0, s.length() - 1);
+
+        }
+    }
+
+    private void swap(char[] words, int i, int j) {
+        char tmp = words[i];
+        words[i] = words[j];
+        words[j] = tmp;
     }
 
 
+    /**
+     * @param root TreeNode类 the root
+     * @return bool布尔型一维数组
+     */
+    public boolean[] judgeIt(TreeNode root) {
+        // write code here
+
+        boolean[] result = new boolean[2];
+    }
+
+    private boolean checkBalance(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        int left = maxDepth(root.left);
+
+        int right = maxDepth(root.right);
+    }
 }
