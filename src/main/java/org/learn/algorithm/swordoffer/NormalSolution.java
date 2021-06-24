@@ -2071,5 +2071,226 @@ public class NormalSolution {
         int left = maxDepth(root.left);
 
         int right = maxDepth(root.right);
+
+
     }
+
+    /**
+     * @param root TreeNode类
+     * @return int整型
+     */
+    public int sumNumbers(TreeNode root) {
+        // write code here
+        if (root == null) {
+            return 0;
+        }
+        return interval(root, 0);
+    }
+
+    private int interval(TreeNode root, int sum) {
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null && root.right == null) {
+            return sum * 10 + root.val;
+        }
+        int val = sum * 10 + root.val;
+        return interval(root.left, val) + interval(root.right, val);
+    }
+
+
+    public TreeNode reConstructBinaryTree(int[] pre, int[] in) {
+        if (pre == null || in == null) {
+            return null;
+        }
+        return reConstruct(0, pre, 0, in.length - 1, in);
+    }
+
+    private TreeNode reConstruct(int preStart, int[] pre, int inStart, int inEnd, int[] in) {
+        if (preStart >= pre.length || inStart > inEnd) {
+            return null;
+        }
+        TreeNode root = new TreeNode(pre[preStart]);
+        int index = 0;
+        for (int i = inStart; i <= inEnd; i++) {
+            if (in[i] == root.val) {
+                index = i;
+                break;
+            }
+        }
+        root.left = reConstruct(preStart + 1, pre, inStart, index - 1, in);
+
+        root.right = reConstruct(preStart + index - inStart + 1, pre, index + 1, inEnd, in);
+
+        return root;
+    }
+
+
+    public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
+        ListNode p1 = pHead1;
+
+        ListNode p2 = pHead2;
+
+        while (p1 != p2) {
+            p1 = p1 == null ? pHead2 : p1.next;
+
+            p2 = p2 == null ? pHead1 : p2.next;
+        }
+        return p1;
+    }
+
+    /**
+     * @param str string字符串
+     * @return int整型
+     */
+    public int atoi(String str) {
+        // write code here
+        if (str == null) {
+            return 0;
+        }
+        str = str.trim();
+
+        if (str.isEmpty()) {
+            return 0;
+        }
+        char[] words = str.toCharArray();
+
+        int index = 0;
+
+        int sign = 1;
+
+        if (words[index] == '-' || words[index] == '+') {
+            sign = words[index] == '+' ? 1 : -1;
+            index++;
+        }
+        long result = 0;
+        while (index < words.length && Character.isDigit(words[index])) {
+            result = result * 10 + Character.getNumericValue(words[index]);
+
+            if (result > Integer.MAX_VALUE) {
+                return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+            }
+            index++;
+        }
+        return (int) (sign * result);
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * 求出a、b的最大公约数。
+     *
+     * @param a int
+     * @param b int
+     * @return int
+     */
+    public int gcd(int a, int b) {
+        // write code here
+        if (b == 0) {
+            return a;
+        }
+        return gcd(b, a % b);
+    }
+
+
+    /**
+     * @param num int整型一维数组
+     * @return TreeNode类
+     */
+    public TreeNode sortedArrayToBST(int[] num) {
+        // write code here
+        if (num == null || num.length == 0) {
+            return null;
+        }
+        return intervalSort(0, num.length - 1, num);
+    }
+
+    private TreeNode intervalSort(int start, int end, int[] num) {
+        if (start > end) {
+            return null;
+        }
+        int mid = start + (end - start) / 2;
+        TreeNode root = new TreeNode(num[mid]);
+        root.left = intervalSort(start, mid - 1, num);
+        root.right = intervalSort(mid + 1, end, num);
+        return root;
+    }
+
+
+    /**
+     * @param s string字符串
+     * @return int整型
+     */
+    public int longestValidParentheses(String s) {
+        // write code here
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        char[] words = s.toCharArray();
+        int left = 0;
+        int result = 0;
+        for (int i = 0; i < words.length; i++) {
+            char tmp = words[i];
+            if (tmp == '(') {
+                stack.push(i);
+            } else {
+                if (!stack.isEmpty() && words[stack.peek()] == '(') {
+                    stack.pop();
+                } else {
+                    left = i;
+                }
+                if (stack.isEmpty()) {
+                    result = Math.max(result, i - left + 1);
+                } else {
+                    result = Math.max(result, i - stack.peek());
+                }
+
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 最少货币数
+     *
+     * @param arr int整型一维数组 the array
+     * @param aim int整型 the target
+     * @return int整型
+     */
+    public int minMoney(int[] arr, int aim) {
+        // write code here
+        int[][] dp = new int[arr.length][aim + 1];
+        for (int j = 1; j <= aim; j++) {
+            dp[0][j] = j / arr[0];
+        }
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = 1; j <= aim; j++) {
+                if (arr[i] > j) {
+                    dp[i][j] = dp[i - 1][j];
+                } else if (arr[i] == j) {
+                    dp[i][j] = 1;
+                } else if (dp[i][j - arr[i]] > 0 && dp[i - 1][j] > 0) {
+
+                }
+            }
+        }
+        return -1;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param nums   int整型一维数组
+     * @param target int整型
+     * @return int整型
+     */
+    public int search(int[] nums, int target) {
+        // write code here
+        
+    }
+
 }
