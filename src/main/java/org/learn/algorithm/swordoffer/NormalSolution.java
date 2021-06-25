@@ -13,9 +13,7 @@ public class NormalSolution {
     public static void main(String[] args) {
         NormalSolution solution = new NormalSolution();
 
-        String param = "ababc";
-
-        System.out.println(solution.Permutation("abc"));
+        solution.minWindow("XDOYEZODEYXNZ", "XYZ");
     }
 
     public ListNode ReverseList(ListNode head) {
@@ -2062,6 +2060,7 @@ public class NormalSolution {
         // write code here
 
         boolean[] result = new boolean[2];
+        return null;
     }
 
     private boolean checkBalance(TreeNode root) {
@@ -2071,6 +2070,8 @@ public class NormalSolution {
         int left = maxDepth(root.left);
 
         int right = maxDepth(root.right);
+
+        return false;
 
 
     }
@@ -2288,9 +2289,142 @@ public class NormalSolution {
      * @param target int整型
      * @return int整型
      */
-    public int search(int[] nums, int target) {
+    public int searchSort(int[] nums, int target) {
         // write code here
-        
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && target >= nums[left]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return nums[left] == target ? left : -1;
     }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param pRoot TreeNode类
+     * @return TreeNode类
+     */
+    public TreeNode Mirror(TreeNode pRoot) {
+        // write code here
+        if (pRoot == null) {
+            return null;
+        }
+        TreeNode left = pRoot.left;
+
+        TreeNode right = pRoot.right;
+
+        pRoot.left = right;
+
+        pRoot.right = left;
+
+        Mirror(left);
+
+        Mirror(right);
+
+        return pRoot;
+    }
+
+
+    /**
+     * @param root TreeNode类
+     * @return bool布尔型
+     */
+    public boolean isSymmetric(TreeNode root) {
+        // write code here
+        if (root == null) {
+            return true;
+        }
+        return intervalSymmetric(root.left, root.right);
+    }
+
+    private boolean intervalSymmetric(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
+        }
+        if (left == null || right == null) {
+            return false;
+        }
+        if (left.val != right.val) {
+            return false;
+        }
+        return intervalSymmetric(left.left, right.right) && intervalSymmetric(left.right, right.left);
+    }
+
+
+    /**
+     * @param S string字符串
+     * @param T string字符串
+     * @return string字符串
+     */
+    public String minWindow(String S, String T) {
+        // write code here
+        if (S == null || T == null) {
+            return "";
+        }
+        int n = T.length();
+        int[] hash = new int[256];
+        for (int i = 0; i < n; i++) {
+            int index = T.charAt(i) - 'A';
+            hash[index]++;
+        }
+        int result = Integer.MAX_VALUE;
+        int beginIndex = 0;
+        int head = 0;
+        int m = S.length();
+        int endIndex = 0;
+        while (endIndex < m) {
+            int index = S.charAt(endIndex++) - 'A';
+            if (hash[index]-- > 0) {
+                n--;
+            }
+            while (n == 0) {
+                if (endIndex - beginIndex < result) {
+                    head = beginIndex;
+                    result = endIndex - beginIndex;
+                }
+                if (hash[S.charAt(beginIndex++) - 'A']++ < 0) {
+                    n++;
+                }
+            }
+        }
+        if (result != Integer.MAX_VALUE) {
+            return S.substring(head, head + result);
+        }
+        return "";
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param array int整型一维数组
+     * @return int整型一维数组
+     */
+    public int[] FindNumsAppearOnce(int[] array) {
+        // write code here
+
+    }
+
+
 
 }
