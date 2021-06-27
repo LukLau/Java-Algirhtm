@@ -217,17 +217,20 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        int result = 0;
-        Map<Character, Integer> map = new HashMap<>();
         int left = 0;
+
+        Map<Character, Integer> map = new HashMap<>();
+        int result = 0;
+
         char[] words = s.toCharArray();
+
         for (int i = 0; i < words.length; i++) {
             if (map.containsKey(words[i])) {
                 left = Math.max(left, map.get(words[i]) + 1);
             }
+            result = Math.max(result, i - left + 1);
 
             map.put(words[i], i);
-            result = Math.max(result, i - left + 1);
         }
         return result;
     }
@@ -237,17 +240,16 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        int[] hash = new int[256];
+        int result = 0;
+        int[] hash = new int[512];
         int left = 0;
         char[] words = s.toCharArray();
-        int result = 0;
         for (int i = 0; i < words.length; i++) {
             left = Math.max(left, hash[s.charAt(i)]);
 
             result = Math.max(result, i - left + 1);
 
             hash[s.charAt(i)] = i + 1;
-
         }
         return result;
     }
@@ -258,26 +260,8 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return "";
         }
-
-        int len = s.length();
-        boolean[][] dp = new boolean[len][len];
-        int result = Integer.MIN_VALUE;
-        int left = 0;
-        for (int i = 0; i < len; i++) {
-            for (int j = 0; j <= i; j++) {
-                if (s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1])) {
-                    dp[j][i] = true;
-                }
-                if (dp[j][i] && i - j + 1 > result) {
-                    left = j;
-                    result = i - j + 1;
-                }
-            }
-        }
-        if (result != Integer.MIN_VALUE) {
-            return s.substring(left, left + result);
-        }
-        return "";
+        int m = s.length();
+        boolean[][] dp = new boolean[m][m];
     }
 
 

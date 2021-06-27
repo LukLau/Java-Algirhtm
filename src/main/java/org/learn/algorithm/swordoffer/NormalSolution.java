@@ -1,5 +1,8 @@
 package org.learn.algorithm.swordoffer;
 
+import com.sun.jdi.ArrayReference;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
 
@@ -2263,22 +2266,18 @@ public class NormalSolution {
      */
     public int minMoney(int[] arr, int aim) {
         // write code here
-        int[][] dp = new int[arr.length][aim + 1];
-        for (int j = 1; j <= aim; j++) {
-            dp[0][j] = j / arr[0];
-        }
-        for (int i = 1; i < arr.length; i++) {
-            for (int j = 1; j <= aim; j++) {
-                if (arr[i] > j) {
-                    dp[i][j] = dp[i - 1][j];
-                } else if (arr[i] == j) {
-                    dp[i][j] = 1;
-                } else if (dp[i][j - arr[i]] > 0 && dp[i - 1][j] > 0) {
+        int[] dp = new int[aim + 1];
 
+        Arrays.fill(dp, aim + 1);
+
+        for (int i = 1; i <= aim; i++) {
+            for (int j = 0; j < arr.length; j++) {
+                if (i - arr[j] >= 0) {
+                    dp[i] = Math.min(dp[i], dp[i - arr[j]] + 1);
                 }
             }
         }
-        return -1;
+        return dp[aim] == aim + 1 ? -1 : dp[aim];
     }
 
 
@@ -2422,9 +2421,331 @@ public class NormalSolution {
      */
     public int[] FindNumsAppearOnce(int[] array) {
         // write code here
+        if (array == null || array.length == 0) {
+            return new int[]{};
+        }
+        if (array.length == 2) {
+            return array;
+        }
+        int tmp = 0;
+        for (int num : array) {
+            tmp ^= num;
+        }
+        tmp &= -tmp;
+        int[] result = new int[2];
+        for (int num : array) {
+            if ((tmp & num) != 0) {
+                result[1] ^= num;
+            } else {
+                result[0] ^= num;
+            }
+        }
+        return result;
+    }
+
+
+    public int GetNumberOfK(int[] array, int k) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = array.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (array[mid] < k) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        if (array[left] != k) {
+            return 0;
+        }
+        int firstIndex = left;
+        right = array.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2 + 1;
+            if (array[mid] > k) {
+                right = mid - 1;
+            } else {
+                left = mid;
+            }
+        }
+        int secondIndex = left;
+
+        return secondIndex - firstIndex + 1;
+    }
+
+
+    /**
+     * 最大数
+     *
+     * @param nums int整型一维数组
+     * @return string字符串
+     */
+    public String solveBigString(int[] nums) {
+        // write code here
+        if (nums == null || nums.length == 0) {
+            return "";
+        }
+        String[] params = new String[nums.length];
+
+        for (int i = 0; i < nums.length; i++) {
+            params[i] = String.valueOf(nums[i]);
+        }
+        Arrays.sort(params, (o1, o2) -> {
+            String s1 = o1 + o2;
+            String s2 = o2 + o1;
+            return s2.compareTo(s1);
+        });
+        StringBuilder builder = new StringBuilder();
+        for (String item : params) {
+            if (!(builder.length() == 0 && "0".equals(item))) {
+                builder.append(item);
+            }
+        }
+        return builder.length() == 0 ? "0" : builder.toString();
+    }
+
+    public ArrayList<Integer> maxInWindows(int[] num, int size) {
+        if (num == null || num.length == 0 || size == 0) {
+            return new ArrayList<>();
+        }
+        LinkedList<Integer> linkedList = new LinkedList<>();
+
+        ArrayList<Integer> result = new ArrayList<>();
+
+        for (int i = 0; i < num.length; i++) {
+            int index = i - size + 1;
+            if (!linkedList.isEmpty() && linkedList.peekFirst() < index) {
+                linkedList.pollFirst();
+            }
+            while (!linkedList.isEmpty() && num[linkedList.peekLast()] <= num[i]) {
+                linkedList.pollLast();
+            }
+            linkedList.offer(i);
+            if (index >= 0) {
+                result.add(num[linkedList.peekFirst()]);
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * @param head ListNode类
+     * @param m    int整型
+     * @param n    int整型
+     * @return ListNode类
+     */
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        // write code here
+        if (head == null) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+
+        root.next = head;
+
+        ListNode fast = root;
+
+        ListNode slow = root;
+
+        for (int i = 0; i < m - 1; i++) {
+            slow = slow.next;
+        }
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+        ListNode begin = slow.next;
+
+        ListNode end = fast.next;
+
+        slow.next = reverse(begin, end);
+
+        begin.next = end;
+
+        return root.next;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param head ListNode类
+     * @return ListNode类
+     */
+    public ListNode oddEvenList(ListNode head) {
+        // write code here
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode oddRoot = new ListNode(0);
+
+        ListNode odd = oddRoot;
+
+        ListNode evenRoot = new ListNode(0);
+
+        ListNode even = evenRoot;
+        int index = 1;
+        while (head != null) {
+            if (index % 2 == 1) {
+                odd.next = head;
+                odd = odd.next;
+            } else {
+                even.next = head;
+                even = evenRoot.next;
+            }
+            head = head.next;
+
+            index++;
+        }
+        even.next = null;
+        odd.next = evenRoot.next;
+
+        return oddRoot.next;
+    }
+
+
+    public ArrayList<ArrayList<Integer>> permuteUnique(int[] num) {
+        if (num == null || num.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(num);
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        boolean[] used = new boolean[num.length];
+        intervalPermute(result, new ArrayList<Integer>(), used, num);
+        return result;
+    }
+
+    private void intervalPermute(ArrayList<ArrayList<Integer>> result, List<Integer> tmp, boolean[] used, int[] num) {
+        if (tmp.size() == num.length) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = 0; i < num.length; i++) {
+            if (i > 0 && num[i] == num[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            if (used[i]) {
+                continue;
+            }
+            used[i] = true;
+            tmp.add(num[i]);
+            intervalPermute(result, tmp, used, num);
+            used[i] = false;
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    public ArrayList<Interval> merge(ArrayList<Interval> intervals) {
+        if (intervals == null || intervals.isEmpty()) {
+            return new ArrayList<>();
+        }
+        intervals.sort(Comparator.comparingInt(o -> o.start));
+
+        ArrayList<Interval> result = new ArrayList<>();
+
+        int index = 0;
+
+        for (Interval interval : intervals) {
+            if (result.isEmpty() || result.get(index - 1).end < interval.start) {
+                result.add(interval);
+                index++;
+            } else {
+                Interval pre = result.get(index - 1);
+                pre.start = Math.min(pre.start, interval.start);
+                pre.end = Math.max(pre.end, interval.end);
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * todo
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * 计算模板串S在文本串T中出现了多少次
+     *
+     * @param S string字符串 模板串
+     * @param T string字符串 文本串
+     * @return int整型
+     */
+    public int kmp(String S, String T) {
+        // write code here
+        return -1;
+    }
+
+
+    /**
+     * @param matrix int整型二维数组 the matrix
+     * @return int整型
+     */
+    public int minPathSum(int[][] matrix) {
+        // write code here
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int[][] dp = new int[row][column];
+        for (int i = 0; i < row; i++) {
+            dp[i][0] = i == 0 ? matrix[0][0] : dp[i - 1][0] + matrix[i][0];
+        }
+        for (int j = 1; j < column; j++) {
+            dp[0][j] = dp[0][j - 1] + matrix[0][j];
+        }
+        for (int i = 1; i < row; i++) {
+            for (int j = 1; j < column; j++) {
+                dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + matrix[i][j];
+            }
+        }
+        return dp[row - 1][column - 1];
+    }
+
+
+    /**
+     * 判断岛屿数量
+     *
+     * @param grid char字符型二维数组
+     * @return int整型
+     */
+    public int solveIsland(char[][] grid) {
+        // write code here
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        boolean[][] used = new boolean[row][column];
+        int count = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (grid[i][j] == '1') {
+                    intervalDFS(grid, i, j, used);
+                    count++;
+                }
+            }
+        }
+        return count;
 
     }
 
+    private void intervalDFS(char[][] grid, int i, int j, boolean[][] used) {
+        if (i < 0 || i >= used.length || j < 0 || j >= used[i].length || used[i][j]) {
+            return;
+        }
+        if (grid[i][j] != '1') {
+            return;
+        }
+        used[i][j] = true;
+        grid[i][j] = '0';
+        intervalDFS(grid, i - 1, j, used);
+        intervalDFS(grid, i + 1, j, used);
+        intervalDFS(grid, i, j - 1, used);
+        intervalDFS(grid, i, j + 1, used);
+    }
 
 
 }
