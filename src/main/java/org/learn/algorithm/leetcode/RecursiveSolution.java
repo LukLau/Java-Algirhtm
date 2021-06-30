@@ -49,26 +49,29 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return;
         }
-        int index = nums.length - 1;
-        while (index > 0) {
-            if (nums[index] > nums[index - 1]) {
+        int endIndex = nums.length - 1;
+
+        while (endIndex > 0) {
+            if (nums[endIndex] > nums[endIndex - 1]) {
                 break;
             }
-            index--;
+            endIndex--;
         }
-        if (index == 0) {
+        if (endIndex == 0) {
             reverseArrays(nums, 0, nums.length - 1);
             return;
         }
-        int end = nums.length - 1;
-        while (end > index - 1) {
-            if (nums[end] > nums[index - 1]) {
+        int j = nums.length - 1;
+
+        while (j > endIndex - 1) {
+            if (nums[j] > nums[endIndex - 1]) {
                 break;
             }
-            end--;
+            j--;
         }
-        swap(nums, end, index - 1);
-        reverseArrays(nums, index, nums.length - 1);
+        swap(nums, endIndex - 1, j);
+
+        reverseArrays(nums, endIndex, nums.length - 1);
     }
 
     private void swap(int[] nums, int i, int j) {
@@ -112,8 +115,8 @@ public class RecursiveSolution {
         if (candidates == null || candidates.length == 0) {
             return new ArrayList<>();
         }
-        Arrays.sort(candidates);
         List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(candidates);
         intervalCombination(result, new ArrayList<>(), 0, candidates, target);
         return result;
     }
@@ -146,7 +149,7 @@ public class RecursiveSolution {
             ans.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
+        for (int i = start; i < candidates.length && target >= candidates[i]; i++) {
             if (i > start && candidates[i] == candidates[i - 1]) {
                 continue;
             }

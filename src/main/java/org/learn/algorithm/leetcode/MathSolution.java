@@ -48,26 +48,25 @@ public class MathSolution {
      * @return
      */
     public int divide(int dividend, int divisor) {
-        if (dividend == Integer.MIN_VALUE && divisor == -1) {
+        if (divisor == -1 && dividend == Integer.MIN_VALUE) {
             return Integer.MAX_VALUE;
         }
         int sign = ((dividend < 0 && divisor < 0) || (dividend > 0 && divisor > 0)) ? 1 : -1;
         long dvd = Math.abs((long) dividend);
         long dvs = Math.abs((long) divisor);
 
-        int result = 0;
-
+        long result = 0;
         while (dvd >= dvs) {
-            long multi = 1;
             long tmp = dvs;
-            while (dvd >= tmp << 1) {
+            int multi = 1;
+            while (dvd >= (tmp << 1)) {
                 tmp <<= 1;
                 multi <<= 1;
             }
             dvd -= tmp;
             result += multi;
         }
-        return result * sign;
+        return (int) (result * sign);
     }
 
 
