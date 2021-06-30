@@ -144,28 +144,21 @@ public class StringSolution {
             return s.isEmpty();
         }
         int m = s.length();
-
         int n = p.length();
-
         boolean[][] dp = new boolean[m + 1][n + 1];
-
         dp[0][0] = true;
-
         for (int j = 1; j <= n; j++) {
             dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j - 2];
         }
-        char[] words = s.toCharArray();
-        char[] tmp = p.toCharArray();
-
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                if (words[i - 1] == tmp[j - 1] || tmp[j - 1] == '.') {
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
                     dp[i][j] = dp[i - 1][j - 1];
-                } else if (tmp[j - 1] == '*') {
-                    if (words[i - 1] != tmp[j - 2] && tmp[j - 2] != '.') {
+                } else if (p.charAt(j - 1) == '*') {
+                    if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
                         dp[i][j] = dp[i][j - 2];
                     } else {
-                        dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
+                        dp[i][j] = dp[i][j - 1] || dp[i - 1][j] || dp[i][j - 2];
                     }
                 }
             }
@@ -262,6 +255,24 @@ public class StringSolution {
         }
         int m = s.length();
         boolean[][] dp = new boolean[m][m];
+        int result = 0;
+        int head = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (s.charAt(j) == s.charAt(i) && (i - j <= 2 || dp[j + 1][i + 1])) {
+                    dp[j][i] = true;
+                }
+                if (dp[j][i] && i - j + 1 > result) {
+                    result = i - j + 1;
+
+                    head = j;
+                }
+            }
+        }
+        if (result != 0) {
+            return s.substring(head, head + result);
+        }
+        return "";
     }
 
 

@@ -62,6 +62,19 @@ public class FirstPage {
         return root.next;
     }
 
+    public int reverse(int x) {
+        int result = 0;
+        while (x != 0) {
+            if (result > Integer.MAX_VALUE / 10 || result < Integer.MIN_VALUE / 10) {
+                return 0;
+            }
+            result = result * 10 + x % 10;
+
+            x /= 10;
+        }
+        return result;
+    }
+
 
     /**
      * 17. Letter Combinations of a Phone Number
@@ -128,6 +141,36 @@ public class FirstPage {
             }
         }
         return (int) (result * sign);
+    }
+
+
+    public int maxArea(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = height.length - 1;
+        int leftEdge = 0;
+        int rightEdge = 0;
+        int result = 0;
+        while (left < right) {
+            if (height[left] <= height[right]) {
+                if (leftEdge <= height[left]) {
+                    leftEdge = height[left];
+                } else {
+                    result += leftEdge - height[left];
+                }
+                left++;
+            } else {
+                if (rightEdge <= height[right]) {
+                    rightEdge = height[right];
+                } else {
+                    result += rightEdge - height[right];
+                }
+                right--;
+            }
+        }
+        return result;
     }
 
 
