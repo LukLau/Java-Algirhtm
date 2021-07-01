@@ -460,6 +460,18 @@ public class FirstPage {
         if (intervals == null || intervals.length == 0) {
             return new int[][]{};
         }
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        List<int[]> result = new ArrayList<>();
+        for (int[] interval : intervals) {
+            if (result.isEmpty() || result.get(result.size() - 1)[1] < interval[0]) {
+                result.add(interval);
+            } else {
+                int[] pre = result.get(result.size() - 1);
+                pre[0] = Math.min(pre[0], interval[0]);
+                pre[1] = Math.max(pre[1], interval[1]);
+            }
+        }
+        return result.toArray(new int[][]{});
     }
 
 
@@ -505,24 +517,23 @@ public class FirstPage {
             return "/";
         }
         String[] words = path.split("/");
-        LinkedList<String> deque = new LinkedList<>();
+        LinkedList<String> linkedList = new LinkedList<>();
+
         for (String word : words) {
-            if (word.isEmpty() || ".".endsWith(word)) {
-                continue;
-            }
             if ("..".equals(word)) {
-                deque.pollLast();
-            } else {
-                deque.offer(word);
+                if (!linkedList.isEmpty()) {
+                    linkedList.pollLast();
+                }
+            } else if (!"".equals(word) && !".".equals(word)) {
+                linkedList.offer(word);
             }
         }
+        StringBuilder s = new StringBuilder();
 
-        String tmp = "";
-        for (String s : deque) {
-            tmp = tmp + "/" + s;
+        for (String tmp : linkedList) {
+            s.append("/").append(tmp);
         }
-        return tmp.isEmpty() ? "/" : tmp;
-
+        return s.length() == 0 ? "/" : s.toString();
     }
 
 
@@ -536,16 +547,15 @@ public class FirstPage {
             return;
         }
         int blue = nums.length - 1;
-        int zero = 0;
-        int index = 0;
-        while (index < nums.length) {
-            while (index < blue && nums[index] == 2) {
-                swapValue(nums, index, blue--);
+
+        int red = 0;
+        for (int i = 0; i < nums.length; i++) {
+            while (i < blue && nums[i] == 2) {
+                swapValue(nums, i, blue--);
             }
-            while (index > zero && nums[index] == 0) {
-                swapValue(nums, index, zero++);
+            while (i > red && nums[i] == 0) {
+                swapValue(nums, i, red++);
             }
-            index++;
         }
     }
 

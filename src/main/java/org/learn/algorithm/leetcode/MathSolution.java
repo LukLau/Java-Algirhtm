@@ -109,46 +109,34 @@ public class MathSolution {
      * @return
      */
     public boolean isNumber(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return false;
         }
-        s = s.trim();
-        if (s.isEmpty()) {
-            return true;
-        }
-        boolean seenNumber = false;
         boolean seenNumberAfterE = true;
+        boolean seenNumber = true;
         boolean seenDigit = false;
-        boolean seenE = false;
-        char[] words = s.toCharArray();
-        for (int i = 0; i < words.length; i++) {
-            char tmp = words[i];
-            if (Character.isDigit(tmp)) {
-                seenNumber = true;
-                seenNumberAfterE = true;
-            } else if (tmp == 'e' || tmp == 'E') {
-                if (seenE || i == 0) {
-                    return false;
-                }
-                if (!seenNumber) {
-                    return false;
-                }
-                seenE = true;
-                seenNumberAfterE = false;
-            } else if (tmp == '-' || tmp == '+') {
-                if (i > 0 && (words[i - 1] != 'e' && words[i - 1] != 'E')) {
-                    return false;
-                }
-            } else if (tmp == '.') {
-                if (seenE || seenDigit) {
-                    return false;
-                }
-                seenDigit = true;
-            } else {
-                return false;
-            }
+        return false;
+    }
+
+
+    public String addBinary(String a, String b) {
+        if (a == null || b == null) {
+            return "";
         }
-        return seenNumber && seenNumberAfterE;
+        int m = a.length() - 1;
+
+        int n = b.length() - 1;
+
+        int carry = 0;
+        StringBuilder builder = new StringBuilder();
+        while (m >= 0 || n >= 0 || carry != 0) {
+            int val = (m >= 0 ? Character.getNumericValue(a.charAt(m--)) : 0) + (n >= 0 ? Character.getNumericValue(b.charAt(n--)) : 0) + carry;
+
+            builder.append(val % 2);
+
+            carry = val / 2;
+        }
+        return builder.reverse().toString();
     }
 
 
@@ -174,15 +162,19 @@ public class MathSolution {
                 endIndex++;
             }
             boolean lastRow = endIndex == words.length;
-            int blankSpace = maxWidth - line + 1;
-            int wordCount = endIndex - startIndex;
+            int countWord = endIndex - startIndex;
             StringBuilder builder = new StringBuilder();
-            if (wordCount == 1) {
+
+            if (countWord == 1) {
                 builder.append(words[startIndex]);
             } else {
-                int space = lastRow ? 1 : 1 + blankSpace / (wordCount - 1);
-                int extra = lastRow ? 0 : blankSpace % (wordCount - 1);
-                builder.append(constructRow(words, startIndex, endIndex, space, extra));
+                int blankSpace = maxWidth - line + 1;
+
+                int countBlankSpace = lastRow ? 1 : 1 + blankSpace / (countWord - 1);
+
+                int extraBlankSpace = lastRow ? 0 : blankSpace % (countWord - 1);
+
+                builder.append(constructRow(words, startIndex, endIndex, countBlankSpace, extraBlankSpace));
             }
             result.add(trimRow(builder.toString(), maxWidth));
             startIndex = endIndex;
@@ -223,11 +215,11 @@ public class MathSolution {
      */
     public int mySqrt(int x) {
         double precision = 0.00001;
-        int result = x;
+        double result = x;
         while (result * result - x > precision) {
             result = (result + x / result) / 2;
         }
-        return result;
+        return (int) result;
     }
 
 

@@ -1,8 +1,10 @@
 package org.learn.algorithm.leetcode;
 
 import com.sun.org.apache.bcel.internal.generic.RETURN;
+import jdk.nashorn.internal.runtime.regexp.joni.encoding.IntHolder;
 
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * 字符串系列问题
@@ -28,27 +30,26 @@ public class StringSolution {
         if (s == null || t == null) {
             return "";
         }
-        int[] hash = new int[256];
+        int[] hash = new int[512];
         int n = t.length();
-
         for (int i = 0; i < n; i++) {
             hash[t.charAt(i)]++;
         }
-        int begin = 0;
-        int head = 0;
         int result = Integer.MAX_VALUE;
-        int end = 0;
+        int beginIndex = 0;
+        int head = 0;
+        int endIndex = 0;
         int m = s.length();
-        while (end < m) {
-            if (hash[s.charAt(end++)]-- > 0) {
+        while (endIndex < m) {
+            if (hash[s.charAt(endIndex++)]-- > 0) {
                 n--;
             }
             while (n == 0) {
-                if (end - begin < result) {
-                    result = end - begin;
-                    head = begin;
+                if (endIndex - beginIndex < result) {
+                    head = beginIndex;
+                    result = endIndex - beginIndex;
                 }
-                if (hash[s.charAt(begin++)]++ == 0) {
+                if (hash[s.charAt(beginIndex++)]++ == 0) {
                     n++;
                 }
             }
@@ -191,6 +192,7 @@ public class StringSolution {
         for (int j = 1; j <= n; j++) {
             dp[0][j] = p.charAt(j - 1) == '*';
         }
+        return false;
     }
 
     // 重复字符串问题 //
@@ -522,7 +524,7 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.generatePalindromes("aabbcc");
+        solution.minWindow("ADOBECODEBANC", "ABC");
     }
 
 

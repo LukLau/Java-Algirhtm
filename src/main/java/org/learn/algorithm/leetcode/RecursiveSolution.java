@@ -425,38 +425,10 @@ public class RecursiveSolution {
         }
         int row = board.length;
         int column = board[0].length;
-        boolean[][] used = new boolean[row][column];
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                if (board[i][j] == word.charAt(0) && validExist(used, i, j, 0, board, word)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-
     }
 
     private boolean validExist(boolean[][] used, int i, int j, int k, char[][] board, String word) {
-        if (k == word.length()) {
-            return true;
-        }
-        if (i < 0 || i >= used.length || j < 0 || j >= used[i].length || board[i][j] != word.charAt(k)) {
-            return false;
-        }
-        if (used[i][j]) {
-            return false;
-        }
-        used[i][j] = true;
 
-        if (validExist(used, i - 1, j, k + 1, board, word) ||
-                validExist(used, i + 1, j, k + 1, board, word) ||
-                validExist(used, i, j - 1, k + 1, board, word) ||
-                validExist(used, i, j + 1, k + 1, board, word)) {
-            return true;
-        }
-        used[i][j] = false;
-        return false;
     }
 
 
