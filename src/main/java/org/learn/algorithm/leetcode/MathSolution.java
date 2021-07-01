@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+import javax.swing.plaf.metal.MetalTheme;
 import java.util.*;
 
 /**
@@ -48,26 +49,25 @@ public class MathSolution {
      * @return
      */
     public int divide(int dividend, int divisor) {
-        if (dividend == Integer.MIN_VALUE && divisor == -1) {
+        if (divisor == -1 && dividend == Integer.MIN_VALUE) {
             return Integer.MAX_VALUE;
         }
         int sign = ((dividend < 0 && divisor < 0) || (dividend > 0 && divisor > 0)) ? 1 : -1;
         long dvd = Math.abs((long) dividend);
         long dvs = Math.abs((long) divisor);
 
-        int result = 0;
-
+        long result = 0;
         while (dvd >= dvs) {
-            long multi = 1;
             long tmp = dvs;
-            while (dvd >= tmp << 1) {
+            int multi = 1;
+            while (dvd >= (tmp << 1)) {
                 tmp <<= 1;
                 multi <<= 1;
             }
             dvd -= tmp;
             result += multi;
         }
-        return result * sign;
+        return (int) (result * sign);
     }
 
 
@@ -78,17 +78,28 @@ public class MathSolution {
      * @param n
      * @return
      */
-    public double myPow(double x, int n) {
+    public double myPowII(double x, int n) {
         double result = 1.0;
-        long p = Math.abs((long) n);
-        while (p != 0) {
-            if (p % 2 != 0) {
+        long num = Math.abs((long) n);
+        while (num != 0) {
+            if (num % 2 != 0) {
                 result *= x;
             }
             x *= x;
-            p >>= 1;
+            num >>= 1;
         }
         return n < 0 ? 1 / result : result;
+    }
+
+    public double myPow(double x, int n) {
+        if (n == 0) {
+            return 1;
+        }
+        if (n < 0) {
+            n = -n;
+            x = 1 / x;
+        }
+        return n % 2 == 0 ? myPow(x * x, n / 2) : x * myPow(x * x, n / 2);
     }
 
     /**

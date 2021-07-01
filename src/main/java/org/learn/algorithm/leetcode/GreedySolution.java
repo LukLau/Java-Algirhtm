@@ -22,16 +22,32 @@ public class GreedySolution {
             return 0;
         }
         int step = 0;
-        int furthest = 0;
+
         int currentIndex = 0;
+
+        int furthestIndex = nums[0];
+
         for (int i = 0; i < nums.length - 1; i++) {
-            furthest = Math.max(i + nums[i], furthest);
-            if (currentIndex == i) {
+            furthestIndex = Math.max(furthestIndex, i + nums[i]);
+
+            if (i == currentIndex) {
                 step++;
-                currentIndex = furthest;
+                currentIndex = furthestIndex;
             }
         }
         return step;
+    }
+
+    public boolean canJump(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int reach = 0;
+
+        for (int i = 0; i < nums.length - 1 && i <= reach; i++) {
+            reach = Math.max(reach, i + nums[i]);
+        }
+        return reach >= nums.length - 1;
     }
 
 

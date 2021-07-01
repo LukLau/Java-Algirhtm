@@ -64,21 +64,22 @@ public class DynamicSolution {
         if (n <= 0) {
             return new ArrayList<>();
         }
-        List<List<String>> result = new ArrayList<>();
-        char[][] queens = new char[n][n];
-        for (char[] queen : queens) {
-            Arrays.fill(queen, '.');
+        char[][] queen = new char[n][n];
+        for (char[] row : queen) {
+            Arrays.fill(row, '.');
         }
+        List<List<String>> result = new ArrayList<>();
 
-        intervalNQueens(result, 0, n, queens);
+        intervalNQueens(result, 0, n, queen);
+
         return result;
     }
 
     private void intervalNQueens(List<List<String>> result, int row, int n, char[][] queens) {
         if (row == n) {
             List<String> tmp = new ArrayList<>();
-            for (char[] queen : queens) {
-                tmp.add(String.valueOf(queen));
+            for (char[] word : queens) {
+                tmp.add(String.valueOf(word));
             }
             result.add(tmp);
             return;
@@ -88,7 +89,6 @@ public class DynamicSolution {
                 queens[row][i] = 'Q';
                 intervalNQueens(result, row + 1, n, queens);
                 queens[row][i] = '.';
-
             }
         }
     }

@@ -2,6 +2,7 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Node;
+import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -116,22 +117,21 @@ public class ListSolution {
             return head;
         }
         ListNode root = new ListNode(0);
+
         root.next = head;
+
         ListNode dummy = root;
+
         while (dummy.next != null && dummy.next.next != null) {
-
             ListNode slow = dummy.next;
-
             ListNode fast = dummy.next.next;
+            slow.next = fast.next;
 
             dummy.next = fast;
-
-            slow.next = fast.next;
 
             fast.next = slow;
 
             dummy = slow;
-
         }
         return root.next;
     }
