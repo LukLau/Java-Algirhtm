@@ -418,22 +418,18 @@ public class FirstPage {
         if (intervals == null || intervals.length == 0) {
             return new int[][]{};
         }
-        PriorityQueue<int[]> queue = new PriorityQueue<>(intervals.length, Comparator.comparingInt(o -> o[0]));
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        List<int[]> result = new ArrayList<>();
         for (int[] interval : intervals) {
-            queue.offer(interval);
-        }
-        LinkedList<int[]> linkedList = new LinkedList<>();
-        while (!queue.isEmpty()) {
-            int[] poll = queue.poll();
-            if (linkedList.isEmpty() || linkedList.peekLast()[1] < poll[0]) {
-                linkedList.add(poll);
+            if (result.isEmpty() || result.get(result.size() - 1)[1] < interval[0]) {
+                result.add(interval);
             } else {
-                int[] peek = linkedList.peekLast();
-                peek[0] = Math.min(peek[0], poll[0]);
-                peek[1] = Math.max(peek[1], poll[1]);
+                int[] pre = result.get(result.size() - 1);
+                pre[0] = Math.min(pre[0], interval[0]);
+                pre[1] = Math.max(pre[1], interval[1]);
             }
         }
-        return linkedList.toArray(new int[][]{});
+        return result.toArray(new int[][]{});
     }
 
 
