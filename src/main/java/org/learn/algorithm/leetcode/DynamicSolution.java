@@ -200,42 +200,8 @@ public class DynamicSolution {
         }
         int row = matrix.length;
         int column = matrix[0].length;
-        int result = 0;
-        int[] left = new int[column];
-        int[] right = new int[column];
         int[] height = new int[column];
-        Arrays.fill(right, column);
-        for (int i = 0; i < row; i++) {
-            int leftSide = 0;
-            int rightSide = column;
-            for (int j = 0; j < column; j++) {
-                char t = matrix[i][j];
-                if (t == '1') {
-                    height[j]++;
-                    left[j] = Math.max(left[j], leftSide);
-                } else {
-                    height[j] = 0;
-                    left[j] = leftSide;
-                    leftSide = j + 1;
-                }
-            }
-            for (int j = column - 1; j >= 0; j--) {
-                char t = matrix[i][j];
-                if (t == '1') {
-                    right[j] = Math.min(right[j], rightSide);
-                } else {
-                    right[j] = column;
-                    rightSide = j;
-                }
-            }
-            for (int j = 0; j < column; j++) {
-                char t = matrix[i][j];
-                if (t == '1') {
-                    result = Math.max(result, height[j] * (right[j] - left[j]));
-                }
-            }
-        }
-        return result;
+        
     }
 
 

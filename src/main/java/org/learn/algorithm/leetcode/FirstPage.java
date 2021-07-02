@@ -594,14 +594,13 @@ public class FirstPage {
         Stack<Integer> stack = new Stack<>();
         int result = 0;
         for (int i = 0; i <= heights.length; i++) {
-            int h = i == heights.length ? 0 : heights[i];
-            if (stack.isEmpty() || heights[stack.peek()] <= h) {
+            int side = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] <= side) {
                 stack.push(i);
             } else {
                 Integer pop = stack.pop();
-                int side = stack.isEmpty() ? i : i - stack.peek() - 1;
-
-                result = Math.max(result, side * heights[pop]);
+                int edge = stack.isEmpty() ? i : i - stack.peek() - 1;
+                result = Math.max(result, heights[pop] * edge);
                 i--;
             }
         }
