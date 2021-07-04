@@ -1,7 +1,11 @@
 package org.learn.algorithm.leetcode;
 
+import com.sun.xml.internal.rngom.digested.DPattern;
+import jdk.nashorn.internal.runtime.FindProperty;
 import org.learn.algorithm.datastructure.TreeNode;
+import sun.security.rsa.RSASignature;
 
+import java.sql.ResultSet;
 import java.util.*;
 
 /**
@@ -201,7 +205,40 @@ public class DynamicSolution {
         int row = matrix.length;
         int column = matrix[0].length;
         int[] height = new int[column];
-        
+        int[] left = new int[column];
+        int[] right = new int[column];
+        Arrays.fill(right, column);
+        int result = 0;
+        for (int i = 0; i < row; i++) {
+            int leftEdge = 0;
+            int rightEdge = column;
+            for (int j = 0; j < column; j++) {
+                char tmp = matrix[i][j];
+                if (tmp == '1') {
+                    height[j]++;
+                    left[j] = Math.max(left[j], leftEdge);
+                } else {
+                    height[j] = 0;
+                    left[j] = leftEdge;
+                    leftEdge = j + 1;
+                }
+            }
+            for (int j = column - 1; j >= 0; j--) {
+                char tmp = matrix[i][j];
+                if (tmp == '1') {
+                    right[j] = Math.min(right[j], rightEdge);
+                } else {
+                    right[j] = column;
+                    rightEdge = j;
+                }
+            }
+            for (int j = 0; j < column; j++) {
+                if (height[j] != 0) {
+                    result = Math.max(result, (right[j] - left[j]) * height[j]);
+                }
+            }
+        }
+        return result;
     }
 
 
@@ -247,7 +284,7 @@ public class DynamicSolution {
      * @return
      */
     public boolean isInterleave(String s1, String s2, String s3) {
-        if (s1 == null || s2 == null) {
+        if (s1 == null || s2 == null || s3 == null) {
             return false;
         }
         int m = s1.length();

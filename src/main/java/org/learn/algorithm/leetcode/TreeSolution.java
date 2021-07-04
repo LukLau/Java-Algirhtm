@@ -14,6 +14,20 @@ import java.util.*;
  */
 public class TreeSolution {
 
+    // 判断树是不是满足标准
+
+    public int minDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = minDepth(root.left);
+
+        int right = minDepth(root.right);
+
+        return 1 + Math.min(left, right);
+    }
+
+
     // 排序系列//
 
     /**
@@ -301,6 +315,7 @@ public class TreeSolution {
 
     /**
      * todo
+     *
      * @param root
      * @param p
      * @return
@@ -415,11 +430,11 @@ public class TreeSolution {
      */
     public boolean isValidBST(TreeNode root) {
         if (root == null) {
-            return true;
+            return false;
         }
         Stack<TreeNode> stack = new Stack<>();
-        TreeNode p = root;
         TreeNode prev = null;
+        TreeNode p = root;
         while (!stack.isEmpty() || p != null) {
             while (p != null) {
                 stack.push(p);
@@ -446,17 +461,17 @@ public class TreeSolution {
             return;
         }
         TreeNode first = null;
-
-        TreeNode second = root;
+        TreeNode second = null;
         Stack<TreeNode> stack = new Stack<>();
-        TreeNode p = root;
         TreeNode prev = null;
+        TreeNode p = root;
         while (!stack.isEmpty() || p != null) {
             while (p != null) {
                 stack.push(p);
                 p = p.left;
             }
             p = stack.pop();
+
             if (prev != null && prev.val >= p.val) {
                 if (first == null) {
                     first = prev;
@@ -464,6 +479,7 @@ public class TreeSolution {
                 second = p;
             }
             prev = p;
+
             p = p.right;
         }
         if (first != null) {
@@ -506,25 +522,26 @@ public class TreeSolution {
      * @return
      */
     public TreeNode sortedListToBST(ListNode head) {
-        if (head == null || head.next == null) {
-            return head == null ? null : new TreeNode(head.val);
+        if (head == null) {
+            return null;
+        }
+        if (head.next == null) {
+            return new TreeNode(head.val);
         }
         ListNode fast = head;
         ListNode slow = head;
         ListNode prev = slow;
         while (fast != null && fast.next != null) {
-            fast = fast.next.next;
             prev = slow;
             slow = slow.next;
+            fast = fast.next.next;
         }
-        TreeNode root = new TreeNode(slow.val);
-
+        ListNode second = slow.next;
+        slow.next = null;
         prev.next = null;
-
+        TreeNode root = new TreeNode(slow.val);
         root.left = sortedListToBST(head);
-
-        root.right = sortedListToBST(slow.next);
-
+        root.right = sortedListToBST(second);
         return root;
     }
 
@@ -563,7 +580,7 @@ public class TreeSolution {
         if (root == null) {
             return true;
         }
-        return intervalSymmetric(root.left, root.right) && intervalSymmetric(root.right, root.left);
+        return intervalSymmetric(root.left, root.right);
     }
 
     private boolean intervalSymmetric(TreeNode left, TreeNode right) {
@@ -622,7 +639,7 @@ public class TreeSolution {
      * @return
      */
     public TreeNode buildTreeII(int[] inorder, int[] postorder) {
-        if (inorder == null || postorder == null) {
+        if (inorder == null | postorder == null) {
             return null;
         }
         return intervalBuildTree(0, inorder.length - 1, inorder, 0, postorder.length - 1, postorder);
@@ -754,14 +771,10 @@ public class TreeSolution {
         if (root == null) {
             return false;
         }
-        if (root.left == null && root.right == null && root.val == targetSum) {
+        if (root.left == null && root.right == null && targetSum == root.val) {
             return true;
-        } else {
-            if (root.left != null && hasPathSum(root.left, targetSum - root.val)) {
-                return true;
-            }
-            return root.right != null && hasPathSum(root.right, targetSum - root.val);
         }
+        return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val);
     }
 
 
@@ -833,12 +846,12 @@ public class TreeSolution {
      * @return
      */
     public Node connect(Node root) {
-        if (root == null) {
-            return null;
+        if (root == null || root.left == null) {
+            return root;
         }
         Node current = root;
         while (current.left != null) {
-            Node nextLevel = current.left;
+            Node tmp = current.left;
             while (current != null) {
                 current.left.next = current.right;
                 if (current.next != null) {
@@ -846,7 +859,7 @@ public class TreeSolution {
                 }
                 current = current.next;
             }
-            current = nextLevel;
+            current = tmp;
         }
         return root;
     }
