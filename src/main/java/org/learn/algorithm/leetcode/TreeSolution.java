@@ -945,18 +945,16 @@ public class TreeSolution {
             return 0;
         }
         return intervalSumNumbers(root, 0);
-
     }
 
     private int intervalSumNumbers(TreeNode root, int val) {
         if (root == null) {
             return 0;
         }
-        int result = val * 10 + root.val;
         if (root.left == null && root.right == null) {
-            return result;
+            return val * 10 + root.val;
         }
-        return intervalSumNumbers(root.left, result) + intervalSumNumbers(root.right, result);
+        return intervalSumNumbers(root.left, val * 10 + root.val) + intervalSumNumbers(root.right, val * 10 + root.val);
     }
 
 
