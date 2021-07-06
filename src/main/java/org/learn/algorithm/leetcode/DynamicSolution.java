@@ -1,11 +1,7 @@
 package org.learn.algorithm.leetcode;
 
-import com.sun.xml.internal.rngom.digested.DPattern;
-import jdk.nashorn.internal.runtime.FindProperty;
 import org.learn.algorithm.datastructure.TreeNode;
-import sun.security.rsa.RSASignature;
 
-import java.sql.ResultSet;
 import java.util.*;
 
 /**
@@ -19,12 +15,8 @@ public class DynamicSolution {
 
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
-
-//        int[][] cost = new int[][]{{14, 2, 11}, {11, 14, 5}, {14, 3, 10}};
-
-        int[][] cost = new int[][]{{1, 2, 3}, {1, 4, 6}};
-
-        solution.minCostII(cost);
+        int[] nums = new int[]{2, 1, 4};
+        solution.maxProfitIII(nums);
     }
 
 
@@ -345,14 +337,17 @@ public class DynamicSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        List<Integer> tmp = new ArrayList<>();
         for (int i = 0; i < numRows; i++) {
+            List<Integer> tmp = new ArrayList<>();
             tmp.add(1);
             for (int j = i - 1; j >= 1; j--) {
                 int val = result.get(i - 1).get(j) + result.get(i - 1).get(j - 1);
-                tmp.set(j, val);
+                tmp.add(val);
             }
-            result.add(new ArrayList<>(tmp));
+            if (i > 0) {
+                tmp.add(1);
+            }
+            result.add(tmp);
         }
         return result;
     }
@@ -367,16 +362,13 @@ public class DynamicSolution {
         if (rowIndex < 0) {
             return new ArrayList<>();
         }
-        List<Integer> result = new ArrayList<>(rowIndex + 1);
-        result.add(1);
+        List<Integer> result = new ArrayList<>(rowIndex);
         for (int i = 0; i <= rowIndex; i++) {
             for (int j = i - 1; j >= 1; j--) {
                 int val = result.get(j) + result.get(j - 1);
                 result.set(j, val);
             }
-            if (i > 0) {
-                result.add(1);
-            }
+            result.add(1);
         }
         return result;
     }
@@ -388,18 +380,20 @@ public class DynamicSolution {
      * @return
      */
     public int minimumTotal(List<List<Integer>> triangle) {
+        if (triangle == null || triangle.isEmpty()) {
+            return 0;
+        }
         int size = triangle.size();
-        List<Integer> lastRow = triangle.get(size - 1);
+        List<Integer> row = triangle.get(size - 1);
         for (int i = size - 2; i >= 0; i--) {
             List<Integer> current = triangle.get(i);
-            int currentSize = current.size();
-            for (int j = 0; j < currentSize; j++) {
-                int val = current.get(j) + Math.min(lastRow.get(j), lastRow.get(j + 1));
-
-                lastRow.set(j, val);
+            int len = current.size();
+            for (int j = 0; j < len; j++) {
+                int val = Math.min(row.get(j), row.get(j + 1)) + current.get(j);
+                row.set(j, val);
             }
         }
-        return lastRow.get(0);
+        return row.get(0);
     }
 
 
@@ -445,13 +439,14 @@ public class DynamicSolution {
         if (prices == null || prices.length == 0) {
             return 0;
         }
+        int cost = prices[0];
         int result = 0;
-        int minPrice = prices[0];
         for (int i = 1; i < prices.length; i++) {
-            if (prices[i] > minPrice) {
-                result = Math.max(result, prices[i] - minPrice);
+            int price = prices[i];
+            if (price > cost) {
+                result = Math.max(result, price - cost);
             } else {
-                minPrice = prices[i];
+                cost = price;
             }
         }
         return result;
@@ -464,16 +459,18 @@ public class DynamicSolution {
      * @return
      */
     public int maxProfitII(int[] prices) {
-        if (prices == null) {
+        if (prices == null || prices.length == 0) {
             return 0;
         }
         int result = 0;
-        int minPrice = prices[0];
-        for (int i = 0; i < prices.length; i++) {
-            if (prices[i] > minPrice) {
-                result += prices[i] - minPrice;
+
+        int cost = prices[0];
+
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > cost) {
+                result += prices[i] - cost;
             }
-            minPrice = prices[i];
+            cost = prices[i];
         }
         return result;
     }
@@ -485,36 +482,33 @@ public class DynamicSolution {
      * @return
      */
     public int maxProfitIII(int[] prices) {
-        if (prices == null) {
+        if (prices == null || prices.length == 0) {
             return 0;
         }
         int column = prices.length;
         int[] left = new int[column];
         int[] right = new int[column + 1];
-
-        int minLeft = prices[0];
-        int leftResult = 0;
-        for (int i = 1; i < column; i++) {
-            if (prices[i] > minLeft) {
-                leftResult = Math.max(leftResult, prices[i] - minLeft);
-            } else {
-                minLeft = prices[i];
+        int cost = prices[0];
+        int leftProfit = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] < cost) {
+                cost = prices[i];
             }
-            left[i] = leftResult;
+            leftProfit = Math.max(leftProfit, prices[i] - cost);
+            left[i] = leftProfit;
         }
-        int minRight = prices[column - 1];
-        int rightResult = 0;
+        cost = prices[column - 1];
+        int rightProfit = 0;
         for (int i = column - 2; i >= 0; i--) {
-            if (minRight > prices[i]) {
-                rightResult = Math.max(rightResult, minRight - prices[i]);
-            } else {
-                minRight = prices[i];
+            if (prices[i] > cost) {
+                cost = prices[i];
             }
-            right[i] = rightResult;
+            rightProfit = Math.max(rightProfit, cost - prices[i]);
+            right[i] = rightProfit;
         }
         int result = 0;
-        for (int i = 0; i < column; i++) {
-            result = Math.max(result, left[i] + right[i]);
+        for (int i = 1; i < column; i++) {
+            result = Math.max(result, left[i] + right[i + 1]);
         }
         return result;
     }
