@@ -1,6 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import javax.swing.plaf.metal.MetalTheme;
 import java.util.*;
 
 /**
@@ -343,6 +342,9 @@ public class MathSolution {
      * @return
      */
     public int singleNumber(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
         int result = 0;
         for (int num : nums) {
             result ^= num;
@@ -358,6 +360,11 @@ public class MathSolution {
      * @return
      */
     public int singleNumberII(int[] nums) {
+        int val = 0;
+        for (int num : nums) {
+            int tmp = val & (1 << num);
+
+        }
         return -1;
     }
 

@@ -318,8 +318,16 @@ public class StringSolution {
 
     private void intervalPartition(List<List<String>> result, List<String> tmp, int start, String s) {
         if (start == s.length()) {
-            tmp.add(s);
-            result.add(tmp);
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        int m = s.length();
+        for (int i = start; i < m; i++) {
+            if (validPalindrome(s, start, i)) {
+                tmp.add(s.substring(start, i + 1));
+                intervalPartition(result, tmp, i + 1, s);
+                tmp.remove(tmp.size() - 1);
+            }
         }
     }
 
@@ -352,19 +360,17 @@ public class StringSolution {
         int m = s.length();
         int[] cut = new int[m];
         boolean[][] dp = new boolean[m][m];
+        dp[0][0] = true;
         for (int i = 1; i < m; i++) {
-            int minCut = i;
+            int min = i;
             for (int j = 0; j <= i; j++) {
                 dp[j][i] = s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1]);
                 if (dp[j][i]) {
-                    if (j == 0) {
-                        minCut = 0;
-                    } else {
-                        minCut = Math.min(minCut, 1 + cut[j - 1]);
-                    }
+                    int val = j == 0 ? 0 : 1 + cut[j - 1];
+                    min = Math.min(min, val);
                 }
             }
-            cut[i] = minCut;
+            cut[i] = min;
         }
         return cut[m - 1];
     }
@@ -512,7 +518,7 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.minWindow("ADOBECODEBANC", "ABC");
+        solution.partition("aab");
     }
 
 

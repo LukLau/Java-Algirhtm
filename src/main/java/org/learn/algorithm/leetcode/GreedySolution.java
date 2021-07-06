@@ -62,17 +62,17 @@ public class GreedySolution {
      */
     public int canCompleteCircuit(int[] gas, int[] cost) {
         if (gas == null || cost == null) {
-            return -1;
+            return 0;
         }
         int global = 0;
-        int remain = 0;
+        int local = 0;
         int index = 0;
         for (int i = 0; i < gas.length; i++) {
+            local += gas[i] - cost[i];
             global += gas[i] - cost[i];
-            remain += gas[i] - cost[i];
-            if (remain < 0) {
+            if (local < 0) {
+                local = 0;
                 index = i + 1;
-                remain = 0;
             }
         }
         return global >= 0 ? index : -1;
