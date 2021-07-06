@@ -1,10 +1,6 @@
 package org.learn.algorithm.leetcode;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
-import jdk.nashorn.internal.runtime.regexp.joni.encoding.IntHolder;
-
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * 字符串系列问题
@@ -322,16 +318,8 @@ public class StringSolution {
 
     private void intervalPartition(List<List<String>> result, List<String> tmp, int start, String s) {
         if (start == s.length()) {
-            result.add(new ArrayList<>(tmp));
-            return;
-        }
-        for (int i = start; i < s.length(); i++) {
-            if (validPalindrome(s, start, i)) {
-                String substring = s.substring(start, i + 1);
-                tmp.add(substring);
-                intervalPartition(result, tmp, i + 1, s);
-                tmp.remove(tmp.size() - 1);
-            }
+            tmp.add(s);
+            result.add(tmp);
         }
     }
 
