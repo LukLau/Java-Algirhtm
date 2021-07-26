@@ -76,14 +76,10 @@ public class TwoPage {
         int index1 = 0;
         int index2 = 0;
         while (index1 < words1.length || index2 < words2.length) {
-            String word1 = index1 == words1.length ? "0" : words1[index1++];
-            String word2 = index2 == words2.length ? "0" : words2[index2++];
-
-            Integer num1 = Integer.parseInt(word1);
-            Integer num2 = Integer.parseInt(word2);
-            int result = num1.compareTo(num2);
-            if (result != 0) {
-                return result;
+            Integer val1 = index1 == words1.length ? 0 : Integer.parseInt(words1[index1++]);
+            Integer val2 = index2 == words2.length ? 0 : Integer.parseInt(words2[index2++]);
+            if (!val1.equals(val2)) {
+                return val1.compareTo(val2);
             }
         }
         return 0;
@@ -106,18 +102,31 @@ public class TwoPage {
     /**
      * 168. Excel Sheet Column Title
      *
-     * @param n
+     * @param columnNumber
      * @return
      */
-    public String convertToTitle(int n) {
+    public String convertToTitle(int columnNumber) {
         StringBuilder builder = new StringBuilder();
-        while (n != 0) {
-            int index = (n - 1) % 26;
-            char tmp = (char) ('A' + index);
+        while (columnNumber != 0) {
+            int val = (columnNumber - 1) % 26;
+            String tmp = String.valueOf((char) ('A' + val));
             builder.append(tmp);
-            n = (n - 1) / 26;
+            columnNumber = (columnNumber - 1) / 26;
         }
         return builder.reverse().toString();
+    }
+
+
+    public int titleToNumber(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int result = 0;
+        int len = s.length();
+        for (int i = 0; i < len; i++) {
+            result = result * 26 + (s.charAt(i) - 'A' + 1);
+        }
+        return result;
     }
 
 
@@ -169,8 +178,7 @@ public class TwoPage {
 
     public static void main(String[] args) {
         TwoPage page = new TwoPage();
-        String s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT";
-        System.out.println(page.findRepeatedDnaSequences(s));
+        page.convertToTitle(1);
     }
 
 

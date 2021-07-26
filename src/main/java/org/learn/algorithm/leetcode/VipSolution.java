@@ -45,17 +45,14 @@ public class VipSolution {
         if (root == null || root.left == null) {
             return root;
         }
-        TreeNode node = upsideDownBinaryTree(root.left);
-
-        root.left.left = root.right;
-
-        root.left.right = root;
-
+        TreeNode left = root.left;
+        TreeNode newRoot = upsideDownBinaryTree(root.left);
+        left.left = root.right;
+        left.right = root;
         root.left = null;
-
         root.right = null;
+        return newRoot;
 
-        return node;
         // write your code here
     }
 
@@ -68,6 +65,7 @@ public class VipSolution {
      * @return: true if they are both one edit distance apart or false
      */
     public boolean isOneEditDistance(String s, String t) {
+        // write your code here
         if (s == null || t == null) {
             return false;
         }
@@ -76,8 +74,8 @@ public class VipSolution {
         }
         int m = s.length();
         int n = t.length();
-        int len = Math.min(m, n);
-        for (int i = 0; i < len; i++) {
+        int diff = Math.min(m, n);
+        for (int i = 0; i < diff; i++) {
             if (s.charAt(i) != t.charAt(i)) {
                 if (m == n) {
                     return s.substring(i + 1).equals(t.substring(i + 1));
@@ -89,8 +87,6 @@ public class VipSolution {
             }
         }
         return Math.abs(m - n) <= 1;
-
-        // write your code here
     }
 
 
@@ -109,23 +105,21 @@ public class VipSolution {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        for (int num : nums) {
-            if (num > lower && num >= lower + 1) {
-                String tmp = range(lower, num - 1);
-                result.add(tmp);
+        long prev = lower;
+        for (long current : nums) {
+            if (current > prev && current - prev >= 1) {
+                String range = range(prev, current - 1);
+                result.add(range);
             }
-            if (num == upper) {
-                return result;
-            }
-            lower = num + 1;
+            prev = current + 1;
         }
-        if (lower <= upper) {
+        if (prev <= upper) {
             result.add(range(lower, upper));
         }
         return result;
     }
 
-    private String range(int lower, int upper) {
+    private String range(long lower, long upper) {
         return lower == upper ? String.valueOf(lower) : lower + "->" + upper;
     }
 

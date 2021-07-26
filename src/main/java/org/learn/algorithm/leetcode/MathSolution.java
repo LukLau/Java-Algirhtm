@@ -268,37 +268,26 @@ public class MathSolution {
         }
         int result = 0;
         for (int i = 0; i < points.length; i++) {
-            int overflow = 0;
             Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
-            int count = 0;
+            int overlap = 0;
+            int number = 0;
             for (int j = i + 1; j < points.length; j++) {
                 int x = points[j][0] - points[i][0];
                 int y = points[j][1] - points[i][1];
-
                 if (x == 0 && y == 0) {
-                    overflow++;
+                    overlap++;
                     continue;
                 }
                 int gcd = gcd(x, y);
-
                 x /= gcd;
-
                 y /= gcd;
-
-                if (!map.containsKey(x)) {
-                    Map<Integer, Integer> tmp = new HashMap<>();
-                    tmp.put(y, 1);
-                    map.put(x, tmp);
-                } else {
-                    Map<Integer, Integer> tmp = map.get(x);
-
-                    Integer num = tmp.getOrDefault(y, 0);
-
-                    tmp.put(y, num + 1);
-                }
-                count = Math.max(count, map.get(x).get(y));
+                Map<Integer, Integer> tmp = map.getOrDefault(x, new HashMap<>());
+                Integer count = tmp.getOrDefault(y, 0);
+                tmp.put(y, count + 1);
+                map.put(x, tmp);
+                number = Math.max(number, map.get(x).get(y));
             }
-            result = Math.max(result, count + 1 + overflow);
+            result = Math.max(result, 1 + overlap + number);
         }
         return result;
     }
@@ -594,15 +583,13 @@ public class MathSolution {
             if ("+".equals(token)) {
                 stack.push(stack.pop() + stack.pop());
             } else if ("-".equals(token)) {
-                Integer first = stack.pop();
-                Integer second = stack.pop();
-                stack.push(second - first);
+                stack.push(-1 * stack.pop() + stack.pop());
             } else if ("*".equals(token)) {
                 stack.push(stack.pop() * stack.pop());
             } else if ("/".equals(token)) {
-                Integer first = stack.pop();
-                Integer second = stack.pop();
-                stack.push(second / first);
+                int second = stack.pop();
+                int first = stack.pop();
+                stack.push(first / second);
             } else {
                 stack.push(Integer.parseInt(token));
             }

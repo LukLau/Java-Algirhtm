@@ -4,7 +4,10 @@ import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.TreeNode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 
 /**
  * 树的解决方案
@@ -31,6 +34,7 @@ public class TreeSolution {
     // 排序系列//
 
     /**
+     * 类似于归并排序
      * todo 插入排序
      * 147. Insertion Sort List
      *
@@ -38,6 +42,7 @@ public class TreeSolution {
      * @return
      */
     public ListNode insertionSortList(ListNode head) {
+
         return null;
     }
 
@@ -51,21 +56,17 @@ public class TreeSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode fast = head;
         ListNode slow = head;
+        ListNode fast = head;
         while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
         }
         ListNode next = slow.next;
-
         slow.next = null;
-
-        ListNode first = sortList(head);
-
-        ListNode second = sortList(next);
-
-        return merge(first, second);
+        ListNode list1 = sortList(head);
+        ListNode list2 = sortList(next);
+        return merge(list1, list2);
     }
 
     private ListNode merge(ListNode first, ListNode second) {
