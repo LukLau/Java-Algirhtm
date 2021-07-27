@@ -681,7 +681,6 @@ public class DynamicSolution {
         int row = dungeon.length;
         int column = dungeon[0].length;
         int[][] dp = new int[row][column];
-
         for (int j = column - 1; j >= 0; j--) {
             if (j == column - 1) {
                 dp[row - 1][j] = Math.max(1, 1 - dungeon[row - 1][j]);
