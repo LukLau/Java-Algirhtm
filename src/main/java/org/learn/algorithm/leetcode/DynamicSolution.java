@@ -529,7 +529,7 @@ public class DynamicSolution {
         for (int i = 1; i <= k; i++) {
             int cost = -prices[0];
             for (int j = 1; j < prices.length; j++) {
-                dp[i][j] = Math.max(cost + prices[j], dp[i][j - 1]);
+                dp[i][j] = Math.max(dp[i][j - 1], cost + prices[j]);
                 cost = Math.max(cost, dp[i - 1][j - 1] - prices[j]);
             }
         }

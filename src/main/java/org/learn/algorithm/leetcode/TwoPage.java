@@ -169,16 +169,52 @@ public class TwoPage {
      * @return
      */
     public List<String> findRepeatedDnaSequences(String s) {
-        Set<String> seen = new HashSet<>();
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        Set<String> repeat = new HashSet<>();
         Set<String> result = new HashSet<>();
-        int m = s.length();
-        for (int i = 0; i < m - 9; i++) {
+        int length = s.length();
+
+        for (int i = 0; i < length - 9; i = i + 10) {
             String substring = s.substring(i, i + 10);
-            if (!seen.add(substring)) {
+            if (repeat.add(substring)) {
                 result.add(substring);
             }
         }
         return new ArrayList<>(result);
+    }
+
+
+    /**
+     * 189. Rotate Array
+     *
+     * @param nums
+     * @param k
+     */
+    public void rotate(int[] nums, int k) {
+        if (nums == null || nums.length == 0 || k <= 0) {
+            return;
+        }
+        k %= nums.length;
+        reverseArray(nums, 0, nums.length - 1);
+        reverseArray(nums, 0, k - 1);
+        reverseArray(nums, k, nums.length - 1);
+    }
+
+    private void reverseArray(int[] str, int start, int end) {
+        if (start > end) {
+            return;
+        }
+        for (int i = start; i <= (start + end) / 2; i++) {
+            swap(str, i, start + end - i);
+        }
+    }
+
+    private void swap(int[] str, int i, int j) {
+        int tmp = str[i];
+        str[i] = str[j];
+        str[j] = tmp;
     }
 
 
@@ -209,7 +245,7 @@ public class TwoPage {
 
     public static void main(String[] args) {
         TwoPage page = new TwoPage();
-        page.convertToTitle(1);
+        page.findRepeatedDnaSequences("AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT");
     }
 
 

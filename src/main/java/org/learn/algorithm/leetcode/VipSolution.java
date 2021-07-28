@@ -134,18 +134,18 @@ public class VipSolution {
     public char[] reverseWords(char[] str) {
         // write your code here
         if (str == null || str.length == 0) {
-            return new char[]{};
+            return str;
         }
-        int endIndex = 0;
-        while (endIndex < str.length) {
-            int startIndex = endIndex;
+        int startIndex = 0;
+        while (startIndex < str.length) {
+            int endIndex = startIndex;
             while (endIndex < str.length && str[endIndex] != ' ') {
                 endIndex++;
             }
             if (endIndex == str.length || str[endIndex] == ' ') {
                 reverseArray(str, startIndex, endIndex);
             }
-            endIndex++;
+            startIndex = endIndex + 1;
         }
         reverseArray(str, 0, str.length);
         return str;
