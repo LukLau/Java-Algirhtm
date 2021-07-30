@@ -224,23 +224,24 @@ public class TreeSolution {
      * @return
      */
     public List<Integer> rightSideView(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
         List<Integer> result = new ArrayList<>();
-
-        intervalRightSideView(root, result, 0);
-
+        intervalRightSideView(result, root, 0);
         return result;
     }
 
-    private void intervalRightSideView(TreeNode root, List<Integer> result, int currentLevel) {
+    private void intervalRightSideView(List<Integer> result, TreeNode root, int currentLevel) {
         if (root == null) {
             return;
         }
         if (result.size() == currentLevel) {
             result.add(root.val);
         }
-        intervalRightSideView(root.right, result, currentLevel + 1);
+        intervalRightSideView(result, root.right, currentLevel + 1);
 
-        intervalRightSideView(root.left, result, currentLevel + 1);
+        intervalRightSideView(result, root.left, currentLevel + 1);
     }
 
 

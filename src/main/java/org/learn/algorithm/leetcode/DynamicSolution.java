@@ -568,13 +568,13 @@ public class DynamicSolution {
      */
     public int rob(int[] nums) {
         int robCurrent = 0;
-        int robPre = 0;
+        int robPrev = 0;
         for (int num : nums) {
             int tmp = robCurrent;
-            robCurrent = Math.max(robCurrent, robPre + num);
-            robPre = tmp;
+            robCurrent = Math.max(robPrev + num, robCurrent);
+            robPrev = tmp;
         }
-        return Math.max(robCurrent, robPre);
+        return Math.max(robCurrent, robPrev);
     }
 
     /**
