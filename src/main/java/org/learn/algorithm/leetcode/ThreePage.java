@@ -23,21 +23,23 @@ public class ThreePage {
      * 202. Happy Number
      */
     public boolean isHappy(int n) {
-        Set<Integer> set = new HashSet<>();
-        while (n != 1) {
-            int tmp = n;
-            int result = 0;
-            while (tmp != 0) {
-                int remain = tmp % 10;
-                result = result + remain * remain;
-                tmp /= 10;
+        List<Integer> result = new ArrayList<>();
+        while (true) {
+            int tmp = 0;
+            while (n != 0) {
+                int remain = n % 10;
+                tmp += remain * remain;
+                n /= 10;
             }
-            if (!set.add(result)) {
+            if (tmp == 1) {
+                return true;
+            }
+            if (result.contains(tmp)) {
                 return false;
             }
-            n = result;
+            result.add(tmp);
+            n = tmp;
         }
-        return true;
     }
 
 

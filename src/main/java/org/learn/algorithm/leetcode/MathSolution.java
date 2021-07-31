@@ -13,7 +13,7 @@ public class MathSolution {
     public static void main(String[] args) {
         MathSolution solution = new MathSolution();
         int[] nums = new int[]{5, 4, 4, 3, 2, 1};
-        solution.findDuplicate(nums);
+        solution.grayCode(2);
     }
 
     // 素数相关
@@ -27,16 +27,7 @@ public class MathSolution {
      */
     public int countPrimes(int n) {
         int count = 0;
-        boolean[] dp = new boolean[n];
-        for (int i = 2; i < n; i++) {
-            if (!dp[i]) {
-                count++;
-                for (int j = 2; j * i < n; j++) {
-                    dp[i * j] = true;
-                }
-            }
-        }
-        return count;
+
     }
 
 
@@ -230,30 +221,16 @@ public class MathSolution {
      * @return
      */
     public List<Integer> grayCode(int n) {
-        return null;
+
+        List<Integer> result = new ArrayList<>();
+        int iterator = (int) Math.pow(2, n);
+        for (int i = 0; i < iterator; i++) {
+            int val = (i >> 1) ^ i;
+            result.add(val);
+        }
+        return result;
     }
 
-
-    /**
-     * todo
-     * 91. Decode Ways
-     *
-     * @param s
-     * @return
-     */
-    public int numDecodings(String s) {
-        if (s.startsWith("0")) {
-            s = s.substring(0, s.length() - 1);
-        }
-        int m = s.length();
-        StringBuilder builder = new StringBuilder();
-        for (int i = m - 1; i >= 0; i--) {
-            char tmp = s.charAt(i);
-            char t = (char) ((tmp - '1') % 26 + 'A');
-            builder.append(t);
-        }
-        return builder.length();
-    }
 
     /**
      * todo
@@ -446,7 +423,13 @@ public class MathSolution {
      * @return
      */
     public int rangeBitwiseAnd(int m, int n) {
-        return -1;
+        int shift = 0;
+        while (m < n) {
+            m >>= 1;
+            n >>= 1;
+            shift++;
+        }
+        return m << shift;
     }
 
 
