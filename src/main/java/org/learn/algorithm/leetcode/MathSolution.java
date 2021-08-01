@@ -13,7 +13,7 @@ public class MathSolution {
     public static void main(String[] args) {
         MathSolution solution = new MathSolution();
         int[] nums = new int[]{5, 4, 4, 3, 2, 1};
-        solution.grayCode(2);
+        solution.calculateII(" 3/2 ");
     }
 
     // 素数相关
@@ -27,7 +27,16 @@ public class MathSolution {
      */
     public int countPrimes(int n) {
         int count = 0;
-
+        boolean[] dp = new boolean[n];
+        for (int i = 2; i < n; i++) {
+            if (!dp[i]) {
+                count++;
+                for (int j = 2; j * i < n; j++) {
+                    dp[j * i] = true;
+                }
+            }
+        }
+        return count;
     }
 
 
@@ -587,41 +596,39 @@ public class MathSolution {
      * @return
      */
     public int calculate(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return 0;
         }
-        s = s.trim();
-        if (s.isEmpty()) {
-            return 0;
-        }
-        int sign = 1;
-        char[] words = s.toCharArray();
-        int endIndex = 0;
+        int len = s.length();
         int result = 0;
+        int sign = 1;
+        int endIndex = 0;
         Stack<Integer> stack = new Stack<>();
-        while (endIndex < words.length) {
-            if (Character.isDigit(words[endIndex])) {
+        while (endIndex < len) {
+            if (Character.isDigit(s.charAt(endIndex))) {
                 int tmp = 0;
-                while (endIndex < words.length && Character.isDigit(words[endIndex])) {
-                    tmp = tmp * 10 + Character.getNumericValue(words[endIndex]);
-                    endIndex++;
+                while (endIndex < len && Character.isDigit(s.charAt(endIndex))) {
+                    tmp = tmp * 10 + Character.getNumericValue(s.charAt(endIndex++));
                 }
-                result += tmp * sign;
-            } else {
-                if (words[endIndex] == '+' || words[endIndex] == '-') {
-                    sign = words[endIndex] == '+' ? 1 : -1;
-                }
-                if (words[endIndex] == '(') {
-                    stack.push(result);
-                    stack.push(sign);
-                    sign = 1;
-                    result = 0;
-                }
-                if (words[endIndex] == ')') {
-                    result = result * stack.pop() + stack.pop();
-                }
-                endIndex++;
+                result += sign * tmp;
             }
+            if (endIndex != len && s.charAt(endIndex) != ' ') {
+                if (s.charAt(endIndex) != ' ') {
+                    if (s.charAt(endIndex) == '(') {
+                        stack.push(result);
+                        stack.push(sign);
+                        result = 0;
+                        sign = 1;
+                    } else if (s.charAt(endIndex) == ')') {
+                        result = result * stack.pop() + stack.pop();
+                    } else if (s.charAt(endIndex) == '+') {
+                        sign = 1;
+                    } else {
+                        sign = -1;
+                    }
+                }
+            }
+            endIndex++;
         }
         return result;
     }
@@ -634,59 +641,53 @@ public class MathSolution {
      * @return
      */
     public int calculateII(String s) {
-        if (s == null) {
-            return 0;
-        }
-        s = s.trim();
-
-        // trim blank space
-        if (s.isEmpty()) {
+        if (s == null || s.isEmpty()) {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
-        int sign;
-
-        // virtual prefix sign e.g, 1-2/2 => +1-2/2
-        char character = '+';
-        int endIndex = 0;
-        char[] words = s.toCharArray();
-        while (endIndex < words.length) {
-
-            // from previous sign -> next sign
-            // get number
-            if (Character.isDigit(words[endIndex])) {
-                int num = 0;
-                while (endIndex < words.length && Character.isDigit(words[endIndex])) {
-                    num = num * 10 + Character.getNumericValue(words[endIndex]);
-                    endIndex++;
-                }
-                stack.push(num);
-            }
-            // number need sign
-            // character mean prefix sign
-            if (endIndex == words.length || words[endIndex] != ' ') {
-                if (character == '+' || character == '-') {
-                    sign = character == '+' ? 1 : -1;
-                    stack.push(sign * stack.pop());
-                } else if (character == '*') {
-                    Integer pop = stack.pop();
-                    stack.push(pop * stack.pop());
-                } else if (character == '/') {
-                    Integer second = stack.pop();
-                    Integer first = stack.pop();
-                    stack.push(first / second);
-                }
-                if (endIndex != words.length) {
-                    character = words[endIndex];
+        int tmp = 0;
+        int len = s.length();
+        int startIndex = 0;
+        char sign = '+';
+        while (startIndex <= len) {
+            if (startIndex < len && Character.isDigit(s.charAt(startIndex))) {
+                while (startIndex < len && Character.isDigit(s.charAt(startIndex))) {
+                    tmp = tmp * 10 + Character.getNumericValue(s.charAt(startIndex++));
                 }
             }
-            endIndex++;
+            if (startIndex == len || s.charAt(startIndex) != ' ') {
+                if (sign == '+') {
+                    stack.push(tmp);
+                }
+                if (sign == '-') {
+                    stack.push(-tmp);
+                } else if (sign == '*') {
+                    stack.push(stack.pop() * tmp);
+                } else if (sign == '/') {
+                    stack.push(stack.pop() / tmp);
+                }
+                tmp = 0;
+                if (startIndex != len) {
+                    sign = s.charAt(startIndex);
+                }
+            }
+            startIndex++;
         }
         int result = 0;
-        for (Integer tmp : stack) {
-            result += tmp;
+        for (Integer num : stack) {
+            result += num;
         }
         return result;
+    }
+
+
+    /**
+     * @param s: the expression string
+     * @return: the answer
+     */
+    public int calculate(String s) {
+        //
+
     }
 
 

@@ -73,13 +73,13 @@ public class ThreePage {
         if (s == null || t == null) {
             return false;
         }
+        Map<Character, Integer> map1 = new HashMap<>();
+        Map<Character, Integer> map2 = new HashMap<>();
         int m = s.length();
         int n = t.length();
         if (m != n) {
             return false;
         }
-        Map<Character, Integer> map1 = new HashMap<>();
-        Map<Character, Integer> map2 = new HashMap<>();
         for (int i = 0; i < m; i++) {
             if (!Objects.equals(map1.put(s.charAt(i), i), map2.put(t.charAt(i), i))) {
                 return false;
@@ -99,10 +99,13 @@ public class ThreePage {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode node = reverseList(head.next);
+        ListNode listNode = reverseList(head.next);
+
         head.next.next = head;
+
         head.next = null;
-        return node;
+
+        return listNode;
     }
 
 
@@ -110,21 +113,25 @@ public class ThreePage {
      * todo use OlogN
      * 209. Minimum Size Subarray Sum
      *
-     * @param target
+     * @param s
      * @param nums
      * @return
      */
-    public int minSubArrayLen(int target, int[] nums) {
-        int left = 0;
-        int right = 0;
-        int local = 0;
+    public int minSubArrayLen(int s, int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
         int result = Integer.MAX_VALUE;
-        while (right < nums.length) {
-            local += nums[right++];
-            while (left < right && local >= target) {
-                result = Math.min(result, right - left);
-                local -= nums[left++];
+        int sum = 0;
+        int left = 0;
+        int endIndex = 0;
+        while (endIndex < nums.length) {
+            sum += nums[endIndex];
+            while (sum >= s) {
+                result = Math.min(result, endIndex - left + 1);
+                sum -= nums[left++];
             }
+            endIndex++;
         }
         return result == Integer.MAX_VALUE ? 0 : result;
     }
@@ -150,6 +157,27 @@ public class ThreePage {
             iterator++;
         }
         return queue.poll();
+    }
+
+
+    /**
+     * 217. Contains Duplicate
+     *
+     * @param nums
+     * @return
+     */
+    public boolean containsDuplicate(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            if (map.containsKey(num)) {
+                return true;
+            }
+            map.put(num, 1);
+        }
+        return false;
     }
 
 
@@ -228,6 +256,7 @@ public class ThreePage {
      * @return
      */
     public int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+
         return -1;
     }
 

@@ -275,21 +275,26 @@ public class DynamicSolution {
             return 0;
         }
         int row = matrix.length;
-
         int column = matrix[0].length;
-
         int[][] dp = new int[row][column];
+
         int result = 0;
         for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                char tmp = matrix[i][j];
-
-                if (tmp == '1') {
-                    if (i == 0 || j == 0) {
-                        dp[i][j] = 1;
-                    } else {
-                        dp[i][j] = 1 + Math.min(Math.min(dp[i - 1][j - 1], dp[i - 1][j]), dp[i][j - 1]);
-                    }
+            if (matrix[i][0] == '1') {
+                dp[i][0] = 1;
+                result = 1;
+            }
+        }
+        for (int j = 0; j < column; j++) {
+            if (matrix[0][j] == '1') {
+                dp[0][j] = 1;
+                result = 1;
+            }
+        }
+        for (int i = 1; i < row; i++) {
+            for (int j = 1; j < column; j++) {
+                if (matrix[i][j] == '1') {
+                    dp[i][j] = 1 + Math.min(dp[i - 1][j], Math.min(dp[i][j - 1], dp[i - 1][j - 1]));
                     result = Math.max(result, dp[i][j] * dp[i][j]);
                 }
             }
@@ -618,20 +623,20 @@ public class DynamicSolution {
             return 0;
         }
         if (nums.length == 1) {
-            return nums[0];
+            return 1;
         }
-        return Math.max(intervalRob(nums, 0, nums.length - 2), intervalRob(nums, 1, nums.length - 1));
+        return Math.max(intervalRob(nums, 1, nums.length - 1), intervalRob(nums, 0, nums.length - 2));
     }
 
     private int intervalRob(int[] nums, int start, int end) {
-        int current = 0;
-        int pre = 0;
+        int robPrev = 0;
+        int robCurrent = 0;
         for (int i = start; i <= end; i++) {
-            int tmp = current;
-            current = Math.max(pre + nums[i], current);
-            pre = tmp;
+            int tmp = robCurrent;
+            robCurrent = Math.max(robPrev + nums[i], robCurrent);
+            robPrev = tmp;
         }
-        return Math.max(pre, current);
+        return Math.max(robCurrent, robPrev);
     }
 
     // 房子颜色问题

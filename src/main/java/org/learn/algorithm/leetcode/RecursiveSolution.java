@@ -1,6 +1,6 @@
 package org.learn.algorithm.leetcode;
 
-import org.learn.algorithm.datastructure.Trie;
+import org.learn.algorithm.datastructure.WordDictionary;
 
 import java.util.*;
 
@@ -94,12 +94,7 @@ public class RecursiveSolution {
 
     public static void main(String[] args) {
         RecursiveSolution solution = new RecursiveSolution();
-        int[] nums = new int[]{2, 3, 6, 7};
-//        char[][] matrix = new char[][]{{'X', 'X', 'X', 'X'}, {'X', 'O', 'O', 'X'}, {'X', 'X', 'O', 'X'}, {'X', 'O', 'X', 'X'}};
-        char[][] matrix = new char[][]{{'O', 'O', 'O'}, {'O', 'O', 'O'}, {'O', 'O', 'O'}};
-//        solution.diffWaysToCompute("11");
 
-        solution.addOperators("123", 6);
     }
 
     // --组合系列问题-//
@@ -359,18 +354,18 @@ public class RecursiveSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        intervalCombinationIII(result, new ArrayList<>(), 1, k, n);
+        combineSum3(result, new ArrayList<Integer>(), 1, k, n);
         return result;
     }
 
-    private void intervalCombinationIII(List<List<Integer>> result, List<Integer> tmp, int start, int k, int target) {
-        if (tmp.size() == k && target == 0) {
+    private void combineSum3(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int k, int n) {
+        if (tmp.size() == k && n == 0) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i <= 9 && i <= target; i++) {
+        for (int i = start; i <= n; i++) {
             tmp.add(i);
-            intervalCombinationIII(result, tmp, i + 1, k, target - i);
+            combineSum3(result, tmp, i + 1, k, n - i);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -473,41 +468,42 @@ public class RecursiveSolution {
         if (board == null || board.length == 0) {
             return new ArrayList<>();
         }
-        Trie trie = new Trie();
+        WordDictionary wordDictionary = new WordDictionary();
         for (String word : words) {
-            trie.insert(String.valueOf(word));
+            wordDictionary.addWord(word);
         }
-        List<String> result = new ArrayList<>();
         int row = board.length;
+
         int column = board[0].length;
+
         boolean[][] used = new boolean[row][column];
+
+        List<String> result = new ArrayList<>();
+
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                String s = String.valueOf(board[i][j]);
-                if (trie.startsWith(s)) {
-                    intervalFindWords(result, trie, used, s, i, j, board);
-                }
+                intervalDfs(result, used, i, j, wordDictionary, "", board);
             }
         }
         return result;
     }
 
-    private void intervalFindWords(List<String> result, Trie trie, boolean[][] used, String s, int i, int j, char[][] board) {
-        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || used[i][j]) {
+    private void intervalDfs(List<String> result, boolean[][] used, int i, int j, WordDictionary wordDictionary, String s, char[][] board) {
+        if (i < 0 || i >= used.length || j <= 0 || j >= used[i].length) {
             return;
         }
         s += board[i][j];
-        if (trie.search(s)) {
-            result.add(s);
-        }
-        if (!trie.startsWith(s)) {
+        if (!wordDictionary.startWith(s)) {
             return;
         }
+        if (wordDictionary.search(s)) {
+            result.add(s);
+        }
         used[i][j] = true;
-        intervalFindWords(result, trie, used, s, i - 1, j, board);
-        intervalFindWords(result, trie, used, s, i + 1, j, board);
-        intervalFindWords(result, trie, used, s, i, j - 1, board);
-        intervalFindWords(result, trie, used, s, i, j + 1, board);
+        intervalDfs(result, used, i - 1, j, wordDictionary, s, board);
+        intervalDfs(result, used, i + 1, j, wordDictionary, s, board);
+        intervalDfs(result, used, i, j - 1, wordDictionary, s, board);
+        intervalDfs(result, used, i, j + 1, wordDictionary, s, board);
         used[i][j] = false;
     }
 
