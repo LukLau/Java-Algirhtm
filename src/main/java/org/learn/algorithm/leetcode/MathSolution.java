@@ -13,7 +13,7 @@ public class MathSolution {
     public static void main(String[] args) {
         MathSolution solution = new MathSolution();
         int[] nums = new int[]{5, 4, 4, 3, 2, 1};
-        solution.calculateII(" 3/2 ");
+        solution.calculateIII("1 + 1");
     }
 
     // 素数相关
@@ -230,7 +230,6 @@ public class MathSolution {
      * @return
      */
     public List<Integer> grayCode(int n) {
-
         List<Integer> result = new ArrayList<>();
         int iterator = (int) Math.pow(2, n);
         for (int i = 0; i < iterator; i++) {
@@ -432,13 +431,22 @@ public class MathSolution {
      * @return
      */
     public int rangeBitwiseAnd(int m, int n) {
-        int shift = 0;
         while (m < n) {
+            n = n & (n - 1);
+        }
+        return n;
+    }
+
+
+    public int rangeBitwiseAndV2(int m, int n) {
+        int shiftCount = 0;
+        while (m != n) {
             m >>= 1;
             n >>= 1;
-            shift++;
+            shiftCount++;
         }
-        return m << shift;
+        return m << shiftCount;
+
     }
 
 
@@ -685,9 +693,67 @@ public class MathSolution {
      * @param s: the expression string
      * @return: the answer
      */
-    public int calculate(String s) {
-        //
-
+    public int calculateIII(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int startIndex = 0;
+        int len = s.length();
+        char sign = '+';
+        Stack<Integer> stack = new Stack<>();
+        while (startIndex <= len) {
+            if (startIndex < len && s.charAt(startIndex) == '(') {
+                int tmpIndex = startIndex;
+                int count = 0;
+                while (tmpIndex < len) {
+                    char current = s.charAt(tmpIndex);
+                    if (current != '(' && current != ')') {
+                        tmpIndex++;
+                        continue;
+                    }
+                    if (current == '(') {
+                        count++;
+                    }
+                    if (current == ')') {
+                        count--;
+                    }
+                    if (count == 0) {
+                        break;
+                    }
+                    tmpIndex++;
+                }
+                int val = calculateIII(s.substring(startIndex + 1, tmpIndex));
+                stack.push(val);
+                startIndex = tmpIndex;
+            }
+            if (startIndex < len && Character.isDigit(s.charAt(startIndex))) {
+                int tmp = 0;
+                while (startIndex < len && Character.isDigit(s.charAt(startIndex))) {
+                    tmp = tmp * 10 + Character.getNumericValue(s.charAt(startIndex++));
+                }
+                stack.push(tmp);
+            }
+            if (startIndex == len || s.charAt(startIndex) != ' ') {
+                if (sign == '-') {
+                    stack.push(-1 * stack.pop());
+                } else if (sign == '*') {
+                    stack.push(stack.pop() * stack.pop());
+                } else if (sign == '/') {
+                    int second = stack.pop();
+                    int first = stack.pop();
+                    stack.push(first / second);
+                }
+                if (startIndex != len) {
+                    sign = s.charAt(startIndex);
+                }
+            }
+            startIndex++;
+        }
+        int result = 0;
+        for (Integer tmp : stack) {
+            result += tmp;
+        }
+        return result;
     }
 
 

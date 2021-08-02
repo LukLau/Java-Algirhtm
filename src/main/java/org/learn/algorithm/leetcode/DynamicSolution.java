@@ -847,25 +847,25 @@ public class DynamicSolution {
         if (root == null) {
             return new ArrayList<>();
         }
-        Queue<Integer> columnQueue = new LinkedList<>();
-        Map<Integer, List<Integer>> map = new TreeMap<>();
-        columnQueue.offer(0);
-        Queue<TreeNode> nodeQueue = new LinkedList<>();
-        nodeQueue.add(root);
-        while (!nodeQueue.isEmpty()) {
-            Integer poll = columnQueue.poll();
-            TreeNode node = nodeQueue.poll();
-            List<Integer> tmp = map.getOrDefault(poll, new ArrayList<>());
-            tmp.add(node.val);
-            map.put(poll, tmp);
-            if (node.left != null) {
-                columnQueue.offer(poll - 1);
-                nodeQueue.offer(node.left);
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+        Map<TreeNode, Integer> heightMap = new HashMap<>();
+        linkedList.offer(root);
+        while (!linkedList.isEmpty()) {
+            TreeNode poll = linkedList.poll();
+            Integer height = heightMap.getOrDefault(poll, 0);
+            heightMap.put(poll, height);
+            List<Integer> tmp = map.getOrDefault(height, new ArrayList<>());
+            tmp.add(poll.val);
+            if (poll.left != null) {
+                linkedList.offer(poll.left);
+                heightMap.put(poll.left, height - 1);
             }
-            if (node.right != null) {
-                columnQueue.offer(poll + 1);
-                nodeQueue.offer(node.right);
+            if (poll.right != null) {
+                linkedList.offer(poll.right);
+                heightMap.put(poll.right, height + 1);
             }
+            map.put(height, tmp);
         }
         return new ArrayList<>(map.values());
     }
