@@ -15,7 +15,8 @@ public class ThreePage {
 
     public static void main(String[] args) {
         ThreePage page = new ThreePage();
-        page.getHint("1807", "7810");
+        int[] nums = new int[]{0, 1, 2, 4, 5, 7};
+        page.summaryRanges(nums);
     }
 
 
@@ -285,15 +286,15 @@ public class ThreePage {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        int lower = nums[0];
-        for (int i = 0; i < nums.length; i++) {
-            if (i > 0 && nums[i] != nums[i - 1] + 1) {
-                result.add(range(lower, nums[i - 1]));
-                lower = nums[i];
+        int startIndex = 0;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] != nums[i - 1] + 1) {
+                result.add(range(nums[startIndex], nums[i - 1]));
+                startIndex = i;
             }
         }
-        if (lower <= nums[nums.length - 1]) {
-            result.add(range(lower, nums[nums.length - 1]));
+        if (startIndex <= nums.length - 1) {
+            result.add(range(nums[startIndex], nums[nums.length - 1]));
         }
         return result;
     }

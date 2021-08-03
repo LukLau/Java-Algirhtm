@@ -834,39 +834,4 @@ public class DynamicSolution {
         }
         return -1;
     }
-
-
-    /**
-     * 314
-     * Binary Tree Vertical Order Traversal
-     *
-     * @param root
-     * @return
-     */
-    public List<List<Integer>> verticalOrder(TreeNode root) {
-        if (root == null) {
-            return new ArrayList<>();
-        }
-        Map<Integer, List<Integer>> map = new HashMap<>();
-        LinkedList<TreeNode> linkedList = new LinkedList<>();
-        Map<TreeNode, Integer> heightMap = new HashMap<>();
-        linkedList.offer(root);
-        while (!linkedList.isEmpty()) {
-            TreeNode poll = linkedList.poll();
-            Integer height = heightMap.getOrDefault(poll, 0);
-            heightMap.put(poll, height);
-            List<Integer> tmp = map.getOrDefault(height, new ArrayList<>());
-            tmp.add(poll.val);
-            if (poll.left != null) {
-                linkedList.offer(poll.left);
-                heightMap.put(poll.left, height - 1);
-            }
-            if (poll.right != null) {
-                linkedList.offer(poll.right);
-                heightMap.put(poll.right, height + 1);
-            }
-            map.put(height, tmp);
-        }
-        return new ArrayList<>(map.values());
-    }
 }

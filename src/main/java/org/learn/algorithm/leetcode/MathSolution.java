@@ -516,52 +516,6 @@ public class MathSolution {
      * @return
      */
     public List<Integer> majorityElementII(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return new ArrayList<>();
-        }
-        List<Integer> result = new ArrayList<>();
-        int candidateA = nums[0];
-        int candidateB = nums[0];
-        int countA = 0;
-        int countB = 0;
-        for (int num : nums) {
-            if (num == candidateA) {
-                countA++;
-                continue;
-            }
-            if (num == candidateB) {
-                countB++;
-                continue;
-            }
-            if (countA == 0) {
-                countA = 1;
-                candidateA = num;
-                continue;
-            }
-            if (countB == 0) {
-                countB = 1;
-                candidateB = num;
-                continue;
-            }
-            countA--;
-            countB--;
-        }
-        countA = 0;
-        countB = 0;
-        for (int num : nums) {
-            if (num == candidateA) {
-                countA++;
-            } else if (num == candidateB) {
-                countB++;
-            }
-        }
-        if (3 * countA > nums.length) {
-            result.add(candidateA);
-        }
-        if (3 * countB > nums.length) {
-            result.add(candidateB);
-        }
-        return result;
 
     }
 
@@ -845,4 +799,37 @@ public class MathSolution {
     }
 
 
+    // 阿拉伯数字转中文
+
+
+    public String convertToArab(int nums) {
+        String[] one = new String[]{"零", "一", "二", "三", "四", "五", "六", "七", "八", "九"};
+        String[] two = new String[]{"", "十", "百", "千"};
+        String[] three = new String[]{"", "万", "亿", "万亿"};
+        String result = "";
+        while (nums != 0) {
+            int remain = nums % 10000;
+
+            String desc = getDesc(remain, one, two);
+
+            if (nums / 10000 != 0) {
+                result = three[remain / 10000] + result;
+            }
+            result += desc;
+
+            nums /= 10000;
+        }
+        return result;
+    }
+
+    private String getDesc(int remain, String[] one, String[] two) {
+        if (remain == 0) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 4; i++) {
+
+        }
+        return null;
+    }
 }

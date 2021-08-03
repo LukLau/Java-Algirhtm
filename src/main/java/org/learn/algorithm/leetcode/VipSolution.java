@@ -16,23 +16,8 @@ public class VipSolution {
 
     public static void main(String[] args) {
         VipSolution solution = new VipSolution();
-        String s = "++++";
-        TreeNode root = new TreeNode(1);
-
-        TreeNode left = new TreeNode(2);
-
-        left.left = new TreeNode(3);
-
-        TreeNode right = new TreeNode(0);
-        root.left = left;
-        root.right = right;
-
-        TreeNode r1 = new TreeNode(3);
-        r1.left = new TreeNode(2);
-        r1.right = new TreeNode(2);
-
-
-        solution.longestConsecutive2(r1);
+        int[] nums = new int[]{-2147483648, -2147483648, 0, 2147483647, 2147483647};
+        solution.findMissingRanges(nums, -2147483648, 2147483647);
     }
 
     /**
@@ -104,17 +89,16 @@ public class VipSolution {
         if (nums == null) {
             return new ArrayList<>();
         }
+        long pre = lower;
         List<String> result = new ArrayList<>();
-        long prev = lower;
-        for (long current : nums) {
-            if (current > prev && current - prev >= 1) {
-                String range = range(prev, current - 1);
-                result.add(range);
+        for (int num : nums) {
+            if (num > pre && num >= pre + 1) {
+                result.add(range(pre, num - 1));
             }
-            prev = current + 1;
+            pre = ((long) num + 1);
         }
-        if (prev <= upper) {
-            result.add(range(lower, upper));
+        if (pre <= upper) {
+            result.add(range(pre, upper));
         }
         return result;
     }
@@ -857,6 +841,74 @@ public class VipSolution {
     public int[][] multiply(int[][] A, int[][] B) {
         // write your code here
         return null;
+    }
+
+
+    /**
+     * 314
+     * Binary Tree Vertical Order Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> verticalOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        TreeMap<Integer, List<Integer>> map = new TreeMap<>();
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+        Map<TreeNode, Integer> heightMap = new HashMap<>();
+        linkedList.offer(root);
+        while (!linkedList.isEmpty()) {
+            TreeNode poll = linkedList.poll();
+            Integer height = heightMap.getOrDefault(poll, 0);
+            heightMap.put(poll, height);
+            List<Integer> tmp = map.getOrDefault(height, new ArrayList<>());
+            tmp.add(poll.val);
+            if (poll.left != null) {
+                linkedList.offer(poll.left);
+                heightMap.put(poll.left, height - 1);
+            }
+            if (poll.right != null) {
+                linkedList.offer(poll.right);
+                heightMap.put(poll.right, height + 1);
+            }
+            map.put(height, tmp);
+        }
+        return new ArrayList<>(map.values());
+    }
+
+    /**
+     * 314. Binary Tree Vertical Order Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> verticalOrderV2(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+        linkedList.offer(root);
+        TreeMap<Integer, List<Integer>> map = new TreeMap<>();
+        LinkedList<Integer> heightList = new LinkedList<>();
+        heightList.offer(1);
+        while (!linkedList.isEmpty()) {
+            TreeNode poll = linkedList.poll();
+            int height = heightList.poll();
+            List<Integer> tmp = map.getOrDefault(height, new ArrayList<>());
+            tmp.add(poll.val);
+            map.put(height, tmp);
+            if (poll.left != null) {
+                heightList.offer(height - 1);
+                linkedList.offer(poll.left);
+            }
+            if (poll.right != null) {
+                heightList.offer(height + 1);
+                linkedList.offer(poll.right);
+            }
+        }
+        return new ArrayList<>(map.values());
     }
 
 
