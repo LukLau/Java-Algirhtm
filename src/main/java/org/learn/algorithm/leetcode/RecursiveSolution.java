@@ -756,51 +756,47 @@ public class RecursiveSolution {
         if (expression == null || expression.isEmpty()) {
             return new ArrayList<>();
         }
-        char[] words = expression.toCharArray();
+        int start = 0;
+        int len = expression.length();
+        int tmp = 0;
         List<String> params = new ArrayList<>();
-        int endIndex = 0;
-        while (endIndex < words.length) {
-            if (Character.isDigit(words[endIndex])) {
-                int tmp = 0;
-                while (endIndex < words.length && Character.isDigit(words[endIndex])) {
-                    tmp = tmp * 10 + Character.getNumericValue(words[endIndex++]);
+        while (start < len) {
+            if (Character.isDigit(expression.charAt(start))) {
+                while (start < len && Character.isDigit(expression.charAt(start))) {
+                    tmp = tmp * 10 + Character.getNumericValue(expression.charAt(start));
+                    start++;
                 }
                 params.add(String.valueOf(tmp));
-            } else {
-                params.add(String.valueOf(words[endIndex++]));
+                tmp = 0;
             }
+            if (start != len) {
+                params.add(String.valueOf(expression.charAt(start)));
+            }
+            start++;
         }
-        String[] expressions = params.toArray(new String[]{});
-        return intervalDiffWays(expressions, 0, expressions.length - 1);
-
+        return intervalDiff(0, params.size() - 1, params);
     }
 
-    private List<Integer> intervalDiffWays(String[] words, int start, int end) {
+    private List<Integer> intervalDiff(int start, int end, List<String> params) {
         List<Integer> result = new ArrayList<>();
         if (start == end) {
-            result.add(Integer.parseInt(words[start]));
-            return result;
-        }
-        if (start > end) {
-            return result;
+            result.add(Integer.parseInt(params.get(start)));
         }
         for (int i = start + 1; i <= end - 1; i = i + 2) {
-            List<Integer> leftNums = intervalDiffWays(words, start, i - 1);
-            List<Integer> rightNums = intervalDiffWays(words, i + 1, end);
-            String sign = words[i];
-            for (Integer leftNum : leftNums) {
-                int val = 0;
-                for (Integer rightNum : rightNums) {
+            List<Integer> leftNodes = intervalDiff(start, i - 1, params);
+            List<Integer> rightNodes = intervalDiff(i + 1, end, params);
+            String sign = params.get(i);
+            for (Integer left : leftNodes) {
+                for (Integer rightNode : rightNodes) {
                     if ("+".equals(sign)) {
-                        val = leftNum + rightNum;
+                        result.add(left + rightNode);
                     } else if ("-".equals(sign)) {
-                        val = leftNum - rightNum;
+                        result.add(left - rightNode);
                     } else if ("*".equals(sign)) {
-                        val = leftNum * rightNum;
-                    } else if ("/".equals(sign)) {
-                        val = leftNum / rightNum;
+                        result.add(left * rightNode);
+                    } else {
+                        result.add(left / rightNode);
                     }
-                    result.add(val);
                 }
             }
         }

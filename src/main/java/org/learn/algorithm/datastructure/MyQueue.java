@@ -9,55 +9,57 @@ import java.util.Stack;
  * @date 2021/4/16
  */
 public class MyQueue {
-    private final Stack<Integer> pushStack;
-    private final Stack<Integer> popStack;
+
+    private final Stack<Integer> push;
+
+    private final Stack<Integer> pop;
 
     /**
      * Initialize your data structure here.
      */
     public MyQueue() {
-        pushStack = new Stack<>();
-        popStack = new Stack<>();
+        push = new Stack<>();
+        pop = new Stack<>();
     }
 
     /**
      * Push element x to the back of queue.
      */
     public void push(int x) {
-        pushStack.push(x);
+        push.push(x);
     }
 
     /**
      * Removes the element from in front of queue and returns that element.
      */
     public int pop() {
-        if (!popStack.isEmpty()) {
-            return popStack.pop();
+        if (!pop.isEmpty()) {
+            return pop.pop();
         }
-        while (!pushStack.empty()) {
-            popStack.push(pushStack.pop());
+        while (!push.isEmpty()) {
+            pop.push(push.pop());
         }
-        return popStack.pop();
+        return pop.pop();
     }
 
     /**
      * Get the front element.
      */
     public int peek() {
-        if (!popStack.isEmpty()) {
-            return popStack.peek();
+        if (!pop.isEmpty()) {
+            return pop.peek();
         }
-        while (!pushStack.empty()) {
-            popStack.push(pushStack.pop());
+        while (!push.isEmpty()) {
+            pop.push(push.pop());
         }
-        return popStack.peek();
+        return pop.peek();
     }
 
     /**
      * Returns whether the queue is empty.
      */
     public boolean empty() {
-        return popStack.isEmpty() && pushStack.empty();
+        return pop.isEmpty() && !push.isEmpty();
     }
 
 }

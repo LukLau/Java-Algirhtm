@@ -676,15 +676,16 @@ public class TreeSolution {
      * @return
      */
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        if (root == null || root == q || root == p) {
+        if (root == null || root == p || root == q) {
             return root;
         }
-        if (p.val < root.val && q.val < root.val) {
+        if (root.val > p.val && root.val > q.val) {
             return lowestCommonAncestor(root.left, p, q);
-        } else if (p.val > root.val && q.val > root.val) {
+        } else if (root.val < p.val && root.val < q.val) {
             return lowestCommonAncestor(root.right, p, q);
+        } else {
+            return root;
         }
-        return root;
     }
 
 
@@ -697,18 +698,17 @@ public class TreeSolution {
      * @return
      */
     public TreeNode lowestCommonAncestorII(TreeNode root, TreeNode p, TreeNode q) {
-        if (root == null || root == q || root == p) {
+        if (root == null || root == p || root == q) {
             return root;
         }
-        TreeNode left = lowestCommonAncestorII(root.left, p, q);
-
-        TreeNode right = lowestCommonAncestorII(root.right, p, q);
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
         if (left != null && right != null) {
             return root;
-        } else if (left == null && right != null) {
-            return right;
-        } else {
+        } else if (left != null) {
             return left;
+        } else {
+            return right;
         }
     }
 

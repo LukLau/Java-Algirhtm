@@ -312,24 +312,24 @@ public class ThreePage {
      */
     public boolean isPalindrome(ListNode head) {
         if (head == null || head.next == null) {
-            return true;
+            return false;
         }
-        ListNode slow = head;
         ListNode fast = head;
+        ListNode slow = head;
         while (fast.next != null && fast.next.next != null) {
-            slow = slow.next;
             fast = fast.next.next;
+            slow = slow.next;
         }
-        ListNode mid = slow.next;
+        ListNode next = slow.next;
         slow.next = null;
-        ListNode reverse = reverseList(mid);
 
-        while (head != null && reverse != null) {
-            if (head.val != reverse.val) {
+        ListNode reverseList = reverseList(next);
+        while (head != null && reverseList != null) {
+            if (head.val != reverseList.val) {
                 return false;
             }
             head = head.next;
-            reverse = reverse.next;
+            reverseList = reverseList.next;
         }
         return true;
     }

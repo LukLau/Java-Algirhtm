@@ -16,8 +16,8 @@ public class VipSolution {
 
     public static void main(String[] args) {
         VipSolution solution = new VipSolution();
-        int[] nums = new int[]{-2147483648, -2147483648, 0, 2147483647, 2147483647};
-        solution.findMissingRanges(nums, -2147483648, 2147483647);
+        solution.shiftWord("abc");
+        solution.shiftWord("xyz");
     }
 
     /**
@@ -190,27 +190,22 @@ public class VipSolution {
         if (num == null || num.isEmpty()) {
             return false;
         }
+        char[] words = num.toCharArray();
         Map<Character, Character> map = getNum();
-        int len = num.length();
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < len; i++) {
-            char tmp = num.charAt(i);
-            Character reverse = map.get(tmp);
-            if (reverse == null) {
-                return false;
-            }
-            builder.append(reverse);
+        for (char word : words) {
+            builder.append(map.get(word));
         }
-        return num.equals(builder.reverse().toString());
+        return builder.reverse().toString().equals(num);
     }
 
     private Map<Character, Character> getNum() {
         Map<Character, Character> map = new HashMap<>();
+        map.put('0', '0');
         map.put('1', '1');
         map.put('6', '9');
         map.put('8', '8');
         map.put('9', '6');
-        map.put('0', '0');
         return map;
     }
 
@@ -227,27 +222,27 @@ public class VipSolution {
         if (n < 0) {
             return new ArrayList<>();
         }
-        if (n == 1) {
-            return Arrays.asList("0", "1", "8");
-        }
         List<String> result = new ArrayList<>();
+        if (n == 0) {
+            result.add("");
+            return result;
+        }
         intervalFind(result, "", n);
+        intervalFind(result, "0", n);
         intervalFind(result, "1", n);
         intervalFind(result, "8", n);
-        intervalFind(result, "0", n);
         return result;
     }
 
     private void intervalFind(List<String> result, String s, int n) {
+        if (s.length() > n) {
+            return;
+        }
         if (s.length() == n) {
             result.add(s);
             return;
         }
-        if (s.length() > n - 2) {
-            return;
-        }
-
-        if (s.length() != n - 2) {
+        if (s.length() < n - 2) {
             intervalFind(result, "0" + s + "0", n);
         }
         intervalFind(result, "1" + s + "1", n);
@@ -273,34 +268,35 @@ public class VipSolution {
         int n = high.length();
         int count = 0;
         for (int i = m; i <= n; i++) {
-            count += countStrobogrammatic("", i, low, high);
-            count += countStrobogrammatic("0", i, low, high);
-            count += countStrobogrammatic("1", i, low, high);
-            count += countStrobogrammatic("8", i, low, high);
+            count += intervalCount("", i, low, high);
+            count += intervalCount("0", i, low, high);
+            count += intervalCount("1", i, low, high);
+            count += intervalCount("8", i, low, high);
         }
         return count;
     }
 
-    private int countStrobogrammatic(String path, int len, String low, String high) {
+    private int intervalCount(String path, int len, String low, String high) {
         int count = 0;
         int m = path.length();
         if (m >= len) {
             if (m > len || (len > 1 && path.charAt(0) == '0')) {
                 return 0;
             }
-            if (len == low.length() && path.compareTo(low) < 0) {
+            if (m == low.length() && low.compareTo(path) > 0) {
                 return 0;
             }
-            if (len == high.length() && path.compareTo(high) > 0) {
+            if (m == high.length() && high.compareTo(path) < 0) {
                 return 0;
             }
             count++;
         }
-        count += countStrobogrammatic("0" + path + "0", len, low, high);
-        count += countStrobogrammatic("1" + path + "1", len, low, high);
-        count += countStrobogrammatic("6" + path + "9", len, low, high);
-        count += countStrobogrammatic("8" + path + "8", len, low, high);
-        count += countStrobogrammatic("9" + path + "6", len, low, high);
+        count += intervalCount("0" + path + "0", len, low, high);
+        count += intervalCount("1" + path + "1", len, low, high);
+        count += intervalCount("6" + path + "9", len, low, high);
+        count += intervalCount("8" + path + "8", len, low, high);
+        count += intervalCount("9" + path + "6", len, low, high);
+
         return count;
     }
 
@@ -315,20 +311,24 @@ public class VipSolution {
         if (strings == null || strings.length == 0) {
             return new ArrayList<>();
         }
-        Map<String, List<String>> map = new HashMap<>();
-        for (String word : strings) {
-            String shiftStr = shiftStr(word);
-            List<String> tmp = map.getOrDefault(shiftStr, new ArrayList<>());
-            tmp.add(word);
-            map.put(shiftStr, tmp);
-        }
-        return new ArrayList<>(map.values());
+        Map<String, List<String>> result = new HashMap<>();
+        intervalGroup(result, strings);
+        return new ArrayList<>(result.values());
     }
 
-    private String shiftStr(String str) {
+    private void intervalGroup(Map<String, List<String>> result, String[] words) {
+        for (String word : words) {
+            String shiftWord = shiftWord(word);
+            List<String> tmp = result.getOrDefault(shiftWord, new ArrayList<>());
+            tmp.add(word);
+            result.put(shiftWord, tmp);
+        }
+    }
+
+    private String shiftWord(String word) {
         StringBuilder buffer = new StringBuilder();
-        char[] words = str.toCharArray();
-        int dist = str.charAt(0) - 'a';
+        char[] words = word.toCharArray();
+        int dist = word.charAt(0) - 'a';
         for (char c : words) {
             char t = (char) ((c - 'a' - dist + 26) % 26 + 'a');
             buffer.append(t);

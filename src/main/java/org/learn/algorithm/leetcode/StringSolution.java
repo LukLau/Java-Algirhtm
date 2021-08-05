@@ -68,26 +68,26 @@ public class StringSolution {
         if (nums == null || nums.length == 0) {
             return new int[]{};
         }
-        LinkedList<Integer> deque = new LinkedList<>();
+        LinkedList<Integer> linkedList = new LinkedList<Integer>();
         List<Integer> result = new ArrayList<>();
         for (int i = 0; i < nums.length; i++) {
             int index = i - k + 1;
-            if (!deque.isEmpty() && index > deque.peekFirst()) {
-                deque.pollFirst();
+            if (!linkedList.isEmpty() && linkedList.peekFirst() < index) {
+                linkedList.poll();
             }
-            while (!deque.isEmpty() && nums[i] >= nums[deque.peekLast()]) {
-                deque.pollLast();
+            while (!linkedList.isEmpty() && nums[linkedList.peekLast()] <= nums[i]) {
+                linkedList.pollLast();
             }
-            deque.offer(i);
+            linkedList.offer(i);
             if (index >= 0) {
-                result.add(nums[deque.peekFirst()]);
+                result.add(nums[linkedList.peekFirst()]);
             }
         }
-        int[] ans = new int[result.size()];
+        int[] tmp = new int[result.size()];
         for (int i = 0; i < result.size(); i++) {
-            ans[i] = result.get(i);
+            tmp[i] = result.get(i);
         }
-        return ans;
+        return tmp;
     }
 
 

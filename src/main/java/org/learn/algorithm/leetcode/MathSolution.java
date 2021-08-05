@@ -452,7 +452,7 @@ public class MathSolution {
 
     /**
      * 233. Number of Digit One
-     * todo
+     * todo 需要数学规律
      *
      * @param n
      * @return
@@ -516,7 +516,54 @@ public class MathSolution {
      * @return
      */
     public List<Integer> majorityElementII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        int candidateA = nums[0];
+        int candidateB = nums[0];
 
+        int countA = 0;
+        int countB = 0;
+
+        for (int number : nums) {
+            if (number == candidateA) {
+                countA++;
+                continue;
+            }
+            if (number == candidateB) {
+                countB++;
+                continue;
+            }
+            if (countA == 0) {
+                candidateA = number;
+                countA = 1;
+                continue;
+            }
+            if (countB == 0) {
+                candidateB = number;
+                countB = 1;
+                continue;
+            }
+            countA--;
+            countB--;
+        }
+        countA = 0;
+        countB = 0;
+        for (int num : nums) {
+            if (num == candidateA) {
+                countA++;
+            } else if (num == candidateB) {
+                countB++;
+            }
+        }
+        List<Integer> result = new ArrayList<>();
+        if (3 * countA > nums.length) {
+            result.add(candidateA);
+        }
+        if (3 * countB > nums.length) {
+            result.add(candidateB);
+        }
+        return result;
     }
 
 
