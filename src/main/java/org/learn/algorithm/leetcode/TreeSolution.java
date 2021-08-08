@@ -724,16 +724,16 @@ public class TreeSolution {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        intervalTreePaths(result, "", root);
+        intervalBinaryTree(result, "", root);
         return result;
     }
 
-    private void intervalTreePaths(List<String> result, String s, TreeNode root) {
+    private void intervalBinaryTree(List<String> result, String s, TreeNode root) {
         if (root == null) {
             return;
         }
         if (s.isEmpty()) {
-            s += root.val;
+            s = s + root.val;
         } else {
             s = s + "->" + root.val;
         }
@@ -741,8 +741,8 @@ public class TreeSolution {
             result.add(s);
             return;
         }
-        intervalTreePaths(result, s, root.left);
-        intervalTreePaths(result, s, root.right);
+        intervalBinaryTree(result, s, root.left);
+        intervalBinaryTree(result, s, root.right);
     }
 
     // --- //

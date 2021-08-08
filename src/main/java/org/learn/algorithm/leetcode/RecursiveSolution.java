@@ -379,26 +379,25 @@ public class RecursiveSolution {
      * @return: return a 2D array
      */
     public List<List<Integer>> getFactors(int n) {
-        if (n <= 0) {
+        if (n <= 1) {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        // write your code here
-        intervalFactors(result, new ArrayList<>(), 2, n);
+        intervalGetFactors(result, new ArrayList<>(), 2, n / 2, n);
         return result;
     }
 
-    private void intervalFactors(List<List<Integer>> result, List<Integer> tmp, int start, int n) {
-        if (n == 1 && tmp.size() > 1) {
+    private void intervalGetFactors(List<List<Integer>> result, List<Integer> tmp, int start, int end, int n) {
+        if (n == 1) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i <= n; i++) {
+        for (int i = start; i <= end; i++) {
             if (n % i != 0) {
                 continue;
             }
             tmp.add(i);
-            intervalFactors(result, tmp, i, n / i);
+            intervalGetFactors(result, tmp, i, end, n / i);
             tmp.remove(tmp.size() - 1);
         }
     }

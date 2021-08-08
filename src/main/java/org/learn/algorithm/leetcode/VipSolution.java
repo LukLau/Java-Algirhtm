@@ -14,10 +14,20 @@ import java.util.*;
  */
 public class VipSolution {
 
+    /**
+     * todo
+     * 298
+     * Binary Tree Longest Consecutive Sequence
+     *
+     * @param root: the root of binary tree
+     * @return: the length of the longest consecutive sequence path
+     */
+    private int longestV2 = 0;
+
     public static void main(String[] args) {
         VipSolution solution = new VipSolution();
-        solution.shiftWord("abc");
-        solution.shiftWord("xyz");
+        int[] nums = new int[]{1, 3, 2};
+        solution.verifyPreorder(nums);
     }
 
     /**
@@ -40,7 +50,6 @@ public class VipSolution {
 
         // write your code here
     }
-
 
     /**
      * 161 One Edit Distance
@@ -74,7 +83,6 @@ public class VipSolution {
         return Math.abs(m - n) <= 1;
     }
 
-
     /**
      * todo
      * #163 Missing Ranges
@@ -106,7 +114,6 @@ public class VipSolution {
     private String range(long lower, long upper) {
         return lower == upper ? String.valueOf(lower) : lower + "->" + upper;
     }
-
 
     /**
      * 186 Reverse Words in a String II
@@ -141,14 +148,15 @@ public class VipSolution {
         }
     }
 
+    // 单词最短距离
+
     private void swap(char[] str, int i, int j) {
         char tmp = str[i];
         str[i] = str[j];
         str[j] = tmp;
     }
 
-    // 单词最短距离
-
+    // 反转数系列
 
     /**
      * #243 Shortest Word Distance
@@ -176,9 +184,6 @@ public class VipSolution {
         }
         return result;
     }
-
-    // 反转数系列
-
 
     /**
      * 246 Strobogrammatic Number
@@ -208,7 +213,6 @@ public class VipSolution {
         map.put('9', '6');
         return map;
     }
-
 
     /**
      * #247 Strobogrammatic Number II
@@ -250,7 +254,6 @@ public class VipSolution {
         intervalFind(result, "8" + s + "8", n);
         intervalFind(result, "9" + s + "6", n);
     }
-
 
     /**
      * todo
@@ -300,7 +303,6 @@ public class VipSolution {
         return count;
     }
 
-
     /**
      * 249 Group Shifted Strings
      *
@@ -336,7 +338,6 @@ public class VipSolution {
         return buffer.toString();
     }
 
-
     /**
      * 250
      * Count Univalue Subtrees
@@ -354,7 +355,6 @@ public class VipSolution {
         }
         count += countUnivalSubtrees(root.left);
         count += countUnivalSubtrees(root.right);
-        // write your code here
         return count;
     }
 
@@ -362,9 +362,8 @@ public class VipSolution {
         if (root == null) {
             return true;
         }
-        return root.val == val && isUnivalSubTree(root.left, root.val) && isUnivalSubTree(root.right, val);
+        return root.val == val && isUnivalSubTree(root.left, root.val) && isUnivalSubTree(root.right, root.val);
     }
-
 
     /**
      * 252
@@ -379,17 +378,16 @@ public class VipSolution {
             return true;
         }
         intervals.sort(Comparator.comparingInt(o -> o.start));
-        int len = intervals.size();
-        for (int i = 1; i < len; i++) {
+        Interval pre = intervals.get(0);
+        for (int i = 1; i < intervals.size(); i++) {
             Interval current = intervals.get(i);
-            Interval pre = intervals.get(i - 1);
             if (current.start < pre.end) {
                 return false;
             }
+            pre = current;
         }
         return true;
     }
-
 
     /**
      * todo
@@ -400,21 +398,20 @@ public class VipSolution {
      * @return: the minimum number of conference rooms required
      */
     public int minMeetingRooms(List<Interval> intervals) {
+        // Write your code here
         if (intervals == null || intervals.isEmpty()) {
             return 0;
         }
+        PriorityQueue<Integer> queue = new PriorityQueue<>();
         intervals.sort(Comparator.comparingInt(o -> o.start));
-        PriorityQueue<Interval> queue = new PriorityQueue<>(Comparator.comparing(item -> item.end));
         for (Interval interval : intervals) {
-            if (!queue.isEmpty() && interval.start >= queue.peek().end) {
+            if (!queue.isEmpty() && queue.peek() < interval.start) {
                 queue.poll();
             }
-            queue.offer(interval);
+            queue.offer(interval.end);
         }
         return queue.size();
-        // Write your code here
     }
-
 
     /**
      * 255
@@ -425,31 +422,27 @@ public class VipSolution {
      */
     public boolean verifyPreorder(int[] preorder) {
         if (preorder == null || preorder.length == 0) {
-            return true;
+            return false;
         }
-        return intervalVerifyPreorder(Integer.MIN_VALUE, 0, preorder.length - 1, preorder, Integer.MAX_VALUE);
-        // write your code here
+        return intervalVerifyPreorder(Integer.MIN_VALUE, Integer.MAX_VALUE, 0, preorder.length - 1, preorder);
     }
 
-    private boolean intervalVerifyPreorder(int minValue, int start, int end, int[] preorder, int maxValue) {
-        if (start == end) {
+    private boolean intervalVerifyPreorder(int minValue, int maxValue, int start, int end, int[] preorder) {
+        if (start > end) {
             return true;
         }
-        int val = preorder[start];
+        int val = preorder[start], i = 0;
         if (val <= minValue || val >= maxValue) {
             return false;
         }
-        int i = 0;
         for (i = start + 1; i <= end; ++i) {
             if (preorder[i] >= val) {
                 break;
             }
         }
-        return intervalVerifyPreorder(minValue, start, i - 1, preorder, val)
-                && intervalVerifyPreorder(val, i, end, preorder, maxValue);
-
+        return intervalVerifyPreorder(minValue, val, start + 1, i - 1, preorder) &&
+                intervalVerifyPreorder(val, maxValue, i, end, preorder);
     }
-
 
     /**
      * todo
@@ -482,7 +475,6 @@ public class VipSolution {
         return count;
         // Write your code here
     }
-
 
     /**
      * 270
@@ -605,7 +597,6 @@ public class VipSolution {
         return false;
     }
 
-
     /**
      * 293
      * Flip Game
@@ -636,7 +627,6 @@ public class VipSolution {
         // write your code here
     }
 
-
     /**
      * 294
      * Flip Game II
@@ -663,7 +653,6 @@ public class VipSolution {
         }
         return false;
     }
-
 
     /**
      * 曼哈顿距离法
@@ -707,17 +696,6 @@ public class VipSolution {
         }
         return distance;
     }
-
-
-    /**
-     * todo
-     * 298
-     * Binary Tree Longest Consecutive Sequence
-     *
-     * @param root: the root of binary tree
-     * @return: the length of the longest consecutive sequence path
-     */
-    private int longestV2 = 0;
 
     public int longestConsecutive2(TreeNode root) {
         if (root == null) {

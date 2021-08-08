@@ -318,10 +318,10 @@ public class StringSolution {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        int m = s.length();
-        for (int i = start; i < m; i++) {
-            if (validPalindrome(s, start, i)) {
-                tmp.add(s.substring(start, i + 1));
+        for (int i = start; i < s.length(); i++) {
+            String substring = s.substring(start, i + 1);
+            if (validPalindrome(substring, 0, substring.length() - 1)) {
+                tmp.add(substring);
                 intervalPartition(result, tmp, i + 1, s);
                 tmp.remove(tmp.size() - 1);
             }
@@ -359,15 +359,14 @@ public class StringSolution {
         boolean[][] dp = new boolean[m][m];
         dp[0][0] = true;
         for (int i = 1; i < m; i++) {
-            int min = i;
+            int minCut = i;
             for (int j = 0; j <= i; j++) {
-                dp[j][i] = s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1]);
+                dp[j][i] = s.charAt(j) == s.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1]);
                 if (dp[j][i]) {
-                    int val = j == 0 ? 0 : 1 + cut[j - 1];
-                    min = Math.min(min, val);
+                    minCut = j == 0 ? 0 : Math.min(cut[j - 1] + 1, minCut);
                 }
             }
-            cut[i] = min;
+            cut[i] = minCut;
         }
         return cut[m - 1];
     }
@@ -409,23 +408,10 @@ public class StringSolution {
      */
     public boolean canPermutePalindrome(String s) {
         if (s == null || s.isEmpty()) {
-            return true;
+            return false;
         }
-        boolean odd = false;
-        char[] words = s.toCharArray();
-        int[] hash = new int[256];
-        for (char word : words) {
-            hash[word - 'a']++;
-        }
-        for (int num : hash) {
-            if (num % 2 != 0) {
-                if (odd) {
-                    return false;
-                }
-                odd = true;
-            }
-        }
-        return true;
+        Map<Character, Integer> map = new HashMap<>();
+        return false;
     }
 
 

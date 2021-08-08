@@ -13,7 +13,7 @@ public class MathSolution {
     public static void main(String[] args) {
         MathSolution solution = new MathSolution();
         int[] nums = new int[]{5, 4, 4, 3, 2, 1};
-        solution.calculateIII("1 + 1");
+        solution.nthUglyNumber(10);
     }
 
     // 素数相关
@@ -353,20 +353,41 @@ public class MathSolution {
         if (nums == null || nums.length == 0) {
             return new int[]{};
         }
+        int base = 0;
+        for (int num : nums) {
+            base ^= num;
+        }
+        base &= -base;
         int[] result = new int[2];
+        for (int num : nums) {
+            if ((num & base) != 0) {
+                result[0] ^= num;
+            } else {
+                result[1] ^= num;
+            }
+        }
+        return result;
+    }
+
+
+    public int[] singleNumberIIIV2(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
         int base = 0;
         for (int num : nums) {
             base ^= num;
         }
         int index = 0;
         for (int i = 0; i < 32; i++) {
-            if ((base & 1 << i) != 0) {
+            if ((base & (1 << i)) != 0) {
                 index = i;
                 break;
             }
         }
+        int[] result = new int[2];
         for (int num : nums) {
-            if ((num & (1 << index)) != 0) {
+            if ((num & (1 << index)) == 0) {
                 result[0] ^= num;
             } else {
                 result[1] ^= num;
@@ -764,23 +785,26 @@ public class MathSolution {
     /**
      * 263. Ugly Number
      *
-     * @param num
+     * @param n
      * @return
      */
-    public boolean isUgly(int num) {
-        if (num <= 1) {
+    public boolean isUgly(int n) {
+        if (n <= 0) {
             return false;
         }
+        if (n < 7) {
+            return true;
+        }
         while (true) {
-            if (num == 2 || num == 3 || num == 5) {
+            if (n == 2 || n == 3 || n == 5) {
                 return true;
             }
-            if (num % 5 == 0) {
-                num /= 5;
-            } else if (num % 3 == 0) {
-                num /= 3;
-            } else if (num % 2 == 0) {
-                num /= 2;
+            if (n % 2 == 0) {
+                n /= 2;
+            } else if (n % 3 == 0) {
+                n /= 3;
+            } else if (n % 5 == 0) {
+                n /= 5;
             } else {
                 return false;
             }
@@ -809,26 +833,31 @@ public class MathSolution {
      * @return
      */
     public int nthUglyNumber(int n) {
-        if (n < 1) {
-            return 0;
+        if (n < 7) {
+            return n;
         }
-        int idx2 = 0, idx3 = 0, idx5 = 0, i = 1;
-        int[] ans = new int[n];
-        ans[0] = 1;
-        while (i < n) {
-            int tmp = Math.min(Math.min(ans[idx2] * 2, ans[idx3] * 3), ans[idx5] * 5);
-            if (tmp == ans[idx2] * 2) {
-                idx2++;
-            } else if (tmp == ans[idx3] * 3) {
-                idx3++;
-            } else if (tmp == ans[idx5] * 5) {
-                idx5++;
+        int index2 = 0;
+        int index3 = 0;
+        int index5 = 0;
+        int[] result = new int[n];
+        result[0] = 1;
+        int index = 1;
+        while (index < n) {
+            int val = Math.min(Math.min(result[index2] * 2, result[index3] * 3), result[index5] * 5);
+            if (val == result[index2] * 2) {
+                index2++;
             }
-            ans[i++] = tmp;
+            if (val == result[index3] * 3) {
+                index3++;
+            }
+            if (val == result[index5] * 5) {
+                index5++;
+            }
+            result[index] = val;
 
+            index++;
         }
-        return ans[n - 1];
-
+        return result[n - 1];
     }
 
 

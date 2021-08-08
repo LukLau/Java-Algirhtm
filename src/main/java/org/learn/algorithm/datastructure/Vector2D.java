@@ -12,57 +12,57 @@ import java.util.List;
  * @date 2021/4/18
  */
 public class Vector2D implements Iterable<Integer> {
-    private Iterator<List<Integer>> iterator1;
 
-    private Iterator<Integer> iterator2;
+    private Iterator<List<Integer>> listIterator;
+
+    private Iterator<Integer> iterator;
 
     public Vector2D(List<List<Integer>> vec2d) {
-        iterator1 = vec2d.iterator();
         // Initialize your data structure here
+        listIterator = vec2d.iterator();
     }
 
     public Integer next() {
-        if (iterator2 != null && iterator2.hasNext()) {
-            return iterator2.next();
+        // Write your code here
+        if (iterator != null && iterator.hasNext()) {
+            return iterator.next();
         }
-        while (iterator1.hasNext()) {
-            List<Integer> next = iterator1.next();
-            iterator2 = next.iterator();
-            if (iterator2.hasNext()) {
-                return iterator2.next();
+        while (listIterator.hasNext()) {
+            iterator = listIterator.next().iterator();
+            while (iterator.hasNext()) {
+                Integer next = iterator.next();
+                if (next != null) {
+                    return next;
+                }
             }
         }
         return null;
-        // Write your code here
     }
 
     public boolean hasNext() {
         // Write your code here
-        if (iterator2 != null && iterator2.hasNext()) {
+        if (iterator != null && iterator.hasNext()) {
             return true;
         }
-        while (iterator1.hasNext()) {
-            List<Integer> next = iterator1.next();
-            iterator2 = next.iterator();
-            if (iterator2.hasNext()) {
+        while (listIterator.hasNext()) {
+            iterator = listIterator.next().iterator();
+            if (iterator.hasNext()) {
                 return true;
             }
         }
         return false;
     }
 
-    public void remove() {
-    }
-
-    @Override
-    public Iterator<Integer> iterator() {
-        return null;
-    }
 
     public static void main(String[] args) {
         Vector2D vector2D = new Vector2D(new ArrayList<>());
         if (vector2D.hasNext()) {
             vector2D.next();
         }
+    }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        return null;
     }
 }

@@ -1,8 +1,8 @@
 package org.learn.algorithm.leetcode;
 
-import org.learn.algorithm.datastructure.TreeNode;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 动态规划问题
@@ -15,8 +15,8 @@ public class DynamicSolution {
 
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
-        int[] nums = new int[]{2, 1, 4};
-        solution.maxProfitIII(nums);
+        int[][] params = new int[][]{{14, 2, 11}, {11, 14, 5}, {14, 3, 10}};
+        solution.minCostIIV2(params);
     }
 
     // 普通动态规划问题
@@ -652,15 +652,18 @@ public class DynamicSolution {
         }
         int row = costs.length;
         for (int i = 1; i < row; i++) {
-            costs[i][0] = Math.min(costs[i - 1][1], costs[i - 1][2]) + costs[i][0];
-            costs[i][1] = Math.min(costs[i - 1][2], costs[i - 1][0]) + costs[i][1];
-            costs[i][2] = Math.min(costs[i - 1][1], costs[i - 1][0]) + costs[i][2];
+            costs[i][0] += Math.min(costs[i - 1][1], costs[i - 1][2]);
+
+            costs[i][1] += Math.min(costs[i - 1][0], costs[i - 1][2]);
+
+            costs[i][2] += Math.min(costs[i - 1][1], costs[i - 1][0]);
         }
         return Math.min(Math.min(costs[row - 1][0], costs[row - 1][1]), costs[row - 1][2]);
     }
 
 
     /**
+     * O(n3) 的时间复杂度
      * 265 Paint House II
      * Hard
      *
@@ -672,30 +675,53 @@ public class DynamicSolution {
         if (costs == null || costs.length == 0) {
             return 0;
         }
+        int row = costs.length;
+        int column = costs[0].length;
+        for (int i = 1; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                int value = Integer.MAX_VALUE;
+                for (int k = 0; k < column; k++) {
+                    if (k == j) {
+                        continue;
+                    }
+                    value = Math.min(value, costs[i - 1][k]);
+                }
+                costs[i][j] += value;
+            }
+        }
+        int result = Integer.MAX_VALUE;
+        for (int j = 0; j < column; j++) {
+            result = Math.min(result, costs[row - 1][j]);
+        }
+        return result;
+    }
+
+    public int minCostIIV2(int[][] costs) {
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
         int firstIndex = -1;
         int secondIndex = -1;
         int row = costs.length;
         int column = costs[0].length;
         for (int i = 0; i < row; i++) {
-            int index1 = -1;
-            int index2 = -1;
+            int tmpFirstIndex = -1;
+            int tmpSecondIndex = -1;
             for (int j = 0; j < column; j++) {
-                if (firstIndex >= 0) {
-                    if (j != firstIndex) {
-                        costs[i][j] += costs[i - 1][firstIndex];
-                    } else {
-                        costs[i][j] += costs[i - 1][secondIndex];
-                    }
+                if (j != firstIndex) {
+                    costs[i][j] += firstIndex == -1 ? 0 : costs[i - 1][firstIndex];
+                } else if (j != secondIndex) {
+                    costs[i][j] += secondIndex == -1 ? 0 : costs[i - 1][secondIndex];
                 }
-                if (index1 == -1 || costs[i][j] < costs[i][index1]) {
-                    index2 = index1;
-                    index1 = j;
-                } else if (index2 == -1 || costs[i][j] < costs[i][index2]) {
-                    index2 = j;
+                if (tmpFirstIndex == -1 || costs[i][j] < costs[i][tmpFirstIndex]) {
+                    tmpSecondIndex = tmpFirstIndex;
+                    tmpFirstIndex = j;
+                } else if (tmpSecondIndex == -1 || costs[i][j] < costs[i][tmpSecondIndex]) {
+                    tmpSecondIndex = j;
                 }
             }
-            firstIndex = index1;
-            secondIndex = index2;
+            firstIndex = tmpFirstIndex;
+            secondIndex = tmpSecondIndex;
         }
         return costs[row - 1][firstIndex];
     }
