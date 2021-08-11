@@ -16,20 +16,20 @@ public class EncodeSolution {
      * @return: encodes a list of strings to a single string.
      */
     public String encode(List<String> strs) {
+        // write your code here
         if (strs == null || strs.isEmpty()) {
             return "";
         }
         StringBuilder builder = new StringBuilder();
-        int size = strs.size();
-        for (int i = 0; i < size; i++) {
+        int len = strs.size();
+        for (int i = 0; i < len; i++) {
             String current = strs.get(i);
             builder.append(current);
-            if (i != size - 1) {
-                builder.append(size).append(";");
+            if (i != len - 1) {
+                builder.append(len).append(",");
             }
         }
         return builder.toString();
-        // write your code here
     }
 
     /**
@@ -40,34 +40,34 @@ public class EncodeSolution {
         if (str == null || str.isEmpty()) {
             return new ArrayList<>();
         }
-        String[] words = str.split(";");
+//        String[] words = str.split(";");
+//        List<String> result = new ArrayList<>();
+//        String endWord = String.valueOf(words.length);
+//
+//        for (int i = 0; i < words.length; i++) {
+//
+//            String word = words[i];
+//            if (i != words.length - 1) {
+//                int lastIndexOf = word.lastIndexOf(endWord);
+//                word = word.substring(0, lastIndexOf);
+//            }
+//            result.add(word);
+//        }
+//
+//        return result;
+        String[] words = str.split(",");
         List<String> result = new ArrayList<>();
-        String endWord = String.valueOf(words.length);
-
+        String len = String.valueOf(words.length);
         for (int i = 0; i < words.length; i++) {
-
             String word = words[i];
             if (i != words.length - 1) {
-                int lastIndexOf = word.lastIndexOf(endWord);
-                word = word.substring(0, lastIndexOf);
+                int lastIndex = word.lastIndexOf(len);
+                word = word.substring(0, lastIndex);
             }
             result.add(word);
         }
-
-        return result;
         // write your code here
+        return result;
     }
 
-    public static void main(String[] args) {
-        EncodeSolution solution = new EncodeSolution();
-        List<String> strs = new ArrayList<>();
-        strs.add("lint");
-        strs.add("code");
-        strs.add("love");
-        strs.add("your");
-        String encode = solution.encode(strs);
-        System.out.println(encode);
-        List<String> decode = solution.decode("lint4;code4;love4;your");
-        System.out.println(decode);
-    }
 }

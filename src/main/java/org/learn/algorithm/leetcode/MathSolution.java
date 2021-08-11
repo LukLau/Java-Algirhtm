@@ -863,6 +863,22 @@ public class MathSolution {
 
     /**
      * todo
+     * 274. H-Index
+     *
+     * @param citations
+     * @return
+     */
+    public int hIndex(int[] citations) {
+        if (citations == null || citations.length == 0) {
+            return 0;
+        }
+        return 0;
+
+    }
+
+
+    /**
+     * todo
      * 319
      * Bulb Switcher
      *

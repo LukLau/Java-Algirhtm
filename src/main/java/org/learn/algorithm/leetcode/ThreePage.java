@@ -386,7 +386,28 @@ public class ThreePage {
         if (num < 0) {
             return "";
         }
+
         return "";
+    }
+
+    private String convertToWords(int num) {
+        String[] v1 = new String[]{"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+
+        String[] v2 = new String[]{"", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+
+
+        int a = num / 100;
+
+        int b = num % 100;
+
+        int c = num % 10;
+
+        String res = "";
+
+//        res = b < 20 ? v1[b] : (v2[b / 10] +
+
+        return res;
+
     }
 
 
@@ -408,7 +429,6 @@ public class ThreePage {
         while (index < nums.length) {
             nums[index++] = 0;
         }
-
     }
 
     /**

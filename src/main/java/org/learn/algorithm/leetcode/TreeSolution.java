@@ -294,9 +294,6 @@ public class TreeSolution {
      */
     public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
         // write your code here
-        if (root == null || p == null) {
-            return null;
-        }
         Stack<TreeNode> stack = new Stack<>();
         TreeNode q = root;
         TreeNode prev = null;
@@ -310,6 +307,7 @@ public class TreeSolution {
                 return q;
             }
             prev = q;
+
             q = q.right;
         }
         return null;
@@ -355,6 +353,20 @@ public class TreeSolution {
             return root;
         }
         return null;
+    }
+
+    public TreeNode inorderSuccessorV2ii(TreeNode root, TreeNode p) {
+        if (root == null) {
+            return null;
+        }
+        if (root.val <= p.val) {
+            return inorderSuccessorV2ii(root.right, p);
+        }
+        TreeNode left = inorderSuccessorV2ii(root.left, p);
+        if (left == null) {
+            return root;
+        }
+        return left;
     }
 
 

@@ -600,29 +600,24 @@ public class RecursiveSolution {
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (rooms[i][j] == 0) {
-                    intervalWallsAndGates(i, j, rooms, 0);
+                    intervalWalls(rooms, i, j, 0);
                 }
             }
         }
-        // write your code here
     }
 
-    private void intervalWallsAndGates(int i, int j, int[][] rooms, int distance) {
+    private void intervalWalls(int[][] rooms, int i, int j, int distance) {
         if (i < 0 || i >= rooms.length || j < 0 || j >= rooms[i].length || rooms[i][j] == -1) {
             return;
         }
-        if (rooms[i][j] < distance) {
-            return;
-        }
-        if (rooms[i][j] == Integer.MAX_VALUE || rooms[i][j] > distance) {
+        if (rooms[i][j] > distance || distance == 0) {
             rooms[i][j] = distance;
+            intervalWalls(rooms, i - 1, j, distance + 1);
+            intervalWalls(rooms, i + 1, j, distance + 1);
+            intervalWalls(rooms, i, j - 1, distance + 1);
+            intervalWalls(rooms, i, j + 1, distance + 1);
         }
-        intervalWallsAndGates(i - 1, j, rooms, distance + 1);
-        intervalWallsAndGates(i + 1, j, rooms, distance + 1);
-        intervalWallsAndGates(i, j - 1, rooms, distance + 1);
-        intervalWallsAndGates(i, j + 1, rooms, distance + 1);
     }
-
 
     // ---- //
 
@@ -804,6 +799,7 @@ public class RecursiveSolution {
 
 
     /**
+     * todo
      * 282. Expression Add Operators
      *
      * @param num
@@ -815,31 +811,28 @@ public class RecursiveSolution {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        intervalAdd(result, 0, 0, 0, num, target, "");
+        intervalAddOperators(result, 0, 0, "", num, 0, target);
         return result;
     }
 
-    private void intervalAdd(List<String> result, long val, int pos, long multi, String num, int target, String s) {
-        if (pos == num.length() && val == target) {
-            result.add(s);
+    private void intervalAddOperators(List<String> result, int value, int start, String express, String num, int multi, int target) {
+        if (start == num.length() && value == target) {
+            result.add(express);
             return;
         }
-        for (int i = pos; i < num.length(); i++) {
-            if (i > pos && num.charAt(pos) == '0') {
+        for (int i = start; i < num.length(); i++) {
+            if (i > start && num.charAt(start) == '0') {
                 continue;
             }
-            String substring = num.substring(pos, i + 1);
-            long parseInt = Long.parseLong(substring);
-            if (pos == 0) {
-                intervalAdd(result, parseInt, i + 1, parseInt, num, target, s + parseInt);
+            String tmp = num.substring(start, i + 1);
+            int v = Integer.parseInt(tmp);
+            if (start == 0) {
+                intervalAddOperators(result, target + value, i + 1, express + tmp, num, v, target);
             } else {
-                intervalAdd(result, val + parseInt, i + 1, parseInt, num, target, s + "+" + parseInt);
-                intervalAdd(result, val - parseInt, i + 1, -parseInt, num, target, s + "-" + parseInt);
-                intervalAdd(result, val - multi + multi * parseInt, i + 1, multi * parseInt, num, target, s + "*" + parseInt);
+                intervalAddOperators(result, target + value, i + 1, express + "+" + tmp, num, v, target);
+                intervalAddOperators(result, target - value, i + 1, express + "-" + tmp, num, -v, target);
+                intervalAddOperators(result, target * value, i + 1, express + "*" + tmp, num, -v, target);
             }
-
         }
     }
-
-
 }

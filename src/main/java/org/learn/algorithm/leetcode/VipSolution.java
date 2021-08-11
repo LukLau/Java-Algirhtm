@@ -485,26 +485,86 @@ public class VipSolution {
      * @return: the value in the BST that is closest to the target
      */
     public int closestValue(TreeNode root, double target) {
-        int result = Integer.MIN_VALUE;
+        // write your code here
+        int result = Integer.MAX_VALUE;
         while (root != null) {
-            if (result == Integer.MIN_VALUE) {
+            if (result == Integer.MAX_VALUE) {
                 result = root.val;
             } else {
                 double diff = Math.abs(root.val - target);
                 double last = Math.abs(result - target);
-                if (last < diff) {
+                if (last > diff) {
                     result = root.val;
                 }
-            }
-            if (root.val < target) {
-                root = root.right;
-            } else {
-                root = root.left;
+                if (root.val < target) {
+                    root = root.right;
+                } else {
+                    root = root.left;
+                }
             }
         }
         return result;
-        // write your code here
     }
+
+
+    /**
+     * 270. Closest Binary Search Tree Value
+     *
+     * @param root
+     * @param target
+     * @param k
+     * @return
+     */
+    public List<Integer> closestKValues(TreeNode root, double target, int k) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        PriorityQueue<Integer> queue = new PriorityQueue<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            if (queue.size() < k) {
+                queue.offer(p.val);
+            } else if (Math.abs(queue.peek() - target) > Math.abs(p.val - target)) {
+                queue.poll();
+                queue.offer(p.val);
+            } else {
+                break;
+            }
+            p = p.right;
+        }
+        return new ArrayList<>(queue);
+    }
+
+
+    /**
+     * todo
+     * 276. Paint Fence
+     *
+     * @param n: non-negative integer, n posts
+     * @param k: non-negative integer, k colors
+     * @return: an integer, the total number of ways
+     */
+    public int numWays(int n, int k) {
+        // write your code here
+        if (n <= 0) {
+            return 0;
+        }
+        int same = 0;
+        int diff = k;
+        for (int i = 2; i <= n; i++) {
+            int pre = diff;
+            diff = (same + diff) * (k - 1);
+            same = pre;
+        }
+        return same + diff;
+    }
+
 
     /**
      * @param nums: A list of integers

@@ -820,8 +820,8 @@ public class DynamicSolution {
      * @return
      */
     public int numSquares(int n) {
-        if (n == 1) {
-            return 1;
+        if (n <= 0) {
+            return 0;
         }
         int[] dp = new int[n + 1];
         dp[0] = 0;
@@ -829,7 +829,7 @@ public class DynamicSolution {
         for (int i = 2; i <= n; i++) {
             int tmp = i;
             for (int j = 1; j * j <= i; j++) {
-                tmp = Math.min(tmp, 1 + dp[i - j * j]);
+                tmp = Math.min(dp[i - j * j] + 1, tmp);
             }
             dp[i] = tmp;
         }

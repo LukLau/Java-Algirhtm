@@ -411,7 +411,24 @@ public class StringSolution {
             return false;
         }
         Map<Character, Integer> map = new HashMap<>();
-        return false;
+        char[] words = s.toCharArray();
+        for (char word : words) {
+            Integer count = map.getOrDefault(word, 0);
+            count++;
+            map.put(word, count);
+        }
+        boolean existOdd = false;
+        for (Map.Entry<Character, Integer> item : map.entrySet()) {
+            Integer count = item.getValue();
+            if (count % 2 != 0) {
+                if (existOdd) {
+                    return false;
+                }
+                existOdd = true;
+            }
+
+        }
+        return true;
     }
 
 
@@ -427,52 +444,53 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
-        List<String> result = new ArrayList<>();
         Map<Character, Integer> map = new HashMap<>();
         char[] words = s.toCharArray();
+        Character oddEven = null;
         for (char word : words) {
             Integer count = map.getOrDefault(word, 0);
-            count++;
-            map.put(word, count);
+            map.put(word, count + 1);
         }
-        Character oddCharacter = null;
         StringBuilder builder = new StringBuilder();
-        Set<Map.Entry<Character, Integer>> entry = map.entrySet();
-        for (Map.Entry<Character, Integer> item : entry) {
-            Character key = item.getKey();
+        for (Map.Entry<Character, Integer> item : map.entrySet()) {
             Integer count = item.getValue();
-            if (count % 2 == 1) {
-                if (oddCharacter != null) {
-                    return result;
+            Character key = item.getKey();
+            if (count % 2 != 0) {
+                if (oddEven != null) {
+                    return new ArrayList<>();
                 }
-                oddCharacter = key;
+                oddEven = key;
             }
             for (int i = 0; i < count / 2; i++) {
                 builder.append(key);
             }
         }
-        char[] items = builder.toString().toCharArray();
-        List<String> itemList = new ArrayList<>();
-        constructItem(itemList, 0, items);
-        for (String item : itemList) {
-            String reverse = new StringBuilder(item).reverse().toString();
-            result.add(item + (oddCharacter == null ? reverse : oddCharacter + reverse));
-        }
+        List<String> result = new ArrayList<>();
+        boolean[] used = new boolean[builder.toString().length()];
+
+        intervalPalindrome(oddEven, used, builder.toString().toCharArray(), new StringBuilder(), result);
+
         return result;
     }
 
-    private void constructItem(List<String> itemList, int start, char[] items) {
-        if (start == items.length) {
-            itemList.add(String.valueOf(items));
+    private void intervalPalindrome(Character odd, boolean[] used, char[] words, StringBuilder builder, List<String> ans) {
+        if (builder.length() == words.length) {
+            String item = builder.toString() + (odd != null ? odd : "") + builder.reverse().toString();
+            ans.add(item);
+            builder.reverse();
             return;
         }
-        for (int i = start; i < items.length; i++) {
-            if (i > start && items[i] == items[i - 1]) {
+        for (int i = 0; i < words.length; i++) {
+            if (i > 0 && (words[i] == words[i - 1]) && !used[i - 1]) {
                 continue;
             }
-            swapItem(items, i, start);
-            constructItem(itemList, start + 1, items);
-            swapItem(items, i, start);
+            if (!used[i]) {
+                used[i] = true;
+                builder.append(words[i]);
+                intervalPalindrome(odd, used, words, builder, ans);
+                used[i] = false;
+                builder.deleteCharAt(builder.length() - 1);
+            }
         }
     }
 
@@ -501,7 +519,8 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.partition("aab");
+        String param = "aabb";
+        solution.generatePalindromes(param);
     }
 
 
