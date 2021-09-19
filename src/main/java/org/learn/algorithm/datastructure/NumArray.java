@@ -1,9 +1,5 @@
 package org.learn.algorithm.datastructure;
 
-import com.sun.tools.javac.util.Pair;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * todo 使用本地缓存的思想
