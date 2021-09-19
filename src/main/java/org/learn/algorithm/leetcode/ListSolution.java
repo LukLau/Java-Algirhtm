@@ -1,7 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
-import org.learn.algorithm.datastructure.Node;
+import org.learn.algorithm.datastructure.RandomListNode;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -255,34 +255,34 @@ public class ListSolution {
      * @param head
      * @return
      */
-    public Node copyRandomList(Node head) {
+    public RandomListNode copyRandomList(RandomListNode head) {
         if (head == null) {
             return null;
         }
-        Node current = head;
+        RandomListNode current = head;
         while (current != null) {
-            Node tmp = new Node(current.val);
-            tmp.next = current.next;
+            RandomListNode next = current.next;
+            RandomListNode tmp = new RandomListNode(current.label);
             current.next = tmp;
-            current = tmp.next;
+            tmp.next = next;
+            current = next;
         }
         current = head;
         while (current != null) {
-            Node next = current.next;
-            if (current.random != null) {
-                next.random = current.random.next;
+            RandomListNode random = current.random;
+            if (random != null) {
+                current.next.random = random.next;
             }
-            current = next.next;
+            current = current.next.next;
         }
-
+        RandomListNode copyOfHead = head.next;
         current = head;
-        Node copyHead = current.next;
         while (current.next != null) {
-            Node tmp = current.next;
+            RandomListNode tmp = current.next;
             current.next = tmp.next;
             current = tmp;
         }
-        return copyHead;
+        return copyOfHead;
     }
 
 
@@ -296,12 +296,12 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return false;
         }
-        ListNode fast = head;
         ListNode slow = head;
-        while (fast != null && fast.next != null) {
-            fast = fast.next.next;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
             slow = slow.next;
-            if (fast == slow) {
+            fast = fast.next.next;
+            if (slow == fast) {
                 return true;
             }
         }

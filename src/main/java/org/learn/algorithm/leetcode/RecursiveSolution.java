@@ -11,6 +11,16 @@ import java.util.*;
 public class RecursiveSolution {
 
 
+    public static void main(String[] args) {
+        RecursiveSolution solution = new RecursiveSolution();
+        int[] nums = new int[]{2, 3, 6, 7};
+//        char[][] matrix = new char[][]{{'X', 'X', 'X', 'X'}, {'X', 'O', 'O', 'X'}, {'X', 'X', 'O', 'X'}, {'X', 'O', 'X', 'X'}};
+        char[][] matrix = new char[][]{{'O', 'O', 'O'}, {'O', 'O', 'O'}, {'O', 'O', 'O'}};
+//        solution.diffWaysToCompute("11");
+
+        solution.addOperators("123", 6);
+    }
+
     /**
      * 22. Generate Parentheses
      *
@@ -38,7 +48,6 @@ public class RecursiveSolution {
             intervalGenerate(result, open, close + 1, n, s + ")");
         }
     }
-
 
     /**
      * 31. Next Permutation
@@ -77,7 +86,6 @@ public class RecursiveSolution {
         nums[j] = val;
     }
 
-
     public void reverseArrays(int[] nums, int start, int end) {
         if (start > end) {
             return;
@@ -87,16 +95,6 @@ public class RecursiveSolution {
             nums[i] = nums[start + end - i];
             nums[start + end - i] = value;
         }
-    }
-
-    public static void main(String[] args) {
-        RecursiveSolution solution = new RecursiveSolution();
-        int[] nums = new int[]{2, 3, 6, 7};
-//        char[][] matrix = new char[][]{{'X', 'X', 'X', 'X'}, {'X', 'O', 'O', 'X'}, {'X', 'X', 'O', 'X'}, {'X', 'O', 'X', 'X'}};
-        char[][] matrix = new char[][]{{'O', 'O', 'O'}, {'O', 'O', 'O'}, {'O', 'O', 'O'}};
-//        solution.diffWaysToCompute("11");
-
-        solution.addOperators("123", 6);
     }
 
     // --组合系列问题-//
@@ -529,9 +527,10 @@ public class RecursiveSolution {
         }
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                if (board[i][j] == '1') {
+                char word = board[i][j];
+                if (word == 'a') {
                     board[i][j] = 'O';
-                } else if (board[i][j] == 'O') {
+                } else if (word == 'O') {
                     board[i][j] = 'X';
                 }
             }
@@ -542,7 +541,7 @@ public class RecursiveSolution {
         if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || board[i][j] != 'O') {
             return;
         }
-        board[i][j] = '1';
+        board[i][j] = 'a';
         intervalSolve(i - 1, j, board);
         intervalSolve(i + 1, j, board);
         intervalSolve(i, j - 1, board);

@@ -15,6 +15,17 @@ public class StringSolution {
 
     // 滑动窗口系列//
 
+    private int longestPalindrome = Integer.MIN_VALUE;
+    private int palindrome = 0;
+
+    public static void main(String[] args) {
+        StringSolution solution = new StringSolution();
+        System.out.println(solution.partition("dde"));
+    }
+
+
+    // 正则表达式//
+
     /**
      * 76. Minimum Window Substring
      *
@@ -57,7 +68,6 @@ public class StringSolution {
         return "";
     }
 
-
     /**
      * 239. Sliding Window Maximum
      *
@@ -91,6 +101,7 @@ public class StringSolution {
         return ans;
     }
 
+    // 重复字符串问题 //
 
     /**
      * 159.Longest Substring with At Most Two Distinct Characters
@@ -128,9 +139,6 @@ public class StringSolution {
         return result;
         // Write your code here
     }
-
-
-    // 正则表达式//
 
     /**
      * 10. Regular Expression Matching
@@ -173,6 +181,8 @@ public class StringSolution {
         return dp[m][n];
     }
 
+    //--回文系列//
+
     /**
      * todo
      * 44. Wildcard Matching
@@ -205,8 +215,6 @@ public class StringSolution {
 
     }
 
-    // 重复字符串问题 //
-
     /**
      * 3. Longest Substring Without Repeating Characters
      *
@@ -232,7 +240,6 @@ public class StringSolution {
         return result;
     }
 
-
     public int lengthOfLongestSubstringII(String s) {
         if (s == null || s.isEmpty()) {
             return 0;
@@ -251,8 +258,6 @@ public class StringSolution {
         }
         return result;
     }
-
-    //--回文系列//
 
     public String longestPalindrome(String s) {
         if (s == null || s.isEmpty()) {
@@ -279,10 +284,6 @@ public class StringSolution {
         }
         return "";
     }
-
-
-    private int longestPalindrome = Integer.MIN_VALUE;
-    private int palindrome = 0;
 
     public String longestPalindromeII(String s) {
         if (s == null || s.isEmpty()) {
@@ -312,7 +313,6 @@ public class StringSolution {
         }
     }
 
-
     /**
      * 131. Palindrome Partitioning
      *
@@ -324,23 +324,40 @@ public class StringSolution {
             return new ArrayList<>();
         }
         List<List<String>> result = new ArrayList<>();
-        intervalPartition(result, new ArrayList<>(), 0, s);
+        intervalPartition(result, new ArrayList<>(), 0, s.toCharArray());
         return result;
     }
 
-    private void intervalPartition(List<List<String>> result, List<String> tmp, int start, String s) {
-        if (start == s.length()) {
+    private void intervalPartition(List<List<String>> result, List<String> tmp, int start, char[] words) {
+        if (start == words.length) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i < s.length(); i++) {
-            if (validPalindrome(s, start, i)) {
-                String substring = s.substring(start, i + 1);
-                tmp.add(substring);
-                intervalPartition(result, tmp, i + 1, s);
+        for (int i = start; i < words.length; i++) {
+            if (validPalindrome(words, start, i)) {
+                StringBuilder t = new StringBuilder();
+                for (int j = start; j <= i; j++) {
+                    t.append(words[j]);
+                }
+                tmp.add(t.toString());
+                intervalPartition(result, tmp, i + 1, words);
                 tmp.remove(tmp.size() - 1);
             }
         }
+    }
+
+    private boolean validPalindrome(char[] words, int i, int j) {
+        if (i > j) {
+            return false;
+        }
+        while (i < j) {
+            if (words[i] != words[j]) {
+                return false;
+            }
+            i++;
+            j--;
+        }
+        return true;
     }
 
     private boolean validPalindrome(String s, int i, int j) {
@@ -356,7 +373,6 @@ public class StringSolution {
         }
         return true;
     }
-
 
     /**
      * todo
@@ -389,7 +405,6 @@ public class StringSolution {
         return cut[m - 1];
     }
 
-
     /**
      * 9. Palindrome Number
      *
@@ -415,7 +430,6 @@ public class StringSolution {
         }
         return true;
     }
-
 
     /**
      * 266
@@ -444,7 +458,6 @@ public class StringSolution {
         }
         return true;
     }
-
 
     /**
      * 267
@@ -513,7 +526,6 @@ public class StringSolution {
         words[end] = tmp;
     }
 
-
     /**
      * todo kmp
      * 214. Shortest Palindrome
@@ -527,12 +539,6 @@ public class StringSolution {
         }
         String reverse = new StringBuilder(s).reverse().toString();
         return "";
-    }
-
-
-    public static void main(String[] args) {
-        StringSolution solution = new StringSolution();
-        solution.generatePalindromes("aabbcc");
     }
 
 
