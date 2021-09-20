@@ -2,6 +2,7 @@ package org.learn.algorithm.nowcode;
 
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Point;
+import org.learn.algorithm.datastructure.TreeLinkNode;
 import org.learn.algorithm.datastructure.TreeNode;
 
 import java.util.*;
@@ -232,6 +233,73 @@ public class OftenSolution {
             head = tmp;
         }
         return prev;
+    }
+
+
+    /**
+     * WC16 词语序列 ii
+     * todo
+     * 使用图 + bfs
+     * http://www.cnblogs.com/ShaneZhang/p/3748494.html
+     *
+     * @param start
+     * @param end
+     * @param dict
+     * @return
+     */
+    public ArrayList<ArrayList<String>> findLadders(String start, String end, ArrayList<String> dict) {
+        return null;
+    }
+
+    /**
+     * todo
+     * WC17 词语序列
+     *
+     * @param start
+     * @param end
+     * @param dict
+     * @return
+     */
+    public int ladderLength(String start, String end, HashSet<String> dict) {
+        return 0;
+    }
+
+    /**
+     * WC19 填充每个节点指向最右节点的next指针 ii
+     *
+     * @param root
+     */
+    public void connectII(TreeLinkNode root) {
+        if (root == null) {
+            return;
+        }
+        TreeLinkNode current = root;
+        while (current != null) {
+            TreeLinkNode prev = null;
+            TreeLinkNode head = null;
+            while (current != null) {
+                if (current.left != null) {
+                    if (head == null) {
+                        head = current.left;
+                        prev = head;
+                    } else {
+                        prev.next = current.left;
+                        prev = prev.next;
+                    }
+                }
+                if (current.right != null) {
+                    if (head == null) {
+                        head = current.right;
+                        prev = head;
+                    } else {
+                        prev.next = current.right;
+                        prev = prev.next;
+                    }
+                }
+                current = current.next;
+            }
+            current = head;
+        }
     }
 
 

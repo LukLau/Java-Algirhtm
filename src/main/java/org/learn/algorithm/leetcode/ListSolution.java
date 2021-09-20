@@ -214,27 +214,23 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode root = new ListNode(0);
-        root.next = head;
-        ListNode slow = root;
-        ListNode fast = root;
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode slow = dummy;
+        ListNode fast = dummy;
         for (int i = 0; i < left - 1; i++) {
             slow = slow.next;
         }
         for (int i = 0; i < right; i++) {
             fast = fast.next;
         }
-        ListNode start = slow.next;
-
+        ListNode node = slow.next;
         ListNode end = fast.next;
-
         fast.next = null;
-
-        slow.next = reverse(start);
-
-        start.next = end;
-
-        return root.next;
+        slow.next = null;
+        slow.next = reverse(node);
+        node.next = end;
+        return dummy.next;
     }
 
     private ListNode reverse(ListNode root) {

@@ -10,6 +10,12 @@ import java.util.*;
  */
 public class FirstPage {
 
+    public static void main(String[] args) {
+        FirstPage page = new FirstPage();
+        List<String> result = page.restoreIpAddresses("010010");
+        System.out.println(result);
+    }
+
     /**
      * 1. Two Sum
      *
@@ -62,7 +68,6 @@ public class FirstPage {
         return root.next;
     }
 
-
     /**
      * 17. Letter Combinations of a Phone Number
      *
@@ -98,7 +103,6 @@ public class FirstPage {
         return deque;
     }
 
-
     /**
      * 8. String to Integer (atoi)
      *
@@ -129,7 +133,6 @@ public class FirstPage {
         }
         return (int) (result * sign);
     }
-
 
     /**
      * 32. Longest Valid Parentheses
@@ -196,7 +199,6 @@ public class FirstPage {
         result = Math.max(result, rightEdge);
         return result;
     }
-
 
     /**
      * 42. Trapping Rain Water
@@ -319,7 +321,6 @@ public class FirstPage {
         return new ArrayList<>(map.values());
     }
 
-
     /**
      * 56. Merge Intervals
      *
@@ -347,7 +348,6 @@ public class FirstPage {
         }
         return linkedList.toArray(new int[][]{});
     }
-
 
     /**
      * 57. Insert Interval
@@ -411,7 +411,6 @@ public class FirstPage {
 
     }
 
-
     /**
      * 75. Sort Colors
      *
@@ -456,7 +455,6 @@ public class FirstPage {
         return head;
     }
 
-
     /**
      * 84. Largest Rectangle in Histogram
      *
@@ -493,22 +491,8 @@ public class FirstPage {
      * @param n
      */
     public void merge(int[] nums1, int m, int[] nums2, int n) {
-        int k = m + n;
-        m--;
-        n--;
-        k--;
-        while (m >= 0 && n >= 0) {
-            if (nums1[m] < nums2[n]) {
-                nums1[k--] = nums2[n--];
-            } else {
-                nums1[k--] = nums1[m--];
-            }
-        }
-        while (n >= 0) {
-            nums1[k--] = nums2[n--];
-        }
+        
     }
-
 
     /**
      * 93. Restore IP Addresses
@@ -521,17 +505,15 @@ public class FirstPage {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        int len = s.length();
-        for (int i = 1; i <= 3 && i <= len - 3; i++) {
-            for (int j = i + 1; j <= i + 3 && j <= len - 2; j++) {
-                for (int k = j + 1; k < k + 3 && k <= len - 1; k++) {
+        for (int i = 1; i < 4 && i < s.length() - 2; i++) {
+            for (int j = i + 1; j < i + 4 && j < s.length() - 1; j++) {
+                for (int k = j + 1; k < j + 4 && k < s.length(); k++) {
                     String a = s.substring(0, i);
                     String b = s.substring(i, j);
                     String c = s.substring(j, k);
                     String d = s.substring(k);
                     if (validIpSeq(a) && validIpSeq(b) && validIpSeq(c) && validIpSeq(d)) {
-                        String tmp = a + "." + b + "." + c + "." + d;
-                        result.add(tmp);
+                        result.add(a + "." + b + "." + c + "." + d);
                     }
                 }
             }
@@ -543,22 +525,11 @@ public class FirstPage {
         if (s.isEmpty()) {
             return false;
         }
-
-        int len = s.length();
-        if (len > 3) {
-            return false;
-        }
         int num = Integer.parseInt(s);
-        if (!(num >= 0 && num <= 255)) {
+        if (num < 0 || num > 255) {
             return false;
         }
-        return len <= 1 || s.charAt(0) != '0';
-    }
-
-    public static void main(String[] args) {
-        FirstPage page = new FirstPage();
-        List<String> result = page.restoreIpAddresses("010010");
-        System.out.println(result);
+        return s.length() < 2 || s.charAt(0) != '0';
     }
 
 

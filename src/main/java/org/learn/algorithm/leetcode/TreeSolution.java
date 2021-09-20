@@ -29,15 +29,18 @@ public class TreeSolution {
     public static void main(String[] args) {
         TreeSolution solution = new TreeSolution();
 
-        ListNode root = new ListNode(30);
+        ListNode root = new ListNode(-1);
 
-        ListNode n1 = new ListNode(20);
+        ListNode n1 = new ListNode(0);
 
         root.next = n1;
 
-        n1.next = new ListNode(40);
+        n1.next = new ListNode(1);
 
-        solution.sortList(root);
+        n1.next.next = new ListNode(2);
+
+
+        solution.sortedListToBST(root);
     }
 
     /**
@@ -199,8 +202,8 @@ public class TreeSolution {
         if (root == null) {
             return new ArrayList<>();
         }
-        Stack<TreeNode> stack = new Stack<>();
         LinkedList<Integer> result = new LinkedList<>();
+        Stack<TreeNode> stack = new Stack<>();
         TreeNode p = root;
         while (!stack.isEmpty() || p != null) {
             if (p != null) {
@@ -213,7 +216,6 @@ public class TreeSolution {
             }
         }
         return result;
-
     }
 
     /**
@@ -429,8 +431,8 @@ public class TreeSolution {
             return true;
         }
         Stack<TreeNode> stack = new Stack<>();
-        TreeNode p = root;
         TreeNode prev = null;
+        TreeNode p = root;
         while (!stack.isEmpty() || p != null) {
             while (p != null) {
                 stack.push(p);
@@ -444,6 +446,23 @@ public class TreeSolution {
             p = p.right;
         }
         return true;
+    }
+
+    public boolean isValidBSTV2(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return intervalValidBST(Integer.MIN_VALUE, root, Integer.MAX_VALUE);
+    }
+
+    private boolean intervalValidBST(int minValue, TreeNode root, int maxValue) {
+        if (root == null) {
+            return true;
+        }
+        if (root.val <= minValue || root.val >= maxValue) {
+            return false;
+        }
+        return intervalValidBST(minValue, root.left, root.val) && intervalValidBST(root.val, root.right, maxValue);
     }
 
     /**
@@ -517,25 +536,26 @@ public class TreeSolution {
      * @return
      */
     public TreeNode sortedListToBST(ListNode head) {
-        if (head == null || head.next == null) {
-            return head == null ? null : new TreeNode(head.val);
+        if (head == null) {
+            return null;
+        }
+        if (head.next == null) {
+            return new TreeNode(head.val);
         }
         ListNode fast = head;
         ListNode slow = head;
-        ListNode prev = slow;
+        ListNode prev = head;
         while (fast != null && fast.next != null) {
-            fast = fast.next.next;
             prev = slow;
             slow = slow.next;
+            fast = fast.next.next;
         }
-        TreeNode root = new TreeNode(slow.val);
-
         prev.next = null;
-
+        TreeNode root = new TreeNode(slow.val);
         root.left = sortedListToBST(head);
-
-        root.right = sortedListToBST(slow.next);
-
+        ListNode next = slow.next;
+        slow.next = null;
+        root.right = sortedListToBST(next);
         return root;
     }
 
@@ -572,7 +592,6 @@ public class TreeSolution {
         return intervalSymmetric(root.left, root.right) && intervalSymmetric(root.right, root.left);
     }
 
-    // --构造二叉树 //
 
     private boolean intervalSymmetric(TreeNode left, TreeNode right) {
         if (left == null && right == null) {
@@ -586,6 +605,9 @@ public class TreeSolution {
         }
         return intervalSymmetric(left.left, right.right) && intervalSymmetric(left.right, right.left);
     }
+
+    // --构造二叉树 //
+
 
     /**
      * 105. Construct Binary Tree from Preorder and Inorder Traversal
@@ -605,8 +627,8 @@ public class TreeSolution {
         if (preStart >= preorder.length || inStart > inEnd) {
             return null;
         }
-        TreeNode root = new TreeNode(preorder[preStart]);
         int index = 0;
+        TreeNode root = new TreeNode(preorder[preStart]);
         for (int i = inStart; i <= inEnd; i++) {
             if (inorder[i] == root.val) {
                 index = i;
@@ -626,14 +648,12 @@ public class TreeSolution {
      * @return
      */
     public TreeNode buildTreeII(int[] inorder, int[] postorder) {
-        if (inorder == null || postorder == null) {
+        if (inorder == null || inorder.length == 0 || postorder == null || postorder.length == 0) {
             return null;
         }
         return intervalBuildTree(0, inorder.length - 1, inorder, 0, postorder.length - 1, postorder);
     }
 
-
-    // 公共祖先lca
 
     private TreeNode intervalBuildTree(int inStart, int inEnd, int[] inorder, int postStart, int postEnd, int[] postorder) {
         if (inStart > inEnd || postStart > postEnd) {
@@ -651,6 +671,10 @@ public class TreeSolution {
         root.right = intervalBuildTree(index + 1, inEnd, inorder, postStart + index - inStart, postEnd - 1, postorder);
         return root;
     }
+
+
+    // 公共祖先lca
+
 
     /**
      * 235. Lowest Common Ancestor of a Binary Search Tree
@@ -756,12 +780,8 @@ public class TreeSolution {
         }
         if (root.left == null && root.right == null && root.val == targetSum) {
             return true;
-        } else {
-            if (root.left != null && hasPathSum(root.left, targetSum - root.val)) {
-                return true;
-            }
-            return root.right != null && hasPathSum(root.right, targetSum - root.val);
         }
+        return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val);
     }
 
     /**
@@ -903,8 +923,7 @@ public class TreeSolution {
         int right = intervalPathSum(root.right);
         left = Math.max(left, 0);
         right = Math.max(right, 0);
-        int val = left + right + root.val;
-        maxPathSum = Math.max(val, maxPathSum);
+        maxPathSum = Math.max(maxPathSum, root.val + left + right);
         return Math.max(left, right) + root.val;
     }
 
