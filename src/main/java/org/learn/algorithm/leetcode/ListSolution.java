@@ -145,8 +145,8 @@ public class ListSolution {
      * @return
      */
     public ListNode rotateRight(ListNode head, int k) {
-        if (head == null) {
-            return null;
+        if (head == null || head.next == null) {
+            return head;
         }
         ListNode fast = head;
         int count = 1;
@@ -155,8 +155,8 @@ public class ListSolution {
             count++;
         }
         fast.next = head;
-        ListNode slow = head;
         k %= count;
+        ListNode slow = head;
         if (k != 0) {
             for (int i = 0; i < count - k; i++) {
                 slow = slow.next;
@@ -179,26 +179,24 @@ public class ListSolution {
         if (head == null) {
             return null;
         }
-        ListNode root1 = new ListNode(0);
-        ListNode root2 = new ListNode(0);
-        ListNode dummy1 = root1;
-        ListNode dummy2 = root2;
+        ListNode d1 = new ListNode(0);
+        ListNode d2 = new ListNode(0);
+        ListNode small = d1;
+        ListNode big = d2;
         while (head != null) {
             if (head.val < x) {
-                dummy1.next = head;
-                dummy1 = dummy1.next;
+                small.next = head;
+                small = small.next;
             } else {
-                dummy2.next = head;
-                dummy2 = dummy2.next;
+                big.next = head;
+                big = big.next;
             }
             head = head.next;
         }
-        dummy1.next = root2.next;
-
-        dummy2.next = null;
-
-        root2.next = null;
-        return root1.next;
+        small.next = d2.next;
+        d2.next = null;
+        big.next = null;
+        return d1.next;
     }
 
 

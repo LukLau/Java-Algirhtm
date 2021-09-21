@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+
 import java.util.*;
 
 /**
@@ -51,23 +52,25 @@ public class MathSolution {
         if (dividend == Integer.MIN_VALUE && divisor == -1) {
             return Integer.MAX_VALUE;
         }
-        int sign = ((dividend < 0 && divisor < 0) || (dividend > 0 && divisor > 0)) ? 1 : -1;
+        if (divisor == 0) {
+            return Integer.MAX_VALUE;
+        }
+        long result = 0;
         long dvd = Math.abs((long) dividend);
         long dvs = Math.abs((long) divisor);
-
-        int result = 0;
-
+        int sign = ((dividend > 0 && divisor > 0) || (dividend < 0 && divisor < 0)) ? 1 : -1;
         while (dvd >= dvs) {
-            long multi = 1;
             long tmp = dvs;
-            while (dvd >= tmp << 1) {
+            long multi = 1;
+            while (dvd >= (tmp << 1)) {
                 tmp <<= 1;
                 multi <<= 1;
             }
             dvd -= tmp;
             result += multi;
         }
-        return result * sign;
+        return (int) (result * sign);
+
     }
 
 
@@ -212,11 +215,11 @@ public class MathSolution {
      */
     public int mySqrt(int x) {
         double precision = 0.00001;
-        int result = x;
+        double result = x;
         while (result * result - x > precision) {
             result = (result + x / result) / 2;
         }
-        return result;
+        return (int) result;
     }
 
 
@@ -804,6 +807,47 @@ public class MathSolution {
     public int bulbSwitch(int n) {
         // Write your code here
         return -1;
+    }
+
+
+    /**
+     * WC61 删除元素
+     *
+     * @param A
+     * @param elem
+     * @return
+     */
+    public int removeElement(int[] A, int elem) {
+        if (A == null || A.length == 0) {
+            return 0;
+        }
+        int index = 0;
+        for (int i = 0; i < A.length; i++) {
+            if (A[i] != elem) {
+                A[index++] = A[i];
+            }
+        }
+        return index;
+    }
+
+
+    /**
+     * WC62 有序数组删除重复数字
+     *
+     * @param A
+     * @return
+     */
+    public int removeDuplicates(int[] A) {
+        if (A == null || A.length == 0) {
+            return 0;
+        }
+        int index = 1;
+        for (int i = 1; i < A.length; i++) {
+            if (A[i] != A[i - 1]) {
+                A[index++] = A[i];
+            }
+        }
+        return index;
     }
 
 

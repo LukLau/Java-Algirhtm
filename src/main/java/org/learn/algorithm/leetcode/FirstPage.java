@@ -391,24 +391,24 @@ public class FirstPage {
             return "/";
         }
         String[] words = path.split("/");
-        LinkedList<String> deque = new LinkedList<>();
+        LinkedList<String> list = new LinkedList<>();
         for (String word : words) {
-            if (word.isEmpty() || ".".endsWith(word)) {
+            if ("".equals(word) || ".".equals(word)) {
                 continue;
-            }
-            if ("..".equals(word)) {
-                deque.pollLast();
-            } else {
-                deque.offer(word);
+            } else if ("..".equals(word) && !list.isEmpty()) {
+                list.pollLast();
+            } else if (!"..".equals(word)) {
+                list.add(word);
             }
         }
-
-        String tmp = "";
-        for (String s : deque) {
-            tmp = tmp + "/" + s;
+        if (list.isEmpty()) {
+            return "/";
         }
-        return tmp.isEmpty() ? "/" : tmp;
-
+        StringBuilder result = new StringBuilder();
+        for (String word : list) {
+            result.append("/").append(word);
+        }
+        return result.toString();
     }
 
     /**
@@ -420,18 +420,22 @@ public class FirstPage {
         if (nums == null || nums.length == 0) {
             return;
         }
+        int red = 0;
         int blue = nums.length - 1;
-        int zero = 0;
-        int index = 0;
-        while (index < nums.length) {
-            while (index < blue && nums[index] == 2) {
-                swapValue(nums, index, blue--);
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] == 2 && i < blue) {
+                swap(nums, i, blue--);
             }
-            while (index > zero && nums[index] == 0) {
-                swapValue(nums, index, zero++);
+            while (nums[i] == 0 && i > red) {
+                swap(nums, i, red++);
             }
-            index++;
         }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int val = nums[i];
+        nums[i] = nums[j];
+        nums[j] = val;
     }
 
     /**
@@ -445,15 +449,34 @@ public class FirstPage {
             return head;
         }
         if (head.val == head.next.val) {
-            ListNode node = head.next.next;
-            while (node != null && node.val == head.val) {
-                node = node.next;
+            ListNode next = head.next;
+            while (next != null && next.val == head.val) {
+                next = next.next;
             }
-            return deleteDuplicates(node);
+            return deleteDuplicates(next);
         }
         head.next = deleteDuplicates(head.next);
         return head;
     }
+
+    /**
+     * WC43 删除有序链表中重复的元素-I
+     *
+     * @param head ListNode类
+     * @return ListNode类
+     */
+    public ListNode deleteDuplicatesII(ListNode head) {
+        // write code here
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            return deleteDuplicates(head.next);
+        }
+        head.next = deleteDuplicates(head.next);
+        return head;
+    }
+
 
     /**
      * 84. Largest Rectangle in Histogram
@@ -491,7 +514,20 @@ public class FirstPage {
      * @param n
      */
     public void merge(int[] nums1, int m, int[] nums2, int n) {
-        
+        int k = m + n;
+        m--;
+        n--;
+        k--;
+        while (m >= 0 && n >= 0) {
+            if (nums1[m] > nums2[n]) {
+                nums1[k--] = nums1[m--];
+            } else {
+                nums1[k--] = nums2[n--];
+            }
+        }
+        while (n >= 0) {
+            nums1[k--] = nums2[n--];
+        }
     }
 
     /**

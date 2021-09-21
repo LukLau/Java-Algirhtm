@@ -69,7 +69,6 @@ public class DynamicSolution {
         for (char[] queen : queens) {
             Arrays.fill(queen, '.');
         }
-
         intervalNQueens(result, 0, n, queens);
         return result;
     }
@@ -129,8 +128,7 @@ public class DynamicSolution {
     private int intervalTotalQueens(int[] dp, int row, int n) {
         int count = 0;
         if (row == n) {
-            count++;
-            return count;
+            return 1;
         }
         for (int i = 0; i < n; i++) {
             if (isValidTotalQueens(dp, i, row, n)) {
@@ -142,11 +140,9 @@ public class DynamicSolution {
         return count;
     }
 
-    // --编辑距离问题 //
-
     private boolean isValidTotalQueens(int[] dp, int col, int row, int n) {
         for (int i = row - 1; i >= 0; i--) {
-            if (dp[i] == col || Math.abs(dp[i] - col) == Math.abs(i - row)) {
+            if (dp[i] == col || Math.abs(i - row) == Math.abs(dp[i] - col)) {
                 return false;
             }
         }
@@ -155,6 +151,8 @@ public class DynamicSolution {
 
 
     // ----- //
+
+    // --编辑距离问题 //
 
     /**
      * 72. Edit Distance

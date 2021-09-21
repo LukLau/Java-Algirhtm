@@ -749,26 +749,6 @@ public class InterviewOffer {
     }
 
     /**
-     * @param head ListNode类
-     * @return ListNode类
-     */
-    public ListNode deleteDuplicates(ListNode head) {
-        // write code here
-        if (head == null || head.next == null) {
-            return head;
-        }
-        if (head.val == head.next.val) {
-            ListNode tmp = head.next.next;
-            while (tmp != null && tmp.val == head.val) {
-                tmp = tmp.next;
-            }
-            return deleteDuplicates(tmp);
-        }
-        head.next = deleteDuplicates(head.next);
-        return head;
-    }
-
-    /**
      * todo
      * 树的直径
      *

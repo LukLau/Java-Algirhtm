@@ -37,27 +37,26 @@ public class StringSolution {
         if (s == null || t == null) {
             return "";
         }
-        int[] hash = new int[256];
+        int m = s.length();
         int n = t.length();
-
+        int[] hash = new int[256];
         for (int i = 0; i < n; i++) {
             hash[t.charAt(i)]++;
         }
-        int begin = 0;
-        int head = 0;
         int result = Integer.MAX_VALUE;
-        int end = 0;
-        int m = s.length();
-        while (end < m) {
-            if (hash[s.charAt(end++)]-- > 0) {
+        int head = 0;
+        int beginIndex = 0;
+        int endIndex = 0;
+        while (endIndex < m) {
+            if (hash[s.charAt(endIndex++)]-- > 0) {
                 n--;
             }
             while (n == 0) {
-                if (end - begin < result) {
-                    result = end - begin;
-                    head = begin;
+                if (endIndex - beginIndex < result) {
+                    head = beginIndex;
+                    result = endIndex - beginIndex;
                 }
-                if (hash[s.charAt(begin++)]++ == 0) {
+                if (hash[s.charAt(beginIndex++)]++ == 0) {
                     n++;
                 }
             }

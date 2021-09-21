@@ -13,6 +13,14 @@ import java.util.*;
  */
 public class OftenSolution {
 
+    public static void main(String[] args) {
+        OftenSolution solution = new OftenSolution();
+        ArrayList<String[]> strings = solution.solveNQueens(4);
+        for (String[] word : strings) {
+            System.out.println(Arrays.toString(word));
+        }
+    }
+
 
     /**
      * WC1 二叉树的最小深度
@@ -300,6 +308,86 @@ public class OftenSolution {
             }
             current = head;
         }
+    }
+
+    /**
+     * WC51 n-皇后
+     *
+     * @param n
+     * @return
+     */
+    public ArrayList<String[]> solveNQueens(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        char[][] matrix = new char[n][n];
+        for (char[] row : matrix) {
+            Arrays.fill(row, '.');
+        }
+        ArrayList<String[]> result = new ArrayList<>();
+        intervalSolveNQueens(result, matrix, 0, n);
+        return result;
+    }
+
+    private void intervalSolveNQueens(ArrayList<String[]> result, char[][] matrix, int row, int n) {
+        if (row == n) {
+            String[] tmp = new String[matrix.length];
+            for (int i = 0; i < matrix.length; i++) {
+                tmp[i] = String.valueOf(matrix[i]);
+            }
+            result.add(tmp);
+            return;
+        }
+        for (int i = 0; i < n; i++) {
+            if (validNQueens(matrix, i, row, n)) {
+                matrix[row][i] = 'Q';
+                intervalSolveNQueens(result, matrix, row + 1, n);
+                matrix[row][i] = '.';
+            }
+        }
+    }
+
+    private boolean validNQueens(char[][] matrix, int column, int row, int n) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (matrix[i][column] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = column - 1; i >= 0 && j >= 0; i--, j--) {
+            if (matrix[i][j] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = column + 1; i >= 0 && j < n; i--, j++) {
+            if (matrix[i][j] == 'Q') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * WC57 搜索插入位置
+     *
+     * @param A      int整型一维数组
+     * @param target int整型
+     * @return int整型
+     */
+    public int searchInsert(int[] A, int target) {
+        // write code here
+        int left = 0;
+        int right = A.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (A[mid] == target) {
+                return mid;
+            } else if (A[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
     }
 
 

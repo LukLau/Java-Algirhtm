@@ -429,7 +429,26 @@ public class NormalSolution {
      */
     public ListNode reverseKGroup(ListNode head, int k) {
         // write code here
-        return null;
+        if (head == null || head.next == null) {
+            return head;
+        }
+        int count = 0;
+        ListNode fast = head;
+        while (fast != null && count != k) {
+            fast = fast.next;
+            count++;
+        }
+        if (count == k) {
+            ListNode reverseKGroup = reverseKGroup(fast, k);
+            while (count-- > 0) {
+                ListNode tmp = head.next;
+                head.next = reverseKGroup;
+                reverseKGroup = head;
+                head = tmp;
+            }
+            head = reverseKGroup;
+        }
+        return head;
     }
 
 
