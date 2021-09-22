@@ -20,7 +20,7 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        System.out.println(solution.partition("dde"));
+        solution.isPalindrome(1112);
     }
 
 
@@ -411,23 +411,15 @@ public class StringSolution {
      * @return
      */
     public boolean isPalindrome(int x) {
-        if (x <= 0) {
-            return x == 0;
+        if (x < 0) {
+            return false;
         }
-        String word = String.valueOf(x);
-
-        int start = 0;
-
-        int end = word.length() - 1;
-
-        while (start < end) {
-            if (word.charAt(start) != word.charAt(end)) {
-                return false;
-            }
-            start++;
-            end--;
+        int result = 0;
+        while (x > result) {
+            result = result * 10 + x % 10;
+            x /= 10;
         }
-        return true;
+        return result == x || result / 10 == x;
     }
 
     /**

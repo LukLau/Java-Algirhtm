@@ -13,6 +13,12 @@ import java.util.PriorityQueue;
  * @date 2021/4/7
  */
 public class ListSolution {
+    public static void main(String[] args) {
+        ListSolution solution = new ListSolution();
+        ListNode root = new ListNode(1);
+        root.next = new ListNode(2);
+        solution.removeNthFromEnd(root, 2);
+    }
 
 
     // 链表交换问题//
@@ -25,24 +31,23 @@ public class ListSolution {
      * @return
      */
     public ListNode removeNthFromEnd(ListNode head, int n) {
-        if (head == null || n <= 0) {
+        if (head == null) {
             return null;
         }
         ListNode current = head;
         int count = 1;
         while (current.next != null) {
-            current = current.next;
             count++;
+            current = current.next;
         }
-        ListNode root = new ListNode(0);
-        root.next = head;
-        ListNode dummy = root;
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode fast = dummy;
         for (int i = 0; i < count - n; i++) {
-            dummy = dummy.next;
+            fast = fast.next;
         }
-        dummy.next = dummy.next.next;
-
-        return root.next;
+        fast.next = fast.next.next;
+        return dummy.next;
     }
 
 
@@ -83,23 +88,21 @@ public class ListSolution {
         if (lists == null || lists.length == 0) {
             return null;
         }
-        PriorityQueue<ListNode> queue = new PriorityQueue<>(lists.length, Comparator.comparingInt(o -> o.val));
+        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
         for (ListNode node : lists) {
             if (node != null) {
-                queue.offer(node);
+                priorityQueue.offer(node);
             }
         }
         ListNode root = new ListNode(0);
         ListNode dummy = root;
-        while (!queue.isEmpty()) {
-            ListNode node = queue.poll();
-            dummy.next = node;
-            dummy = dummy.next;
-
-            if (node.next != null) {
-                queue.offer(node.next);
+        while (!priorityQueue.isEmpty()) {
+            ListNode poll = priorityQueue.poll();
+            dummy.next = poll;
+            if (poll.next != null) {
+                priorityQueue.offer(poll.next);
             }
-
+            dummy = dummy.next;
         }
         return root.next;
     }
@@ -115,25 +118,19 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode root = new ListNode(0);
-        root.next = head;
-        ListNode dummy = root;
-        while (dummy.next != null && dummy.next.next != null) {
-
-            ListNode slow = dummy.next;
-
-            ListNode fast = dummy.next.next;
-
-            dummy.next = fast;
-
-            slow.next = fast.next;
-
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode root = dummy;
+        while (root.next != null && root.next.next != null) {
+            ListNode slow = root.next;
+            ListNode fast = root.next.next;
+            root.next = fast;
+            ListNode next = fast.next;
             fast.next = slow;
-
-            dummy = slow;
-
+            slow.next = next;
+            root = root.next.next;
         }
-        return root.next;
+        return dummy.next;
     }
 
 
