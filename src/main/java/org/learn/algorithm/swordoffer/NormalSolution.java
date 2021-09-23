@@ -17,23 +17,6 @@ public class NormalSolution {
         solution.topKstrings(para, 2);
     }
 
-    public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
-        if (input == null || input.length == 0) {
-            return new ArrayList<>();
-        }
-        if (k < 0 || k > input.length) {
-            return new ArrayList<>();
-        }
-        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Comparator.reverseOrder());
-        for (int num : input) {
-            priorityQueue.offer(num);
-            if (priorityQueue.size() > k) {
-                priorityQueue.poll();
-            }
-        }
-        return new ArrayList<>(priorityQueue);
-    }
-
 
     public ArrayList<Integer> GetLeastNumbers_SolutionV2(int[] input, int k) {
         if (input == null || input.length == 0 || k < 0 || k > input.length) {

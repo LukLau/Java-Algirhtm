@@ -5,9 +5,7 @@ import org.learn.algorithm.datastructure.RandomListNode;
 import org.learn.algorithm.datastructure.TreeLinkNode;
 import org.learn.algorithm.datastructure.TreeNode;
 
-import javax.swing.plaf.SliderUI;
 import java.util.*;
-import java.util.concurrent.*;
 
 /**
  * @author luk
@@ -23,6 +21,13 @@ public class SwordOffer {
 
     }
 
+    /**
+     * WC80 二维数组中的查找
+     *
+     * @param target
+     * @param array
+     * @return
+     */
     public boolean Find(int target, int[][] array) {
         if (array == null || array.length == 0) {
             return false;
@@ -369,21 +374,6 @@ public class SwordOffer {
         return 2 * count > array.length ? candidate : 0;
     }
 
-    public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
-        if (input == null || input.length == 0 || k <= 0 || k > input.length) {
-            return new ArrayList<>();
-        }
-        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Comparator.reverseOrder());
-        for (int tmp : input) {
-            priorityQueue.offer(tmp);
-            if (priorityQueue.size() > k) {
-                priorityQueue.poll();
-            }
-        }
-        return new ArrayList<>(priorityQueue);
-    }
-
-
     public int GetNumberOfK(int[] array, int k) {
         if (array == null || array.length == 0) {
             return 0;
@@ -473,36 +463,38 @@ public class SwordOffer {
         return builder.toString();
     }
 
-
+    /**
+     * WC76 扑克牌顺子
+     *
+     * @param numbers
+     * @return
+     */
     public boolean IsContinuous(int[] numbers) {
         if (numbers == null || numbers.length == 0) {
             return false;
         }
-        Arrays.sort(numbers);
-        int max = 0;
+        int max = -1;
         int min = 14;
-        int zeroCount = 0;
-        for (int i = 0; i < numbers.length; i++) {
-            int val = numbers[i];
-            if (val == 0) {
-                zeroCount++;
+        int flag = 0;
+        for (int number : numbers) {
+            if (number == 0) {
                 continue;
             }
-
-            if (i > 0 && val == numbers[i - 1]) {
+            if (((flag >> number) & 1) != 0) {
                 return false;
             }
-            if (val > max) {
-                max = val;
+            if (max < number) {
+                max = number;
             }
-            if (val < min) {
-                min = val;
+            if (number < min) {
+                min = number;
             }
+            if (max - min >= 5) {
+                return false;
+            }
+            flag |= 1 << number;
         }
-        if (zeroCount >= 4) {
-            return true;
-        }
-        return max - min >= 5;
+        return true;
     }
 
     public int LastRemaining_Solution(int n, int m) {
@@ -522,7 +514,7 @@ public class SwordOffer {
 
     public int Sum_Solution(int n) {
         int sum = n;
-        boolean format = sum > 0 && (sum += Sum_Solution(n - 1)) > 0;
+        boolean valid = sum > 0 && (sum += Sum_Solution(n - 1)) > 0;
         return sum;
     }
 

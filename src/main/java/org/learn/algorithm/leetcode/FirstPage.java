@@ -54,13 +54,13 @@ public class FirstPage {
         int carry = 0;
         ListNode root = new ListNode(0);
         ListNode dummy = root;
+
         while (l1 != null || l2 != null || carry != 0) {
             int val = (l1 == null ? 0 : l1.val) + (l2 == null ? 0 : l2.val) + carry;
-
-            dummy.next = new ListNode(val % 10);
-
+            ListNode node = new ListNode(val % 10);
             carry = val / 10;
 
+            dummy.next = node;
             dummy = dummy.next;
             l1 = l1 == null ? null : l1.next;
             l2 = l2 == null ? null : l2.next;

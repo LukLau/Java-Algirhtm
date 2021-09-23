@@ -391,4 +391,41 @@ public class OftenSolution {
     }
 
 
+    /**
+     * WC79 斐波那契数列
+     *
+     * @param n
+     * @return
+     */
+    public int Fibonacci(int n) {
+        if (n <= 1) {
+            return n;
+        }
+        if (n == 2) {
+            return 1;
+        }
+        int sum = 0;
+        int tmp1 = 1;
+        int tmp2 = 1;
+        for (int i = 3; i <= n; i++) {
+            sum = tmp1 + tmp2;
+            tmp1 = tmp2;
+            tmp2 = sum;
+        }
+        return sum;
+    }
+
+    /**
+     * WC85 跳台阶
+     *
+     * @param target
+     * @return
+     */
+    public int jumpFloorII(int target) {
+        if (target <= 2) {
+            return target;
+        }
+        return 2 * jumpFloorII(target - 1);
+    }
+
 }

@@ -339,13 +339,17 @@ public class InterviewOffer {
      */
     public int atoi(String str) {
         // write code here
-        if (str == null || str.isEmpty()) {
+        if (str == null) {
             return 0;
         }
         str = str.trim();
-        char[] words = str.toCharArray();
-        int sign = 1;
+        if (str.isEmpty()) {
+            return 0;
+        }
+
         int index = 0;
+        int sign = 1;
+        char[] words = str.toCharArray();
         if (words[index] == '+' || words[index] == '-') {
             sign = words[index] == '+' ? 1 : -1;
             index++;
@@ -353,7 +357,6 @@ public class InterviewOffer {
         long result = 0;
         while (index < words.length && Character.isDigit(words[index])) {
             result = result * 10 + Character.getNumericValue(words[index]);
-
             if (result > Integer.MAX_VALUE) {
                 return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
             }
@@ -1070,23 +1073,7 @@ public class InterviewOffer {
         return result;
     }
 
-
-    public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
-        if (input == null || input.length == 0) {
-            return new ArrayList<>();
-        }
-        if (k == 0 || k > input.length) {
-            return new ArrayList<>();
-        }
-        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(k, Comparator.reverseOrder());
-        for (int num : input) {
-            priorityQueue.offer(num);
-            if (priorityQueue.size() > k) {
-                priorityQueue.poll();
-            }
-        }
-        return new ArrayList<>(priorityQueue);
-    }
+    GetLeastNumbers_Solution
 
     /**
      * @param numbers int整型一维数组
