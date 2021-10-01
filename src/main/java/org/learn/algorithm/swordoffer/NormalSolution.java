@@ -13,8 +13,37 @@ public class NormalSolution {
 
     public static void main(String[] args) {
         NormalSolution solution = new NormalSolution();
-        String[] para = new String[]{"a", "b", "c", "b"};
-        solution.topKstrings(para, 2);
+        int[] param = new int[]{4, 5, 1, 6, 2, 7, 3, 8};
+        solution.GetLeastNumbers_Solution(param, 4);
+    }
+
+
+    /**
+     * WC87 最小的K个数
+     *
+     * @param input
+     * @param k
+     * @return
+     */
+    public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
+        if (input == null || input.length == 0 || k <= 0 || k > input.length) {
+            return new ArrayList<>();
+        }
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2.compareTo(o1);
+            }
+        });
+        for (int num : input) {
+            if (priorityQueue.size() == k && priorityQueue.peek() > num) {
+                priorityQueue.poll();
+                priorityQueue.offer(num);
+            } else if (priorityQueue.size() < k) {
+                priorityQueue.offer(num);
+            }
+        }
+        return new ArrayList<>(priorityQueue);
     }
 
 

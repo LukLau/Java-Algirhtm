@@ -17,7 +17,8 @@ public class SwordOffer {
 
         SwordOffer offer = new SwordOffer();
 
-        int[] nums = new int[]{1, 3, 0, 5, 0};
+
+        offer.GetUglyNumber_Solution(7);
 
     }
 
@@ -116,6 +117,9 @@ public class SwordOffer {
         int left = 0;
         int right = array.length - 1;
         while (left < right) {
+            if (array[left] == array[right]) {
+                right--;
+            }
             int mid = left + (right - left) / 2;
             if (array[mid] > array[right]) {
                 left = mid + 1;
@@ -127,16 +131,22 @@ public class SwordOffer {
     }
 
 
+    /**
+     * WC109 栈的压入、弹出序列
+     *
+     * @param pushA
+     * @param popA
+     * @return
+     */
     public boolean IsPopOrder(int[] pushA, int[] popA) {
         if (pushA == null || popA == null) {
             return false;
         }
-
         Stack<Integer> stack = new Stack<>();
         int j = 0;
         for (int i = 0; i < pushA.length; i++) {
             stack.push(i);
-            while (!stack.isEmpty() && pushA[stack.peek()] == popA[j]) {
+            while (!stack.isEmpty() && popA[j] == pushA[stack.peek()]) {
                 stack.pop();
                 j++;
             }
@@ -197,30 +207,36 @@ public class SwordOffer {
         return intervalVerify(sequence, start, leftIndex - 1) && intervalVerify(sequence, leftIndex, end - 1);
     }
 
+    /**
+     * WC97 二叉树中和为某一值的路径
+     *
+     * @param root
+     * @param target
+     * @return
+     */
     public ArrayList<ArrayList<Integer>> FindPath(TreeNode root, int target) {
         if (root == null) {
             return new ArrayList<>();
         }
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-        intervalPath(result, new ArrayList<>(), root, target);
+        intervalFindPath(result, new ArrayList<>(), root, target);
         return result;
     }
 
-    private void intervalPath(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, TreeNode root, int target) {
+    private void intervalFindPath(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, TreeNode root, int target) {
         tmp.add(root.val);
         if (root.left == null && root.right == null && root.val == target) {
             result.add(new ArrayList<>(tmp));
         } else {
             if (root.left != null) {
-                intervalPath(result, tmp, root.left, target - root.val);
+                intervalFindPath(result, tmp, root.left, target - root.val);
             }
             if (root.right != null) {
-                intervalPath(result, tmp, root.right, target - root.val);
+                intervalFindPath(result, tmp, root.right, target - root.val);
             }
         }
         tmp.remove(tmp.size() - 1);
     }
-
 
     public RandomListNode Clone(RandomListNode pHead) {
         if (pHead == null) {
@@ -290,26 +306,13 @@ public class SwordOffer {
             return new ArrayList<>();
         }
         char[] words = str.toCharArray();
-        Arrays.sort(words);
-        ArrayList<String> result = new ArrayList<>();
-        intervalPermutation(result, 0, words);
-        result.sort(String::compareTo);
-        return result;
-    }
 
-    private void intervalPermutation(ArrayList<String> result, int start, char[] words) {
-        if (start == words.length) {
-            result.add(String.valueOf(words));
-            return;
-        }
-        for (int i = start; i < words.length; i++) {
-            if (i > start && words[i] == words[start]) {
-                continue;
-            }
-            swapWord(words, i, start);
-            intervalPermutation(result, start + 1, words);
-            swapWord(words, i, start);
-        }
+        Arrays.sort(words);
+
+        ArrayList<String> result = new ArrayList<>();
+
+//        intervalPermutation(result, 0, words);
+        return result;
     }
 
     private void swapWord(char[] words, int i, int j) {
@@ -367,11 +370,11 @@ public class SwordOffer {
         }
         count = 0;
         for (int num : array) {
-            if (candidate == num) {
+            if (num == candidate) {
                 count++;
             }
         }
-        return 2 * count > array.length ? candidate : 0;
+        return 2 * count >= array.length ? candidate : -1;
     }
 
     public int GetNumberOfK(int[] array, int k) {
@@ -380,6 +383,7 @@ public class SwordOffer {
         }
         int left = 0;
         int right = array.length - 1;
+        int firstIndex = -1;
         while (left < right) {
             int mid = left + (right - left) / 2;
             if (array[mid] < k) {
@@ -391,7 +395,7 @@ public class SwordOffer {
         if (array[left] != k) {
             return 0;
         }
-        int firstIndex = left;
+        firstIndex = left;
         right = array.length - 1;
         while (left < right) {
             int mid = left + (right - left) / 2 + 1;
@@ -403,7 +407,6 @@ public class SwordOffer {
         }
         return left - firstIndex + 1;
     }
-
 
     /**
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
@@ -440,28 +443,35 @@ public class SwordOffer {
 
 
     public String LeftRotateString(String str, int n) {
-        int len = str.length();
-        if (len < n) {
+        if (str == null || str.isEmpty()) {
             return "";
         }
+        int len = str.length();
         str += str;
         return str.substring(n, n + len);
     }
 
+    /**
+     * WC106 翻转单词序列
+     *
+     * @param str
+     * @return
+     */
     public String ReverseSentence(String str) {
         if (str == null || str.isEmpty()) {
             return "";
         }
         String[] words = str.split(" ");
         StringBuilder builder = new StringBuilder();
-        for (int i = words.length - 1; i >= 0; i--) {
-            builder.append(words[i]);
-            if (i != 0) {
+        for (int i = 0; i < words.length; i++) {
+            builder.append(new StringBuilder(words[i]).reverse());
+            if (i != words.length - 1) {
                 builder.append(" ");
             }
         }
-        return builder.toString();
+        return builder.reverse().toString();
     }
+
 
     /**
      * WC76 扑克牌顺子
@@ -497,6 +507,13 @@ public class SwordOffer {
         return true;
     }
 
+    /**
+     * WC88 孩子们的游戏(圆圈中最后剩下的数)
+     *
+     * @param n
+     * @param m
+     * @return
+     */
     public int LastRemaining_Solution(int n, int m) {
         List<Integer> result = new ArrayList<>();
         for (int i = 0; i < n; i++) {
@@ -511,6 +528,7 @@ public class SwordOffer {
         }
         return result.isEmpty() ? -1 : result.get(0);
     }
+
 
     public int Sum_Solution(int n) {
         int sum = n;
@@ -542,17 +560,16 @@ public class SwordOffer {
         if (str.isEmpty()) {
             return 0;
         }
-        char[] words = str.toCharArray();
-        int sign = 1;
         int index = 0;
-        if (words[index] == '+' || words[index] == '-') {
-            sign = words[index] == '+' ? 1 : -1;
-            index++;
+        int sign = 1;
+        char[] words = str.toCharArray();
+        if (words[0] == '-' || words[0] == '+') {
+            sign = words[0] == '+' ? 1 : -1;
+            index = 1;
         }
         long result = 0;
         while (index < words.length && Character.isDigit(words[index])) {
             result = result * 10 + Character.getNumericValue(words[index]);
-
             if (result > Integer.MAX_VALUE) {
                 return 0;
             }
@@ -566,11 +583,10 @@ public class SwordOffer {
 
     public int[] multiply(int[] A) {
         if (A == null || A.length == 0) {
-            return A;
+            return new int[]{};
         }
-        int len = A.length;
+        int[] result = new int[A.length];
         int base = 1;
-        int[] result = new int[len];
         for (int i = 0; i < A.length; i++) {
             result[i] = base;
             base *= A[i];
@@ -635,17 +651,16 @@ public class SwordOffer {
         if (pHead == null || pHead.next == null) {
             return null;
         }
-        ListNode fast = pHead;
         ListNode slow = pHead;
+        ListNode fast = pHead;
         while (fast.next != null && fast.next.next != null) {
-            fast = fast.next.next;
+            fast = fast.next.next.next;
             slow = slow.next;
-            if (slow == fast) {
+            if (fast == slow) {
                 fast = pHead;
-                while (slow != fast) {
+                while (fast != slow) {
                     fast = fast.next;
                     slow = slow.next;
-                    ;
                 }
                 return slow;
             }
@@ -658,7 +673,7 @@ public class SwordOffer {
             return pHead;
         }
         if (pHead.val == pHead.next.val) {
-            ListNode current = pHead.next.next;
+            ListNode current = pHead.next;
             while (current != null && current.val == pHead.val) {
                 current = current.next;
             }
@@ -669,22 +684,6 @@ public class SwordOffer {
     }
 
     public TreeLinkNode GetNext(TreeLinkNode pNode) {
-        if (pNode == null) {
-            return null;
-        }
-        TreeLinkNode right = pNode.right;
-        if (right != null) {
-            while (right.left != null) {
-                right = right.left;
-            }
-            return right;
-        }
-        while (pNode.next != null) {
-            if (pNode.next.left == pNode) {
-                return pNode.next;
-            }
-            pNode = pNode.next;
-        }
         return null;
     }
 
@@ -714,8 +713,8 @@ public class SwordOffer {
             return 1;
         }
         if (exponent < 0) {
-            exponent = -exponent;
             base = 1 / base;
+            exponent = -exponent;
         }
         return exponent % 2 == 0 ? Power(base * base, exponent / 2) : base * Power(base * base, exponent / 2);
     }
@@ -843,6 +842,13 @@ public class SwordOffer {
     }
 
 
+    /**
+     * WC112 树的子结构
+     *
+     * @param root1
+     * @param root2
+     * @return
+     */
     public boolean HasSubtree(TreeNode root1, TreeNode root2) {
         if (root1 == null || root2 == null) {
             return false;
@@ -857,9 +863,75 @@ public class SwordOffer {
         if (root1 == null) {
             return false;
         }
-        if (root1.val == root2.val) {
-            return isSubTree(root1.left, root2.left) && isSubTree(root1.right, root2.right);
+        if (root1.val != root2.val) {
+            return false;
         }
-        return false;
+        return isSubTree(root1.left, root2.left) && isSubTree(root1.right, root2.right);
     }
+
+
+    /**
+     * WC114 和为S的两个数字
+     *
+     * @param array
+     * @param sum
+     * @return
+     */
+    public ArrayList<Integer> FindNumbersWithSum(int[] array, int sum) {
+        if (array == null || array.length == 0) {
+            return new ArrayList<>();
+        }
+        ArrayList<Integer> result = new ArrayList<>();
+        int left = 0;
+        int right = array.length - 1;
+        while (left < right) {
+            int val = array[left] + array[right];
+            if (val < sum) {
+                left++;
+            } else if (val > sum) {
+                right--;
+            } else {
+                result.add(array[left]);
+                result.add(array[right]);
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * WC115 丑数
+     *
+     * @param index
+     * @return
+     */
+    public int GetUglyNumber_Solution(int index) {
+        if (index < 7) {
+            return index;
+        }
+        int idx2 = 0;
+        int idx3 = 0;
+        int idx5 = 0;
+        int[] result = new int[index];
+        result[0] = 1;
+        int i = 1;
+        while (i < index) {
+            int val = Math.min(Math.min(result[idx2] * 2, result[idx3] * 3), result[idx5] * 5);
+            result[i] = val;
+            if (val == result[idx2] * 2) {
+                idx2++;
+            }
+            if (val == result[idx3] * 3) {
+                idx3++;
+            }
+            if (val == result[idx5] * 5) {
+                idx5++;
+            }
+            i++;
+        }
+        return result[index - 1];
+
+    }
+
+
 }

@@ -428,4 +428,34 @@ public class OftenSolution {
         return 2 * jumpFloorII(target - 1);
     }
 
+
+    /**
+     * WC108 二叉搜索树的后序遍历序列
+     *
+     * @param sequence
+     * @return
+     */
+    public boolean VerifySquenceOfBST(int[] sequence) {
+        if (sequence == null || sequence.length == 0) {
+            return false;
+        }
+        int endIndex = sequence.length - 1;
+        while (endIndex > 0) {
+            int index = endIndex - 1;
+            while (index >= 0 && sequence[index] > sequence[endIndex]) {
+                index--;
+            }
+            while (index >= 0 && sequence[index] < sequence[endIndex]) {
+                index--;
+            }
+            if (index != -1) {
+                return false;
+            }
+            endIndex--;
+        }
+        return true;
+
+    }
+
+
 }

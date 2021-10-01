@@ -1073,7 +1073,6 @@ public class InterviewOffer {
         return result;
     }
 
-    GetLeastNumbers_Solution
 
     /**
      * @param numbers int整型一维数组
