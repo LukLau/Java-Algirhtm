@@ -223,33 +223,27 @@ public class NormalSolution {
      */
     public ListNode addInList(ListNode head1, ListNode head2) {
         // write code here
-        if (head1 == null && head2 == null) {
-            return null;
-        }
+        ListNode root = new ListNode(0);
+
         head1 = reverse(head1);
 
         head2 = reverse(head2);
 
-        if (head1 == null || head2 == null) {
-            return head1 == null ? head2 : head1;
-        }
-        ListNode root = new ListNode(0);
         ListNode dummy = root;
         int carry = 0;
         while (head1 != null || head2 != null || carry != 0) {
             int val = (head1 == null ? 0 : head1.val) + (head2 == null ? 0 : head2.val) + carry;
-
-            dummy.next = new ListNode(val % 10);
-
-            dummy = dummy.next;
+            ListNode node = new ListNode(val % 10);
 
             carry = val / 10;
-
+            dummy.next = node;
+            dummy = dummy.next;
             head1 = head1 == null ? null : head1.next;
-
             head2 = head2 == null ? null : head2.next;
         }
-        return root.next;
+        ListNode result = root.next;
+        root.next = null;
+        return reverse(result);
     }
 
     private ListNode reverse(ListNode head) {

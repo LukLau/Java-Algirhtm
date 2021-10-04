@@ -1,8 +1,6 @@
 package org.learn.algorithm.datastructure;
 
-import java.util.Comparator;
 import java.util.PriorityQueue;
-import java.util.SimpleTimeZone;
 
 /**
  * 295. Find Median from Data Stream
@@ -36,7 +34,7 @@ public class MedianFinder {
 
     public double findMedian() {
         if (small.size() > big.size()) {
-            return small.peek();
+            return small.peek() / 1.0;
         }
         return (small.peek() + big.peek()) / 2.0;
     }

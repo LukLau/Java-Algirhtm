@@ -10,17 +10,55 @@ import java.util.*;
  */
 public class StringSolution {
 
+    // 最长公共字串系列
+
+
+    private int longestPalindrome = Integer.MIN_VALUE;
+
+
     // 子序列问题
 
 
     // 滑动窗口系列//
-
-    private int longestPalindrome = Integer.MIN_VALUE;
     private int palindrome = 0;
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
         solution.isPalindrome(1112);
+    }
+
+    /**
+     * longest common substring
+     *
+     * @param str1 string字符串 the string
+     * @param str2 string字符串 the string
+     * @return string字符串
+     */
+    public String longestCommonSubstring(String str1, String str2) {
+        // write code here
+        if (str1 == null || str2 == null) {
+            return "";
+        }
+        int m = str1.length();
+        int n = str2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        int result = 0;
+        int index = 0;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
+                    dp[i][j] = 1 + dp[i - 1][j - 1];
+                    if (dp[i][j] > result) {
+                        result = dp[i][j];
+                        index = i;
+                    }
+                }
+            }
+        }
+        if (result == 0) {
+            return "";
+        }
+        return str1.substring(index - result, index);
     }
 
 

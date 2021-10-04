@@ -253,6 +253,13 @@ public class InterviewOffer {
         intervalDFSSolve(grid, i, j + 1);
     }
 
+    /**
+     * NC66 两个链表的第一个公共结点
+     *
+     * @param pHead1
+     * @param pHead2
+     * @return
+     */
     public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
         ListNode p1 = pHead1;
         ListNode p2 = pHead2;
@@ -562,6 +569,8 @@ public class InterviewOffer {
     }
 
     /**
+     * NC102 在二叉树中找到两个节点的最近公共祖先
+     *
      * @param root TreeNode类
      * @param o1   int整型
      * @param o2   int整型
@@ -577,16 +586,61 @@ public class InterviewOffer {
         }
         int left = lowestCommonAncestor(root.left, o1, o2);
         int right = lowestCommonAncestor(root.right, o1, o2);
-        if (left != -1 && right != -1) {
-            return root.val;
-        } else if (left != -1) {
+        if (left == -1) {
+            return right;
+        } else if (right == -1) {
             return left;
         } else {
-            return right;
+            return root.val;
         }
     }
 
     /**
+     * NC38 螺旋矩阵
+     *
+     * @param matrix
+     * @return
+     */
+    public ArrayList<Integer> spiralOrder(int[][] matrix) {
+        ArrayList<Integer> result = new ArrayList<>();
+        if (matrix == null || matrix.length == 0) {
+            return result;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int top = 0;
+        int bottom = row - 1;
+        int left = 0;
+        int right = column - 1;
+        while (left <= right && top <= bottom) {
+            for (int i = left; i <= right; i++) {
+                result.add(matrix[top][i]);
+            }
+            for (int i = top + 1; i <= bottom; i++) {
+                result.add(matrix[i][right]);
+            }
+            if (top != bottom) {
+                for (int i = right - 1; i >= left; i--) {
+                    result.add(matrix[bottom][i]);
+                }
+            }
+            if (left != right) {
+                for (int i = bottom - 1; i > top; i--) {
+                    result.add(matrix[i][left]);
+                }
+            }
+            left++;
+            right--;
+            top++;
+            bottom--;
+        }
+        return result;
+    }
+
+
+    /**
+     * WC127 滑动窗口的最大值
+     *
      * @param num
      * @param size
      * @return
@@ -595,8 +649,8 @@ public class InterviewOffer {
         if (num == null || num.length == 0 || size == 0) {
             return new ArrayList<>();
         }
-        ArrayList<Integer> result = new ArrayList<>();
         LinkedList<Integer> linkedList = new LinkedList<>();
+        ArrayList<Integer> result = new ArrayList<>();
         for (int i = 0; i < num.length; i++) {
             int index = i - size + 1;
             if (!linkedList.isEmpty() && linkedList.peek() < index) {

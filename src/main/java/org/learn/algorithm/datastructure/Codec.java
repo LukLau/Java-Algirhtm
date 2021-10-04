@@ -1,6 +1,5 @@
 package org.learn.algorithm.datastructure;
 
-import java.util.Deque;
 import java.util.LinkedList;
 
 /**
@@ -12,13 +11,7 @@ import java.util.LinkedList;
 public class Codec {
 
 
-    /**
-     * Encodes a tree to a single string.
-     *
-     * @param root
-     * @return
-     */
-    public String serialize(TreeNode root) {
+    String Serialize(TreeNode root) {
         if (root == null) {
             return "#,";
         }
@@ -37,82 +30,29 @@ public class Codec {
         intervalSerialize(builder, root.right);
     }
 
-    /**
-     * Decodes your encoded data to tree.
-     *
-     * @param data
-     * @return
-     */
-    public TreeNode deserialize(String data) {
-        if (data == null || data.isEmpty()) {
-            return null;
-        }
-        Deque<String> deque = new LinkedList<>();
-        String[] words = data.split(",");
-        for (String word : words) {
-            deque.offer(word);
-        }
-        return intervalDeserialize(deque);
-    }
-
-    private TreeNode intervalDeserialize(Deque<String> deque) {
-        if (deque.isEmpty()) {
-            return null;
-        }
-        String poll = deque.poll();
-        if ("#".equals(poll)) {
-            return null;
-        }
-        TreeNode root = new TreeNode(Integer.parseInt(poll));
-        root.left = intervalDeserialize(deque);
-        root.right = intervalDeserialize(deque);
-        return root;
-    }
-
-
-    public String Serialize(TreeNode root) {
-        if (root == null) {
-            return "#,";
-        }
-        StringBuilder builder = new StringBuilder();
-        intervalBuilder(builder, root);
-        return builder.toString();
-    }
-
-    private void intervalBuilder(StringBuilder builder, TreeNode root) {
-        if (root == null) {
-            builder.append("#,");
-        }
-        builder.append(root.val).append(",");
-        intervalBuilder(builder, root.left);
-        intervalBuilder(builder, root.right);
-
-    }
-
-    public TreeNode Deserialize(String str) {
+    TreeNode Deserialize(String str) {
         if (str == null || str.isEmpty()) {
             return null;
         }
-        LinkedList<String> queue = new LinkedList<>();
         String[] words = str.split(",");
+        LinkedList<String> linkedList = new LinkedList<>();
         for (String word : words) {
-            queue.offer(word);
+            linkedList.offer(word);
         }
-        return Deserialize(queue);
-
+        return intervalDeserialize(linkedList);
     }
 
-    private TreeNode Deserialize(LinkedList<String> queue) {
-        if (queue.isEmpty()) {
+    private TreeNode intervalDeserialize(LinkedList<String> linkedList) {
+        if (linkedList.isEmpty()) {
             return null;
         }
-        String poll = queue.poll();
+        String poll = linkedList.poll();
         if ("#".equals(poll)) {
             return null;
         }
         TreeNode root = new TreeNode(Integer.parseInt(poll));
-        root.left = Deserialize(queue);
-        root.right = Deserialize(queue);
+        root.left = intervalDeserialize(linkedList);
+        root.right = intervalDeserialize(linkedList);
         return root;
     }
 

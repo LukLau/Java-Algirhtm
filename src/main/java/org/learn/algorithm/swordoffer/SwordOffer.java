@@ -17,8 +17,7 @@ public class SwordOffer {
 
         SwordOffer offer = new SwordOffer();
 
-
-        offer.GetUglyNumber_Solution(7);
+        offer.cutRope(5);
 
     }
 
@@ -416,26 +415,20 @@ public class SwordOffer {
      */
     public int[] FindNumsAppearOnce(int[] array) {
         // write code here
-        if (array == null || array.length <= 2) {
-            return array;
+        if (array == null || array.length == 0) {
+            return new int[]{};
         }
         int result = 0;
         for (int num : array) {
             result ^= num;
         }
-        int index = 0;
-        for (int i = 0; i < 32; i++) {
-            if ((result & (1 << i)) != 0) {
-                index = i;
-                break;
-            }
-        }
+        result = result & -result;
         int[] ans = new int[2];
         for (int num : array) {
-            if ((num & (1 << index)) != 0) {
-                ans[0] ^= num;
-            } else {
+            if ((num & result) == 0) {
                 ans[1] ^= num;
+            } else {
+                ans[0] ^= num;
             }
         }
         return ans;
@@ -601,6 +594,7 @@ public class SwordOffer {
 
 
     /**
+     * WC149 正则表达式匹配
      * todo
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      *
@@ -608,7 +602,7 @@ public class SwordOffer {
      * @param pattern string字符串
      * @return bool布尔型
      */
-    public boolean match(String str, String pattern) {
+    public boolean matchV2(String str, String pattern) {
         // write code here
         if (pattern.isEmpty()) {
             return str.isEmpty();
@@ -625,7 +619,7 @@ public class SwordOffer {
                 if (str.charAt(i - 1) == pattern.charAt(j - 1) || pattern.charAt(j - 1) == '.') {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else if (pattern.charAt(j - 1) == '*') {
-                    if (str.charAt(i - 1) != pattern.charAt(j - 2) && pattern.charAt(j - 1) != '.') {
+                    if (str.charAt(i - 1) != pattern.charAt(j - 2) && pattern.charAt(j - 2) != '.') {
                         dp[i][j] = dp[i][j - 2];
                     } else {
                         dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
@@ -644,7 +638,40 @@ public class SwordOffer {
      */
     public boolean isNumeric(String str) {
         // write code here
-        return false;
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        boolean numberAfterE = true;
+        boolean seenNumber = true;
+        boolean seenDigit = false;
+        boolean seenE = false;
+        char[] words = str.toCharArray();
+        int index = 0;
+        while (index < words.length) {
+            char val = words[index];
+            if (Character.isDigit(val)) {
+                numberAfterE = true;
+                seenNumber = true;
+            } else if (val == 'e' || val == 'E') {
+                if (seenE || seenDigit) {
+                    return false;
+                }
+                if (index == 0 || !Character.isDigit(words[index - 1])) {
+                    return false;
+                }
+                seenE = true;
+                numberAfterE = false;
+                seenNumber = false;
+            } else if (val == '.') {
+                if (seenDigit) {
+                    return false;
+                }
+                seenDigit = true;
+            } else if (val == '-' || val == '+') {
+            }
+            index++;
+        }
+        return seenNumber && numberAfterE;
     }
 
     public ListNode EntryNodeOfLoop(ListNode pHead) {
@@ -683,18 +710,44 @@ public class SwordOffer {
         return pHead;
     }
 
+    /**
+     * WC120 二叉树的下一个结点
+     *
+     * @param pNode
+     * @return
+     */
     public TreeLinkNode GetNext(TreeLinkNode pNode) {
-        return null;
+        if (pNode == null) {
+            return null;
+        }
+        TreeLinkNode right = pNode.right;
+        if (right != null) {
+            TreeLinkNode node = right;
+            while (node.left != null) {
+                node = node.left;
+            }
+            return node;
+        }
+        while (pNode.next != null && pNode.next.right == pNode) {
+            pNode = pNode.next;
+        }
+        return pNode.next;
     }
 
+    /**
+     * WC121 对称的二叉树
+     *
+     * @param pRoot
+     * @return
+     */
     public boolean isSymmetrical(TreeNode pRoot) {
         if (pRoot == null) {
             return false;
         }
-        return intervalSymmetrical(pRoot.left, pRoot.right);
+        return isSymmetrical(pRoot.left, pRoot.right);
     }
 
-    private boolean intervalSymmetrical(TreeNode left, TreeNode right) {
+    private boolean isSymmetrical(TreeNode left, TreeNode right) {
         if (left == null && right == null) {
             return true;
         }
@@ -704,7 +757,7 @@ public class SwordOffer {
         if (left.val != right.val) {
             return false;
         }
-        return intervalSymmetrical(left.left, right.right) && intervalSymmetrical(left.right, right.left);
+        return isSymmetrical(left.left, right.right) && isSymmetrical(left.right, right.left);
     }
 
 
@@ -719,26 +772,35 @@ public class SwordOffer {
         return exponent % 2 == 0 ? Power(base * base, exponent / 2) : base * Power(base * base, exponent / 2);
     }
 
+    /**
+     * WC151 链表中倒数最后k个结点
+     *
+     * @param pHead
+     * @param k
+     * @return
+     */
     public ListNode FindKthToTail(ListNode pHead, int k) {
-        if (pHead == null || k <= 0) {
+        if (pHead == null) {
             return null;
         }
         int count = 1;
-        ListNode fast = pHead;
-        while (fast.next != null) {
-            fast = fast.next;
+        ListNode current = pHead;
+        while (current.next != null) {
+            current = current.next;
             count++;
         }
         if (count < k) {
             return null;
         }
         ListNode root = new ListNode(0);
+
         root.next = pHead;
-        fast = root;
+
+        ListNode dummy = root;
         for (int i = 0; i < count - k; i++) {
-            fast = fast.next;
+            dummy = dummy.next;
         }
-        return fast.next;
+        return dummy.next;
     }
 
     /**
@@ -754,13 +816,11 @@ public class SwordOffer {
             return false;
         }
         int row = matrix.length;
-
         int column = matrix[0].length;
-
         boolean[][] used = new boolean[row][column];
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                if (matrix[i][j] == word.charAt(0) && checkPath(i, j, row, column, matrix, 0, word, used)) {
+                if (matrix[i][j] == word.charAt(0) && validPath(matrix, i, j, used, 0, word)) {
                     return true;
                 }
             }
@@ -768,28 +828,70 @@ public class SwordOffer {
         return false;
     }
 
-    private boolean checkPath(int i, int j, int row, int column, char[][] matrix, int start, String word, boolean[][] used) {
+    private boolean validPath(char[][] matrix, int i, int j, boolean[][] used, int start, String word) {
         if (start == word.length()) {
             return true;
         }
-        if (i < 0 || i == row || j < 0 || j == column || used[i][j] || matrix[i][j] != word.charAt(start)) {
+        if (i < 0 || i == matrix.length || j < 0 || j == matrix[0].length || used[i][j]
+                || matrix[i][j] != word.charAt(start)) {
             return false;
         }
         used[i][j] = true;
-        if (checkPath(i - 1, j, row, column, matrix, start + 1, word, used)
-                || checkPath(i + 1, j, row, column, matrix, start + 1, word, used)
-                || checkPath(i, j - 1, row, column, matrix, start + 1, word, used)
-                || checkPath(i, j + 1, row, column, matrix, start + 1, word, used)) {
+        if (validPath(matrix, i - 1, j, used, start + 1, word) ||
+                validPath(matrix, i + 1, j, used, start + 1, word) ||
+                validPath(matrix, i, j - 1, used, start + 1, word) ||
+                validPath(matrix, i, j + 1, used, start + 1, word)) {
             return true;
         }
         used[i][j] = false;
         return false;
     }
 
-    public int movingCount(int threshold, int rows, int cols) {
-        if (threshold <= 0) {
-            return 0;
+    /**
+     * WC153 在旋转过的有序数组中寻找目标值
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param nums   int整型一维数组
+     * @param target int整型
+     * @return int整型
+     */
+    public int search(int[] nums, int target) {
+        // write code here
+        if (nums == null || nums.length == 0) {
+            return -1;
         }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && target >= nums[left]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return nums[left] == target ? left : -1;
+    }
+
+    /**
+     * WC128 机器人的运动范围
+     *
+     * @param threshold
+     * @param rows
+     * @param cols
+     * @return
+     */
+    public int movingCount(int threshold, int rows, int cols) {
         boolean[][] used = new boolean[rows][cols];
         return count(used, 0, 0, rows, cols, threshold);
     }
@@ -798,12 +900,13 @@ public class SwordOffer {
         if (i < 0 || i == rows || j < 0 || j == cols || used[i][j]) {
             return 0;
         }
-        int count = 1;
+        int count = 0;
         used[i][j] = true;
         int val = getNum(i) + getNum(j);
         if (val > threshold) {
             return 0;
         }
+        count++;
         count += count(used, i - 1, j, rows, cols, threshold);
         count += count(used, i + 1, j, rows, cols, threshold);
         count += count(used, i, j - 1, rows, cols, threshold);
@@ -812,33 +915,44 @@ public class SwordOffer {
     }
 
     private int getNum(int num) {
-        int count = 0;
+        int sum = 0;
         while (num != 0) {
-            count += num % 10;
+            sum += num % 10;
             num /= 10;
         }
-        return count;
+        return sum;
     }
 
 
+    /**
+     * WC131 剪绳子
+     *
+     * @param target
+     * @return
+     */
     public int cutRope(int target) {
+        if (target <= 1) {
+            return target;
+        }
         if (target == 2) {
-            return 1;
+            return 2;
         }
         if (target == 3) {
             return 2;
         }
-        int[] cut = new int[target + 1];
-        cut[0] = 1;
-        cut[1] = 1;
-        cut[2] = 2;
-        cut[3] = 3;
-        for (int i = 4; i < cut.length; i++) {
+        int[] dp = new int[target + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        dp[2] = 2;
+        dp[3] = 3;
+        for (int i = 4; i <= target; i++) {
+            int val = 0;
             for (int j = 1; j <= i / 2; j++) {
-                cut[i] = Math.max(cut[i], cut[i - j] * cut[j]);
+                val = Math.max(val, dp[i - j] * dp[j]);
             }
+            dp[i] = val;
         }
-        return cut[target];
+        return dp[target];
     }
 
 
