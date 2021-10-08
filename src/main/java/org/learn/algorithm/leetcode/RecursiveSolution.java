@@ -573,11 +573,10 @@ public class RecursiveSolution {
             }
         }
         return count;
-
     }
 
     private void intervalIslands(char[][] grid, int i, int j) {
-        if (i < 0 || i >= grid.length || j < 0 || j == grid[i].length || grid[i][j] != '1') {
+        if (i < 0 || i == grid.length || j < 0 || j == grid[i].length || grid[i][j] != '1') {
             return;
         }
         grid[i][j] = '0';

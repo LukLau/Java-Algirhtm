@@ -14,7 +14,7 @@ public class NormalSolution {
     public static void main(String[] args) {
         NormalSolution solution = new NormalSolution();
         int[] param = new int[]{4, 5, 1, 6, 2, 7, 3, 8};
-        solution.GetLeastNumbers_Solution(param, 4);
+        solution.minNumberDisappeared(new int[]{1, 0, 2});
     }
 
 
@@ -634,14 +634,34 @@ public class NormalSolution {
 
 
     /**
-     * 判断岛屿数量
+     * NC30 缺失的第一个正整数
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      *
-     * @param grid char字符型二维数组
+     * @param nums int整型一维数组
      * @return int整型
      */
-    public int solve(char[][] grid) {
+    public int minNumberDisappeared(int[] nums) {
         // write code here
-        return -1;
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] >= 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+                swap(nums, i, nums[i] - 1);
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return nums.length + 1;
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int val = nums[i];
+        nums[i] = nums[j];
+        nums[j] = val;
     }
 
 

@@ -475,5 +475,29 @@ public class OftenSolution {
         return pRoot;
     }
 
+    /**
+     * NC41 最长无重复子数组
+     *
+     * @param arr int整型一维数组 the array
+     * @return int整型
+     */
+    public int maxLength(int[] arr) {
+        // write code here
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int result = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < arr.length; i++) {
+            if (map.containsKey(arr[i])) {
+                left = Math.max(left, map.get(arr[i]) + 1);
+            }
+            map.put(arr[i], i);
+            result = Math.max(result, i - left + 1);
+        }
+        return result;
+    }
+
 
 }

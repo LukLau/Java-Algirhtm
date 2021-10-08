@@ -145,19 +145,21 @@ public class FirstPage {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
-        char[] words = s.toCharArray();
+
         int result = 0;
+
         int left = -1;
+
+        char[] words = s.toCharArray();
         for (int i = 0; i < words.length; i++) {
             if (words[i] == '(') {
                 stack.push(i);
             } else {
-                if (!stack.isEmpty() && words[stack.peek()] == '(') {
-                    stack.pop();
-                } else {
+                if (stack.isEmpty()) {
                     left = i;
+                } else {
+                    stack.pop();
                 }
-
                 if (stack.isEmpty()) {
                     result = Math.max(result, i - left);
                 } else {
@@ -169,13 +171,13 @@ public class FirstPage {
     }
 
     public int longestValidParenthesesII(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
         char[] words = s.toCharArray();
         for (int i = 0; i < words.length; i++) {
-            if (words[i] == '(' || stack.isEmpty()) {
+            if (stack.isEmpty() || words[i] == '(') {
                 stack.push(i);
             } else {
                 if (words[stack.peek()] == '(') {
@@ -183,20 +185,19 @@ public class FirstPage {
                 } else {
                     stack.push(i);
                 }
-
             }
         }
         if (stack.isEmpty()) {
-            return words.length;
+            return s.length();
         }
         int result = 0;
-        int rightEdge = s.length();
+        int end = s.length();
         while (!stack.isEmpty()) {
-            Integer left = stack.pop();
-            result = Math.max(result, rightEdge - left - 1);
-            rightEdge = left;
+            Integer pop = stack.pop();
+            result = Math.max(result, end - pop - 1);
+            end = pop;
         }
-        result = Math.max(result, rightEdge);
+        result = Math.max(result, end);
         return result;
     }
 
@@ -540,10 +541,11 @@ public class FirstPage {
         if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
+        int len = s.length();
         List<String> result = new ArrayList<>();
-        for (int i = 1; i < 4 && i < s.length() - 2; i++) {
-            for (int j = i + 1; j < i + 4 && j < s.length() - 1; j++) {
-                for (int k = j + 1; k < j + 4 && k < s.length(); k++) {
+        for (int i = 1; i < len - 2; i++) {
+            for (int j = i + 1; j < i + 4 && j < len - 1; j++) {
+                for (int k = j + 1; k < j + 4 && k < len; k++) {
                     String a = s.substring(0, i);
                     String b = s.substring(i, j);
                     String c = s.substring(j, k);

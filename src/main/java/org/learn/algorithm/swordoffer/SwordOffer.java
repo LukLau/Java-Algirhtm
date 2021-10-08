@@ -300,18 +300,37 @@ public class SwordOffer {
     }
 
 
+    /**
+     * todo
+     * NC121 字符串的排列
+     *
+     * @param str
+     * @return
+     */
     public ArrayList<String> Permutation(String str) {
         if (str == null || str.isEmpty()) {
             return new ArrayList<>();
         }
         char[] words = str.toCharArray();
-
         Arrays.sort(words);
-
         ArrayList<String> result = new ArrayList<>();
-
-//        intervalPermutation(result, 0, words);
+        permutation(result, 0, words);
         return result;
+    }
+
+    private void permutation(ArrayList<String> result, int start, char[] words) {
+        if (start == words.length) {
+            result.add(String.valueOf(words));
+            return;
+        }
+        for (int i = start; i < words.length; i++) {
+            if (i > start && words[i] == words[start]) {
+                continue;
+            }
+            swapWord(words, start, i);
+            permutation(result, start + 1, words);
+            swapWord(words, start, i);
+        }
     }
 
     private void swapWord(char[] words, int i, int j) {
@@ -1044,7 +1063,20 @@ public class SwordOffer {
             i++;
         }
         return result[index - 1];
+    }
 
+
+    /**
+     * NC87 丢棋子问题
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 返回最差情况下扔棋子的最小次数
+     *
+     * @param n int整型 楼层数
+     * @param k int整型 棋子数
+     * @return int整型
+     */
+    public int diu(int n, int k) {
+        // write code here
     }
 
 

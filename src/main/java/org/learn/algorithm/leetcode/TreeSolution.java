@@ -168,25 +168,23 @@ public class TreeSolution {
         if (root == null) {
             return new ArrayList<>();
         }
-        LinkedList<TreeNode> deque = new LinkedList<>();
-
-        LinkedList<List<Integer>> result = new LinkedList<>();
-
-        deque.offer(root);
-        while (!deque.isEmpty()) {
-            int size = deque.size();
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+        linkedList.offer(root);
+        List<List<Integer>> result = new ArrayList<>();
+        while (!linkedList.isEmpty()) {
+            int size = linkedList.size();
             List<Integer> tmp = new ArrayList<>();
             for (int i = 0; i < size; i++) {
-                TreeNode node = deque.poll();
-                tmp.add(node.val);
-                if (node.left != null) {
-                    deque.offer(node.left);
+                TreeNode poll = linkedList.poll();
+                tmp.add(poll.val);
+                if (poll.left != null) {
+                    linkedList.offer(poll.left);
                 }
-                if (node.right != null) {
-                    deque.offer(node.right);
+                if (poll.right != null) {
+                    linkedList.offer(poll.right);
                 }
             }
-            result.addFirst(tmp);
+            result.add(tmp);
         }
         return result;
     }
@@ -225,23 +223,23 @@ public class TreeSolution {
      * @return
      */
     public List<Integer> rightSideView(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
         List<Integer> result = new ArrayList<>();
-
-        intervalRightSideView(root, result, 0);
-
+        intervalRightSideView(result, root, 0);
         return result;
     }
 
-    private void intervalRightSideView(TreeNode root, List<Integer> result, int currentLevel) {
+    private void intervalRightSideView(List<Integer> result, TreeNode root, int level) {
         if (root == null) {
             return;
         }
-        if (result.size() == currentLevel) {
+        if (result.size() == level) {
             result.add(root.val);
         }
-        intervalRightSideView(root.right, result, currentLevel + 1);
-
-        intervalRightSideView(root.left, result, currentLevel + 1);
+        intervalRightSideView(result, root.right, level + 1);
+        intervalRightSideView(result, root.left, level + 1);
     }
 
     /**
