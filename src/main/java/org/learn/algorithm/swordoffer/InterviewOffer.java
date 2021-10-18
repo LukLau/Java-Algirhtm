@@ -112,25 +112,24 @@ public class InterviewOffer {
         }
         int m = str1.length();
         int n = str2.length();
-        int[][] dp = new int[m + 1][n + 1];
-        int max = 0;
+        int result = 0;
         int index = 0;
+        int[][] dp = new int[m + 1][n + 1];
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
                     dp[i][j] = 1 + dp[i - 1][j - 1];
-                    if (dp[i][j] > max) {
-                        max = dp[i][j];
+                    if (dp[i][j] > result) {
+                        result = dp[i][j];
                         index = i;
                     }
                 }
-
             }
         }
-        if (max == 0) {
+        if (result == 0) {
             return "";
         }
-        return str1.substring(index - max + 1, index);
+        return str1.substring(index - result, index);
     }
 
     /**
@@ -267,6 +266,7 @@ public class InterviewOffer {
     }
 
     /**
+     * todo
      * retrun the longest increasing subsequence
      *
      * @param arr int整型一维数组 the array
@@ -277,39 +277,22 @@ public class InterviewOffer {
         if (arr == null || arr.length == 0) {
             return new int[]{};
         }
-        if (arr.length == 1) {
-            return arr;
-        }
-        int len = arr.length;
-        int[] dp = new int[len];
+        int n = arr.length;
+        int[] dp = new int[n];
         Arrays.fill(dp, 1);
-        int max = 0;
-        int endIndex = -1;
-        for (int i = 1; i < arr.length; i++) {
+        int result = 0;
+        for (int i = 1; i < n; i++) {
             for (int j = 0; j < i; j++) {
                 if (arr[j] < arr[i] && dp[i] < dp[j] + 1) {
                     dp[i] = dp[j] + 1;
+                    result = Math.max(result, dp[i]);
                 }
             }
-            if (dp[i] > max) {
-                max = dp[i];
-                endIndex = i;
-            }
         }
-        int m = max;
-        int[] pos = new int[m];
-        pos[m - 1] = arr[endIndex];
-        int index = 1;
-        int k = endIndex - 1;
-        while (k >= 1) {
-            if (dp[k] == max - 1) {
-                pos[m - 1 - index] = arr[k];
-                max--;
-                index++;
-            }
-            k--;
+        int[] ans = new int[result];
+        for (int i = arr.length - 1; i >= 0; i--) {
         }
-        return pos;
+        return null;
     }
 
     /**
@@ -441,6 +424,8 @@ public class InterviewOffer {
     }
 
     /**
+     * NC134 股票(无限次交易)
+     *
      * @param prices int整型一维数组
      * @return int整型
      */
@@ -452,12 +437,12 @@ public class InterviewOffer {
         int cost = prices[0];
         for (int i = 1; i < prices.length; i++) {
             if (prices[i] > cost) {
-                result = Math.max(result, prices[i] - cost);
-            } else {
-                cost = prices[i];
+                result += prices[i] - cost;
             }
+            cost = prices[i];
         }
         return result;
+
     }
 
     /**
@@ -581,12 +566,12 @@ public class InterviewOffer {
         }
         int left = lowestCommonAncestor(root.left, o1, o2);
         int right = lowestCommonAncestor(root.right, o1, o2);
-        if (left == -1) {
-            return right;
-        } else if (right == -1) {
-            return left;
-        } else {
+        if (left != -1 && right != -1) {
             return root.val;
+        } else if (left == -1) {
+            return right;
+        } else {
+            return left;
         }
     }
 
@@ -744,14 +729,15 @@ public class InterviewOffer {
         if (preStart == pre.length || inStart > inEnd) {
             return null;
         }
-        TreeNode root = new TreeNode(pre[preStart]);
+        int val = pre[preStart];
         int index = 0;
         for (int i = inStart; i <= inEnd; i++) {
-            if (in[i] == root.val) {
+            if (in[i] == val) {
                 index = i;
                 break;
             }
         }
+        TreeNode root = new TreeNode(val);
         root.left = buildTree(preStart + 1, pre, inStart, index - 1, in);
         root.right = buildTree(preStart + index - inStart + 1, pre, index + 1, inEnd, in);
         return root;
@@ -887,17 +873,36 @@ public class InterviewOffer {
         if (vw == null || vw.length == 0) {
             return 0;
         }
-        int[][] dp = new int[n + 1][V + 1];
+        int[] dp = new int[V + 1];
         for (int i = 1; i <= n; i++) {
-            for (int j = V; j > 0; j--) {
-                if (j < vw[i - 1][0]) {
-                    dp[i][j] = dp[i - 1][j];
+            for (int j = 1; j <= V; j++) {
+                if (j - vw[i - 1][0] >= 0) {
+                    dp[j] = Math.max(dp[j], dp[j - vw[i - 1][0]] + vw[i - 1][1]);
                 } else {
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - vw[i - 1][0]] + vw[i - 1][1]);
+                    dp[j] = dp[j];
                 }
             }
         }
-        return dp[n][V];
+        return dp[V];
+    }
+
+
+    /**
+     * NC151 最大公约数
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * 求出a、b的最大公约数。
+     *
+     * @param a int
+     * @param b int
+     * @return int
+     */
+    public int gcd(int a, int b) {
+        // write code here
+        if (b == 0) {
+            return a;
+        }
+        return gcd(b, a % b);
     }
 
     /**
@@ -1067,6 +1072,8 @@ public class InterviewOffer {
     }
 
     /**
+     * todo
+     * NC156 数组中只出现一次的数（其它数出现k次）
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      *
      * @param arr int一维数组
@@ -1110,19 +1117,28 @@ public class InterviewOffer {
     }
 
 
+    /**
+     * NC83 子数组最大乘积
+     *
+     * @param arr
+     * @return
+     */
     public double maxProduct(double[] arr) {
-        if (arr == null || arr.length == 0) {
-            return 0;
-        }
         double max = arr[0];
+
         double min = arr[0];
+
         double result = arr[0];
+
         for (int i = 1; i < arr.length; i++) {
             double val = arr[i];
-            double tmpMax = Math.max(Math.max(max * val, val * min), min);
-            double tmpMin = Math.min(Math.min(max * val, val * min), val);
+            double tmpMax = Math.max(Math.max(max * val, min * val), val);
+            double tmpMin = Math.min(Math.min(max * val, min * val), val);
+
             result = Math.max(result, tmpMax);
+
             max = tmpMax;
+
             min = tmpMin;
         }
         return result;
@@ -1154,6 +1170,8 @@ public class InterviewOffer {
 
 
     /**
+     * NC41 最长无重复子数组
+     *
      * @param arr int整型一维数组 the array
      * @return int整型
      */
@@ -1174,6 +1192,9 @@ public class InterviewOffer {
         }
         return result;
     }
+    /**
+     * todo 无重复子递增数组
+     */
 
 
     /**
@@ -1246,19 +1267,17 @@ public class InterviewOffer {
      */
     public int getLongestPalindrome(String A, int n) {
         // write code here
-        if (A == null || A.isEmpty()) {
+        if (A == null || A.length() == 0) {
             return 0;
         }
-        char[] words = A.toCharArray();
-
         boolean[][] dp = new boolean[n][n];
         int result = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j <= i; j++) {
-                if (words[j] == words[i] && (i - j <= 2 || dp[j + 1][i - 1])) {
+                if (A.charAt(j) == A.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1])) {
                     dp[j][i] = true;
                 }
-                if (dp[j][i] && (i - j + 1 > result)) {
+                if (dp[j][i] && i - j + 1 > result) {
                     result = i - j + 1;
                 }
             }
@@ -1271,17 +1290,16 @@ public class InterviewOffer {
             return 0;
         }
         int candidate = array[0];
-        int count = 1;
-        for (int i = 1; i < array.length; i++) {
-            int val = array[i];
-            if (val == candidate) {
+        int count = 0;
+        for (int num : array) {
+            if (num == candidate) {
                 count++;
             } else {
                 count--;
-            }
-            if (count == 0) {
-                candidate = val;
-                count = 1;
+                if (count == 0) {
+                    candidate = num;
+                    count++;
+                }
             }
         }
         count = 0;
@@ -1290,7 +1308,7 @@ public class InterviewOffer {
                 count++;
             }
         }
-        return 2 * count > array.length ? candidate : 0;
+        return 2 * count >= array.length ? candidate : -1;
     }
 
 
@@ -1896,5 +1914,39 @@ public class InterviewOffer {
             }
         }
         return dp[n - 1];
+    }
+
+
+    /**
+     * todo
+     * NC116 把数字翻译成字符串
+     *
+     * @param nums string字符串 数字串
+     * @return int整型
+     */
+    public int decode(String nums) {
+        // write code here
+        if (nums == null || nums.isEmpty()) {
+            return 0;
+        }
+        int len = nums.length();
+
+        int[] dp = new int[len + 1];
+
+        dp[0] = 1;
+
+        dp[1] = nums.charAt(0) == '0' ? 0 : 1;
+
+        for (int i = 2; i <= len; i++) {
+            int num1 = Integer.parseInt(nums.substring(i - 1, i));
+            int num2 = Integer.parseInt(nums.substring(i - 2, i));
+            if (num1 >= 1 && num1 <= 9) {
+                dp[i] += dp[i - 1];
+            }
+            if (num2 >= 10 && num2 <= 26) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp[len];
     }
 }

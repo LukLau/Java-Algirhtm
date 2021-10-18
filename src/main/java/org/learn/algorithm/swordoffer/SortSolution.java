@@ -1,6 +1,8 @@
 package org.learn.algorithm.swordoffer;
 
 
+import org.learn.algorithm.datastructure.ListNode;
+
 import java.util.Random;
 
 /**
@@ -132,5 +134,21 @@ public class SortSolution {
         }
         nums[k] = tmp;
     }
+
+    /**
+     * todo
+     * NC70 单链表的排序
+     *
+     * @param head ListNode类 the head node
+     * @return ListNode类
+     */
+    public ListNode insertSort(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        return null;
+
+    }
+
 
 }

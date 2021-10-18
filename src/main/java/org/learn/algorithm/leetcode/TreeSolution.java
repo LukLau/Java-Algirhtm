@@ -231,15 +231,15 @@ public class TreeSolution {
         return result;
     }
 
-    private void intervalRightSideView(List<Integer> result, TreeNode root, int level) {
+    private void intervalRightSideView(List<Integer> result, TreeNode root, int currentLevel) {
         if (root == null) {
             return;
         }
-        if (result.size() == level) {
+        if (result.size() == currentLevel) {
             result.add(root.val);
         }
-        intervalRightSideView(result, root.right, level + 1);
-        intervalRightSideView(result, root.left, level + 1);
+        intervalRightSideView(result, root.right, currentLevel + 1);
+        intervalRightSideView(result, root.left, currentLevel + 1);
     }
 
     /**

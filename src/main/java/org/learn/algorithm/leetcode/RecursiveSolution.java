@@ -567,8 +567,8 @@ public class RecursiveSolution {
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (grid[i][j] == '1') {
-                    intervalIslands(grid, i, j);
                     count++;
+                    intervalIslands(grid, i, j);
                 }
             }
         }
@@ -576,7 +576,10 @@ public class RecursiveSolution {
     }
 
     private void intervalIslands(char[][] grid, int i, int j) {
-        if (i < 0 || i == grid.length || j < 0 || j == grid[i].length || grid[i][j] != '1') {
+        if (i < 0 || i == grid.length || j < 0 || j == grid[i].length) {
+            return;
+        }
+        if (grid[i][j] == '0') {
             return;
         }
         grid[i][j] = '0';

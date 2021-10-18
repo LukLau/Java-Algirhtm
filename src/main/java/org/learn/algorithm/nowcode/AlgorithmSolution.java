@@ -16,23 +16,22 @@ public class AlgorithmSolution {
      * @return string字符串
      */
     public String bigAdd(String s, String t) {
-        // write code here
-        if (s == null || t == null) {
+        if (s == null || t == null || s.isEmpty() || t.isEmpty()) {
             return "";
         }
         int m = s.length() - 1;
         int n = t.length() - 1;
         int carry = 0;
-        StringBuilder builder = new StringBuilder();
+        StringBuilder result = new StringBuilder();
         while (m >= 0 || n >= 0 || carry > 0) {
-            int val = (m >= 0 ? Character.getNumericValue(s.charAt(m--)) : 0) + (n >= 0 ? Character.getNumericValue(t.charAt(n--)) : 0) + carry;
-
-            builder.append(val % 10);
+            int val = (m >= 0 ? Character.getNumericValue(s.charAt(m--)) : 0) + (
+                    n >= 0 ? Character.getNumericValue(t.charAt(n--)) : 0
+            ) + carry;
+            result.insert(0, val % 10);
 
             carry = val / 10;
         }
-        return builder.reverse().toString();
+        return result.toString();
     }
-
 
 }

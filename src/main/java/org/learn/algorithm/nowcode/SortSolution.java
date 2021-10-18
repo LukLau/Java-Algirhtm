@@ -65,26 +65,24 @@ public class SortSolution {
     }
 
     private void merge(int[] nums, int start, int mid, int end) {
-        int[] tmp = new int[end - start + 1];
-        int index = 0;
+        int[] result = new int[end - start + 1];
         int i = start;
         int k = mid + 1;
+        int index = 0;
         while (i <= mid && k <= end) {
-            if (nums[i] <= nums[k]) {
-                tmp[index++] = nums[i++];
+            if (nums[i] < nums[k]) {
+                result[index++] = nums[i++];
             } else {
-                tmp[index++] = nums[k++];
+                result[index++] = nums[k++];
             }
         }
         while (i <= mid) {
-            tmp[index++] = nums[i++];
+            result[index++] = nums[i++];
         }
         while (k <= end) {
-            tmp[index++] = nums[k++];
+            result[index++] = nums[k++];
         }
-        for (int j = 0; j <= end - start; j++) {
-            nums[start + j] = tmp[j];
-        }
+        System.arraycopy(result, 0, nums, start, result.length);
     }
 
     private void heapSort(int[] nums) {

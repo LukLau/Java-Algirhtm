@@ -3,7 +3,10 @@ package org.learn.algorithm.swordoffer;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * @author dora
@@ -26,24 +29,23 @@ public class NormalSolution {
      * @return
      */
     public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
-        if (input == null || input.length == 0 || k <= 0 || k > input.length) {
+        if (input == null || input.length == 0 || k <= 0) {
             return new ArrayList<>();
         }
-        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return o2.compareTo(o1);
-            }
-        });
-        for (int num : input) {
-            if (priorityQueue.size() == k && priorityQueue.peek() > num) {
-                priorityQueue.poll();
-                priorityQueue.offer(num);
-            } else if (priorityQueue.size() < k) {
-                priorityQueue.offer(num);
+        int index = getPartition(input, 0, input.length - 1);
+        k--;
+        while (index != k) {
+            if (index > k) {
+                index = getPartition(input, 0, index - 1);
+            } else {
+                index = getPartition(input, index + 1, input.length - 1);
             }
         }
-        return new ArrayList<>(priorityQueue);
+        ArrayList<Integer> result = new ArrayList<>();
+        for (int i = 0; i < k; i++) {
+            result.add(input[i]);
+        }
+        return result;
     }
 
 
@@ -106,17 +108,27 @@ public class NormalSolution {
         }
     }
 
+    /**
+     * NC88 寻找第K大
+     *
+     * @param a
+     * @param n
+     * @param K
+     * @return
+     */
     public int findKth(int[] a, int n, int K) {
         // write code here
-        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Comparator.naturalOrder());
-
-        for (int num : a) {
-            priorityQueue.offer(num);
-            if (priorityQueue.size() > K) {
-                priorityQueue.poll();
+        K--;
+        int reverse = n - 1 - K;
+        int index = getPartition(a, 0, a.length - 1);
+        while (index != reverse) {
+            if (index < reverse) {
+                index = getPartition(a, index + 1, a.length - 1);
+            } else {
+                index = getPartition(a, 0, index - 1);
             }
         }
-        return priorityQueue.peek();
+        return a[reverse];
     }
 
 
@@ -429,6 +441,8 @@ public class NormalSolution {
 
 
     /**
+     * NC50 链表中的节点每k个一组翻转
+     *
      * @param head ListNode类
      * @param k    int整型
      * @return ListNode类
@@ -439,13 +453,13 @@ public class NormalSolution {
             return head;
         }
         int count = 0;
-        ListNode fast = head;
-        while (fast != null && count != k) {
-            fast = fast.next;
+        ListNode current = head;
+        while (current != null && count != k) {
             count++;
+            current = current.next;
         }
         if (count == k) {
-            ListNode reverseKGroup = reverseKGroup(fast, k);
+            ListNode reverseKGroup = reverseKGroup(current, k);
             while (count-- > 0) {
                 ListNode tmp = head.next;
                 head.next = reverseKGroup;
@@ -470,38 +484,7 @@ public class NormalSolution {
         if (strings == null || strings.length == 0) {
             return new String[][]{};
         }
-        Map<String, Integer> map = new HashMap<>();
-        PriorityQueue<String> queue = new PriorityQueue<>(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                Integer count1 = map.getOrDefault(o1, 0);
-                Integer count2 = map.getOrDefault(o2, 0);
-                if (count1.equals(count2)) {
-                    return o2.compareTo(o1);
-                }
-                return count1.compareTo(count2);
-            }
-        });
-        for (String item : strings) {
-            Integer count = map.getOrDefault(item, 0);
-            map.put(item, count + 1);
-        }
-        for (Map.Entry<String, Integer> item : map.entrySet()) {
-            String key = item.getKey();
-            queue.offer(key);
-            if (queue.size() > k) {
-                queue.poll();
-            }
-        }
-        String[][] result = new String[k][2];
-        int iterator = k - 1;
-        while (!queue.isEmpty()) {
-            String tmp = queue.poll();
-            result[iterator][0] = tmp;
-            result[iterator][1] = map.get(tmp) + "";
-            iterator--;
-        }
-        return result;
+        return null;
     }
 
 
@@ -546,15 +529,11 @@ public class NormalSolution {
             fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode next = slow.next;
-
+        ListNode second = slow.next;
         slow.next = null;
-
-        ListNode first = sortInList(head);
-
-        ListNode second = sortInList(next);
-
-        return mergeTwoLists(first, second);
+        ListNode l1 = sortInList(head);
+        ListNode l2 = sortInList(second);
+        return mergeTwoLists(l1, l2);
     }
 
 

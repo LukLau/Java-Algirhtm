@@ -99,10 +99,10 @@ public class ThreePage {
         }
         ListNode prev = null;
         while (head != null) {
-            ListNode next = head.next;
+            ListNode tmp = head.next;
             head.next = prev;
             prev = head;
-            head = next;
+            head = tmp;
         }
         return prev;
     }

@@ -176,24 +176,24 @@ public class ListSolution {
         if (head == null) {
             return null;
         }
-        ListNode d1 = new ListNode(0);
-        ListNode d2 = new ListNode(0);
-        ListNode small = d1;
-        ListNode big = d2;
+        ListNode small = new ListNode(0);
+        ListNode big = new ListNode(0);
+
+        ListNode d1 = small;
+        ListNode d2 = big;
         while (head != null) {
             if (head.val < x) {
-                small.next = head;
-                small = small.next;
+                d1.next = head;
+                d1 = d1.next;
             } else {
-                big.next = head;
-                big = big.next;
+                d2.next = head;
+                d2 = d2.next;
             }
             head = head.next;
         }
-        small.next = d2.next;
+        d1.next = big.next;
         d2.next = null;
-        big.next = null;
-        return d1.next;
+        return small.next;
     }
 
 

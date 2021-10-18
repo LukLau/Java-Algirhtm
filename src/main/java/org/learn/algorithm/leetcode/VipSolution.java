@@ -14,6 +14,16 @@ import java.util.*;
  */
 public class VipSolution {
 
+    /**
+     * todo
+     * 298
+     * Binary Tree Longest Consecutive Sequence
+     *
+     * @param root: the root of binary tree
+     * @return: the length of the longest consecutive sequence path
+     */
+    private int longestV2 = 0;
+
     public static void main(String[] args) {
         VipSolution solution = new VipSolution();
         String s = "++++";
@@ -59,7 +69,6 @@ public class VipSolution {
         // write your code here
     }
 
-
     /**
      * 161 One Edit Distance
      *
@@ -92,7 +101,6 @@ public class VipSolution {
 
         // write your code here
     }
-
 
     /**
      * todo
@@ -129,7 +137,6 @@ public class VipSolution {
         return lower == upper ? String.valueOf(lower) : lower + "->" + upper;
     }
 
-
     /**
      * 186 Reverse Words in a String II
      * Medium
@@ -163,14 +170,15 @@ public class VipSolution {
         }
     }
 
+    // 单词最短距离
+
     private void swap(char[] str, int i, int j) {
         char tmp = str[i];
         str[i] = str[j];
         str[j] = tmp;
     }
 
-    // 单词最短距离
-
+    // 反转数系列
 
     /**
      * #243 Shortest Word Distance
@@ -198,9 +206,6 @@ public class VipSolution {
         }
         return result;
     }
-
-    // 反转数系列
-
 
     /**
      * 246 Strobogrammatic Number
@@ -235,7 +240,6 @@ public class VipSolution {
         map.put('0', '0');
         return map;
     }
-
 
     /**
      * #247 Strobogrammatic Number II
@@ -277,7 +281,6 @@ public class VipSolution {
         intervalFind(result, "8" + s + "8", n);
         intervalFind(result, "9" + s + "6", n);
     }
-
 
     /**
      * todo
@@ -326,7 +329,6 @@ public class VipSolution {
         return count;
     }
 
-
     /**
      * 249 Group Shifted Strings
      *
@@ -358,7 +360,6 @@ public class VipSolution {
         return buffer.toString();
     }
 
-
     /**
      * 250
      * Count Univalue Subtrees
@@ -387,7 +388,6 @@ public class VipSolution {
         return root.val == val && isUnivalSubTree(root.left, root.val) && isUnivalSubTree(root.right, val);
     }
 
-
     /**
      * 252
      * Meeting Rooms
@@ -398,20 +398,19 @@ public class VipSolution {
     public boolean canAttendMeetings(List<Interval> intervals) {
         // Write your code here
         if (intervals == null || intervals.isEmpty()) {
-            return true;
+            return false;
         }
         intervals.sort(Comparator.comparingInt(o -> o.start));
-        int len = intervals.size();
-        for (int i = 1; i < len; i++) {
-            Interval current = intervals.get(i);
-            Interval pre = intervals.get(i - 1);
-            if (current.start < pre.end) {
+        int end = intervals.get(0).end;
+        int size = intervals.size();
+        for (int i = 1; i < size; i++) {
+            if (end >= intervals.get(i).start) {
                 return false;
             }
+            end = intervals.get(i).end;
         }
         return true;
     }
-
 
     /**
      * todo
@@ -436,7 +435,6 @@ public class VipSolution {
         return queue.size();
         // Write your code here
     }
-
 
     /**
      * 255
@@ -472,7 +470,6 @@ public class VipSolution {
 
     }
 
-
     /**
      * todo
      * #259 3Sum Smaller
@@ -504,7 +501,6 @@ public class VipSolution {
         return count;
         // Write your code here
     }
-
 
     /**
      * 270
@@ -627,7 +623,6 @@ public class VipSolution {
         return false;
     }
 
-
     /**
      * 293
      * Flip Game
@@ -658,7 +653,6 @@ public class VipSolution {
         // write your code here
     }
 
-
     /**
      * 294
      * Flip Game II
@@ -685,7 +679,6 @@ public class VipSolution {
         }
         return false;
     }
-
 
     /**
      * 曼哈顿距离法
@@ -729,17 +722,6 @@ public class VipSolution {
         }
         return distance;
     }
-
-
-    /**
-     * todo
-     * 298
-     * Binary Tree Longest Consecutive Sequence
-     *
-     * @param root: the root of binary tree
-     * @return: the length of the longest consecutive sequence path
-     */
-    private int longestV2 = 0;
 
     public int longestConsecutive2(TreeNode root) {
         if (root == null) {
