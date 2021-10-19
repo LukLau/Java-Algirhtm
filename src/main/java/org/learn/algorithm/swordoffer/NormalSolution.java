@@ -3,10 +3,7 @@ package org.learn.algorithm.swordoffer;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * @author dora
@@ -17,7 +14,8 @@ public class NormalSolution {
     public static void main(String[] args) {
         NormalSolution solution = new NormalSolution();
         int[] param = new int[]{4, 5, 1, 6, 2, 7, 3, 8};
-        solution.minNumberDisappeared(new int[]{1, 0, 2});
+        String[] nums = new String[]{"a", "b", "c", "b"};
+        solution.topKstrings(nums, 2);
     }
 
 
@@ -473,6 +471,7 @@ public class NormalSolution {
 
 
     /**
+     * NC97 字符串出现次数的TopK问题
      * return topK string
      *
      * @param strings string字符串一维数组 strings
@@ -484,7 +483,33 @@ public class NormalSolution {
         if (strings == null || strings.length == 0) {
             return new String[][]{};
         }
-        return null;
+        Map<String, Integer> map = new HashMap<>();
+
+        for (String item : strings) {
+            Integer count = map.getOrDefault(item, 0);
+            map.put(item, count + 1);
+        }
+        PriorityQueue<String> priorityQueue = new PriorityQueue<>(k, (o1, o2) -> {
+            Integer count1 = map.getOrDefault(o1, 0);
+            Integer count2 = map.getOrDefault(o2, 0);
+            if (count1.equals(count2)) {
+                return o2.compareTo(o1);
+            }
+            return count1.compareTo(count2);
+        });
+        for (Map.Entry<String, Integer> item : map.entrySet()) {
+            priorityQueue.offer(item.getKey());
+            if (priorityQueue.size() > k) {
+                priorityQueue.poll();
+            }
+        }
+        String[][] result = new String[k][2];
+        for (int i = 0; i < k; i++) {
+            String item = priorityQueue.poll();
+            result[k - 1 - i][0] = item;
+            result[k - 1 - i][1] = map.get(item).toString();
+        }
+        return result;
     }
 
 
@@ -538,6 +563,8 @@ public class NormalSolution {
 
 
     /**
+     * NC96 判断一个链表是否为回文结构
+     *
      * @param head ListNode类 the head
      * @return bool布尔型
      */
@@ -546,16 +573,15 @@ public class NormalSolution {
         if (head == null || head.next == null) {
             return true;
         }
-        ListNode fast = head;
         ListNode slow = head;
+        ListNode fast = head;
         while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode tmp = slow.next;
+        ListNode next = slow.next;
         slow.next = null;
-        ListNode reverse = reverse(tmp);
-
+        ListNode reverse = reverse(next);
         while (head != null && reverse != null) {
             if (head.val != reverse.val) {
                 return false;

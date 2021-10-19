@@ -63,8 +63,8 @@ public class InterviewOffer {
      */
     public String longestCommonSubsequence(String s1, String s2) {
         // write code here
-        if (s2.isEmpty()) {
-            return "";
+        if (s1 == null || s2 == null) {
+            return "-1";
         }
         int m = s1.length();
         int n = s2.length();
@@ -74,7 +74,7 @@ public class InterviewOffer {
                 if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
                     dp[i][j] = 1 + dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                    dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
                 }
             }
         }
@@ -84,14 +84,14 @@ public class InterviewOffer {
                 builder.append(s1.charAt(m - 1));
                 m--;
                 n--;
-            } else if (dp[m - 1][n] < dp[m][n - 1]) {
+            } else if (dp[m][n - 1] > dp[m - 1][n]) {
                 n--;
             } else {
                 m--;
             }
         }
         if (builder.length() == 0) {
-            return "";
+            return "-1";
         }
         return builder.reverse().toString();
     }
@@ -182,6 +182,7 @@ public class InterviewOffer {
     }
 
     /**
+     * NC35 最小编辑代价
      * todo
      * min edit cost
      *
@@ -201,17 +202,17 @@ public class InterviewOffer {
         int n = str2.length();
         int[][] dp = new int[m + 1][n + 1];
         for (int i = 1; i <= m; i++) {
-            dp[i][0] = ic + dp[i - 1][0];
+            dp[i][0] = dp[i - 1][0] + ic;
         }
         for (int j = 1; j <= n; j++) {
-            dp[0][j] = ic + dp[0][j - 1];
+            dp[0][j] = dp[0][j - 1] + dc;
         }
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = Math.min(dp[i - 1][j] + dc, Math.min(dp[i][j - 1] + ic, dp[i - 1][j - 1] + rc));
+                    dp[i][j] = Math.max(Math.max(dp[i - 1][j] + dc, dp[i][j - 1] + dc), dp[i - 1][j - 1] + rc);
                 }
             }
         }
@@ -296,6 +297,8 @@ public class InterviewOffer {
     }
 
     /**
+     * NC37 合并区间
+     *
      * @param intervals
      * @return
      */
@@ -304,19 +307,22 @@ public class InterviewOffer {
             return new ArrayList<>();
         }
         intervals.sort(Comparator.comparingInt(o -> o.start));
-        LinkedList<Interval> result = new LinkedList<>();
+        ArrayList<Interval> result = new ArrayList<>();
+        result.add(intervals.get(0));
         int size = intervals.size();
-        for (int i = 0; i < size; i++) {
+        int index = 0;
+        for (int i = 1; i < size; i++) {
             Interval interval = intervals.get(i);
-            if (result.isEmpty() || result.peekLast().end < interval.start) {
+            if (result.get(index).end < interval.start) {
                 result.add(interval);
+                index++;
             } else {
-                Interval pre = result.peekLast();
+                Interval pre = result.get(index);
                 pre.start = Math.min(pre.start, interval.start);
                 pre.end = Math.max(pre.end, interval.end);
             }
         }
-        return new ArrayList<>(result);
+        return result;
     }
 
     /**

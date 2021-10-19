@@ -450,11 +450,11 @@ public class FirstPage {
             return head;
         }
         if (head.val == head.next.val) {
-            ListNode next = head.next;
-            while (next != null && next.val == head.val) {
-                next = next.next;
+            ListNode current = head.next;
+            while (current != null && current.val == head.val) {
+                current = current.next;
             }
-            return deleteDuplicates(next);
+            return deleteDuplicates(current);
         }
         head.next = deleteDuplicates(head.next);
         return head;
