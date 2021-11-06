@@ -17,7 +17,10 @@ public class SwordOffer {
 
         SwordOffer offer = new SwordOffer();
 
-        offer.express("(3+4)*(5+(2-3))");
+        int a = 121;
+        Integer b = new Integer(121);
+//        System.out.println(a.equals(b));
+        System.out.println(a == b);
     }
 
     /**
@@ -115,8 +118,8 @@ public class SwordOffer {
      * @return
      */
     public int minNumberInRotateArray(int[] array) {
-        if (array == null || array.length == 0) {
-            return 0;
+        if (array == null | array.length == 0) {
+            return -1;
         }
         int left = 0;
         int right = array.length - 1;
@@ -125,10 +128,10 @@ public class SwordOffer {
                 right--;
             }
             int mid = left + (right - left) / 2;
-            if (array[mid] > array[right]) {
-                left = mid + 1;
-            } else {
+            if (array[mid] <= array[right]) {
                 right = mid;
+            } else {
+                left = mid + 1;
             }
         }
         return array[left];
@@ -407,13 +410,19 @@ public class SwordOffer {
         return 2 * count >= array.length ? candidate : -1;
     }
 
+    /**
+     * NC74 数字在升序数组中出现的次数
+     *
+     * @param array
+     * @param k
+     * @return
+     */
     public int GetNumberOfK(int[] array, int k) {
         if (array == null || array.length == 0) {
             return 0;
         }
         int left = 0;
         int right = array.length - 1;
-        int firstIndex = -1;
         while (left < right) {
             int mid = left + (right - left) / 2;
             if (array[mid] < k) {
@@ -425,7 +434,7 @@ public class SwordOffer {
         if (array[left] != k) {
             return 0;
         }
-        firstIndex = left;
+        int firstIndex = left;
         right = array.length - 1;
         while (left < right) {
             int mid = left + (right - left) / 2 + 1;
@@ -449,21 +458,22 @@ public class SwordOffer {
         if (array == null || array.length == 0) {
             return new int[]{};
         }
-        int result = 0;
-        for (int num : array) {
-            result ^= num;
+        int flag = 0;
+        for (int number : array) {
+
+            flag ^= number;
         }
-        result &= -result;
-        int[] ans = new int[2];
-        for (int num : array) {
-            if ((num & result) != 0) {
-                ans[0] ^= num;
+        flag &= -flag;
+        int[] result = new int[2];
+        for (int number : array) {
+            if ((number & flag) != 0) {
+                result[0] ^= number;
             } else {
-                ans[1] ^= num;
+                result[1] ^= number;
             }
         }
-        Arrays.sort(ans);
-        return ans;
+        Arrays.sort(result);
+        return result;
     }
 
 
@@ -515,16 +525,16 @@ public class SwordOffer {
             if (number == 0) {
                 continue;
             }
-            if (number < min) {
-                min = number;
-            }
             if (number > max) {
                 max = number;
             }
-            if (max - min >= 5) {
+            if (number < min) {
+                min = number;
+            }
+            if ((flag & (1 << number)) != 0) {
                 return false;
             }
-            if ((1 & (flag >> number)) != 0) {
+            if (max - min >= 5) {
                 return false;
             }
             flag |= 1 << number;
@@ -815,23 +825,22 @@ public class SwordOffer {
         if (pHead == null) {
             return null;
         }
+        ListNode fast = pHead;
         int count = 1;
-        ListNode current = pHead;
-        while (current.next != null) {
-            current = current.next;
+        while (fast.next != null) {
+            fast = fast.next;
             count++;
         }
-        if (count < k) {
-            return null;
+        if (k > count) {
+            return pHead;
         }
         ListNode root = new ListNode(0);
-
         root.next = pHead;
-
         ListNode dummy = root;
         for (int i = 0; i < count - k; i++) {
             dummy = dummy.next;
         }
+
         return dummy.next;
     }
 
@@ -1055,24 +1064,24 @@ public class SwordOffer {
         if (index < 7) {
             return index;
         }
-        int idx2 = 0;
-        int idx3 = 0;
-        int idx5 = 0;
         int[] result = new int[index];
         result[0] = 1;
+        int index2 = 0;
+        int index3 = 0;
+        int index5 = 0;
         int i = 1;
         while (i < index) {
-            int val = Math.min(Math.min(result[idx2] * 2, result[idx3] * 3), result[idx5] * 5);
-            result[i] = val;
-            if (val == result[idx2] * 2) {
-                idx2++;
+            int tmp = Math.min(Math.min(result[index2] * 2, result[index3] * 3), result[index5] * 5);
+            if (tmp == result[index2] * 2) {
+                index2++;
             }
-            if (val == result[idx3] * 3) {
-                idx3++;
+            if (tmp == result[index3] * 3) {
+                index3++;
             }
-            if (val == result[idx5] * 5) {
-                idx5++;
+            if (tmp == result[index5] * 5) {
+                index5++;
             }
+            result[i] = tmp;
             i++;
         }
         return result[index - 1];
@@ -1108,6 +1117,26 @@ public class SwordOffer {
             }
         }
         return dp[n][k];
+    }
+
+    public int chessSolutionII(int n, int k) {
+        if (n <= 0 || k <= 0) {
+            return 0;
+        }
+        int[][] dp = new int[n + 1][k + 1];
+        for (int i = 1; i <= n; i++) {
+            dp[i][1] = i;
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int j = 2; j <= k; j++) {
+                int tmp = Integer.MAX_VALUE;
+                for (int m = 1; m <= i; m++) {
+                    tmp = Math.min(tmp, Math.max(dp[m - 1][j - 1], dp[i - m][j]));
+                }
+            }
+        }
+        return dp[n][k];
+
     }
 
     /**
@@ -1307,24 +1336,28 @@ public class SwordOffer {
         if (S == null || T == null) {
             return "";
         }
-        int[] hash = new int[256];
+        int[] hash = new int[512];
         int n = T.length();
         for (int i = 0; i < n; i++) {
             hash[T.charAt(i)]++;
         }
         int result = Integer.MAX_VALUE;
+
         int head = 0;
-        int end = 0;
         int begin = 0;
+
+        int endIndex = 0;
+
         int m = S.length();
-        while (end < m) {
-            if (hash[S.charAt(end++)]-- > 0) {
+
+        while (endIndex < m) {
+            if (hash[S.charAt(endIndex++)]-- > 0) {
                 n--;
             }
             while (n == 0) {
-                if (end - begin < result) {
-                    result = end - begin;
+                if (endIndex - begin < result) {
                     head = begin;
+                    result = endIndex - begin;
                 }
                 if (hash[S.charAt(begin++)]++ == 0) {
                     n++;
@@ -1822,5 +1855,43 @@ public class SwordOffer {
         }
         return result;
     }
+
+
+    /**
+     * NC21 链表内指定区间反转
+     *
+     * @param head ListNode类
+     * @param m    int整型
+     * @param n    int整型
+     * @return ListNode类
+     */
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        // write code here
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode slow = root;
+        for (int i = 0; i < m - 1; i++) {
+            slow = slow.next;
+        }
+        ListNode fast = root;
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+        ListNode start = slow.next;
+
+        ListNode end = fast.next;
+        for (int i = 0; i <= n - m; i++) {
+            ListNode tmp = start.next;
+            start.next = end;
+            end = start;
+            start = tmp;
+        }
+        slow.next = fast;
+        return root.next;
+    }
+
 
 }

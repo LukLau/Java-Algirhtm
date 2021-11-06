@@ -145,20 +145,18 @@ public class FirstPage {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
-
+        int m = s.length();
         int result = 0;
-
         int left = -1;
-
         char[] words = s.toCharArray();
         for (int i = 0; i < words.length; i++) {
             if (words[i] == '(') {
                 stack.push(i);
             } else {
-                if (stack.isEmpty()) {
-                    left = i;
-                } else {
+                if (!stack.isEmpty()) {
                     stack.pop();
+                } else {
+                    left = i;
                 }
                 if (stack.isEmpty()) {
                     result = Math.max(result, i - left);
@@ -541,9 +539,9 @@ public class FirstPage {
         if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
+        ArrayList<String> result = new ArrayList<>();
         int len = s.length();
-        List<String> result = new ArrayList<>();
-        for (int i = 1; i < len - 2; i++) {
+        for (int i = 1; i < 4 && i < len - 2; i++) {
             for (int j = i + 1; j < i + 4 && j < len - 1; j++) {
                 for (int k = j + 1; k < j + 4 && k < len; k++) {
                     String a = s.substring(0, i);
@@ -563,11 +561,15 @@ public class FirstPage {
         if (s.isEmpty()) {
             return false;
         }
-        int num = Integer.parseInt(s);
-        if (num < 0 || num > 255) {
+        int m = s.length();
+        if (m > 3) {
             return false;
         }
-        return s.length() < 2 || s.charAt(0) != '0';
+        int value = Integer.parseInt(s);
+        if (m > 1 && s.charAt(0) == '0') {
+            return false;
+        }
+        return value <= 255;
     }
 
 

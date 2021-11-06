@@ -167,7 +167,6 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        Arrays.sort(nums);
         List<List<Integer>> result = new ArrayList<>();
         boolean[] used = new boolean[nums.length];
         interPermute(result, new ArrayList<>(), used, nums);
@@ -175,7 +174,7 @@ public class RecursiveSolution {
     }
 
     private void interPermute(List<List<Integer>> result, List<Integer> tmp, boolean[] used, int[] nums) {
-        if (tmp.size() == nums.length) {
+        if (tmp.size() == used.length) {
             result.add(new ArrayList<>(tmp));
             return;
         }
@@ -214,11 +213,11 @@ public class RecursiveSolution {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = 0; i < used.length; i++) {
             if (used[i]) {
                 continue;
             }
-            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+            if (i > 0 && nums[i] == nums[i - 1] && used[i - 1]) {
                 continue;
             }
             used[i] = true;

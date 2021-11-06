@@ -34,8 +34,9 @@ public class MyQueue {
         if (!popStack.isEmpty()) {
             return popStack.pop();
         }
-        while (!pushStack.empty()) {
-            popStack.push(pushStack.pop());
+        while (!pushStack.isEmpty()) {
+            Integer pop = pushStack.pop();
+            popStack.push(pop);
         }
         return popStack.pop();
     }
@@ -47,8 +48,9 @@ public class MyQueue {
         if (!popStack.isEmpty()) {
             return popStack.peek();
         }
-        while (!pushStack.empty()) {
-            popStack.push(pushStack.pop());
+        while (!pushStack.isEmpty()) {
+            Integer pop = pushStack.pop();
+            popStack.push(pop);
         }
         return popStack.peek();
     }

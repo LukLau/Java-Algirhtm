@@ -499,5 +499,44 @@ public class OftenSolution {
         return result;
     }
 
+    /**
+     * NC39 N皇后问题
+     *
+     * @param n int整型 the n
+     * @return int整型
+     */
+    public int Nqueen(int n) {
+        // write code here
+        if (n <= 0) {
+            return 0;
+        }
+        int[] dp = new int[n];
+        return countQueens(dp, 0, n);
+    }
+
+    private int countQueens(int[] dp, int row, int n) {
+        int count = 0;
+        if (row == n) {
+            return 1;
+        }
+        for (int j = 0; j < n; j++) {
+            if (validQueens(dp, row, j)) {
+                dp[row] = j;
+                count += countQueens(dp, row + 1, n);
+                dp[row] = -1;
+            }
+        }
+        return count;
+    }
+
+    private boolean validQueens(int[] dp, int row, int column) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (dp[i] == column || Math.abs(i - row) == Math.abs(dp[i] - column)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 }

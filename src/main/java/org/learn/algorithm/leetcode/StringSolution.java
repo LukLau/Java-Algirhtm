@@ -457,7 +457,7 @@ public class StringSolution {
             result = result * 10 + x % 10;
             x /= 10;
         }
-        return result == x || result / 10 == x;
+        return result / 10 == x || result == x;
     }
 
     /**

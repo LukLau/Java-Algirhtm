@@ -648,10 +648,10 @@ public class NormalSolution {
     public int minNumberDisappeared(int[] nums) {
         // write code here
         if (nums == null || nums.length == 0) {
-            return -1;
+            return 0;
         }
         for (int i = 0; i < nums.length; i++) {
-            while (nums[i] >= 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+            while (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
                 swap(nums, i, nums[i] - 1);
             }
         }
@@ -667,6 +667,38 @@ public class NormalSolution {
         int val = nums[i];
         nums[i] = nums[j];
         nums[j] = val;
+    }
+
+    /**
+     * NC133 链表的奇偶重排
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param head ListNode类
+     * @return ListNode类
+     */
+    public ListNode oddEvenList(ListNode head) {
+        // write code here
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode odd = new ListNode(0);
+        ListNode o1 = odd;
+
+        ListNode even = new ListNode(0);
+        ListNode e1 = even;
+        while (head != null) {
+            if (head.val % 2 == 1) {
+                o1.next = head;
+                o1 = o1.next;
+            } else {
+                e1.next = head;
+                e1 = e1.next;
+            }
+            head = head.next;
+        }
+        o1.next = even.next;
+        e1.next = null;
+        return odd.next;
     }
 
 

@@ -326,6 +326,8 @@ public class InterviewOffer {
     }
 
     /**
+     * NC100 将字符串转化为整数
+     *
      * @param str string字符串
      * @return int整型
      */
@@ -338,15 +340,14 @@ public class InterviewOffer {
         if (str.isEmpty()) {
             return 0;
         }
-
-        int index = 0;
+        long result = 0;
         int sign = 1;
+        int index = 0;
         char[] words = str.toCharArray();
-        if (words[index] == '+' || words[index] == '-') {
-            sign = words[index] == '+' ? 1 : -1;
+        if (words[index] == '-' || words[index] == '+') {
+            sign = words[index] == '-' ? -1 : 1;
             index++;
         }
-        long result = 0;
         while (index < words.length && Character.isDigit(words[index])) {
             result = result * 10 + Character.getNumericValue(words[index]);
             if (result > Integer.MAX_VALUE) {
@@ -354,7 +355,7 @@ public class InterviewOffer {
             }
             index++;
         }
-        return (int) (result * sign);
+        return (int) (sign * result);
     }
 
     /**
@@ -452,6 +453,7 @@ public class InterviewOffer {
     }
 
     /**
+     * NC48 在旋转过的有序数组中寻找目标值
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      *
      * @param nums   int整型一维数组
@@ -470,7 +472,7 @@ public class InterviewOffer {
             if (nums[mid] == target) {
                 return mid;
             } else if (nums[left] <= nums[mid]) {
-                if (target >= nums[left] && target < nums[mid]) {
+                if (target < nums[mid] && target >= nums[left]) {
                     right = mid - 1;
                 } else {
                     left = mid + 1;
@@ -635,12 +637,12 @@ public class InterviewOffer {
         if (num == null || num.length == 0 || size == 0) {
             return new ArrayList<>();
         }
-        LinkedList<Integer> linkedList = new LinkedList<>();
         ArrayList<Integer> result = new ArrayList<>();
+        LinkedList<Integer> linkedList = new LinkedList<>();
         for (int i = 0; i < num.length; i++) {
             int index = i - size + 1;
-            if (!linkedList.isEmpty() && linkedList.peek() < index) {
-                linkedList.poll();
+            if (!linkedList.isEmpty() && linkedList.peekFirst() < index) {
+                linkedList.pollFirst();
             }
             while (!linkedList.isEmpty() && num[linkedList.peekLast()] <= num[i]) {
                 linkedList.pollLast();
@@ -1607,8 +1609,7 @@ public class InterviewOffer {
             generate(result, open + 1, close, s + "(", n);
         }
         if (close < open) {
-            generate(result, open, close + 1, s + "(", n);
-
+            generate(result, open, close + 1, s + ")", n);
         }
     }
 
