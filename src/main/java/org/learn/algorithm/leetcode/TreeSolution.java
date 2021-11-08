@@ -24,6 +24,20 @@ public class TreeSolution {
      */
     private int maxPathSum = Integer.MIN_VALUE;
 
+    // 判断树是不是满足标准
+
+    public int minDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = minDepth(root.left);
+
+        int right = minDepth(root.right);
+
+        return 1 + Math.min(left, right);
+    }
+
+
     // 排序系列//
 
     public static void main(String[] args) {
@@ -44,6 +58,7 @@ public class TreeSolution {
     }
 
     /**
+     * 类似于归并排序
      * todo 插入排序
      * 147. Insertion Sort List
      *
@@ -51,6 +66,7 @@ public class TreeSolution {
      * @return
      */
     public ListNode insertionSortList(ListNode head) {
+
         return null;
     }
 
@@ -64,8 +80,8 @@ public class TreeSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode fast = head;
         ListNode slow = head;
+        ListNode fast = head;
         while (fast.next != null && fast.next.next != null) {
             slow = slow.next;
             fast = fast.next.next;
@@ -290,9 +306,6 @@ public class TreeSolution {
      */
     public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
         // write your code here
-        if (root == null || p == null) {
-            return null;
-        }
         Stack<TreeNode> stack = new Stack<>();
         TreeNode q = root;
         TreeNode prev = null;
@@ -306,6 +319,7 @@ public class TreeSolution {
                 return q;
             }
             prev = q;
+
             q = q.right;
         }
         return null;
@@ -426,7 +440,7 @@ public class TreeSolution {
      */
     public boolean isValidBST(TreeNode root) {
         if (root == null) {
-            return true;
+            return false;
         }
         Stack<TreeNode> stack = new Stack<>();
         TreeNode prev = null;
@@ -473,17 +487,17 @@ public class TreeSolution {
             return;
         }
         TreeNode first = null;
-
-        TreeNode second = root;
+        TreeNode second = null;
         Stack<TreeNode> stack = new Stack<>();
-        TreeNode p = root;
         TreeNode prev = null;
+        TreeNode p = root;
         while (!stack.isEmpty() || p != null) {
             while (p != null) {
                 stack.push(p);
                 p = p.left;
             }
             p = stack.pop();
+
             if (prev != null && prev.val >= p.val) {
                 if (first == null) {
                     first = prev;
@@ -491,6 +505,7 @@ public class TreeSolution {
                 second = p;
             }
             prev = p;
+
             p = p.right;
         }
         if (first != null) {
@@ -587,7 +602,7 @@ public class TreeSolution {
         if (root == null) {
             return true;
         }
-        return intervalSymmetric(root.left, root.right) && intervalSymmetric(root.right, root.left);
+        return intervalSymmetric(root.left, root.right);
     }
 
 
@@ -683,15 +698,16 @@ public class TreeSolution {
      * @return
      */
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        if (root == null || root == q || root == p) {
+        if (root == null || root == p || root == q) {
             return root;
         }
-        if (p.val < root.val && q.val < root.val) {
+        if (root.val > p.val && root.val > q.val) {
             return lowestCommonAncestor(root.left, p, q);
-        } else if (p.val > root.val && q.val > root.val) {
+        } else if (root.val < p.val && root.val < q.val) {
             return lowestCommonAncestor(root.right, p, q);
+        } else {
+            return root;
         }
-        return root;
     }
 
     /**
@@ -703,18 +719,17 @@ public class TreeSolution {
      * @return
      */
     public TreeNode lowestCommonAncestorII(TreeNode root, TreeNode p, TreeNode q) {
-        if (root == null || root == q || root == p) {
+        if (root == null || root == p || root == q) {
             return root;
         }
-        TreeNode left = lowestCommonAncestorII(root.left, p, q);
-
-        TreeNode right = lowestCommonAncestorII(root.right, p, q);
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
         if (left != null && right != null) {
             return root;
-        } else if (left == null && right != null) {
-            return right;
-        } else {
+        } else if (left != null) {
             return left;
+        } else {
+            return right;
         }
     }
 
@@ -729,18 +744,17 @@ public class TreeSolution {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        intervalTreePaths(result, "", root);
+        intervalBinaryTree(result, "", root);
         return result;
     }
 
     // --- //
-
-    private void intervalTreePaths(List<String> result, String s, TreeNode root) {
+    private void intervalBinaryTree(List<String> result, String s, TreeNode root) {
         if (root == null) {
             return;
         }
         if (s.isEmpty()) {
-            s += root.val;
+            s = s + root.val;
         } else {
             s = s + "->" + root.val;
         }
@@ -748,8 +762,8 @@ public class TreeSolution {
             result.add(s);
             return;
         }
-        intervalTreePaths(result, s, root.left);
-        intervalTreePaths(result, s, root.right);
+        intervalBinaryTree(result, s, root.left);
+        intervalBinaryTree(result, s, root.right);
     }
 
     /**
@@ -776,7 +790,7 @@ public class TreeSolution {
         if (root == null) {
             return false;
         }
-        if (root.left == null && root.right == null && root.val == targetSum) {
+        if (root.left == null && root.right == null && targetSum == root.val) {
             return true;
         }
         return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val);
@@ -849,12 +863,12 @@ public class TreeSolution {
      * @return
      */
     public Node connect(Node root) {
-        if (root == null) {
-            return null;
+        if (root == null || root.left == null) {
+            return root;
         }
         Node current = root;
         while (current.left != null) {
-            Node nextLevel = current.left;
+            Node tmp = current.left;
             while (current != null) {
                 current.left.next = current.right;
                 if (current.next != null) {
@@ -862,7 +876,7 @@ public class TreeSolution {
                 }
                 current = current.next;
             }
-            current = nextLevel;
+            current = tmp;
         }
         return root;
     }
@@ -948,8 +962,6 @@ public class TreeSolution {
         }
         return intervalSumNumbers(root.left, val * 10 + root.val)
                 + intervalSumNumbers(root.right, val * 10 + root.val);
-
-
     }
 
 

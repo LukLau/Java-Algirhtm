@@ -1802,6 +1802,51 @@ public class InterviewOffer {
         return result;
     }
 
+    /**
+     * 打印1到最大的n位数（Java）
+     *
+     * @param digit
+     */
+    public void printNthDigitNum(int digit) {
+        if (digit <= 0) {
+            return;
+        }
+        boolean overflow = false;
+        char[] result = new char[digit];
+        Arrays.fill(result, '0');
+        while (!overflow) {
+            int carry = 0;
+            for (int i = result.length - 1; i >= 0; i--) {
+                int val = Character.getNumericValue(result[i]) + carry;
+                if (i == result.length - 1) {
+                    val++;
+                }
+                if (val < 10) {
+                    result[i] = (char) (val + '0');
+                    printNum(result);
+                    break;
+                } else {
+                    if (i == 0) {
+                        overflow = true;
+                    } else {
+                        result[i] = '0';
+                        carry = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    private void printNum(char[] digit) {
+        StringBuilder builder = new StringBuilder();
+        for (char tmp : digit) {
+            if (!('0' == tmp && builder.length() == 0)) {
+                builder.append(tmp);
+            }
+        }
+        System.out.println(builder);
+    }
+
 
     /**
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可

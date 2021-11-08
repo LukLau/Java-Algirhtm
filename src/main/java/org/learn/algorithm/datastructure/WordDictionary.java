@@ -39,4 +39,8 @@ public class WordDictionary {
         dictionary.search(".a");
     }
 
+
+    public boolean startWith(String s) {
+        return trie.startsWith(s);
+    }
 }

@@ -9,7 +9,9 @@ import java.util.Stack;
  * @date 2021/4/16
  */
 public class MyQueue {
+
     private final Stack<Integer> pushStack;
+
     private final Stack<Integer> popStack;
 
     /**
@@ -59,7 +61,7 @@ public class MyQueue {
      * Returns whether the queue is empty.
      */
     public boolean empty() {
-        return popStack.isEmpty() && pushStack.empty();
+        return popStack.isEmpty() && !pushStack.isEmpty();
     }
 
 }

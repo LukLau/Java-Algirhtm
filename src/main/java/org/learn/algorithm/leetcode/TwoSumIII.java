@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class TwoSumIII {
 
-    private final Map<Integer, Integer> map = new HashMap<>();
+    private Map<Integer, Integer> map = new HashMap<>();
 
     /**
      * @param number: An integer
@@ -26,19 +26,17 @@ public class TwoSumIII {
      * @return: Find if there exists any pair of numbers which sum is equal to the value.
      */
     public boolean find(int value) {
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            Integer key = entry.getKey();
-            int remain = value - key;
-
-            if (remain == key) {
-                Integer count = entry.getValue();
-                return count > 1;
-            } else if (map.containsKey(remain)) {
+        // write your code here
+        for (Map.Entry<Integer, Integer> item : map.entrySet()) {
+            Integer key = item.getKey();
+            int diff = value - key;
+            if (diff == key) {
+                return item.getValue() >= 2;
+            } else if (map.containsKey(diff)) {
                 return true;
             }
         }
         return false;
-        // write your code here
     }
 
     public static void main(String[] args) {

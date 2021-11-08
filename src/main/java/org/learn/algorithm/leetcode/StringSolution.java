@@ -116,26 +116,26 @@ public class StringSolution {
         if (nums == null || nums.length == 0) {
             return new int[]{};
         }
-        LinkedList<Integer> deque = new LinkedList<>();
+        LinkedList<Integer> linkedList = new LinkedList<Integer>();
         List<Integer> result = new ArrayList<>();
         for (int i = 0; i < nums.length; i++) {
             int index = i - k + 1;
-            if (!deque.isEmpty() && index > deque.peekFirst()) {
-                deque.pollFirst();
+            if (!linkedList.isEmpty() && linkedList.peekFirst() < index) {
+                linkedList.poll();
             }
-            while (!deque.isEmpty() && nums[i] >= nums[deque.peekLast()]) {
-                deque.pollLast();
+            while (!linkedList.isEmpty() && nums[linkedList.peekLast()] <= nums[i]) {
+                linkedList.pollLast();
             }
-            deque.offer(i);
+            linkedList.offer(i);
             if (index >= 0) {
-                result.add(nums[deque.peekFirst()]);
+                result.add(nums[linkedList.peekFirst()]);
             }
         }
-        int[] ans = new int[result.size()];
+        int[] tmp = new int[result.size()];
         for (int i = 0; i < result.size(); i++) {
-            ans[i] = result.get(i);
+            tmp[i] = result.get(i);
         }
-        return ans;
+        return tmp;
     }
 
     // 重复字符串问题 //
@@ -147,6 +147,7 @@ public class StringSolution {
      * @return: the length of the longest substring T that contains at most 2 distinct characters
      */
     public int lengthOfLongestSubstringTwoDistinct(String s) {
+        // Write your code here
         if (s == null || s.isEmpty()) {
             return 0;
         }
@@ -154,27 +155,23 @@ public class StringSolution {
         int result = 0;
         int left = 0;
         char[] words = s.toCharArray();
-        int end = 0;
-        while (end < words.length) {
-            char word = words[end++];
-            Integer num = map.getOrDefault(word, 0);
-
-            map.put(word, num + 1);
-
+        for (int i = 0; i < words.length; i++) {
+            char tmp = words[i];
+            Integer count = map.getOrDefault(tmp, 0);
+            map.put(tmp, count + 1);
             while (map.size() > 2) {
-                char leftWord = words[left++];
-                Integer tmp = map.get(leftWord);
-                tmp--;
-                if (tmp == 0) {
-                    map.remove(leftWord);
+                char leftEdge = words[left++];
+                Integer leftCount = map.get(leftEdge);
+                leftCount--;
+                if (leftCount == 0) {
+                    map.remove(leftEdge);
                 } else {
-                    map.put(leftWord, tmp);
+                    map.put(leftEdge, leftCount);
                 }
             }
-            result = Math.max(result, end - left);
+            result = Math.max(result, i - left + 1);
         }
         return result;
-        // Write your code here
     }
 
     /**
@@ -189,28 +186,21 @@ public class StringSolution {
             return s.isEmpty();
         }
         int m = s.length();
-
         int n = p.length();
-
         boolean[][] dp = new boolean[m + 1][n + 1];
-
         dp[0][0] = true;
-
         for (int j = 1; j <= n; j++) {
             dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j - 2];
         }
-        char[] words = s.toCharArray();
-        char[] tmp = p.toCharArray();
-
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                if (words[i - 1] == tmp[j - 1] || tmp[j - 1] == '.') {
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
                     dp[i][j] = dp[i - 1][j - 1];
-                } else if (tmp[j - 1] == '*') {
-                    if (words[i - 1] != tmp[j - 2] && tmp[j - 2] != '.') {
+                } else if (p.charAt(j - 1) == '*') {
+                    if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
                         dp[i][j] = dp[i][j - 2];
                     } else {
-                        dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
+                        dp[i][j] = dp[i][j - 1] || dp[i - 1][j] || dp[i][j - 2];
                     }
                 }
             }
@@ -233,23 +223,17 @@ public class StringSolution {
             return s.isEmpty();
         }
         int m = s.length();
-        int n = p.length();
-        boolean[][] dp = new boolean[m + 1][n + 1];
-        dp[0][0] = true;
-        for (int j = 1; j <= n; j++) {
-            dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j - 1];
-        }
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?') {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else if (p.charAt(j - 1) == '*') {
-                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
-                }
-            }
-        }
-        return dp[m][n];
 
+        int n = p.length();
+
+        boolean[][] dp = new boolean[m + 1][n + 1];
+
+        dp[0][0] = true;
+
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = p.charAt(j - 1) == '*';
+        }
+        return false;
     }
 
     /**
@@ -262,17 +246,20 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        int result = 0;
-        Map<Character, Integer> map = new HashMap<>();
         int left = 0;
+
+        Map<Character, Integer> map = new HashMap<>();
+        int result = 0;
+
         char[] words = s.toCharArray();
+
         for (int i = 0; i < words.length; i++) {
             if (map.containsKey(words[i])) {
                 left = Math.max(left, map.get(words[i]) + 1);
             }
+            result = Math.max(result, i - left + 1);
 
             map.put(words[i], i);
-            result = Math.max(result, i - left + 1);
         }
         return result;
     }
@@ -281,17 +268,16 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        int[] hash = new int[256];
+        int result = 0;
+        int[] hash = new int[512];
         int left = 0;
         char[] words = s.toCharArray();
-        int result = 0;
         for (int i = 0; i < words.length; i++) {
             left = Math.max(left, hash[s.charAt(i)]);
 
             result = Math.max(result, i - left + 1);
 
             hash[s.charAt(i)] = i + 1;
-
         }
         return result;
     }
@@ -300,24 +286,24 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return "";
         }
-
-        int len = s.length();
-        boolean[][] dp = new boolean[len][len];
-        int result = Integer.MIN_VALUE;
-        int left = 0;
-        for (int i = 0; i < len; i++) {
+        int m = s.length();
+        boolean[][] dp = new boolean[m][m];
+        int result = 0;
+        int head = 0;
+        for (int i = 0; i < m; i++) {
             for (int j = 0; j <= i; j++) {
-                if (s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1])) {
+                if (s.charAt(j) == s.charAt(i) && (i - j <= 2 || dp[j + 1][i + 1])) {
                     dp[j][i] = true;
                 }
                 if (dp[j][i] && i - j + 1 > result) {
-                    left = j;
                     result = i - j + 1;
+
+                    head = j;
                 }
             }
         }
-        if (result != Integer.MIN_VALUE) {
-            return s.substring(left, left + result);
+        if (result != 0) {
+            return s.substring(head, head + result);
         }
         return "";
     }
@@ -425,16 +411,13 @@ public class StringSolution {
         int m = s.length();
         int[] cut = new int[m];
         boolean[][] dp = new boolean[m][m];
+        dp[0][0] = true;
         for (int i = 1; i < m; i++) {
             int minCut = i;
             for (int j = 0; j <= i; j++) {
-                dp[j][i] = s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1]);
+                dp[j][i] = s.charAt(j) == s.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1]);
                 if (dp[j][i]) {
-                    if (j == 0) {
-                        minCut = 0;
-                    } else {
-                        minCut = Math.min(minCut, 1 + cut[j - 1]);
-                    }
+                    minCut = j == 0 ? 0 : Math.min(cut[j - 1] + 1, minCut);
                 }
             }
             cut[i] = minCut;
@@ -469,21 +452,25 @@ public class StringSolution {
      */
     public boolean canPermutePalindrome(String s) {
         if (s == null || s.isEmpty()) {
-            return true;
+            return false;
         }
-        boolean odd = false;
+        Map<Character, Integer> map = new HashMap<>();
         char[] words = s.toCharArray();
-        int[] hash = new int[256];
         for (char word : words) {
-            hash[word - 'a']++;
+            Integer count = map.getOrDefault(word, 0);
+            count++;
+            map.put(word, count);
         }
-        for (int num : hash) {
-            if (num % 2 != 0) {
-                if (odd) {
+        boolean existOdd = false;
+        for (Map.Entry<Character, Integer> item : map.entrySet()) {
+            Integer count = item.getValue();
+            if (count % 2 != 0) {
+                if (existOdd) {
                     return false;
                 }
-                odd = true;
+                existOdd = true;
             }
+
         }
         return true;
     }
@@ -500,52 +487,53 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
-        List<String> result = new ArrayList<>();
         Map<Character, Integer> map = new HashMap<>();
         char[] words = s.toCharArray();
+        Character oddEven = null;
         for (char word : words) {
             Integer count = map.getOrDefault(word, 0);
-            count++;
-            map.put(word, count);
+            map.put(word, count + 1);
         }
-        Character oddCharacter = null;
         StringBuilder builder = new StringBuilder();
-        Set<Map.Entry<Character, Integer>> entry = map.entrySet();
-        for (Map.Entry<Character, Integer> item : entry) {
-            Character key = item.getKey();
+        for (Map.Entry<Character, Integer> item : map.entrySet()) {
             Integer count = item.getValue();
-            if (count % 2 == 1) {
-                if (oddCharacter != null) {
-                    return result;
+            Character key = item.getKey();
+            if (count % 2 != 0) {
+                if (oddEven != null) {
+                    return new ArrayList<>();
                 }
-                oddCharacter = key;
+                oddEven = key;
             }
             for (int i = 0; i < count / 2; i++) {
                 builder.append(key);
             }
         }
-        char[] items = builder.toString().toCharArray();
-        List<String> itemList = new ArrayList<>();
-        constructItem(itemList, 0, items);
-        for (String item : itemList) {
-            String reverse = new StringBuilder(item).reverse().toString();
-            result.add(item + (oddCharacter == null ? reverse : oddCharacter + reverse));
-        }
+        List<String> result = new ArrayList<>();
+        boolean[] used = new boolean[builder.toString().length()];
+
+        intervalPalindrome(oddEven, used, builder.toString().toCharArray(), new StringBuilder(), result);
+
         return result;
     }
 
-    private void constructItem(List<String> itemList, int start, char[] items) {
-        if (start == items.length) {
-            itemList.add(String.valueOf(items));
+    private void intervalPalindrome(Character odd, boolean[] used, char[] words, StringBuilder builder, List<String> ans) {
+        if (builder.length() == words.length) {
+            String item = builder.toString() + (odd != null ? odd : "") + builder.reverse().toString();
+            ans.add(item);
+            builder.reverse();
             return;
         }
-        for (int i = start; i < items.length; i++) {
-            if (i > start && items[i] == items[i - 1]) {
+        for (int i = 0; i < words.length; i++) {
+            if (i > 0 && (words[i] == words[i - 1]) && !used[i - 1]) {
                 continue;
             }
-            swapItem(items, i, start);
-            constructItem(itemList, start + 1, items);
-            swapItem(items, i, start);
+            if (!used[i]) {
+                used[i] = true;
+                builder.append(words[i]);
+                intervalPalindrome(odd, used, words, builder, ans);
+                used[i] = false;
+                builder.deleteCharAt(builder.length() - 1);
+            }
         }
     }
 

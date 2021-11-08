@@ -113,6 +113,7 @@ public class BinarySolution {
         }
         result[0] = left;
         right = nums.length - 1;
+
         while (left < right) {
             int mid = left + (right - left) / 2 + 1;
             if (nums[mid] > target) {
@@ -123,6 +124,22 @@ public class BinarySolution {
         }
         result[1] = left;
         return result;
+    }
+
+    public int searchInsert(int[] nums, int target) {
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
     }
 
 
@@ -203,17 +220,17 @@ public class BinarySolution {
         if (nums == null || nums.length == 0) {
             return -1;
         }
-        int left = 0;
-        int right = nums.length - 1;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < nums[mid + 1]) {
-                left = mid + 1;
+        int start = 0;
+        int end = nums.length - 1;
+        while (start < end) {
+            int mid = start + (end - start) / 2;
+            if (nums[mid] > nums[mid + 1]) {
+                end = mid;
             } else {
-                right = mid;
+                start = mid + 1;
             }
         }
-        return left;
+        return start;
     }
 
 
@@ -252,6 +269,7 @@ public class BinarySolution {
 
     /**
      * 240. Search a 2D Matrix II
+     * todo
      *
      * @param matrix
      * @param target
@@ -281,8 +299,8 @@ public class BinarySolution {
 
     public static void main(String[] args) {
         BinarySolution solution = new BinarySolution();
-        int[] nums = new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1};
-        solution.searchII(nums, 2);
+        int[] nums = new int[]{10, 10, 10, 1, 10};
+        solution.findMinII(nums);
     }
 
 }

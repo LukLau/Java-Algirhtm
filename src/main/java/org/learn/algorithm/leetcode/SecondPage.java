@@ -60,23 +60,21 @@ public class SecondPage {
         Map<Integer, Integer> map = new HashMap<>();
         int result = 0;
         for (int num : nums) {
-            if (map.containsKey(num)) {
-                continue;
+            if (!map.containsKey(num)) {
+                Integer left = map.getOrDefault(num - 1, 0);
+
+                Integer right = map.getOrDefault(num + 1, 0);
+
+                int val = left + right + 1;
+
+                result = Math.max(result, val);
+
+                map.put(num - left, val);
+                map.put(num + right, val);
+                map.put(num, val);
             }
-            Integer left = map.getOrDefault(num - 1, 0);
-
-            Integer right = map.getOrDefault(num + 1, 0);
-
-            int val = left + right + 1;
-            result = Math.max(result, val);
-
-            map.put(num, val);
-            map.put(num - left, val);
-            map.put(num + right, val);
-
         }
         return result;
-
     }
 
 

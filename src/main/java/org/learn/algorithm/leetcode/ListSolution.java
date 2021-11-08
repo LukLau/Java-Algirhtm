@@ -268,6 +268,7 @@ public class ListSolution {
         }
         RandomListNode copyOfHead = head.next;
         current = head;
+
         while (current.next != null) {
             RandomListNode tmp = current.next;
             current.next = tmp.next;
@@ -340,30 +341,25 @@ public class ListSolution {
         ListNode slow = head;
         ListNode fast = head;
         while (fast.next != null && fast.next.next != null) {
-            fast = fast.next.next;
-
+            fast = fast.next;
             slow = slow.next;
         }
-        ListNode reverse = reverse(slow.next);
+        ListNode second = slow.next;
 
         slow.next = null;
 
-        fast = head;
+        ListNode reverse = reverse(second);
 
-        while (fast != null && reverse != null) {
-            ListNode tmp = fast.next;
+        ListNode first = head;
 
-            ListNode reverseTmp = reverse.next;
-
-            fast.next = reverse;
-
-            reverse.next = tmp;
-
-            fast = tmp;
-
-            reverse = reverseTmp;
+        while (first != null && reverse != null) {
+            ListNode next = first.next;
+            ListNode reverseNext = reverse.next;
+            first.next = reverse;
+            reverse.next = next;
+            first = next;
+            reverse = reverseNext;
         }
-
 
     }
 

@@ -14,7 +14,7 @@ public class MathSolution {
     public static void main(String[] args) {
         MathSolution solution = new MathSolution();
         int[] nums = new int[]{5, 4, 4, 3, 2, 1};
-        solution.findDuplicate(nums);
+        solution.nthUglyNumber(10);
     }
 
     // 素数相关
@@ -33,7 +33,7 @@ public class MathSolution {
             if (!dp[i]) {
                 count++;
                 for (int j = 2; j * i < n; j++) {
-                    dp[i * j] = true;
+                    dp[j * i] = true;
                 }
             }
         }
@@ -49,7 +49,7 @@ public class MathSolution {
      * @return
      */
     public int divide(int dividend, int divisor) {
-        if (dividend == Integer.MIN_VALUE && divisor == -1) {
+        if (divisor == -1 && dividend == Integer.MIN_VALUE) {
             return Integer.MAX_VALUE;
         }
         if (divisor == 0) {
@@ -70,7 +70,6 @@ public class MathSolution {
             result += multi;
         }
         return (int) (result * sign);
-
     }
 
 
@@ -81,17 +80,28 @@ public class MathSolution {
      * @param n
      * @return
      */
-    public double myPow(double x, int n) {
+    public double myPowII(double x, int n) {
         double result = 1.0;
-        long p = Math.abs((long) n);
-        while (p != 0) {
-            if (p % 2 != 0) {
+        long num = Math.abs((long) n);
+        while (num != 0) {
+            if (num % 2 != 0) {
                 result *= x;
             }
             x *= x;
-            p >>= 1;
+            num >>= 1;
         }
         return n < 0 ? 1 / result : result;
+    }
+
+    public double myPow(double x, int n) {
+        if (n == 0) {
+            return 1;
+        }
+        if (n < 0) {
+            n = -n;
+            x = 1 / x;
+        }
+        return n % 2 == 0 ? myPow(x * x, n / 2) : x * myPow(x * x, n / 2);
     }
 
     /**
@@ -101,46 +111,34 @@ public class MathSolution {
      * @return
      */
     public boolean isNumber(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return false;
         }
-        s = s.trim();
-        if (s.isEmpty()) {
-            return true;
-        }
-        boolean seenNumber = false;
         boolean seenNumberAfterE = true;
+        boolean seenNumber = true;
         boolean seenDigit = false;
-        boolean seenE = false;
-        char[] words = s.toCharArray();
-        for (int i = 0; i < words.length; i++) {
-            char tmp = words[i];
-            if (Character.isDigit(tmp)) {
-                seenNumber = true;
-                seenNumberAfterE = true;
-            } else if (tmp == 'e' || tmp == 'E') {
-                if (seenE || i == 0) {
-                    return false;
-                }
-                if (!seenNumber) {
-                    return false;
-                }
-                seenE = true;
-                seenNumberAfterE = false;
-            } else if (tmp == '-' || tmp == '+') {
-                if (i > 0 && (words[i - 1] != 'e' && words[i - 1] != 'E')) {
-                    return false;
-                }
-            } else if (tmp == '.') {
-                if (seenE || seenDigit) {
-                    return false;
-                }
-                seenDigit = true;
-            } else {
-                return false;
-            }
+        return false;
+    }
+
+
+    public String addBinary(String a, String b) {
+        if (a == null || b == null) {
+            return "";
         }
-        return seenNumber && seenNumberAfterE;
+        int m = a.length() - 1;
+
+        int n = b.length() - 1;
+
+        int carry = 0;
+        StringBuilder builder = new StringBuilder();
+        while (m >= 0 || n >= 0 || carry != 0) {
+            int val = (m >= 0 ? Character.getNumericValue(a.charAt(m--)) : 0) + (n >= 0 ? Character.getNumericValue(b.charAt(n--)) : 0) + carry;
+
+            builder.append(val % 2);
+
+            carry = val / 2;
+        }
+        return builder.reverse().toString();
     }
 
 
@@ -166,15 +164,19 @@ public class MathSolution {
                 endIndex++;
             }
             boolean lastRow = endIndex == words.length;
-            int blankSpace = maxWidth - line + 1;
-            int wordCount = endIndex - startIndex;
+            int countWord = endIndex - startIndex;
             StringBuilder builder = new StringBuilder();
-            if (wordCount == 1) {
+
+            if (countWord == 1) {
                 builder.append(words[startIndex]);
             } else {
-                int space = lastRow ? 1 : 1 + blankSpace / (wordCount - 1);
-                int extra = lastRow ? 0 : blankSpace % (wordCount - 1);
-                builder.append(constructRow(words, startIndex, endIndex, space, extra));
+                int blankSpace = maxWidth - line + 1;
+
+                int countBlankSpace = lastRow ? 1 : 1 + blankSpace / (countWord - 1);
+
+                int extraBlankSpace = lastRow ? 0 : blankSpace % (countWord - 1);
+
+                builder.append(constructRow(words, startIndex, endIndex, countBlankSpace, extraBlankSpace));
             }
             result.add(trimRow(builder.toString(), maxWidth));
             startIndex = endIndex;
@@ -231,30 +233,15 @@ public class MathSolution {
      * @return
      */
     public List<Integer> grayCode(int n) {
-        return null;
+        List<Integer> result = new ArrayList<>();
+        int iterator = (int) Math.pow(2, n);
+        for (int i = 0; i < iterator; i++) {
+            int val = (i >> 1) ^ i;
+            result.add(val);
+        }
+        return result;
     }
 
-
-    /**
-     * todo
-     * 91. Decode Ways
-     *
-     * @param s
-     * @return
-     */
-    public int numDecodings(String s) {
-        if (s.startsWith("0")) {
-            s = s.substring(0, s.length() - 1);
-        }
-        int m = s.length();
-        StringBuilder builder = new StringBuilder();
-        for (int i = m - 1; i >= 0; i--) {
-            char tmp = s.charAt(i);
-            char t = (char) ((tmp - '1') % 26 + 'A');
-            builder.append(t);
-        }
-        return builder.length();
-    }
 
     /**
      * todo
@@ -269,37 +256,26 @@ public class MathSolution {
         }
         int result = 0;
         for (int i = 0; i < points.length; i++) {
-            int overflow = 0;
             Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
-            int count = 0;
+            int overlap = 0;
+            int number = 0;
             for (int j = i + 1; j < points.length; j++) {
                 int x = points[j][0] - points[i][0];
                 int y = points[j][1] - points[i][1];
-
                 if (x == 0 && y == 0) {
-                    overflow++;
+                    overlap++;
                     continue;
                 }
                 int gcd = gcd(x, y);
-
                 x /= gcd;
-
                 y /= gcd;
-
-                if (!map.containsKey(x)) {
-                    Map<Integer, Integer> tmp = new HashMap<>();
-                    tmp.put(y, 1);
-                    map.put(x, tmp);
-                } else {
-                    Map<Integer, Integer> tmp = map.get(x);
-
-                    Integer num = tmp.getOrDefault(y, 0);
-
-                    tmp.put(y, num + 1);
-                }
-                count = Math.max(count, map.get(x).get(y));
+                Map<Integer, Integer> tmp = map.getOrDefault(x, new HashMap<>());
+                Integer count = tmp.getOrDefault(y, 0);
+                tmp.put(y, count + 1);
+                map.put(x, tmp);
+                number = Math.max(number, map.get(x).get(y));
             }
-            result = Math.max(result, count + 1 + overflow);
+            result = Math.max(result, 1 + overlap + number);
         }
         return result;
     }
@@ -343,6 +319,9 @@ public class MathSolution {
      * @return
      */
     public int singleNumber(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
         int result = 0;
         for (int num : nums) {
             result ^= num;
@@ -381,20 +360,41 @@ public class MathSolution {
         if (nums == null || nums.length == 0) {
             return new int[]{};
         }
+        int base = 0;
+        for (int num : nums) {
+            base ^= num;
+        }
+        base &= -base;
         int[] result = new int[2];
+        for (int num : nums) {
+            if ((num & base) != 0) {
+                result[0] ^= num;
+            } else {
+                result[1] ^= num;
+            }
+        }
+        return result;
+    }
+
+
+    public int[] singleNumberIIIV2(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
         int base = 0;
         for (int num : nums) {
             base ^= num;
         }
         int index = 0;
         for (int i = 0; i < 32; i++) {
-            if ((base & 1 << i) != 0) {
+            if ((base & (1 << i)) != 0) {
                 index = i;
                 break;
             }
         }
+        int[] result = new int[2];
         for (int num : nums) {
-            if ((num & (1 << index)) != 0) {
+            if ((num & (1 << index)) == 0) {
                 result[0] ^= num;
             } else {
                 result[1] ^= num;
@@ -414,7 +414,7 @@ public class MathSolution {
         int result = 0;
         for (int i = 0; i < 32; i++) {
             result <<= 1;
-            if ((n & 1) == 1) {
+            if ((n & 1) != 0) {
                 result++;
             }
             n >>= 1;
@@ -459,13 +459,28 @@ public class MathSolution {
      * @return
      */
     public int rangeBitwiseAnd(int m, int n) {
-        return -1;
+        while (m < n) {
+            n = n & (n - 1);
+        }
+        return n;
+    }
+
+
+    public int rangeBitwiseAndV2(int m, int n) {
+        int shiftCount = 0;
+        while (m != n) {
+            m >>= 1;
+            n >>= 1;
+            shiftCount++;
+        }
+        return m << shiftCount;
+
     }
 
 
     /**
      * 233. Number of Digit One
-     * todo
+     * todo 需要数学规律
      *
      * @param n
      * @return
@@ -532,28 +547,29 @@ public class MathSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        List<Integer> result = new ArrayList<>();
         int candidateA = nums[0];
         int candidateB = nums[0];
+
         int countA = 0;
         int countB = 0;
-        for (int num : nums) {
-            if (num == candidateA) {
+
+        for (int number : nums) {
+            if (number == candidateA) {
                 countA++;
                 continue;
             }
-            if (num == candidateB) {
+            if (number == candidateB) {
                 countB++;
                 continue;
             }
             if (countA == 0) {
+                candidateA = number;
                 countA = 1;
-                candidateA = num;
                 continue;
             }
             if (countB == 0) {
+                candidateB = number;
                 countB = 1;
-                candidateB = num;
                 continue;
             }
             countA--;
@@ -568,6 +584,7 @@ public class MathSolution {
                 countB++;
             }
         }
+        List<Integer> result = new ArrayList<>();
         if (3 * countA > nums.length) {
             result.add(candidateA);
         }
@@ -575,7 +592,6 @@ public class MathSolution {
             result.add(candidateB);
         }
         return result;
-
     }
 
 
@@ -596,15 +612,13 @@ public class MathSolution {
             if ("+".equals(token)) {
                 stack.push(stack.pop() + stack.pop());
             } else if ("-".equals(token)) {
-                Integer first = stack.pop();
-                Integer second = stack.pop();
-                stack.push(second - first);
+                stack.push(-1 * stack.pop() + stack.pop());
             } else if ("*".equals(token)) {
                 stack.push(stack.pop() * stack.pop());
             } else if ("/".equals(token)) {
-                Integer first = stack.pop();
-                Integer second = stack.pop();
-                stack.push(second / first);
+                int second = stack.pop();
+                int first = stack.pop();
+                stack.push(first / second);
             } else {
                 stack.push(Integer.parseInt(token));
             }
@@ -619,41 +633,39 @@ public class MathSolution {
      * @return
      */
     public int calculate(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return 0;
         }
-        s = s.trim();
-        if (s.isEmpty()) {
-            return 0;
-        }
-        int sign = 1;
-        char[] words = s.toCharArray();
-        int endIndex = 0;
+        int len = s.length();
         int result = 0;
+        int sign = 1;
+        int endIndex = 0;
         Stack<Integer> stack = new Stack<>();
-        while (endIndex < words.length) {
-            if (Character.isDigit(words[endIndex])) {
+        while (endIndex < len) {
+            if (Character.isDigit(s.charAt(endIndex))) {
                 int tmp = 0;
-                while (endIndex < words.length && Character.isDigit(words[endIndex])) {
-                    tmp = tmp * 10 + Character.getNumericValue(words[endIndex]);
-                    endIndex++;
+                while (endIndex < len && Character.isDigit(s.charAt(endIndex))) {
+                    tmp = tmp * 10 + Character.getNumericValue(s.charAt(endIndex++));
                 }
-                result += tmp * sign;
-            } else {
-                if (words[endIndex] == '+' || words[endIndex] == '-') {
-                    sign = words[endIndex] == '+' ? 1 : -1;
-                }
-                if (words[endIndex] == '(') {
-                    stack.push(result);
-                    stack.push(sign);
-                    sign = 1;
-                    result = 0;
-                }
-                if (words[endIndex] == ')') {
-                    result = result * stack.pop() + stack.pop();
-                }
-                endIndex++;
+                result += sign * tmp;
             }
+            if (endIndex != len && s.charAt(endIndex) != ' ') {
+                if (s.charAt(endIndex) != ' ') {
+                    if (s.charAt(endIndex) == '(') {
+                        stack.push(result);
+                        stack.push(sign);
+                        result = 0;
+                        sign = 1;
+                    } else if (s.charAt(endIndex) == ')') {
+                        result = result * stack.pop() + stack.pop();
+                    } else if (s.charAt(endIndex) == '+') {
+                        sign = 1;
+                    } else {
+                        sign = -1;
+                    }
+                }
+            }
+            endIndex++;
         }
         return result;
     }
@@ -666,53 +678,105 @@ public class MathSolution {
      * @return
      */
     public int calculateII(String s) {
-        if (s == null) {
-            return 0;
-        }
-        s = s.trim();
-
-        // trim blank space
-        if (s.isEmpty()) {
+        if (s == null || s.isEmpty()) {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
-        int sign;
-
-        // virtual prefix sign e.g, 1-2/2 => +1-2/2
-        char character = '+';
-        int endIndex = 0;
-        char[] words = s.toCharArray();
-        while (endIndex < words.length) {
-
-            // from previous sign -> next sign
-            // get number
-            if (Character.isDigit(words[endIndex])) {
-                int num = 0;
-                while (endIndex < words.length && Character.isDigit(words[endIndex])) {
-                    num = num * 10 + Character.getNumericValue(words[endIndex]);
-                    endIndex++;
+        int tmp = 0;
+        int len = s.length();
+        int startIndex = 0;
+        char sign = '+';
+        while (startIndex <= len) {
+            if (startIndex < len && Character.isDigit(s.charAt(startIndex))) {
+                while (startIndex < len && Character.isDigit(s.charAt(startIndex))) {
+                    tmp = tmp * 10 + Character.getNumericValue(s.charAt(startIndex++));
                 }
-                stack.push(num);
             }
-            // number need sign
-            // character mean prefix sign
-            if (endIndex == words.length || words[endIndex] != ' ') {
-                if (character == '+' || character == '-') {
-                    sign = character == '+' ? 1 : -1;
-                    stack.push(sign * stack.pop());
-                } else if (character == '*') {
-                    Integer pop = stack.pop();
-                    stack.push(pop * stack.pop());
-                } else if (character == '/') {
-                    Integer second = stack.pop();
-                    Integer first = stack.pop();
+            if (startIndex == len || s.charAt(startIndex) != ' ') {
+                if (sign == '+') {
+                    stack.push(tmp);
+                }
+                if (sign == '-') {
+                    stack.push(-tmp);
+                } else if (sign == '*') {
+                    stack.push(stack.pop() * tmp);
+                } else if (sign == '/') {
+                    stack.push(stack.pop() / tmp);
+                }
+                tmp = 0;
+                if (startIndex != len) {
+                    sign = s.charAt(startIndex);
+                }
+            }
+            startIndex++;
+        }
+        int result = 0;
+        for (Integer num : stack) {
+            result += num;
+        }
+        return result;
+    }
+
+
+    /**
+     * @param s: the expression string
+     * @return: the answer
+     */
+    public int calculateIII(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int startIndex = 0;
+        int len = s.length();
+        char sign = '+';
+        Stack<Integer> stack = new Stack<>();
+        while (startIndex <= len) {
+            if (startIndex < len && s.charAt(startIndex) == '(') {
+                int tmpIndex = startIndex;
+                int count = 0;
+                while (tmpIndex < len) {
+                    char current = s.charAt(tmpIndex);
+                    if (current != '(' && current != ')') {
+                        tmpIndex++;
+                        continue;
+                    }
+                    if (current == '(') {
+                        count++;
+                    }
+                    if (current == ')') {
+                        count--;
+                    }
+                    if (count == 0) {
+                        break;
+                    }
+                    tmpIndex++;
+                }
+                int val = calculateIII(s.substring(startIndex + 1, tmpIndex));
+                stack.push(val);
+                startIndex = tmpIndex;
+            }
+            if (startIndex < len && Character.isDigit(s.charAt(startIndex))) {
+                int tmp = 0;
+                while (startIndex < len && Character.isDigit(s.charAt(startIndex))) {
+                    tmp = tmp * 10 + Character.getNumericValue(s.charAt(startIndex++));
+                }
+                stack.push(tmp);
+            }
+            if (startIndex == len || s.charAt(startIndex) != ' ') {
+                if (sign == '-') {
+                    stack.push(-1 * stack.pop());
+                } else if (sign == '*') {
+                    stack.push(stack.pop() * stack.pop());
+                } else if (sign == '/') {
+                    int second = stack.pop();
+                    int first = stack.pop();
                     stack.push(first / second);
                 }
-                if (endIndex != words.length) {
-                    character = words[endIndex];
+                if (startIndex != len) {
+                    sign = s.charAt(startIndex);
                 }
             }
-            endIndex++;
+            startIndex++;
         }
         int result = 0;
         for (Integer tmp : stack) {
@@ -728,23 +792,26 @@ public class MathSolution {
     /**
      * 263. Ugly Number
      *
-     * @param num
+     * @param n
      * @return
      */
-    public boolean isUgly(int num) {
-        if (num <= 1) {
+    public boolean isUgly(int n) {
+        if (n <= 0) {
             return false;
         }
+        if (n < 7) {
+            return true;
+        }
         while (true) {
-            if (num == 2 || num == 3 || num == 5) {
+            if (n == 2 || n == 3 || n == 5) {
                 return true;
             }
-            if (num % 5 == 0) {
-                num /= 5;
-            } else if (num % 3 == 0) {
-                num /= 3;
-            } else if (num % 2 == 0) {
-                num /= 2;
+            if (n % 2 == 0) {
+                n /= 2;
+            } else if (n % 3 == 0) {
+                n /= 3;
+            } else if (n % 5 == 0) {
+                n /= 5;
             } else {
                 return false;
             }
@@ -773,25 +840,46 @@ public class MathSolution {
      * @return
      */
     public int nthUglyNumber(int n) {
-        if (n < 1) {
+        if (n < 7) {
+            return n;
+        }
+        int index2 = 0;
+        int index3 = 0;
+        int index5 = 0;
+        int[] result = new int[n];
+        result[0] = 1;
+        int index = 1;
+        while (index < n) {
+            int val = Math.min(Math.min(result[index2] * 2, result[index3] * 3), result[index5] * 5);
+            if (val == result[index2] * 2) {
+                index2++;
+            }
+            if (val == result[index3] * 3) {
+                index3++;
+            }
+            if (val == result[index5] * 5) {
+                index5++;
+            }
+            result[index] = val;
+
+            index++;
+        }
+        return result[n - 1];
+    }
+
+
+    /**
+     * todo
+     * 274. H-Index
+     *
+     * @param citations
+     * @return
+     */
+    public int hIndex(int[] citations) {
+        if (citations == null || citations.length == 0) {
             return 0;
         }
-        int idx2 = 0, idx3 = 0, idx5 = 0, i = 1;
-        int[] ans = new int[n];
-        ans[0] = 1;
-        while (i < n) {
-            int tmp = Math.min(Math.min(ans[idx2] * 2, ans[idx3] * 3), ans[idx5] * 5);
-            if (tmp == ans[idx2] * 2) {
-                idx2++;
-            } else if (tmp == ans[idx3] * 3) {
-                idx3++;
-            } else if (tmp == ans[idx5] * 5) {
-                idx5++;
-            }
-            ans[i++] = tmp;
-
-        }
-        return ans[n - 1];
+        return 0;
 
     }
 
@@ -850,5 +938,37 @@ public class MathSolution {
         return index;
     }
 
+    // 阿拉伯数字转中文
 
+
+    public String convertToArab(int nums) {
+        String[] one = new String[]{"零", "一", "二", "三", "四", "五", "六", "七", "八", "九"};
+        String[] two = new String[]{"", "十", "百", "千"};
+        String[] three = new String[]{"", "万", "亿", "万亿"};
+        String result = "";
+        while (nums != 0) {
+            int remain = nums % 10000;
+
+            String desc = getDesc(remain, one, two);
+
+            if (nums / 10000 != 0) {
+                result = three[remain / 10000] + result;
+            }
+            result += desc;
+
+            nums /= 10000;
+        }
+        return result;
+    }
+
+    private String getDesc(int remain, String[] one, String[] two) {
+        if (remain == 0) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 4; i++) {
+
+        }
+        return null;
+    }
 }

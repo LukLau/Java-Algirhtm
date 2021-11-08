@@ -22,16 +22,32 @@ public class GreedySolution {
             return 0;
         }
         int step = 0;
-        int furthest = 0;
+
         int currentIndex = 0;
+
+        int furthestIndex = nums[0];
+
         for (int i = 0; i < nums.length - 1; i++) {
-            furthest = Math.max(i + nums[i], furthest);
-            if (currentIndex == i) {
+            furthestIndex = Math.max(furthestIndex, i + nums[i]);
+
+            if (i == currentIndex) {
                 step++;
-                currentIndex = furthest;
+                currentIndex = furthestIndex;
             }
         }
         return step;
+    }
+
+    public boolean canJump(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int reach = 0;
+
+        for (int i = 0; i < nums.length - 1 && i <= reach; i++) {
+            reach = Math.max(reach, i + nums[i]);
+        }
+        return reach >= nums.length - 1;
     }
 
 
@@ -46,17 +62,17 @@ public class GreedySolution {
      */
     public int canCompleteCircuit(int[] gas, int[] cost) {
         if (gas == null || cost == null) {
-            return -1;
+            return 0;
         }
         int global = 0;
-        int remain = 0;
+        int local = 0;
         int index = 0;
         for (int i = 0; i < gas.length; i++) {
+            local += gas[i] - cost[i];
             global += gas[i] - cost[i];
-            remain += gas[i] - cost[i];
-            if (remain < 0) {
+            if (local < 0) {
+                local = 0;
                 index = i + 1;
-                remain = 0;
             }
         }
         return global >= 0 ? index : -1;
