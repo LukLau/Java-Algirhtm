@@ -375,7 +375,7 @@ public class VipSolution {
     public boolean canAttendMeetings(List<Interval> intervals) {
         // Write your code here
         if (intervals == null || intervals.isEmpty()) {
-            return true;
+            return false;
         }
         intervals.sort(Comparator.comparingInt(o -> o.start));
         Interval pre = intervals.get(0);

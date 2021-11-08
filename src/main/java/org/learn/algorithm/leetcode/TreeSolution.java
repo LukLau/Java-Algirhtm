@@ -16,6 +16,13 @@ import java.util.Stack;
  * @date 2021/4/10
  */
 public class TreeSolution {
+    /**
+     * 124. Binary Tree Maximum Path Sum
+     *
+     * @param root
+     * @return
+     */
+    private int maxPathSum = Integer.MIN_VALUE;
 
     // 判断树是不是满足标准
 
@@ -32,6 +39,23 @@ public class TreeSolution {
 
 
     // 排序系列//
+
+    public static void main(String[] args) {
+        TreeSolution solution = new TreeSolution();
+
+        ListNode root = new ListNode(-1);
+
+        ListNode n1 = new ListNode(0);
+
+        root.next = n1;
+
+        n1.next = new ListNode(1);
+
+        n1.next.next = new ListNode(2);
+
+
+        solution.sortedListToBST(root);
+    }
 
     /**
      * 类似于归并排序
@@ -59,14 +83,14 @@ public class TreeSolution {
         ListNode slow = head;
         ListNode fast = head;
         while (fast.next != null && fast.next.next != null) {
-            fast = fast.next.next;
             slow = slow.next;
+            fast = fast.next.next;
         }
-        ListNode next = slow.next;
+        ListNode tmp = slow.next;
         slow.next = null;
-        ListNode list1 = sortList(head);
-        ListNode list2 = sortList(next);
-        return merge(list1, list2);
+        ListNode l1 = sortList(head);
+        ListNode l2 = sortList(tmp);
+        return merge(l1, l2);
     }
 
     private ListNode merge(ListNode first, ListNode second) {
@@ -87,8 +111,6 @@ public class TreeSolution {
             return second;
         }
     }
-
-    // 树的遍历//
 
     /**
      * 94. Binary Tree Inorder Traversal
@@ -114,7 +136,6 @@ public class TreeSolution {
         }
         return result;
     }
-
 
     /**
      * 103. Binary Tree Zigzag Level Order Traversal
@@ -153,7 +174,6 @@ public class TreeSolution {
         return result;
     }
 
-
     /**
      * 107. Binary Tree Level Order Traversal II
      *
@@ -164,29 +184,26 @@ public class TreeSolution {
         if (root == null) {
             return new ArrayList<>();
         }
-        LinkedList<TreeNode> deque = new LinkedList<>();
-
-        LinkedList<List<Integer>> result = new LinkedList<>();
-
-        deque.offer(root);
-        while (!deque.isEmpty()) {
-            int size = deque.size();
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+        linkedList.offer(root);
+        List<List<Integer>> result = new ArrayList<>();
+        while (!linkedList.isEmpty()) {
+            int size = linkedList.size();
             List<Integer> tmp = new ArrayList<>();
             for (int i = 0; i < size; i++) {
-                TreeNode node = deque.poll();
-                tmp.add(node.val);
-                if (node.left != null) {
-                    deque.offer(node.left);
+                TreeNode poll = linkedList.poll();
+                tmp.add(poll.val);
+                if (poll.left != null) {
+                    linkedList.offer(poll.left);
                 }
-                if (node.right != null) {
-                    deque.offer(node.right);
+                if (poll.right != null) {
+                    linkedList.offer(poll.right);
                 }
             }
-            result.addFirst(tmp);
+            result.add(tmp);
         }
         return result;
     }
-
 
     /**
      * 145. Binary Tree Postorder Traversal
@@ -213,9 +230,7 @@ public class TreeSolution {
             }
         }
         return result;
-
     }
-
 
     /**
      * 199. Binary Tree Right Side View
@@ -240,10 +255,8 @@ public class TreeSolution {
             result.add(root.val);
         }
         intervalRightSideView(result, root.right, currentLevel + 1);
-
         intervalRightSideView(result, root.left, currentLevel + 1);
     }
-
 
     /**
      * 230. Kth Smallest Element in a BST
@@ -282,7 +295,6 @@ public class TreeSolution {
         }
         return -1;
     }
-
 
     /**
      * 285
@@ -327,6 +339,9 @@ public class TreeSolution {
         return intervalNode(root, p);
     }
 
+
+    // --生成树系列 //
+
     private TreeNode intervalNode(TreeNode root, TreeNode p) {
         if (root == null) {
             return null;
@@ -354,24 +369,6 @@ public class TreeSolution {
         }
         return null;
     }
-
-    public TreeNode inorderSuccessorV2ii(TreeNode root, TreeNode p) {
-        if (root == null) {
-            return null;
-        }
-        if (root.val <= p.val) {
-            return inorderSuccessorV2ii(root.right, p);
-        }
-        TreeNode left = inorderSuccessorV2ii(root.left, p);
-        if (left == null) {
-            return root;
-        }
-        return left;
-    }
-
-
-    // --生成树系列 //
-
 
     /**
      * 95. Unique Binary Search Trees II
@@ -412,6 +409,8 @@ public class TreeSolution {
     }
 
 
+    // 二叉搜索树相关//
+
     /**
      * 96. Unique Binary Search Trees
      *
@@ -432,9 +431,6 @@ public class TreeSolution {
         }
         return dp[n];
     }
-
-
-    // 二叉搜索树相关//
 
     /**
      * 98. Validate Binary Search Tree
@@ -464,6 +460,22 @@ public class TreeSolution {
         return true;
     }
 
+    public boolean isValidBSTV2(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return intervalValidBST(Integer.MIN_VALUE, root, Integer.MAX_VALUE);
+    }
+
+    private boolean intervalValidBST(int minValue, TreeNode root, int maxValue) {
+        if (root == null) {
+            return true;
+        }
+        if (root.val <= minValue || root.val >= maxValue) {
+            return false;
+        }
+        return intervalValidBST(minValue, root.left, root.val) && intervalValidBST(root.val, root.right, maxValue);
+    }
 
     /**
      * 99. Recover Binary Search Tree
@@ -503,7 +515,6 @@ public class TreeSolution {
         }
     }
 
-
     /**
      * 108. Convert Sorted Array to Binary Search Tree
      *
@@ -529,6 +540,8 @@ public class TreeSolution {
     }
 
 
+    // 同一颗树//
+
     /**
      * 109. Convert Sorted List to Binary Search Tree
      *
@@ -544,24 +557,20 @@ public class TreeSolution {
         }
         ListNode fast = head;
         ListNode slow = head;
-        ListNode prev = slow;
+        ListNode prev = head;
         while (fast != null && fast.next != null) {
             prev = slow;
             slow = slow.next;
             fast = fast.next.next;
         }
-        ListNode second = slow.next;
-        slow.next = null;
         prev.next = null;
         TreeNode root = new TreeNode(slow.val);
         root.left = sortedListToBST(head);
-        root.right = sortedListToBST(second);
+        ListNode next = slow.next;
+        slow.next = null;
+        root.right = sortedListToBST(next);
         return root;
     }
-
-
-    // 同一颗树//
-
 
     /**
      * 100. Same Tree
@@ -583,7 +592,6 @@ public class TreeSolution {
         return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
     }
 
-
     /**
      * 101. Symmetric Tree
      *
@@ -596,6 +604,7 @@ public class TreeSolution {
         }
         return intervalSymmetric(root.left, root.right);
     }
+
 
     private boolean intervalSymmetric(TreeNode left, TreeNode right) {
         if (left == null && right == null) {
@@ -631,8 +640,8 @@ public class TreeSolution {
         if (preStart >= preorder.length || inStart > inEnd) {
             return null;
         }
-        TreeNode root = new TreeNode(preorder[preStart]);
         int index = 0;
+        TreeNode root = new TreeNode(preorder[preStart]);
         for (int i = inStart; i <= inEnd; i++) {
             if (inorder[i] == root.val) {
                 index = i;
@@ -644,7 +653,6 @@ public class TreeSolution {
         return root;
     }
 
-
     /**
      * 106. Construct Binary Tree from Inorder and Postorder Traversal
      *
@@ -653,11 +661,12 @@ public class TreeSolution {
      * @return
      */
     public TreeNode buildTreeII(int[] inorder, int[] postorder) {
-        if (inorder == null | postorder == null) {
+        if (inorder == null || inorder.length == 0 || postorder == null || postorder.length == 0) {
             return null;
         }
         return intervalBuildTree(0, inorder.length - 1, inorder, 0, postorder.length - 1, postorder);
     }
+
 
     private TreeNode intervalBuildTree(int inStart, int inEnd, int[] inorder, int postStart, int postEnd, int[] postorder) {
         if (inStart > inEnd || postStart > postEnd) {
@@ -679,6 +688,7 @@ public class TreeSolution {
 
     // 公共祖先lca
 
+
     /**
      * 235. Lowest Common Ancestor of a Binary Search Tree
      *
@@ -699,7 +709,6 @@ public class TreeSolution {
             return root;
         }
     }
-
 
     /**
      * 236. Lowest Common Ancestor of a Binary Tree
@@ -724,7 +733,6 @@ public class TreeSolution {
         }
     }
 
-
     /**
      * 257. Binary Tree Paths
      *
@@ -740,6 +748,7 @@ public class TreeSolution {
         return result;
     }
 
+    // --- //
     private void intervalBinaryTree(List<String> result, String s, TreeNode root) {
         if (root == null) {
             return;
@@ -757,9 +766,6 @@ public class TreeSolution {
         intervalBinaryTree(result, s, root.right);
     }
 
-    // --- //
-
-
     /**
      * 104. Maximum Depth of Binary Tree
      *
@@ -772,7 +778,6 @@ public class TreeSolution {
         }
         return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
     }
-
 
     /**
      * 112. Path Sum
@@ -790,7 +795,6 @@ public class TreeSolution {
         }
         return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val);
     }
-
 
     /**
      * 113. Path Sum II
@@ -822,7 +826,6 @@ public class TreeSolution {
         }
         tmp.remove(tmp.size() - 1);
     }
-
 
     /**
      * 114. Flatten Binary Tree to Linked List
@@ -878,7 +881,6 @@ public class TreeSolution {
         return root;
     }
 
-
     /**
      * 117. Populating Next Right Pointers in Each Node II
      *
@@ -917,15 +919,6 @@ public class TreeSolution {
         return root;
     }
 
-
-    /**
-     * 124. Binary Tree Maximum Path Sum
-     *
-     * @param root
-     * @return
-     */
-    private int maxPathSum = Integer.MIN_VALUE;
-
     public int maxPathSum(TreeNode root) {
         if (root == null) {
             return 0;
@@ -942,8 +935,7 @@ public class TreeSolution {
         int right = intervalPathSum(root.right);
         left = Math.max(left, 0);
         right = Math.max(right, 0);
-        int val = left + right + root.val;
-        maxPathSum = Math.max(val, maxPathSum);
+        maxPathSum = Math.max(maxPathSum, root.val + left + right);
         return Math.max(left, right) + root.val;
     }
 
@@ -968,7 +960,8 @@ public class TreeSolution {
         if (root.left == null && root.right == null) {
             return val * 10 + root.val;
         }
-        return intervalSumNumbers(root.left, val * 10 + root.val) + intervalSumNumbers(root.right, val * 10 + root.val);
+        return intervalSumNumbers(root.left, val * 10 + root.val)
+                + intervalSumNumbers(root.right, val * 10 + root.val);
     }
 
 

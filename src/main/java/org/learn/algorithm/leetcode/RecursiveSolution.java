@@ -11,6 +11,12 @@ import java.util.*;
 public class RecursiveSolution {
 
 
+    public static void main(String[] args) {
+        RecursiveSolution solution = new RecursiveSolution();
+        int[] nums = new int[]{2};
+        solution.combinationSum(nums, 1);
+    }
+
     /**
      * 22. Generate Parentheses
      *
@@ -38,7 +44,6 @@ public class RecursiveSolution {
             intervalGenerate(result, open, close + 1, n, s + ")");
         }
     }
-
 
     /**
      * 31. Next Permutation
@@ -80,7 +85,6 @@ public class RecursiveSolution {
         nums[j] = val;
     }
 
-
     public void reverseArrays(int[] nums, int start, int end) {
         if (start > end) {
             return;
@@ -90,11 +94,6 @@ public class RecursiveSolution {
             nums[i] = nums[start + end - i];
             nums[start + end - i] = value;
         }
-    }
-
-    public static void main(String[] args) {
-        RecursiveSolution solution = new RecursiveSolution();
-
     }
 
     // --组合系列问题-//
@@ -128,20 +127,26 @@ public class RecursiveSolution {
         }
     }
 
-
+    /**
+     * 40 Combination Sum II
+     *
+     * @param candidates
+     * @param target
+     * @return
+     */
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
         if (candidates == null || candidates.length == 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> ans = new ArrayList<>();
         Arrays.sort(candidates);
-        intervalCombinationII(ans, new ArrayList<>(), 0, candidates, target);
-        return ans;
+        List<List<Integer>> result = new ArrayList<>();
+        intervalCombinationSum2(result, new ArrayList<>(), candidates, 0, target);
+        return result;
     }
 
-    private void intervalCombinationII(List<List<Integer>> ans, List<Integer> tmp, int start, int[] candidates, int target) {
+    private void intervalCombinationSum2(List<List<Integer>> result, List<Integer> tmp, int[] candidates, int start, int target) {
         if (target == 0) {
-            ans.add(new ArrayList<>(tmp));
+            result.add(new ArrayList<>(tmp));
             return;
         }
         for (int i = start; i < candidates.length && target >= candidates[i]; i++) {
@@ -149,7 +154,7 @@ public class RecursiveSolution {
                 continue;
             }
             tmp.add(candidates[i]);
-            intervalCombinationII(ans, tmp, i + 1, candidates, target - candidates[i]);
+            intervalCombinationSum2(result, tmp, candidates, i + 1, target - candidates[i]);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -165,15 +170,15 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> ans = new ArrayList<>();
+        List<List<Integer>> result = new ArrayList<>();
         boolean[] used = new boolean[nums.length];
-        intervalPermute(ans, new ArrayList<>(), used, nums);
-        return ans;
+        interPermute(result, new ArrayList<>(), used, nums);
+        return result;
     }
 
-    private void intervalPermute(List<List<Integer>> ans, List<Integer> tmp, boolean[] used, int[] nums) {
-        if (tmp.size() == nums.length) {
-            ans.add(new ArrayList<>(tmp));
+    private void interPermute(List<List<Integer>> result, List<Integer> tmp, boolean[] used, int[] nums) {
+        if (tmp.size() == used.length) {
+            result.add(new ArrayList<>(tmp));
             return;
         }
         for (int i = 0; i < nums.length; i++) {
@@ -182,11 +187,12 @@ public class RecursiveSolution {
             }
             used[i] = true;
             tmp.add(nums[i]);
-            intervalPermute(ans, tmp, used, nums);
+            interPermute(result, tmp, used, nums);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
         }
     }
+
 
     /**
      * 47. Permutations II
@@ -195,7 +201,7 @@ public class RecursiveSolution {
      * @return
      */
     public List<List<Integer>> permuteUnique(int[] nums) {
-        if (nums == null) {
+        if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
@@ -210,11 +216,11 @@ public class RecursiveSolution {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = 0; i < used.length; i++) {
             if (used[i]) {
                 continue;
             }
-            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+            if (i > 0 && nums[i] == nums[i - 1] && used[i - 1]) {
                 continue;
             }
             tmp.add(nums[i]);
@@ -263,20 +269,18 @@ public class RecursiveSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        intervalSubSets(result, new ArrayList<>(), 0, nums);
+        intervalSubsets(result, new ArrayList<>(), 0, nums);
         return result;
-
     }
 
-    private void intervalSubSets(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
+    private void intervalSubsets(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
         result.add(new ArrayList<>(tmp));
         for (int i = start; i < nums.length; i++) {
             tmp.add(nums[i]);
-            intervalSubSets(result, tmp, i + 1, nums);
+            intervalSubsets(result, tmp, i + 1, nums);
             tmp.remove(tmp.size() - 1);
         }
     }
-
 
     /**
      * 90. Subsets II
@@ -528,9 +532,10 @@ public class RecursiveSolution {
         }
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                if (board[i][j] == '1') {
+                char word = board[i][j];
+                if (word == 'a') {
                     board[i][j] = 'O';
-                } else if (board[i][j] == 'O') {
+                } else if (word == 'O') {
                     board[i][j] = 'X';
                 }
             }
@@ -541,7 +546,7 @@ public class RecursiveSolution {
         if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || board[i][j] != 'O') {
             return;
         }
-        board[i][j] = '1';
+        board[i][j] = 'a';
         intervalSolve(i - 1, j, board);
         intervalSolve(i + 1, j, board);
         intervalSolve(i, j - 1, board);
@@ -561,20 +566,23 @@ public class RecursiveSolution {
         }
         int row = grid.length;
         int column = grid[0].length;
-        int result = 0;
+        int count = 0;
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (grid[i][j] == '1') {
+                    count++;
                     intervalIslands(grid, i, j);
-                    result++;
                 }
             }
         }
-        return result;
+        return count;
     }
 
     private void intervalIslands(char[][] grid, int i, int j) {
-        if (i < 0 || i >= grid.length || j < 0 || j >= grid[i].length || grid[i][j] != '1') {
+        if (i < 0 || i == grid.length || j < 0 || j == grid[i].length) {
+            return;
+        }
+        if (grid[i][j] == '0') {
             return;
         }
         grid[i][j] = '0';

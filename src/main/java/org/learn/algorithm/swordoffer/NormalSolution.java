@@ -13,8 +13,9 @@ import java.util.*;
 public class NormalSolution {
     public static void main(String[] args) {
         NormalSolution solution = new NormalSolution();
-
-        solution.minWindow("XDOYEZODEYXNZ", "XYZ");
+        int[] param = new int[]{4, 5, 1, 6, 2, 7, 3, 8};
+        String[] nums = new String[]{"a", "b", "c", "b"};
+        solution.topKstrings(nums, 2);
     }
 
     public ListNode ReverseList(ListNode head) {
@@ -116,21 +117,32 @@ public class NormalSolution {
         return result;
     }
 
+
+    /**
+     * WC87 最小的K个数
+     *
+     * @param input
+     * @param k
+     * @return
+     */
     public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
-        if (input == null || input.length == 0) {
+        if (input == null || input.length == 0 || k <= 0) {
             return new ArrayList<>();
         }
-        if (k < 0 || k > input.length) {
-            return new ArrayList<>();
-        }
-        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Comparator.reverseOrder());
-        for (int num : input) {
-            priorityQueue.offer(num);
-            if (priorityQueue.size() > k) {
-                priorityQueue.poll();
+        int index = getPartition(input, 0, input.length - 1);
+        k--;
+        while (index != k) {
+            if (index > k) {
+                index = getPartition(input, 0, index - 1);
+            } else {
+                index = getPartition(input, index + 1, input.length - 1);
             }
         }
-        return new ArrayList<>(priorityQueue);
+        ArrayList<Integer> result = new ArrayList<>();
+        for (int i = 0; i < k; i++) {
+            result.add(input[i]);
+        }
+        return result;
     }
 
 
@@ -193,17 +205,27 @@ public class NormalSolution {
         }
     }
 
+    /**
+     * NC88 寻找第K大
+     *
+     * @param a
+     * @param n
+     * @param K
+     * @return
+     */
     public int findKth(int[] a, int n, int K) {
         // write code here
-        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Comparator.naturalOrder());
-
-        for (int num : a) {
-            priorityQueue.offer(num);
-            if (priorityQueue.size() > K) {
-                priorityQueue.poll();
+        K--;
+        int reverse = n - 1 - K;
+        int index = getPartition(a, 0, a.length - 1);
+        while (index != reverse) {
+            if (index < reverse) {
+                index = getPartition(a, index + 1, a.length - 1);
+            } else {
+                index = getPartition(a, 0, index - 1);
             }
         }
-        return priorityQueue.peek();
+        return a[reverse];
     }
 
 
@@ -389,33 +411,27 @@ public class NormalSolution {
      */
     public ListNode addInList(ListNode head1, ListNode head2) {
         // write code here
-        if (head1 == null && head2 == null) {
-            return null;
-        }
+        ListNode root = new ListNode(0);
+
         head1 = reverse(head1);
 
         head2 = reverse(head2);
 
-        if (head1 == null || head2 == null) {
-            return head1 == null ? head2 : head1;
-        }
-        ListNode root = new ListNode(0);
         ListNode dummy = root;
         int carry = 0;
         while (head1 != null || head2 != null || carry != 0) {
             int val = (head1 == null ? 0 : head1.val) + (head2 == null ? 0 : head2.val) + carry;
-
-            dummy.next = new ListNode(val % 10);
-
-            dummy = dummy.next;
+            ListNode node = new ListNode(val % 10);
 
             carry = val / 10;
-
+            dummy.next = node;
+            dummy = dummy.next;
             head1 = head1 == null ? null : head1.next;
-
             head2 = head2 == null ? null : head2.next;
         }
-        return root.next;
+        ListNode result = root.next;
+        root.next = null;
+        return reverse(result);
     }
 
     private ListNode reverse(ListNode head) {
@@ -615,32 +631,34 @@ public class NormalSolution {
 
 
     /**
+     * NC50 链表中的节点每k个一组翻转
+     *
      * @param head ListNode类
      * @param n    int整型
      * @return ListNode类
      */
     public ListNode removeNthFromEnd(ListNode head, int n) {
         // write code here
-        if (head == null) {
-            return null;
+        if (head == null || head.next == null) {
+            return head;
         }
-        int count = 1;
-        ListNode node = head;
-        while (node.next != null) {
+        int count = 0;
+        ListNode current = head;
+        while (current != null && count != n) {
             count++;
-            node = node.next;
+            current = current.next;
         }
-        ListNode root = new ListNode(0);
-
-        root.next = head;
-
-        ListNode fast = root;
-        for (int i = 0; i < count - n; i++) {
-            fast = fast.next;
+        if (count == n) {
+            ListNode reverseKGroup = reverseKGroup(current, n);
+            while (count-- > 0) {
+                ListNode tmp = head.next;
+                head.next = reverseKGroup;
+                reverseKGroup = head;
+                head = tmp;
+            }
+            head = reverseKGroup;
         }
-        fast.next = fast.next.next;
-
-        return root.next;
+        return head;
     }
 
     /**
@@ -669,6 +687,7 @@ public class NormalSolution {
 
 
     /**
+     * NC97 字符串出现次数的TopK问题
      * return topK string
      *
      * @param strings string字符串一维数组 strings
@@ -681,35 +700,30 @@ public class NormalSolution {
             return new String[][]{};
         }
         Map<String, Integer> map = new HashMap<>();
-        PriorityQueue<String> queue = new PriorityQueue<>(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                Integer count1 = map.getOrDefault(o1, 0);
-                Integer count2 = map.getOrDefault(o2, 0);
-                if (count1.equals(count2)) {
-                    return o2.compareTo(o1);
-                }
-                return count1.compareTo(count2);
-            }
-        });
+
         for (String item : strings) {
             Integer count = map.getOrDefault(item, 0);
             map.put(item, count + 1);
         }
+        PriorityQueue<String> priorityQueue = new PriorityQueue<>(k, (o1, o2) -> {
+            Integer count1 = map.getOrDefault(o1, 0);
+            Integer count2 = map.getOrDefault(o2, 0);
+            if (count1.equals(count2)) {
+                return o2.compareTo(o1);
+            }
+            return count1.compareTo(count2);
+        });
         for (Map.Entry<String, Integer> item : map.entrySet()) {
-            String key = item.getKey();
-            queue.offer(key);
-            if (queue.size() > k) {
-                queue.poll();
+            priorityQueue.offer(item.getKey());
+            if (priorityQueue.size() > k) {
+                priorityQueue.poll();
             }
         }
         String[][] result = new String[k][2];
-        int iterator = k - 1;
-        while (!queue.isEmpty()) {
-            String tmp = queue.poll();
-            result[iterator][0] = tmp;
-            result[iterator][1] = map.get(tmp) + "";
-            iterator--;
+        for (int i = 0; i < k; i++) {
+            String item = priorityQueue.poll();
+            result[k - 1 - i][0] = item;
+            result[k - 1 - i][1] = map.get(item).toString();
         }
         return result;
     }
@@ -756,19 +770,17 @@ public class NormalSolution {
             fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode next = slow.next;
-
+        ListNode second = slow.next;
         slow.next = null;
-
-        ListNode first = sortInList(head);
-
-        ListNode second = sortInList(next);
-
-        return mergeTwoLists(first, second);
+        ListNode l1 = sortInList(head);
+        ListNode l2 = sortInList(second);
+        return mergeTwoLists(l1, l2);
     }
 
 
     /**
+     * NC96 判断一个链表是否为回文结构
+     *
      * @param head ListNode类 the head
      * @return bool布尔型
      */
@@ -777,16 +789,15 @@ public class NormalSolution {
         if (head == null || head.next == null) {
             return true;
         }
-        ListNode fast = head;
         ListNode slow = head;
+        ListNode fast = head;
         while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode tmp = slow.next;
+        ListNode next = slow.next;
         slow.next = null;
-        ListNode reverse = reverse(tmp);
-
+        ListNode reverse = reverse(next);
         while (head != null && reverse != null) {
             if (head.val != reverse.val) {
                 return false;
@@ -844,14 +855,60 @@ public class NormalSolution {
 
 
     /**
-     * 判断岛屿数量
+     * NC30 缺失的第一个正整数
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      *
-     * @param grid char字符型二维数组
+     * @param nums int整型一维数组
      * @return int整型
      */
-    public int solve(char[][] grid) {
+    public int minNumberDisappeared(int[] nums) {
         // write code here
-        return -1;
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+                swap(nums, i, nums[i] - 1);
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return nums.length + 1;
+    }
+
+    /**
+     * NC133 链表的奇偶重排
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param head ListNode类
+     * @return ListNode类
+     */
+    public ListNode oddEvenList(ListNode head) {
+        // write code here
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode odd = new ListNode(0);
+        ListNode o1 = odd;
+
+        ListNode even = new ListNode(0);
+        ListNode e1 = even;
+        while (head != null) {
+            if (head.val % 2 == 1) {
+                o1.next = head;
+                o1 = o1.next;
+            } else {
+                e1.next = head;
+                e1 = e1.next;
+            }
+            head = head.next;
+        }
+        o1.next = even.next;
+        e1.next = null;
+        return odd.next;
     }
 
     /**
@@ -2590,44 +2647,6 @@ public class NormalSolution {
         begin.next = end;
 
         return root.next;
-    }
-
-
-    /**
-     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
-     *
-     * @param head ListNode类
-     * @return ListNode类
-     */
-    public ListNode oddEvenList(ListNode head) {
-        // write code here
-        if (head == null || head.next == null) {
-            return head;
-        }
-        ListNode oddRoot = new ListNode(0);
-
-        ListNode odd = oddRoot;
-
-        ListNode evenRoot = new ListNode(0);
-
-        ListNode even = evenRoot;
-        int index = 1;
-        while (head != null) {
-            if (index % 2 == 1) {
-                odd.next = head;
-                odd = odd.next;
-            } else {
-                even.next = head;
-                even = evenRoot.next;
-            }
-            head = head.next;
-
-            index++;
-        }
-        even.next = null;
-        odd.next = evenRoot.next;
-
-        return oddRoot.next;
     }
 
 

@@ -10,6 +10,12 @@ import java.util.*;
  */
 public class FirstPage {
 
+    public static void main(String[] args) {
+        FirstPage page = new FirstPage();
+        List<String> result = page.restoreIpAddresses("010010");
+        System.out.println(result);
+    }
+
     /**
      * 1. Two Sum
      *
@@ -48,13 +54,13 @@ public class FirstPage {
         int carry = 0;
         ListNode root = new ListNode(0);
         ListNode dummy = root;
+
         while (l1 != null || l2 != null || carry != 0) {
             int val = (l1 == null ? 0 : l1.val) + (l2 == null ? 0 : l2.val) + carry;
-
-            dummy.next = new ListNode(val % 10);
-
+            ListNode node = new ListNode(val % 10);
             carry = val / 10;
 
+            dummy.next = node;
             dummy = dummy.next;
             l1 = l1 == null ? null : l1.next;
             l2 = l2 == null ? null : l2.next;
@@ -105,7 +111,6 @@ public class FirstPage {
         }
         return linkedList;
     }
-
 
     /**
      * 8. String to Integer (atoi)
@@ -254,19 +259,16 @@ public class FirstPage {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
-
-        int left = -1;
-
+        int m = s.length();
         int result = 0;
-
+        int left = -1;
         char[] words = s.toCharArray();
-
         for (int i = 0; i < words.length; i++) {
             char tmp = words[i];
             if (tmp == '(') {
                 stack.push(i);
             } else {
-                if (!stack.isEmpty() && words[stack.peek()] == '(') {
+                if (!stack.isEmpty()) {
                     stack.pop();
                 } else {
                     left = i;
@@ -283,7 +285,7 @@ public class FirstPage {
     }
 
     public int longestValidParenthesesII(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
@@ -293,8 +295,8 @@ public class FirstPage {
         int m = s.length();
 
         for (int i = 0; i < words.length; i++) {
-            char tmp = words[i];
-            if (stack.isEmpty() || tmp == '(') {
+            if (stack.isEmpty() || words[i] == '(') {
+
                 stack.push(i);
             } else {
                 if (words[stack.peek()] == '(') {
@@ -305,22 +307,18 @@ public class FirstPage {
             }
         }
         if (stack.isEmpty()) {
-            return m;
+            return s.length();
         }
-        int a = m;
         int result = 0;
+        int end = s.length();
         while (!stack.isEmpty()) {
-            int b = stack.pop();
-
-            result = Math.max(result, a - b - 1);
-
-            a = b;
+            Integer pop = stack.pop();
+            result = Math.max(result, end - pop - 1);
+            end = pop;
         }
-        result = Math.max(result, a);
-
+        result = Math.max(result, end);
         return result;
     }
-
 
     /**
      * 42. Trapping Rain Water
@@ -449,7 +447,6 @@ public class FirstPage {
         return new ArrayList<>(map.values());
     }
 
-
     /**
      * 56. Merge Intervals
      *
@@ -473,7 +470,6 @@ public class FirstPage {
         }
         return result.toArray(new int[][]{});
     }
-
 
     /**
      * 57. Insert Interval
@@ -517,25 +513,25 @@ public class FirstPage {
             return "/";
         }
         String[] words = path.split("/");
-        LinkedList<String> linkedList = new LinkedList<>();
-
+        LinkedList<String> list = new LinkedList<>();
         for (String word : words) {
-            if ("..".equals(word)) {
-                if (!linkedList.isEmpty()) {
-                    linkedList.pollLast();
-                }
-            } else if (!"".equals(word) && !".".equals(word)) {
-                linkedList.offer(word);
+            if ("".equals(word) || ".".equals(word)) {
+                continue;
+            } else if ("..".equals(word) && !list.isEmpty()) {
+                list.pollLast();
+            } else if (!"..".equals(word)) {
+                list.add(word);
             }
         }
-        StringBuilder s = new StringBuilder();
-
-        for (String tmp : linkedList) {
-            s.append("/").append(tmp);
+        if (list.isEmpty()) {
+            return "/";
         }
-        return s.length() == 0 ? "/" : s.toString();
+        StringBuilder result = new StringBuilder();
+        for (String word : list) {
+            result.append("/").append(word);
+        }
+        return result.toString();
     }
-
 
     /**
      * 75. Sort Colors
@@ -546,17 +542,22 @@ public class FirstPage {
         if (nums == null || nums.length == 0) {
             return;
         }
-        int blue = nums.length - 1;
-
         int red = 0;
+        int blue = nums.length - 1;
         for (int i = 0; i < nums.length; i++) {
-            while (i < blue && nums[i] == 2) {
-                swapValue(nums, i, blue--);
+            while (nums[i] == 2 && i < blue) {
+                swap(nums, i, blue--);
             }
-            while (i > red && nums[i] == 0) {
-                swapValue(nums, i, red++);
+            while (nums[i] == 0 && i > red) {
+                swap(nums, i, red++);
             }
         }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int val = nums[i];
+        nums[i] = nums[j];
+        nums[j] = val;
     }
 
     /**
@@ -570,11 +571,29 @@ public class FirstPage {
             return head;
         }
         if (head.val == head.next.val) {
-            ListNode node = head.next.next;
-            while (node != null && node.val == head.val) {
-                node = node.next;
+            ListNode current = head.next;
+            while (current != null && current.val == head.val) {
+                current = current.next;
             }
-            return deleteDuplicates(node);
+            return deleteDuplicates(current);
+        }
+        head.next = deleteDuplicates(head.next);
+        return head;
+    }
+
+    /**
+     * WC43 删除有序链表中重复的元素-I
+     *
+     * @param head ListNode类
+     * @return ListNode类
+     */
+    public ListNode deleteDuplicatesII(ListNode head) {
+        // write code here
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            return deleteDuplicates(head.next);
         }
         head.next = deleteDuplicates(head.next);
         return head;
@@ -621,17 +640,16 @@ public class FirstPage {
         n--;
         k--;
         while (m >= 0 && n >= 0) {
-            if (nums1[m] < nums2[n]) {
-                nums1[k--] = nums2[n--];
-            } else {
+            if (nums1[m] > nums2[n]) {
                 nums1[k--] = nums1[m--];
+            } else {
+                nums1[k--] = nums2[n--];
             }
         }
         while (n >= 0) {
             nums1[k--] = nums2[n--];
         }
     }
-
 
     /**
      * 93. Restore IP Addresses
@@ -643,7 +661,7 @@ public class FirstPage {
         if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
-        List<String> result = new ArrayList<>();
+        ArrayList<String> result = new ArrayList<>();
         int len = s.length();
         for (int i = 1; i < 4 && i < len - 2; i++) {
             for (int j = i + 1; j < i + 4 && j < len - 1; j++) {
@@ -665,26 +683,15 @@ public class FirstPage {
         if (s.isEmpty()) {
             return false;
         }
-        int length = s.length();
-        if (length > 3) {
+        int m = s.length();
+        if (m > 3) {
             return false;
         }
-        int val = Integer.parseInt(s);
-        if (val < 0 || val > 255) {
+        int value = Integer.parseInt(s);
+        if (m > 1 && s.charAt(0) == '0') {
             return false;
         }
-        return length < 2 || s.charAt(0) != '0';
+        return value <= 255;
     }
-
-    public static void main(String[] args) {
-        FirstPage page = new FirstPage();
-
-//        System.out.println(page.intToRoman(3));
-//        System.out.println(page.intToRoman(4));
-//        System.out.println(page.intToRoman(9));
-
-        page.romanToInt("IX");
-    }
-
 
 }

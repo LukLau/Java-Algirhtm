@@ -100,13 +100,14 @@ public class ThreePage {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode listNode = reverseList(head.next);
-
-        head.next.next = head;
-
-        head.next = null;
-
-        return listNode;
+        ListNode prev = null;
+        while (head != null) {
+            ListNode tmp = head.next;
+            head.next = prev;
+            prev = head;
+            head = tmp;
+        }
+        return prev;
     }
 
 

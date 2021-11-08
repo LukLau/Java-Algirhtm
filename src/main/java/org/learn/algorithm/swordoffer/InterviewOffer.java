@@ -22,7 +22,8 @@ public class InterviewOffer {
 
     public static void main(String[] args) {
         InterviewOffer interviewOffer = new InterviewOffer();
-        interviewOffer.printNthDigitNum(4);
+        String param = "(3+4)*(5+(2-3))";
+        interviewOffer.calculatorII(param);
     }
 
     /**
@@ -53,13 +54,14 @@ public class InterviewOffer {
     }
 
     /**
-     * longest common sequence
+     * NC92 最长公共子序列-II
+     * longest common subsequence
      *
      * @param s1 string字符串 the string
      * @param s2 string字符串 the string
      * @return string字符串
      */
-    public String LCSV2(String s1, String s2) {
+    public String longestCommonSubsequence(String s1, String s2) {
         // write code here
         if (s1 == null || s2 == null) {
             return "-1";
@@ -72,24 +74,20 @@ public class InterviewOffer {
                 if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
                     dp[i][j] = 1 + dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                    dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
                 }
             }
         }
         StringBuilder builder = new StringBuilder();
-        int k = m;
-        int j = n;
-        while (k > 0 && j > 0) {
-            if (s1.charAt(k - 1) == s2.charAt(j - 1)) {
-                builder.append(s1.charAt(k - 1));
-                k--;
-                j--;
+        while (m >= 1 && n >= 1) {
+            if (s1.charAt(m - 1) == s2.charAt(n - 1)) {
+                builder.append(s1.charAt(m - 1));
+                m--;
+                n--;
+            } else if (dp[m][n - 1] > dp[m - 1][n]) {
+                n--;
             } else {
-                if (dp[k - 1][j] > dp[k][j - 1]) {
-                    k--;
-                } else {
-                    j--;
-                }
+                m--;
             }
         }
         if (builder.length() == 0) {
@@ -97,6 +95,7 @@ public class InterviewOffer {
         }
         return builder.reverse().toString();
     }
+
 
     /**
      * 最长公共字串
@@ -113,25 +112,24 @@ public class InterviewOffer {
         }
         int m = str1.length();
         int n = str2.length();
-        int[][] dp = new int[m + 1][n + 1];
-        int max = 0;
+        int result = 0;
         int index = 0;
+        int[][] dp = new int[m + 1][n + 1];
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
                     dp[i][j] = 1 + dp[i - 1][j - 1];
-                    if (dp[i][j] > max) {
-                        max = dp[i][j];
+                    if (dp[i][j] > result) {
+                        result = dp[i][j];
                         index = i;
                     }
                 }
-
             }
         }
-        if (max == 0) {
+        if (result == 0) {
             return "";
         }
-        return str1.substring(index - max + 1, index);
+        return str1.substring(index - result, index);
     }
 
     /**
@@ -184,6 +182,8 @@ public class InterviewOffer {
     }
 
     /**
+     * NC35 最小编辑代价
+     * todo
      * min edit cost
      *
      * @param str1 string字符串 the string
@@ -202,17 +202,17 @@ public class InterviewOffer {
         int n = str2.length();
         int[][] dp = new int[m + 1][n + 1];
         for (int i = 1; i <= m; i++) {
-            dp[i][0] = ic + dp[i - 1][0];
+            dp[i][0] = dp[i - 1][0] + ic;
         }
         for (int j = 1; j <= n; j++) {
-            dp[0][j] = ic + dp[0][j - 1];
+            dp[0][j] = dp[0][j - 1] + dc;
         }
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = Math.min(dp[i - 1][j] + dc, Math.min(dp[i][j - 1] + ic, dp[i - 1][j - 1] + rc));
+                    dp[i][j] = Math.max(Math.max(dp[i - 1][j] + dc, dp[i][j - 1] + dc), dp[i - 1][j - 1] + rc);
                 }
             }
         }
@@ -249,6 +249,13 @@ public class InterviewOffer {
         intervalDFSSolve(grid, i, j + 1);
     }
 
+    /**
+     * NC66 两个链表的第一个公共结点
+     *
+     * @param pHead1
+     * @param pHead2
+     * @return
+     */
     public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
         ListNode p1 = pHead1;
         ListNode p2 = pHead2;
@@ -260,6 +267,7 @@ public class InterviewOffer {
     }
 
     /**
+     * todo
      * retrun the longest increasing subsequence
      *
      * @param arr int整型一维数组 the array
@@ -270,42 +278,27 @@ public class InterviewOffer {
         if (arr == null || arr.length == 0) {
             return new int[]{};
         }
-        if (arr.length == 1) {
-            return arr;
-        }
-        int len = arr.length;
-        int[] dp = new int[len];
+        int n = arr.length;
+        int[] dp = new int[n];
         Arrays.fill(dp, 1);
-        int max = 0;
-        int endIndex = -1;
-        for (int i = 1; i < arr.length; i++) {
+        int result = 0;
+        for (int i = 1; i < n; i++) {
             for (int j = 0; j < i; j++) {
                 if (arr[j] < arr[i] && dp[i] < dp[j] + 1) {
                     dp[i] = dp[j] + 1;
+                    result = Math.max(result, dp[i]);
                 }
             }
-            if (dp[i] > max) {
-                max = dp[i];
-                endIndex = i;
-            }
         }
-        int m = max;
-        int[] pos = new int[m];
-        pos[m - 1] = arr[endIndex];
-        int index = 1;
-        int k = endIndex - 1;
-        while (k >= 1) {
-            if (dp[k] == max - 1) {
-                pos[m - 1 - index] = arr[k];
-                max--;
-                index++;
-            }
-            k--;
+        int[] ans = new int[result];
+        for (int i = arr.length - 1; i >= 0; i--) {
         }
-        return pos;
+        return null;
     }
 
     /**
+     * NC37 合并区间
+     *
      * @param intervals
      * @return
      */
@@ -314,48 +307,55 @@ public class InterviewOffer {
             return new ArrayList<>();
         }
         intervals.sort(Comparator.comparingInt(o -> o.start));
-        LinkedList<Interval> result = new LinkedList<>();
+        ArrayList<Interval> result = new ArrayList<>();
+        result.add(intervals.get(0));
         int size = intervals.size();
-        for (int i = 0; i < size; i++) {
+        int index = 0;
+        for (int i = 1; i < size; i++) {
             Interval interval = intervals.get(i);
-            if (result.isEmpty() || result.peekLast().end < interval.start) {
+            if (result.get(index).end < interval.start) {
                 result.add(interval);
+                index++;
             } else {
-                Interval pre = result.peekLast();
+                Interval pre = result.get(index);
                 pre.start = Math.min(pre.start, interval.start);
                 pre.end = Math.max(pre.end, interval.end);
             }
         }
-        return new ArrayList<>(result);
+        return result;
     }
 
     /**
+     * NC100 将字符串转化为整数
+     *
      * @param str string字符串
      * @return int整型
      */
     public int atoi(String str) {
         // write code here
-        if (str == null || str.isEmpty()) {
+        if (str == null) {
             return 0;
         }
         str = str.trim();
-        char[] words = str.toCharArray();
-        int sign = 1;
-        int index = 0;
-        if (words[index] == '+' || words[index] == '-') {
-            sign = words[index] == '+' ? 1 : -1;
-            index++;
+        if (str.isEmpty()) {
+            return 0;
         }
         long result = 0;
+        int sign = 1;
+        int index = 0;
+        char[] words = str.toCharArray();
+        if (words[index] == '-' || words[index] == '+') {
+            sign = words[index] == '-' ? -1 : 1;
+            index++;
+        }
         while (index < words.length && Character.isDigit(words[index])) {
             result = result * 10 + Character.getNumericValue(words[index]);
-
             if (result > Integer.MAX_VALUE) {
                 return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
             }
             index++;
         }
-        return (int) (result * sign);
+        return (int) (sign * result);
     }
 
     /**
@@ -431,11 +431,12 @@ public class InterviewOffer {
     }
 
     /**
+     * NC134 股票(无限次交易)
+     *
      * @param prices int整型一维数组
      * @return int整型
      */
     public int maxProfit(int[] prices) {
-        // write code here
         if (prices == null || prices.length == 0) {
             return 0;
         }
@@ -443,15 +444,16 @@ public class InterviewOffer {
         int cost = prices[0];
         for (int i = 1; i < prices.length; i++) {
             if (prices[i] > cost) {
-                result = Math.max(result, prices[i] - cost);
-            } else {
-                cost = prices[i];
+                result += prices[i] - cost;
             }
+            cost = prices[i];
         }
         return result;
+
     }
 
     /**
+     * NC48 在旋转过的有序数组中寻找目标值
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      *
      * @param nums   int整型一维数组
@@ -470,7 +472,7 @@ public class InterviewOffer {
             if (nums[mid] == target) {
                 return mid;
             } else if (nums[left] <= nums[mid]) {
-                if (target >= nums[left] && target < nums[mid]) {
+                if (target < nums[mid] && target >= nums[left]) {
                     right = mid - 1;
                 } else {
                     left = mid + 1;
@@ -555,6 +557,8 @@ public class InterviewOffer {
     }
 
     /**
+     * NC102 在二叉树中找到两个节点的最近公共祖先
+     *
      * @param root TreeNode类
      * @param o1   int整型
      * @param o2   int整型
@@ -572,14 +576,59 @@ public class InterviewOffer {
         int right = lowestCommonAncestor(root.right, o1, o2);
         if (left != -1 && right != -1) {
             return root.val;
-        } else if (left != -1) {
-            return left;
-        } else {
+        } else if (left == -1) {
             return right;
+        } else {
+            return left;
         }
     }
 
     /**
+     * NC38 螺旋矩阵
+     *
+     * @param matrix
+     * @return
+     */
+    public ArrayList<Integer> spiralOrder(int[][] matrix) {
+        ArrayList<Integer> result = new ArrayList<>();
+        if (matrix == null || matrix.length == 0) {
+            return result;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int top = 0;
+        int bottom = row - 1;
+        int left = 0;
+        int right = column - 1;
+        while (left <= right && top <= bottom) {
+            for (int i = left; i <= right; i++) {
+                result.add(matrix[top][i]);
+            }
+            for (int i = top + 1; i <= bottom; i++) {
+                result.add(matrix[i][right]);
+            }
+            if (top != bottom) {
+                for (int i = right - 1; i >= left; i--) {
+                    result.add(matrix[bottom][i]);
+                }
+            }
+            if (left != right) {
+                for (int i = bottom - 1; i > top; i--) {
+                    result.add(matrix[i][left]);
+                }
+            }
+            left++;
+            right--;
+            top++;
+            bottom--;
+        }
+        return result;
+    }
+
+
+    /**
+     * WC127 滑动窗口的最大值
+     *
      * @param num
      * @param size
      * @return
@@ -592,8 +641,8 @@ public class InterviewOffer {
         LinkedList<Integer> linkedList = new LinkedList<>();
         for (int i = 0; i < num.length; i++) {
             int index = i - size + 1;
-            if (!linkedList.isEmpty() && linkedList.peek() < index) {
-                linkedList.poll();
+            if (!linkedList.isEmpty() && linkedList.peekFirst() < index) {
+                linkedList.pollFirst();
             }
             while (!linkedList.isEmpty() && num[linkedList.peekLast()] <= num[i]) {
                 linkedList.pollLast();
@@ -688,14 +737,15 @@ public class InterviewOffer {
         if (preStart == pre.length || inStart > inEnd) {
             return null;
         }
-        TreeNode root = new TreeNode(pre[preStart]);
+        int val = pre[preStart];
         int index = 0;
         for (int i = inStart; i <= inEnd; i++) {
-            if (in[i] == root.val) {
+            if (in[i] == val) {
                 index = i;
                 break;
             }
         }
+        TreeNode root = new TreeNode(val);
         root.left = buildTree(preStart + 1, pre, inStart, index - 1, in);
         root.right = buildTree(preStart + index - inStart + 1, pre, index + 1, inEnd, in);
         return root;
@@ -742,26 +792,6 @@ public class InterviewOffer {
             }
         }
         return String.valueOf(str);
-    }
-
-    /**
-     * @param head ListNode类
-     * @return ListNode类
-     */
-    public ListNode deleteDuplicates(ListNode head) {
-        // write code here
-        if (head == null || head.next == null) {
-            return head;
-        }
-        if (head.val == head.next.val) {
-            ListNode tmp = head.next.next;
-            while (tmp != null && tmp.val == head.val) {
-                tmp = tmp.next;
-            }
-            return deleteDuplicates(tmp);
-        }
-        head.next = deleteDuplicates(head.next);
-        return head;
     }
 
     /**
@@ -851,19 +881,44 @@ public class InterviewOffer {
         if (vw == null || vw.length == 0) {
             return 0;
         }
-        int[][] dp = new int[n + 1][V + 1];
+        int[] dp = new int[V + 1];
         for (int i = 1; i <= n; i++) {
-            for (int j = V; j > 0; j--) {
-                if (j < vw[i - 1][0]) {
-                    dp[i][j] = dp[i - 1][j];
+            for (int j = 1; j <= V; j++) {
+                if (j - vw[i - 1][0] >= 0) {
+                    dp[j] = Math.max(dp[j], dp[j - vw[i - 1][0]] + vw[i - 1][1]);
                 } else {
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - vw[i - 1][0]] + vw[i - 1][1]);
+                    dp[j] = dp[j];
                 }
             }
         }
-        return dp[n][V];
+        return dp[V];
     }
 
+
+    /**
+     * NC151 最大公约数
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * 求出a、b的最大公约数。
+     *
+     * @param a int
+     * @param b int
+     * @return int
+     */
+    public int gcd(int a, int b) {
+        // write code here
+        if (b == 0) {
+            return a;
+        }
+        return gcd(b, a % b);
+    }
+
+    /**
+     * NC128 接雨水问题
+     *
+     * @param arr
+     * @return
+     */
     public long maxWater(int[] arr) {
         // write code here
         if (arr == null || arr.length == 0) {
@@ -872,21 +927,21 @@ public class InterviewOffer {
         int left = 0;
         int right = arr.length - 1;
         long result = 0;
-        int minLeft = 0;
-        int minRight = 0;
+        int leftEdge = 0;
+        int rightEdge = 0;
         while (left < right) {
             if (arr[left] <= arr[right]) {
-                if (minLeft < arr[left]) {
-                    minLeft = arr[left];
+                if (arr[left] >= leftEdge) {
+                    leftEdge = arr[left];
                 } else {
-                    result += minLeft - arr[left];
+                    result += leftEdge - arr[left];
                 }
                 left++;
             } else {
-                if (minRight < arr[right]) {
-                    minRight = arr[right];
+                if (arr[right] >= rightEdge) {
+                    rightEdge = arr[right];
                 } else {
-                    result += minRight - arr[right];
+                    result += rightEdge - arr[right];
                 }
                 right--;
             }
@@ -1025,6 +1080,8 @@ public class InterviewOffer {
     }
 
     /**
+     * todo
+     * NC156 数组中只出现一次的数（其它数出现k次）
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      *
      * @param arr int一维数组
@@ -1068,41 +1125,33 @@ public class InterviewOffer {
     }
 
 
+    /**
+     * NC83 子数组最大乘积
+     *
+     * @param arr
+     * @return
+     */
     public double maxProduct(double[] arr) {
-        if (arr == null || arr.length == 0) {
-            return 0;
-        }
         double max = arr[0];
+
         double min = arr[0];
+
         double result = arr[0];
+
         for (int i = 1; i < arr.length; i++) {
             double val = arr[i];
-            double tmpMax = Math.max(Math.max(max * val, val * min), min);
-            double tmpMin = Math.min(Math.min(max * val, val * min), val);
+            double tmpMax = Math.max(Math.max(max * val, min * val), val);
+            double tmpMin = Math.min(Math.min(max * val, min * val), val);
+
             result = Math.max(result, tmpMax);
+
             max = tmpMax;
+
             min = tmpMin;
         }
         return result;
     }
 
-
-    public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
-        if (input == null || input.length == 0) {
-            return new ArrayList<>();
-        }
-        if (k == 0 || k > input.length) {
-            return new ArrayList<>();
-        }
-        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(k, Comparator.reverseOrder());
-        for (int num : input) {
-            priorityQueue.offer(num);
-            if (priorityQueue.size() > k) {
-                priorityQueue.poll();
-            }
-        }
-        return new ArrayList<>(priorityQueue);
-    }
 
     /**
      * @param numbers int整型一维数组
@@ -1129,6 +1178,8 @@ public class InterviewOffer {
 
 
     /**
+     * NC41 最长无重复子数组
+     *
      * @param arr int整型一维数组 the array
      * @return int整型
      */
@@ -1149,6 +1200,9 @@ public class InterviewOffer {
         }
         return result;
     }
+    /**
+     * todo 无重复子递增数组
+     */
 
 
     /**
@@ -1158,12 +1212,13 @@ public class InterviewOffer {
     public boolean isValid(String s) {
         // write code here
         if (s == null || s.isEmpty()) {
-            return true;
+            return false;
         }
         Stack<Character> stack = new Stack<>();
+
         char[] words = s.toCharArray();
-        for (int i = 0; i < words.length; i++) {
-            char word = words[i];
+
+        for (char word : words) {
             if (word == '(') {
                 stack.push(')');
             } else if (word == '[') {
@@ -1171,11 +1226,10 @@ public class InterviewOffer {
             } else if (word == '{') {
                 stack.push('}');
             } else {
-                if (!stack.isEmpty() && stack.peek() == word) {
-                    stack.pop();
-                } else {
+                if (stack.isEmpty() || stack.peek() != word) {
                     return false;
                 }
+                stack.pop();
             }
         }
         return stack.isEmpty();
@@ -1212,19 +1266,26 @@ public class InterviewOffer {
     }
 
 
+    /**
+     * NC17 最长回文子串
+     *
+     * @param A
+     * @param n
+     * @return
+     */
     public int getLongestPalindrome(String A, int n) {
         // write code here
-        if (A == null || A.isEmpty()) {
+        if (A == null || A.length() == 0) {
             return 0;
         }
-        int result = 0;
         boolean[][] dp = new boolean[n][n];
+        int result = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j <= i; j++) {
                 if (A.charAt(j) == A.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1])) {
                     dp[j][i] = true;
                 }
-                if (dp[j][i] && (i - j + 1 > result)) {
+                if (dp[j][i] && i - j + 1 > result) {
                     result = i - j + 1;
                 }
             }
@@ -1237,17 +1298,16 @@ public class InterviewOffer {
             return 0;
         }
         int candidate = array[0];
-        int count = 1;
-        for (int i = 1; i < array.length; i++) {
-            int val = array[i];
-            if (val == candidate) {
+        int count = 0;
+        for (int num : array) {
+            if (num == candidate) {
                 count++;
             } else {
                 count--;
-            }
-            if (count == 0) {
-                candidate = val;
-                count = 1;
+                if (count == 0) {
+                    candidate = num;
+                    count++;
+                }
             }
         }
         count = 0;
@@ -1256,7 +1316,7 @@ public class InterviewOffer {
                 count++;
             }
         }
-        return 2 * count > array.length ? candidate : 0;
+        return 2 * count >= array.length ? candidate : -1;
     }
 
 
@@ -1282,6 +1342,12 @@ public class InterviewOffer {
     }
 
 
+    /**
+     * NC59 矩阵的最小路径和
+     *
+     * @param matrix
+     * @return
+     */
     public int minPathSum(int[][] matrix) {
         // write code here
         if (matrix == null || matrix.length == 0) {
@@ -1291,12 +1357,12 @@ public class InterviewOffer {
         int column = matrix[0].length;
         int[] dp = new int[column];
         for (int j = 0; j < column; j++) {
-            dp[j] = j == 0 ? matrix[0][j] : dp[j - 1] + matrix[0][j];
+            dp[j] = matrix[0][j] + (j == 0 ? 0 : dp[j - 1]);
         }
         for (int i = 1; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (j == 0) {
-                    dp[j] = dp[j] + matrix[i][j];
+                    dp[j] += matrix[i][j];
                 } else {
                     dp[j] = Math.min(dp[j], dp[j - 1]) + matrix[i][j];
                 }
@@ -1484,6 +1550,33 @@ public class InterviewOffer {
     }
 
 
+    /**
+     * NC86 矩阵元素查找
+     *
+     * @param mat
+     * @param n
+     * @param m
+     * @param x
+     * @return
+     */
+    public int[] findElement(int[][] mat, int n, int m, int x) {
+        // write code here
+        int i = n - 1;
+        int j = 0;
+        while (i >= 0 && j < m) {
+            int val = mat[i][j];
+            if (val == x) {
+                return new int[]{i, j};
+            } else if (val < x) {
+                j++;
+            } else {
+                i--;
+            }
+        }
+        return new int[]{-1, -1};
+    }
+
+
     public int NumberOf1(int n) {
         int count = 0;
         while (n != 0) {
@@ -1516,8 +1609,7 @@ public class InterviewOffer {
             generate(result, open + 1, close, s + "(", n);
         }
         if (close < open) {
-            generate(result, open, close + 1, s + "(", n);
-
+            generate(result, open, close + 1, s + ")", n);
         }
     }
 
@@ -1756,4 +1848,157 @@ public class InterviewOffer {
     }
 
 
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 返回表达式的值
+     *
+     * @param s string字符串 待计算的表达式
+     * @return int整型
+     */
+    public int calculatorII(String s) {
+        // write code here
+        if (s == null) {
+            return 0;
+        }
+        s = s.trim();
+        if (s.isEmpty()) {
+            return 0;
+        }
+        int index = 0;
+        int len = s.length();
+        char[] words = s.toCharArray();
+        char sign = '+';
+        Stack<Integer> stack = new Stack<>();
+        while (index <= len) {
+            if (index < len && words[index] == '(') {
+                int lastIndexOf = getLastIndex(words, index, words.length);
+                int tmp = calculatorII(s.substring(index + 1, lastIndexOf));
+                stack.push(tmp);
+                index = lastIndexOf;
+            }
+            if (index < len && Character.isDigit(words[index])) {
+                int tmp = 0;
+                while (index < len && Character.isDigit(words[index])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[index]);
+                    index++;
+                }
+                stack.push(tmp);
+            }
+            if (index == len || !Character.isDigit(words[index])) {
+                if (sign == '-') {
+                    stack.push(-1 * stack.pop());
+                } else if (sign == '*') {
+                    stack.push(stack.pop() * stack.pop());
+                } else if (sign == '/') {
+                    Integer second = stack.pop();
+                    Integer first = stack.pop();
+                    stack.push(first / second);
+                }
+                if (index != len) {
+                    sign = words[index];
+                }
+            }
+            index++;
+        }
+        int result = 0;
+        for (Integer num : stack) {
+            result += num;
+        }
+        return result;
+    }
+
+    /**
+     * NC96 判断一个链表是否为回文结构
+     *
+     * @param head ListNode类 the head
+     * @return bool布尔型
+     */
+    public boolean isPail(ListNode head) {
+        // write code here
+        if (head == null || head.next == null) {
+            return true;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode next = slow.next;
+        slow.next = null;
+        ListNode reverse = reverse(next);
+        while (head != null && reverse.next != null) {
+            if (head.val != reverse.val) {
+                return false;
+            }
+            head = head.next;
+            reverse = reverse.next;
+        }
+        return true;
+    }
+
+
+    private ListNode reverse(ListNode head) {
+        ListNode prev = null;
+        while (head != null) {
+            ListNode next = head.next;
+            head.next = prev;
+            prev = head;
+            head = next;
+        }
+        return prev;
+    }
+
+    /**
+     * NC34 求路径
+     *
+     * @param m int整型
+     * @param n int整型
+     * @return int整型
+     */
+    public int uniquePaths(int m, int n) {
+        // write code here
+        int[] dp = new int[n];
+        Arrays.fill(dp, 1);
+        for (int i = 1; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[j] = dp[j] + (j == 0 ? 0 : dp[j - 1]);
+            }
+        }
+        return dp[n - 1];
+    }
+
+
+    /**
+     * todo
+     * NC116 把数字翻译成字符串
+     *
+     * @param nums string字符串 数字串
+     * @return int整型
+     */
+    public int decode(String nums) {
+        // write code here
+        if (nums == null || nums.isEmpty()) {
+            return 0;
+        }
+        int len = nums.length();
+
+        int[] dp = new int[len + 1];
+
+        dp[0] = 1;
+
+        dp[1] = nums.charAt(0) == '0' ? 0 : 1;
+
+        for (int i = 2; i <= len; i++) {
+            int num1 = Integer.parseInt(nums.substring(i - 1, i));
+            int num2 = Integer.parseInt(nums.substring(i - 2, i));
+            if (num1 >= 1 && num1 <= 9) {
+                dp[i] += dp[i - 1];
+            }
+            if (num2 >= 10 && num2 <= 26) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp[len];
+    }
 }

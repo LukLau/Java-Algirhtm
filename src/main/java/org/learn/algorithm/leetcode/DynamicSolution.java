@@ -1,8 +1,8 @@
 package org.learn.algorithm.leetcode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.learn.algorithm.datastructure.TreeNode;
+
+import java.util.*;
 
 /**
  * 动态规划问题
@@ -15,9 +15,21 @@ public class DynamicSolution {
 
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
-        int[][] params = new int[][]{{14, 2, 11}, {11, 14, 5}, {14, 3, 10}};
-        solution.minCostIIV2(params);
+        int[][] nums = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        solution.incrementPath(nums);
     }
+    // 背包系列问题
+
+    /**
+     * 该系列主要分为三个
+     * 0-1背包问题 Fn = max(Dp[n][w], Dp[n-1][n -w[i][j]] + v[j]);
+     * 完全背包问题 Fn = max(Dp[n][w], Dp[n][n -w[i][j]] + v[j]);
+     * 部分背包问题 贪心算法
+     */
+
+
+    // 0-1 背包问题
+
 
     // 普通动态规划问题
 
@@ -53,6 +65,42 @@ public class DynamicSolution {
     // 序列问题
 
     /**
+     * @param repository
+     * @param customerQuery
+     * @return
+     */
+    public static List<List<String>> searchSuggestions(List<String> repository, String customerQuery) {
+        // Write your code here
+        if (repository == null || repository.isEmpty()) {
+            return new ArrayList<>();
+        }
+        if (customerQuery == null || customerQuery.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<List<String>> result = new ArrayList<>();
+        int m = customerQuery.length();
+        for (int i = 1; i < m; i++) {
+            List<String> tmp = new ArrayList<>();
+
+            String prefix = customerQuery.substring(0, i + 1);
+
+            for (String item : repository) {
+
+                if (item.contains(prefix)) {
+                    tmp.add(item);
+                }
+            }
+            if (!tmp.isEmpty()) {
+                result.add(tmp);
+            }
+        }
+        return result;
+    }
+
+
+    // 八皇后问题 //
+
+    /**
      * 300. Longest Increasing Subsequence
      *
      * @param nums
@@ -78,10 +126,6 @@ public class DynamicSolution {
         return result;
     }
 
-
-    // 八皇后问题 //
-
-
     /**
      * @param n
      * @return
@@ -97,7 +141,6 @@ public class DynamicSolution {
         List<List<String>> result = new ArrayList<>();
 
         intervalNQueens(result, 0, n, queen);
-
         return result;
     }
 
@@ -155,8 +198,7 @@ public class DynamicSolution {
     private int intervalTotalQueens(int[] dp, int row, int n) {
         int count = 0;
         if (row == n) {
-            count++;
-            return count;
+            return 1;
         }
         for (int i = 0; i < n; i++) {
             if (isValidTotalQueens(dp, i, row, n)) {
@@ -168,19 +210,19 @@ public class DynamicSolution {
         return count;
     }
 
+
+    // ----- //
+
     // --编辑距离问题 //
 
     private boolean isValidTotalQueens(int[] dp, int col, int row, int n) {
         for (int i = row - 1; i >= 0; i--) {
-            if (dp[i] == col || Math.abs(dp[i] - col) == Math.abs(i - row)) {
+            if (dp[i] == col || Math.abs(i - row) == Math.abs(dp[i] - col)) {
                 return false;
             }
         }
         return true;
     }
-
-
-    // ----- //
 
     /**
      * 72. Edit Distance
@@ -262,7 +304,6 @@ public class DynamicSolution {
         }
         return result;
     }
-
 
     /**
      * 221. Maximal Square
@@ -408,6 +449,9 @@ public class DynamicSolution {
         return result;
     }
 
+
+    // -卖股票系列问题- //
+
     /**
      * 120. Triangle
      *
@@ -430,9 +474,6 @@ public class DynamicSolution {
         }
         return row.get(0);
     }
-
-
-    // -卖股票系列问题- //
 
     /**
      * 135. Candy
@@ -457,8 +498,8 @@ public class DynamicSolution {
             }
         }
         int result = 0;
-        for (int num : dp) {
-            result += num;
+        for (int count : dp) {
+            result += count;
         }
         return result;
     }
@@ -476,11 +517,10 @@ public class DynamicSolution {
         int cost = prices[0];
         int result = 0;
         for (int i = 1; i < prices.length; i++) {
-            int price = prices[i];
-            if (price > cost) {
-                result = Math.max(result, price - cost);
+            if (prices[i] > cost) {
+                result = Math.max(result, prices[i] - cost);
             } else {
-                cost = price;
+                cost = prices[i];
             }
         }
         return result;
@@ -519,30 +559,32 @@ public class DynamicSolution {
         if (prices == null || prices.length == 0) {
             return 0;
         }
-        int column = prices.length;
-        int[] left = new int[column];
-        int[] right = new int[column + 1];
-        int cost = prices[0];
-        int leftProfit = 0;
-        for (int i = 1; i < prices.length; i++) {
-            if (prices[i] < cost) {
-                cost = prices[i];
+        int len = prices.length;
+        int[] leftProfit = new int[len];
+        int leftCost = prices[0];
+        int profit = 0;
+        for (int i = 1; i < len; i++) {
+            if (prices[i] > leftCost) {
+                profit = Math.max(profit, prices[i] - leftCost);
+                leftProfit[i] = profit;
+            } else {
+                leftCost = prices[i];
             }
-            leftProfit = Math.max(leftProfit, prices[i] - cost);
-            left[i] = leftProfit;
         }
-        cost = prices[column - 1];
-        int rightProfit = 0;
-        for (int i = column - 2; i >= 0; i--) {
-            if (prices[i] > cost) {
-                cost = prices[i];
+        profit = 0;
+        int[] rightProfit = new int[len + 1];
+        int rightCost = prices[len - 1];
+        for (int i = len - 2; i >= 0; i--) {
+            if (prices[i] < rightCost) {
+                profit = Math.max(profit, rightCost - prices[i]);
+                rightProfit[i] = profit;
+            } else {
+                rightCost = prices[i];
             }
-            rightProfit = Math.max(rightProfit, cost - prices[i]);
-            right[i] = rightProfit;
         }
         int result = 0;
-        for (int i = 1; i < column; i++) {
-            result = Math.max(result, left[i] + right[i + 1]);
+        for (int i = 0; i < len; i++) {
+            result = Math.max(result, leftProfit[i] + rightProfit[i + 1]);
         }
         return result;
     }
@@ -572,6 +614,8 @@ public class DynamicSolution {
     }
 
 
+    // 房屋抢劫系列
+
     /**
      * todo
      * 309. Best Time to Buy and Sell Stock with Cooldown
@@ -590,10 +634,6 @@ public class DynamicSolution {
         }
         return sell[len - 1];
     }
-
-
-    // 房屋抢劫系列
-
 
     /**
      * 198. House Robber
@@ -628,6 +668,8 @@ public class DynamicSolution {
         return Math.max(intervalRob(nums, 1, nums.length - 1), intervalRob(nums, 0, nums.length - 2));
     }
 
+    // 房子颜色问题
+
     private int intervalRob(int[] nums, int start, int end) {
         int robPrev = 0;
         int robCurrent = 0;
@@ -638,8 +680,6 @@ public class DynamicSolution {
         }
         return Math.max(robCurrent, robPrev);
     }
-
-    // 房子颜色问题
 
     /**
      * @param costs: n x 3 cost matrix
@@ -661,6 +701,8 @@ public class DynamicSolution {
         return Math.min(Math.min(costs[row - 1][0], costs[row - 1][1]), costs[row - 1][2]);
     }
 
+
+    // 普通题
 
     /**
      * O(n3) 的时间复杂度
@@ -726,9 +768,6 @@ public class DynamicSolution {
         return costs[row - 1][firstIndex];
     }
 
-
-    // 普通题
-
     /**
      * 174. Dungeon Game
      *
@@ -760,7 +799,6 @@ public class DynamicSolution {
         }
         return dp[0][0];
     }
-
 
     /**
      * 289. Game of Life
@@ -811,7 +849,6 @@ public class DynamicSolution {
         }
     }
 
-
     /**
      * todo
      * 279. Perfect Squares
@@ -836,7 +873,6 @@ public class DynamicSolution {
         return dp[n];
     }
 
-
     /**
      * todo
      * 312. Burst Balloons
@@ -859,5 +895,92 @@ public class DynamicSolution {
             dp[i] = nums[i - 1];
         }
         return -1;
+    }
+
+    /**
+     * 314
+     * Binary Tree Vertical Order Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> verticalOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Queue<Integer> columnQueue = new LinkedList<>();
+        Map<Integer, List<Integer>> map = new TreeMap<>();
+        columnQueue.offer(0);
+        Queue<TreeNode> nodeQueue = new LinkedList<>();
+        nodeQueue.add(root);
+        while (!nodeQueue.isEmpty()) {
+            Integer poll = columnQueue.poll();
+            TreeNode node = nodeQueue.poll();
+            List<Integer> tmp = map.getOrDefault(poll, new ArrayList<>());
+            tmp.add(node.val);
+            map.put(poll, tmp);
+            if (node.left != null) {
+                columnQueue.offer(poll - 1);
+                nodeQueue.offer(node.left);
+            }
+            if (node.right != null) {
+                columnQueue.offer(poll + 1);
+                nodeQueue.offer(node.right);
+            }
+        }
+        return new ArrayList<>(map.values());
+    }
+
+    /**
+     * NC138 矩阵最长递增路径
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 递增路径的最大长度
+     *
+     * @param matrix int整型二维数组 描述矩阵的每个数
+     * @return int整型
+     */
+    public int incrementPath(int[][] matrix) {
+        // write code here
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int result = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                int tmp = maxPath(0, i, j, matrix, Integer.MIN_VALUE);
+                result = Math.max(result, tmp);
+            }
+        }
+        return result;
+    }
+
+    private int maxPath(int count, int i, int j, int[][] matrix, int minValue) {
+        if (i < 0 || i == matrix.length || j < 0 || j == matrix[i].length) {
+            return count;
+        }
+        // 如果不符合递增规律
+        if (matrix[i][j] <= minValue) {
+            return count;
+        }
+        // 符合 计数 + 1
+        count++;
+
+        int val = matrix[i][j];
+
+        // 向上
+        int top = Math.max(count, maxPath(count, i - 1, j, matrix, val));
+
+        // 向下
+        int bottom = Math.max(count, maxPath(count, i + 1, j, matrix, val));
+
+        // 向左
+        int left = Math.max(count, maxPath(count, i, j - 1, matrix, val));
+
+        // 向右
+        int right = Math.max(count, maxPath(count, i, j + 1, matrix, val));
+
+        return Math.max(Math.max(top, bottom), Math.max(left, right));
     }
 }
