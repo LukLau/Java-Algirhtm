@@ -22,17 +22,13 @@ public class GreedySolution {
             return 0;
         }
         int step = 0;
-
-        int currentIndex = 0;
-
-        int furthestIndex = nums[0];
-
+        int furthest = nums[0];
+        int current = 0;
         for (int i = 0; i < nums.length - 1; i++) {
-            furthestIndex = Math.max(furthestIndex, i + nums[i]);
-
-            if (i == currentIndex) {
+            furthest = Math.max(furthest, i + nums[i]);
+            if (i == current) {
                 step++;
-                currentIndex = furthestIndex;
+                current = furthest;
             }
         }
         return step;

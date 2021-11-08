@@ -181,40 +181,41 @@ public class FirstPage {
      * @return
      */
     public String intToRoman(int num) {
-        String[] one = new String[]{"", "I", "IStringSolution.I", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+        String[] one = new String[]{"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
         String[] two = new String[]{"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
         String[] three = new String[]{"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
         String[] four = new String[]{"", "M", "MM", "MMM"};
         return four[num / 1000] + three[num % 1000 / 100] + two[num % 100 / 10] + one[num % 10];
     }
 
+    /**
+     * 13. Roman to Integer
+     *
+     * @param s
+     * @return
+     */
     public int romanToInt(String s) {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        Map<String, Integer> map = new HashMap<>();
-        map.put("I", 1);
-        map.put("V", 5);
-        map.put("X", 10);
-        map.put("L", 50);
-        map.put("C", 100);
-        map.put("D", 500);
-        map.put("M", 1000);
+        Map<Character, Integer> map = new HashMap<>();
+        map.put('I', 1);
+        map.put('V', 5);
+        map.put('X', 10);
+        map.put('L', 50);
+        map.put('C', 100);
+        map.put('D', 500);
+        map.put('M', 1000);
         char[] words = s.toCharArray();
-        StringBuilder builder = new StringBuilder();
-        for (char word : words) {
-            builder.append(map.get(word + ""));
-        }
         int result = 0;
-        char[] chars = builder.toString().toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            result += Character.getNumericValue(chars[i]);
-            if (i > 0 && (Character.getNumericValue(chars[i]) > Character.getNumericValue(chars[i - 1]))) {
-                result -= 2 * Character.getNumericValue(chars[i - 1]);
+        for (int i = 0; i < words.length; i++) {
+            int val = map.get(words[i]);
+            result += val;
+            if (i > 0 && (map.get(words[i]) > map.get(words[i - 1]))) {
+                result -= 2 * map.get(words[i - 1]);
             }
         }
         return result;
-
     }
 
 

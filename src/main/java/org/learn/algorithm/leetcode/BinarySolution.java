@@ -94,10 +94,10 @@ public class BinarySolution {
      * @return
      */
     public int[] searchRange(int[] nums, int target) {
-        int[] result = new int[]{-1, -1};
         if (nums == null || nums.length == 0) {
-            return result;
+            return new int[]{-1, -1};
         }
+        int[] result = new int[]{-1, -1};
         int left = 0;
         int right = nums.length - 1;
         while (left < right) {
@@ -109,11 +109,10 @@ public class BinarySolution {
             }
         }
         if (nums[left] != target) {
-            return result;
+            return new int[]{-1, -1};
         }
         result[0] = left;
         right = nums.length - 1;
-
         while (left < right) {
             int mid = left + (right - left) / 2 + 1;
             if (nums[mid] > target) {

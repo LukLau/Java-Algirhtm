@@ -177,7 +177,7 @@ public class RecursiveSolution {
     }
 
     private void interPermute(List<List<Integer>> result, List<Integer> tmp, boolean[] used, int[] nums) {
-        if (tmp.size() == used.length) {
+        if (tmp.size() == nums.length) {
             result.add(new ArrayList<>(tmp));
             return;
         }
