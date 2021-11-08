@@ -1,8 +1,8 @@
 package org.learn.algorithm.leetcode;
 
-import org.learn.algorithm.datastructure.TreeNode;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 动态规划问题
@@ -15,12 +15,38 @@ public class DynamicSolution {
 
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
+        int[][] params = new int[][]{{14, 2, 11}, {11, 14, 5}, {14, 3, 10}};
+        solution.minCostIIV2(params);
+    }
 
-//        int[][] cost = new int[][]{{14, 2, 11}, {11, 14, 5}, {14, 3, 10}};
+    // 普通动态规划问题
 
-        int[][] cost = new int[][]{{1, 2, 3}, {1, 4, 6}};
-
-        solution.minCostII(cost);
+    /**
+     * todo
+     * 91. Decode Ways
+     *
+     * @param s
+     * @return
+     */
+    public int numDecodings(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int len = s.length();
+        int[] dp = new int[len + 1];
+        dp[0] = 1;
+        dp[1] = s.charAt(0) == '0' ? 0 : 1;
+        for (int i = 2; i <= len; i++) {
+            int first = Integer.parseInt(s.substring(i - 1, i));
+            int second = Integer.parseInt(s.substring(i - 2, i));
+            if (first >= 1 && first <= 9) {
+                dp[i] += dp[i - 1];
+            }
+            if (second >= 1 && second <= 26) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp[len];
     }
 
 
@@ -64,21 +90,22 @@ public class DynamicSolution {
         if (n <= 0) {
             return new ArrayList<>();
         }
-        List<List<String>> result = new ArrayList<>();
-        char[][] queens = new char[n][n];
-        for (char[] queen : queens) {
-            Arrays.fill(queen, '.');
+        char[][] queen = new char[n][n];
+        for (char[] row : queen) {
+            Arrays.fill(row, '.');
         }
+        List<List<String>> result = new ArrayList<>();
 
-        intervalNQueens(result, 0, n, queens);
+        intervalNQueens(result, 0, n, queen);
+
         return result;
     }
 
     private void intervalNQueens(List<List<String>> result, int row, int n, char[][] queens) {
         if (row == n) {
             List<String> tmp = new ArrayList<>();
-            for (char[] queen : queens) {
-                tmp.add(String.valueOf(queen));
+            for (char[] word : queens) {
+                tmp.add(String.valueOf(word));
             }
             result.add(tmp);
             return;
@@ -88,7 +115,6 @@ public class DynamicSolution {
                 queens[row][i] = 'Q';
                 intervalNQueens(result, row + 1, n, queens);
                 queens[row][i] = '.';
-
             }
         }
     }
@@ -181,13 +207,11 @@ public class DynamicSolution {
                 if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = 1 + Math.min(dp[i - 1][j], Math.min(dp[i][j - 1], dp[i - 1][j - 1]));
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1], dp[i - 1][j]), dp[i][j - 1]) + 1;
                 }
             }
         }
         return dp[m][n];
-
-
     }
 
     /**
@@ -202,38 +226,37 @@ public class DynamicSolution {
         }
         int row = matrix.length;
         int column = matrix[0].length;
-        int result = 0;
+        int[] height = new int[column];
         int[] left = new int[column];
         int[] right = new int[column];
-        int[] height = new int[column];
         Arrays.fill(right, column);
+        int result = 0;
         for (int i = 0; i < row; i++) {
-            int leftSide = 0;
-            int rightSide = column;
+            int leftEdge = 0;
+            int rightEdge = column;
             for (int j = 0; j < column; j++) {
-                char t = matrix[i][j];
-                if (t == '1') {
+                char tmp = matrix[i][j];
+                if (tmp == '1') {
                     height[j]++;
-                    left[j] = Math.max(left[j], leftSide);
+                    left[j] = Math.max(left[j], leftEdge);
                 } else {
                     height[j] = 0;
-                    left[j] = leftSide;
-                    leftSide = j + 1;
+                    left[j] = leftEdge;
+                    leftEdge = j + 1;
                 }
             }
             for (int j = column - 1; j >= 0; j--) {
-                char t = matrix[i][j];
-                if (t == '1') {
-                    right[j] = Math.min(right[j], rightSide);
+                char tmp = matrix[i][j];
+                if (tmp == '1') {
+                    right[j] = Math.min(right[j], rightEdge);
                 } else {
                     right[j] = column;
-                    rightSide = j;
+                    rightEdge = j;
                 }
             }
             for (int j = 0; j < column; j++) {
-                char t = matrix[i][j];
-                if (t == '1') {
-                    result = Math.max(result, height[j] * (right[j] - left[j]));
+                if (height[j] != 0) {
+                    result = Math.max(result, (right[j] - left[j]) * height[j]);
                 }
             }
         }
@@ -252,21 +275,26 @@ public class DynamicSolution {
             return 0;
         }
         int row = matrix.length;
-
         int column = matrix[0].length;
-
         int[][] dp = new int[row][column];
+
         int result = 0;
         for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                char tmp = matrix[i][j];
-
-                if (tmp == '1') {
-                    if (i == 0 || j == 0) {
-                        dp[i][j] = 1;
-                    } else {
-                        dp[i][j] = 1 + Math.min(Math.min(dp[i - 1][j - 1], dp[i - 1][j]), dp[i][j - 1]);
-                    }
+            if (matrix[i][0] == '1') {
+                dp[i][0] = 1;
+                result = 1;
+            }
+        }
+        for (int j = 0; j < column; j++) {
+            if (matrix[0][j] == '1') {
+                dp[0][j] = 1;
+                result = 1;
+            }
+        }
+        for (int i = 1; i < row; i++) {
+            for (int j = 1; j < column; j++) {
+                if (matrix[i][j] == '1') {
+                    dp[i][j] = 1 + Math.min(dp[i - 1][j], Math.min(dp[i][j - 1], dp[i - 1][j - 1]));
                     result = Math.max(result, dp[i][j] * dp[i][j]);
                 }
             }
@@ -283,7 +311,7 @@ public class DynamicSolution {
      * @return
      */
     public boolean isInterleave(String s1, String s2, String s3) {
-        if (s1 == null || s2 == null) {
+        if (s1 == null || s2 == null || s3 == null) {
             return false;
         }
         int m = s1.length();
@@ -344,14 +372,17 @@ public class DynamicSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        List<Integer> tmp = new ArrayList<>();
         for (int i = 0; i < numRows; i++) {
+            List<Integer> tmp = new ArrayList<>();
             tmp.add(1);
             for (int j = i - 1; j >= 1; j--) {
                 int val = result.get(i - 1).get(j) + result.get(i - 1).get(j - 1);
-                tmp.set(j, val);
+                tmp.add(val);
             }
-            result.add(new ArrayList<>(tmp));
+            if (i > 0) {
+                tmp.add(1);
+            }
+            result.add(tmp);
         }
         return result;
     }
@@ -366,16 +397,13 @@ public class DynamicSolution {
         if (rowIndex < 0) {
             return new ArrayList<>();
         }
-        List<Integer> result = new ArrayList<>(rowIndex + 1);
-        result.add(1);
+        List<Integer> result = new ArrayList<>(rowIndex);
         for (int i = 0; i <= rowIndex; i++) {
             for (int j = i - 1; j >= 1; j--) {
                 int val = result.get(j) + result.get(j - 1);
                 result.set(j, val);
             }
-            if (i > 0) {
-                result.add(1);
-            }
+            result.add(1);
         }
         return result;
     }
@@ -387,18 +415,20 @@ public class DynamicSolution {
      * @return
      */
     public int minimumTotal(List<List<Integer>> triangle) {
+        if (triangle == null || triangle.isEmpty()) {
+            return 0;
+        }
         int size = triangle.size();
-        List<Integer> lastRow = triangle.get(size - 1);
+        List<Integer> row = triangle.get(size - 1);
         for (int i = size - 2; i >= 0; i--) {
             List<Integer> current = triangle.get(i);
-            int currentSize = current.size();
-            for (int j = 0; j < currentSize; j++) {
-                int val = current.get(j) + Math.min(lastRow.get(j), lastRow.get(j + 1));
-
-                lastRow.set(j, val);
+            int len = current.size();
+            for (int j = 0; j < len; j++) {
+                int val = Math.min(row.get(j), row.get(j + 1)) + current.get(j);
+                row.set(j, val);
             }
         }
-        return lastRow.get(0);
+        return row.get(0);
     }
 
 
@@ -414,15 +444,14 @@ public class DynamicSolution {
         if (ratings == null || ratings.length == 0) {
             return 0;
         }
-        int len = ratings.length;
-        int[] dp = new int[len];
+        int[] dp = new int[ratings.length];
         Arrays.fill(dp, 1);
-        for (int i = 1; i < len; i++) {
-            if (ratings[i - 1] < ratings[i] && dp[i] < dp[i - 1] + 1) {
+        for (int i = 1; i < ratings.length; i++) {
+            if (ratings[i] > ratings[i - 1] && dp[i] < dp[i - 1] + 1) {
                 dp[i] = dp[i - 1] + 1;
             }
         }
-        for (int i = len - 2; i >= 0; i--) {
+        for (int i = ratings.length - 2; i >= 0; i--) {
             if (ratings[i] > ratings[i + 1] && dp[i] < dp[i + 1] + 1) {
                 dp[i] = dp[i + 1] + 1;
             }
@@ -444,13 +473,14 @@ public class DynamicSolution {
         if (prices == null || prices.length == 0) {
             return 0;
         }
+        int cost = prices[0];
         int result = 0;
-        int minPrice = prices[0];
         for (int i = 1; i < prices.length; i++) {
-            if (prices[i] > minPrice) {
-                result = Math.max(result, prices[i] - minPrice);
+            int price = prices[i];
+            if (price > cost) {
+                result = Math.max(result, price - cost);
             } else {
-                minPrice = prices[i];
+                cost = price;
             }
         }
         return result;
@@ -463,16 +493,18 @@ public class DynamicSolution {
      * @return
      */
     public int maxProfitII(int[] prices) {
-        if (prices == null) {
+        if (prices == null || prices.length == 0) {
             return 0;
         }
         int result = 0;
-        int minPrice = prices[0];
-        for (int i = 0; i < prices.length; i++) {
-            if (prices[i] > minPrice) {
-                result += prices[i] - minPrice;
+
+        int cost = prices[0];
+
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > cost) {
+                result += prices[i] - cost;
             }
-            minPrice = prices[i];
+            cost = prices[i];
         }
         return result;
     }
@@ -484,36 +516,33 @@ public class DynamicSolution {
      * @return
      */
     public int maxProfitIII(int[] prices) {
-        if (prices == null) {
+        if (prices == null || prices.length == 0) {
             return 0;
         }
         int column = prices.length;
         int[] left = new int[column];
         int[] right = new int[column + 1];
-
-        int minLeft = prices[0];
-        int leftResult = 0;
-        for (int i = 1; i < column; i++) {
-            if (prices[i] > minLeft) {
-                leftResult = Math.max(leftResult, prices[i] - minLeft);
-            } else {
-                minLeft = prices[i];
+        int cost = prices[0];
+        int leftProfit = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] < cost) {
+                cost = prices[i];
             }
-            left[i] = leftResult;
+            leftProfit = Math.max(leftProfit, prices[i] - cost);
+            left[i] = leftProfit;
         }
-        int minRight = prices[column - 1];
-        int rightResult = 0;
+        cost = prices[column - 1];
+        int rightProfit = 0;
         for (int i = column - 2; i >= 0; i--) {
-            if (minRight > prices[i]) {
-                rightResult = Math.max(rightResult, minRight - prices[i]);
-            } else {
-                minRight = prices[i];
+            if (prices[i] > cost) {
+                cost = prices[i];
             }
-            right[i] = rightResult;
+            rightProfit = Math.max(rightProfit, cost - prices[i]);
+            right[i] = rightProfit;
         }
         int result = 0;
-        for (int i = 0; i < column; i++) {
-            result = Math.max(result, left[i] + right[i]);
+        for (int i = 1; i < column; i++) {
+            result = Math.max(result, left[i] + right[i + 1]);
         }
         return result;
     }
@@ -535,7 +564,7 @@ public class DynamicSolution {
         for (int i = 1; i <= k; i++) {
             int cost = -prices[0];
             for (int j = 1; j < prices.length; j++) {
-                dp[i][j] = Math.max(cost + prices[j], dp[i][j - 1]);
+                dp[i][j] = Math.max(dp[i][j - 1], cost + prices[j]);
                 cost = Math.max(cost, dp[i - 1][j - 1] - prices[j]);
             }
         }
@@ -574,13 +603,13 @@ public class DynamicSolution {
      */
     public int rob(int[] nums) {
         int robCurrent = 0;
-        int robPre = 0;
+        int robPrev = 0;
         for (int num : nums) {
             int tmp = robCurrent;
-            robCurrent = Math.max(robCurrent, robPre + num);
-            robPre = tmp;
+            robCurrent = Math.max(robPrev + num, robCurrent);
+            robPrev = tmp;
         }
-        return Math.max(robCurrent, robPre);
+        return Math.max(robCurrent, robPrev);
     }
 
     /**
@@ -594,20 +623,20 @@ public class DynamicSolution {
             return 0;
         }
         if (nums.length == 1) {
-            return nums[0];
+            return 1;
         }
-        return Math.max(intervalRob(nums, 0, nums.length - 2), intervalRob(nums, 1, nums.length - 1));
+        return Math.max(intervalRob(nums, 1, nums.length - 1), intervalRob(nums, 0, nums.length - 2));
     }
 
     private int intervalRob(int[] nums, int start, int end) {
-        int current = 0;
-        int pre = 0;
+        int robPrev = 0;
+        int robCurrent = 0;
         for (int i = start; i <= end; i++) {
-            int tmp = current;
-            current = Math.max(pre + nums[i], current);
-            pre = tmp;
+            int tmp = robCurrent;
+            robCurrent = Math.max(robPrev + nums[i], robCurrent);
+            robPrev = tmp;
         }
-        return Math.max(pre, current);
+        return Math.max(robCurrent, robPrev);
     }
 
     // 房子颜色问题
@@ -623,15 +652,18 @@ public class DynamicSolution {
         }
         int row = costs.length;
         for (int i = 1; i < row; i++) {
-            costs[i][0] = Math.min(costs[i - 1][1], costs[i - 1][2]) + costs[i][0];
-            costs[i][1] = Math.min(costs[i - 1][2], costs[i - 1][0]) + costs[i][1];
-            costs[i][2] = Math.min(costs[i - 1][1], costs[i - 1][0]) + costs[i][2];
+            costs[i][0] += Math.min(costs[i - 1][1], costs[i - 1][2]);
+
+            costs[i][1] += Math.min(costs[i - 1][0], costs[i - 1][2]);
+
+            costs[i][2] += Math.min(costs[i - 1][1], costs[i - 1][0]);
         }
         return Math.min(Math.min(costs[row - 1][0], costs[row - 1][1]), costs[row - 1][2]);
     }
 
 
     /**
+     * O(n3) 的时间复杂度
      * 265 Paint House II
      * Hard
      *
@@ -643,30 +675,53 @@ public class DynamicSolution {
         if (costs == null || costs.length == 0) {
             return 0;
         }
+        int row = costs.length;
+        int column = costs[0].length;
+        for (int i = 1; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                int value = Integer.MAX_VALUE;
+                for (int k = 0; k < column; k++) {
+                    if (k == j) {
+                        continue;
+                    }
+                    value = Math.min(value, costs[i - 1][k]);
+                }
+                costs[i][j] += value;
+            }
+        }
+        int result = Integer.MAX_VALUE;
+        for (int j = 0; j < column; j++) {
+            result = Math.min(result, costs[row - 1][j]);
+        }
+        return result;
+    }
+
+    public int minCostIIV2(int[][] costs) {
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
         int firstIndex = -1;
         int secondIndex = -1;
         int row = costs.length;
         int column = costs[0].length;
         for (int i = 0; i < row; i++) {
-            int index1 = -1;
-            int index2 = -1;
+            int tmpFirstIndex = -1;
+            int tmpSecondIndex = -1;
             for (int j = 0; j < column; j++) {
-                if (firstIndex >= 0) {
-                    if (j != firstIndex) {
-                        costs[i][j] += costs[i - 1][firstIndex];
-                    } else {
-                        costs[i][j] += costs[i - 1][secondIndex];
-                    }
+                if (j != firstIndex) {
+                    costs[i][j] += firstIndex == -1 ? 0 : costs[i - 1][firstIndex];
+                } else if (j != secondIndex) {
+                    costs[i][j] += secondIndex == -1 ? 0 : costs[i - 1][secondIndex];
                 }
-                if (index1 == -1 || costs[i][j] < costs[i][index1]) {
-                    index2 = index1;
-                    index1 = j;
-                } else if (index2 == -1 || costs[i][j] < costs[i][index2]) {
-                    index2 = j;
+                if (tmpFirstIndex == -1 || costs[i][j] < costs[i][tmpFirstIndex]) {
+                    tmpSecondIndex = tmpFirstIndex;
+                    tmpFirstIndex = j;
+                } else if (tmpSecondIndex == -1 || costs[i][j] < costs[i][tmpSecondIndex]) {
+                    tmpSecondIndex = j;
                 }
             }
-            firstIndex = index1;
-            secondIndex = index2;
+            firstIndex = tmpFirstIndex;
+            secondIndex = tmpSecondIndex;
         }
         return costs[row - 1][firstIndex];
     }
@@ -687,7 +742,6 @@ public class DynamicSolution {
         int row = dungeon.length;
         int column = dungeon[0].length;
         int[][] dp = new int[row][column];
-
         for (int j = column - 1; j >= 0; j--) {
             if (j == column - 1) {
                 dp[row - 1][j] = Math.max(1, 1 - dungeon[row - 1][j]);
@@ -766,8 +820,8 @@ public class DynamicSolution {
      * @return
      */
     public int numSquares(int n) {
-        if (n == 1) {
-            return 1;
+        if (n <= 0) {
+            return 0;
         }
         int[] dp = new int[n + 1];
         dp[0] = 0;
@@ -775,7 +829,7 @@ public class DynamicSolution {
         for (int i = 2; i <= n; i++) {
             int tmp = i;
             for (int j = 1; j * j <= i; j++) {
-                tmp = Math.min(tmp, 1 + dp[i - j * j]);
+                tmp = Math.min(dp[i - j * j] + 1, tmp);
             }
             dp[i] = tmp;
         }
@@ -805,40 +859,5 @@ public class DynamicSolution {
             dp[i] = nums[i - 1];
         }
         return -1;
-    }
-
-
-    /**
-     * 314
-     * Binary Tree Vertical Order Traversal
-     *
-     * @param root
-     * @return
-     */
-    public List<List<Integer>> verticalOrder(TreeNode root) {
-        if (root == null) {
-            return new ArrayList<>();
-        }
-        Queue<Integer> columnQueue = new LinkedList<>();
-        Map<Integer, List<Integer>> map = new TreeMap<>();
-        columnQueue.offer(0);
-        Queue<TreeNode> nodeQueue = new LinkedList<>();
-        nodeQueue.add(root);
-        while (!nodeQueue.isEmpty()) {
-            Integer poll = columnQueue.poll();
-            TreeNode node = nodeQueue.poll();
-            List<Integer> tmp = map.getOrDefault(poll, new ArrayList<>());
-            tmp.add(node.val);
-            map.put(poll, tmp);
-            if (node.left != null) {
-                columnQueue.offer(poll - 1);
-                nodeQueue.offer(node.left);
-            }
-            if (node.right != null) {
-                columnQueue.offer(poll + 1);
-                nodeQueue.offer(node.right);
-            }
-        }
-        return new ArrayList<>(map.values());
     }
 }

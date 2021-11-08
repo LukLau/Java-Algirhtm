@@ -62,6 +62,19 @@ public class FirstPage {
         return root.next;
     }
 
+    public int reverse(int x) {
+        int result = 0;
+        while (x != 0) {
+            if (result > Integer.MAX_VALUE / 10 || result < Integer.MIN_VALUE / 10) {
+                return 0;
+            }
+            result = result * 10 + x % 10;
+
+            x /= 10;
+        }
+        return result;
+    }
+
 
     /**
      * 17. Letter Combinations of a Phone Number
@@ -74,28 +87,23 @@ public class FirstPage {
             return new ArrayList<>();
         }
         String[] map = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
-
+        LinkedList<String> linkedList = new LinkedList<>();
+        linkedList.offer("");
         int len = digits.length();
-
-        LinkedList<String> deque = new LinkedList<>();
-
-        deque.offer("");
         for (int i = 0; i < len; i++) {
-            int index = Character.getNumericValue(digits.charAt(i));
-
+            char digit = digits.charAt(i);
+            int index = Character.getNumericValue(digit);
             String word = map[index];
-
-            while (deque.peek().length() == i) {
-                String poll = deque.poll();
-
+            while (linkedList.peekFirst().length() == i) {
                 char[] words = word.toCharArray();
+                String prefix = linkedList.pollFirst();
+                for (char tmp : words) {
+                    linkedList.offer(prefix + tmp);
 
-                for (char t : words) {
-                    deque.offer(poll + t);
                 }
             }
         }
-        return deque;
+        return linkedList;
     }
 
 
@@ -131,6 +139,110 @@ public class FirstPage {
     }
 
 
+    public int maxArea(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = height.length - 1;
+        int leftEdge = 0;
+        int rightEdge = 0;
+        int result = 0;
+        while (left < right) {
+            if (height[left] <= height[right]) {
+                if (leftEdge <= height[left]) {
+                    leftEdge = height[left];
+                } else {
+                    result += leftEdge - height[left];
+                }
+                left++;
+            } else {
+                if (rightEdge <= height[right]) {
+                    rightEdge = height[right];
+                } else {
+                    result += rightEdge - height[right];
+                }
+                right--;
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 12. Integer to Roman
+     *
+     * @param num
+     * @return
+     */
+    public String intToRoman(int num) {
+        String[] one = new String[]{"", "I", "IStringSolution.I", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+        String[] two = new String[]{"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+        String[] three = new String[]{"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+        String[] four = new String[]{"", "M", "MM", "MMM"};
+        return four[num / 1000] + three[num % 1000 / 100] + two[num % 100 / 10] + one[num % 10];
+    }
+
+    public int romanToInt(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Map<String, Integer> map = new HashMap<>();
+        map.put("I", 1);
+        map.put("V", 5);
+        map.put("X", 10);
+        map.put("L", 50);
+        map.put("C", 100);
+        map.put("D", 500);
+        map.put("M", 1000);
+        char[] words = s.toCharArray();
+        StringBuilder builder = new StringBuilder();
+        for (char word : words) {
+            builder.append(map.get(word + ""));
+        }
+        int result = 0;
+        char[] chars = builder.toString().toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            result += Character.getNumericValue(chars[i]);
+            if (i > 0 && (Character.getNumericValue(chars[i]) > Character.getNumericValue(chars[i - 1]))) {
+                result -= 2 * Character.getNumericValue(chars[i - 1]);
+            }
+        }
+        return result;
+
+    }
+
+
+    public int threeSumClosest(int[] nums, int target) {
+        if (nums == null || nums.length <= 2) {
+            return -1;
+        }
+        int result = nums[0] + nums[1] + nums[2];
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int left = i + 1;
+            int right = nums.length - 1;
+            while (left < right) {
+                int val = nums[i] + nums[left] + nums[right];
+                if (val == target) {
+                    return target;
+                } else if (val < target) {
+                    left++;
+                } else {
+                    right--;
+                }
+                if (Math.abs(result - target) > Math.abs(val - target)) {
+                    result = val;
+                }
+            }
+        }
+        return result;
+    }
+
+
     /**
      * 32. Longest Valid Parentheses
      *
@@ -142,11 +254,16 @@ public class FirstPage {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
-        char[] words = s.toCharArray();
-        int result = 0;
+
         int left = -1;
+
+        int result = 0;
+
+        char[] words = s.toCharArray();
+
         for (int i = 0; i < words.length; i++) {
-            if (words[i] == '(') {
+            char tmp = words[i];
+            if (tmp == '(') {
                 stack.push(i);
             } else {
                 if (!stack.isEmpty() && words[stack.peek()] == '(') {
@@ -154,12 +271,12 @@ public class FirstPage {
                 } else {
                     left = i;
                 }
-
                 if (stack.isEmpty()) {
                     result = Math.max(result, i - left);
                 } else {
                     result = Math.max(result, i - stack.peek());
                 }
+
             }
         }
         return result;
@@ -170,9 +287,14 @@ public class FirstPage {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
+
         char[] words = s.toCharArray();
+
+        int m = s.length();
+
         for (int i = 0; i < words.length; i++) {
-            if (words[i] == '(' || stack.isEmpty()) {
+            char tmp = words[i];
+            if (stack.isEmpty() || tmp == '(') {
                 stack.push(i);
             } else {
                 if (words[stack.peek()] == '(') {
@@ -180,20 +302,22 @@ public class FirstPage {
                 } else {
                     stack.push(i);
                 }
-
             }
         }
         if (stack.isEmpty()) {
-            return words.length;
+            return m;
         }
+        int a = m;
         int result = 0;
-        int rightEdge = s.length();
         while (!stack.isEmpty()) {
-            Integer left = stack.pop();
-            result = Math.max(result, rightEdge - left - 1);
-            rightEdge = left;
+            int b = stack.pop();
+
+            result = Math.max(result, a - b - 1);
+
+            a = b;
         }
-        result = Math.max(result, rightEdge);
+        result = Math.max(result, a);
+
         return result;
     }
 
@@ -208,24 +332,28 @@ public class FirstPage {
         if (height == null || height.length == 0) {
             return 0;
         }
+        int leftEdge = 0;
+
+        int rightEdge = 0;
+
         int left = 0;
         int right = height.length - 1;
+
         int result = 0;
-        int minLeft = 0;
-        int minRight = 0;
+
         while (left < right) {
             if (height[left] <= height[right]) {
-                if (height[left] >= minLeft) {
-                    minLeft = height[left];
+                if (leftEdge <= height[left]) {
+                    leftEdge = height[left];
                 } else {
-                    result += minLeft - height[left];
+                    result += leftEdge - height[left];
                 }
                 left++;
             } else {
-                if (height[right] >= minRight) {
-                    minRight = height[right];
+                if (rightEdge <= height[right]) {
+                    rightEdge = height[right];
                 } else {
-                    result += minRight - height[right];
+                    result += rightEdge - height[right];
                 }
                 right--;
             }
@@ -240,6 +368,9 @@ public class FirstPage {
      * @return
      */
     public int firstMissingPositive(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
         for (int i = 0; i < nums.length; i++) {
             while (nums[i] >= 1 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
                 swapValue(nums, i, nums[i] - 1);
@@ -272,20 +403,19 @@ public class FirstPage {
         }
         int m = num1.length();
         int n = num2.length();
-        int[] nums = new int[m + n];
+        int[] pos = new int[m + n];
         for (int i = m - 1; i >= 0; i--) {
             for (int j = n - 1; j >= 0; j--) {
-                int val = Character.getNumericValue(num1.charAt(i)) * Character.getNumericValue(num2.charAt(j)) + nums[i + j + 1];
+                int val = Character.getNumericValue(num1.charAt(i)) * Character.getNumericValue(num2.charAt(j)) + pos[i + j + 1];
 
-                nums[i + j + 1] = val % 10;
+                pos[i + j + 1] = val % 10;
 
-                nums[i + j] += val / 10;
-
+                pos[i + j] += val / 10;
             }
         }
         StringBuilder builder = new StringBuilder();
-        for (int num : nums) {
-            if (!(num == 0 && builder.length() == 0)) {
+        for (int num : pos) {
+            if (!(builder.length() == 0 && num == 0)) {
                 builder.append(num);
             }
         }
@@ -330,22 +460,18 @@ public class FirstPage {
         if (intervals == null || intervals.length == 0) {
             return new int[][]{};
         }
-        PriorityQueue<int[]> queue = new PriorityQueue<>(intervals.length, Comparator.comparingInt(o -> o[0]));
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        List<int[]> result = new ArrayList<>();
         for (int[] interval : intervals) {
-            queue.offer(interval);
-        }
-        LinkedList<int[]> linkedList = new LinkedList<>();
-        while (!queue.isEmpty()) {
-            int[] poll = queue.poll();
-            if (linkedList.isEmpty() || linkedList.peekLast()[1] < poll[0]) {
-                linkedList.add(poll);
+            if (result.isEmpty() || result.get(result.size() - 1)[1] < interval[0]) {
+                result.add(interval);
             } else {
-                int[] peek = linkedList.peekLast();
-                peek[0] = Math.min(peek[0], poll[0]);
-                peek[1] = Math.max(peek[1], poll[1]);
+                int[] pre = result.get(result.size() - 1);
+                pre[0] = Math.min(pre[0], interval[0]);
+                pre[1] = Math.max(pre[1], interval[1]);
             }
         }
-        return linkedList.toArray(new int[][]{});
+        return result.toArray(new int[][]{});
     }
 
 
@@ -391,24 +517,23 @@ public class FirstPage {
             return "/";
         }
         String[] words = path.split("/");
-        LinkedList<String> deque = new LinkedList<>();
+        LinkedList<String> linkedList = new LinkedList<>();
+
         for (String word : words) {
-            if (word.isEmpty() || ".".endsWith(word)) {
-                continue;
-            }
             if ("..".equals(word)) {
-                deque.pollLast();
-            } else {
-                deque.offer(word);
+                if (!linkedList.isEmpty()) {
+                    linkedList.pollLast();
+                }
+            } else if (!"".equals(word) && !".".equals(word)) {
+                linkedList.offer(word);
             }
         }
+        StringBuilder s = new StringBuilder();
 
-        String tmp = "";
-        for (String s : deque) {
-            tmp = tmp + "/" + s;
+        for (String tmp : linkedList) {
+            s.append("/").append(tmp);
         }
-        return tmp.isEmpty() ? "/" : tmp;
-
+        return s.length() == 0 ? "/" : s.toString();
     }
 
 
@@ -422,16 +547,15 @@ public class FirstPage {
             return;
         }
         int blue = nums.length - 1;
-        int zero = 0;
-        int index = 0;
-        while (index < nums.length) {
-            while (index < blue && nums[index] == 2) {
-                swapValue(nums, index, blue--);
+
+        int red = 0;
+        for (int i = 0; i < nums.length; i++) {
+            while (i < blue && nums[i] == 2) {
+                swapValue(nums, i, blue--);
             }
-            while (index > zero && nums[index] == 0) {
-                swapValue(nums, index, zero++);
+            while (i > red && nums[i] == 0) {
+                swapValue(nums, i, red++);
             }
-            index++;
         }
     }
 
@@ -470,14 +594,13 @@ public class FirstPage {
         Stack<Integer> stack = new Stack<>();
         int result = 0;
         for (int i = 0; i <= heights.length; i++) {
-            int h = i == heights.length ? 0 : heights[i];
-            if (stack.isEmpty() || heights[stack.peek()] <= h) {
+            int side = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] <= side) {
                 stack.push(i);
             } else {
                 Integer pop = stack.pop();
-                int side = stack.isEmpty() ? i : i - stack.peek() - 1;
-
-                result = Math.max(result, side * heights[pop]);
+                int edge = stack.isEmpty() ? i : i - stack.peek() - 1;
+                result = Math.max(result, heights[pop] * edge);
                 i--;
             }
         }
@@ -522,16 +645,15 @@ public class FirstPage {
         }
         List<String> result = new ArrayList<>();
         int len = s.length();
-        for (int i = 1; i <= 3 && i <= len - 3; i++) {
-            for (int j = i + 1; j <= i + 3 && j <= len - 2; j++) {
-                for (int k = j + 1; k < k + 3 && k <= len - 1; k++) {
+        for (int i = 1; i < 4 && i < len - 2; i++) {
+            for (int j = i + 1; j < i + 4 && j < len - 1; j++) {
+                for (int k = j + 1; k < j + 4 && k < len; k++) {
                     String a = s.substring(0, i);
                     String b = s.substring(i, j);
                     String c = s.substring(j, k);
                     String d = s.substring(k);
                     if (validIpSeq(a) && validIpSeq(b) && validIpSeq(c) && validIpSeq(d)) {
-                        String tmp = a + "." + b + "." + c + "." + d;
-                        result.add(tmp);
+                        result.add(a + "." + b + "." + c + "." + d);
                     }
                 }
             }
@@ -543,22 +665,25 @@ public class FirstPage {
         if (s.isEmpty()) {
             return false;
         }
-
-        int len = s.length();
-        if (len > 3) {
+        int length = s.length();
+        if (length > 3) {
             return false;
         }
-        int num = Integer.parseInt(s);
-        if (!(num >= 0 && num <= 255)) {
+        int val = Integer.parseInt(s);
+        if (val < 0 || val > 255) {
             return false;
         }
-        return len <= 1 || s.charAt(0) != '0';
+        return length < 2 || s.charAt(0) != '0';
     }
 
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
-        List<String> result = page.restoreIpAddresses("010010");
-        System.out.println(result);
+
+//        System.out.println(page.intToRoman(3));
+//        System.out.println(page.intToRoman(4));
+//        System.out.println(page.intToRoman(9));
+
+        page.romanToInt("IX");
     }
 
 

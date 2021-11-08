@@ -14,8 +14,7 @@ public class VersionControlSolution {
         int end = n;
         while (start < end) {
             int mid = start + (end - start) / 2;
-            boolean badVersion = isBadVersion(mid);
-            if (badVersion) {
+            if (isBadVersion(mid)) {
                 end = mid;
             } else {
                 start = mid + 1;

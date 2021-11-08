@@ -116,22 +116,21 @@ public class ListSolution {
             return head;
         }
         ListNode root = new ListNode(0);
+
         root.next = head;
+
         ListNode dummy = root;
+
         while (dummy.next != null && dummy.next.next != null) {
-
             ListNode slow = dummy.next;
-
             ListNode fast = dummy.next.next;
+            slow.next = fast.next;
 
             dummy.next = fast;
-
-            slow.next = fast.next;
 
             fast.next = slow;
 
             dummy = slow;
-
         }
         return root.next;
     }
@@ -261,28 +260,28 @@ public class ListSolution {
         }
         Node current = head;
         while (current != null) {
+            Node next = current.next;
             Node tmp = new Node(current.val);
-            tmp.next = current.next;
             current.next = tmp;
-            current = tmp.next;
+            tmp.next = next;
+            current = next;
         }
         current = head;
         while (current != null) {
-            Node next = current.next;
-            if (current.random != null) {
-                next.random = current.random.next;
+            Node random = current.random;
+            if (random != null) {
+                current.next.random = random.next;
             }
-            current = next.next;
+            current = current.next.next;
         }
-
         current = head;
-        Node copyHead = current.next;
+        Node copy = head.next;
         while (current.next != null) {
             Node tmp = current.next;
             current.next = tmp.next;
             current = tmp;
         }
-        return copyHead;
+        return copy;
     }
 
 
@@ -349,30 +348,25 @@ public class ListSolution {
         ListNode slow = head;
         ListNode fast = head;
         while (fast.next != null && fast.next.next != null) {
-            fast = fast.next.next;
-
+            fast = fast.next;
             slow = slow.next;
         }
-        ListNode reverse = reverse(slow.next);
+        ListNode second = slow.next;
 
         slow.next = null;
 
-        fast = head;
+        ListNode reverse = reverse(second);
 
-        while (fast != null && reverse != null) {
-            ListNode tmp = fast.next;
+        ListNode first = head;
 
-            ListNode reverseTmp = reverse.next;
-
-            fast.next = reverse;
-
-            reverse.next = tmp;
-
-            fast = tmp;
-
-            reverse = reverseTmp;
+        while (first != null && reverse != null) {
+            ListNode next = first.next;
+            ListNode reverseNext = reverse.next;
+            first.next = reverse;
+            reverse.next = next;
+            first = next;
+            reverse = reverseNext;
         }
-
 
     }
 

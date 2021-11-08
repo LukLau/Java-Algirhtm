@@ -15,7 +15,8 @@ public class ThreePage {
 
     public static void main(String[] args) {
         ThreePage page = new ThreePage();
-        page.getHint("1807", "7810");
+        int[] nums = new int[]{0, 1, 2, 4, 5, 7};
+        page.summaryRanges(nums);
     }
 
 
@@ -23,21 +24,23 @@ public class ThreePage {
      * 202. Happy Number
      */
     public boolean isHappy(int n) {
-        Set<Integer> set = new HashSet<>();
-        while (n != 1) {
-            int tmp = n;
-            int result = 0;
-            while (tmp != 0) {
-                int remain = tmp % 10;
-                result = result + remain * remain;
-                tmp /= 10;
+        List<Integer> result = new ArrayList<>();
+        while (true) {
+            int tmp = 0;
+            while (n != 0) {
+                int remain = n % 10;
+                tmp += remain * remain;
+                n /= 10;
             }
-            if (!set.add(result)) {
+            if (tmp == 1) {
+                return true;
+            }
+            if (result.contains(tmp)) {
                 return false;
             }
-            n = result;
+            result.add(tmp);
+            n = tmp;
         }
-        return true;
     }
 
 
@@ -71,13 +74,13 @@ public class ThreePage {
         if (s == null || t == null) {
             return false;
         }
+        Map<Character, Integer> map1 = new HashMap<>();
+        Map<Character, Integer> map2 = new HashMap<>();
         int m = s.length();
         int n = t.length();
         if (m != n) {
             return false;
         }
-        Map<Character, Integer> map1 = new HashMap<>();
-        Map<Character, Integer> map2 = new HashMap<>();
         for (int i = 0; i < m; i++) {
             if (!Objects.equals(map1.put(s.charAt(i), i), map2.put(t.charAt(i), i))) {
                 return false;
@@ -97,10 +100,13 @@ public class ThreePage {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode node = reverseList(head.next);
+        ListNode listNode = reverseList(head.next);
+
         head.next.next = head;
+
         head.next = null;
-        return node;
+
+        return listNode;
     }
 
 
@@ -108,21 +114,25 @@ public class ThreePage {
      * todo use OlogN
      * 209. Minimum Size Subarray Sum
      *
-     * @param target
+     * @param s
      * @param nums
      * @return
      */
-    public int minSubArrayLen(int target, int[] nums) {
-        int left = 0;
-        int right = 0;
-        int local = 0;
+    public int minSubArrayLen(int s, int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
         int result = Integer.MAX_VALUE;
-        while (right < nums.length) {
-            local += nums[right++];
-            while (left < right && local >= target) {
-                result = Math.min(result, right - left);
-                local -= nums[left++];
+        int sum = 0;
+        int left = 0;
+        int endIndex = 0;
+        while (endIndex < nums.length) {
+            sum += nums[endIndex];
+            while (sum >= s) {
+                result = Math.min(result, endIndex - left + 1);
+                sum -= nums[left++];
             }
+            endIndex++;
         }
         return result == Integer.MAX_VALUE ? 0 : result;
     }
@@ -148,6 +158,27 @@ public class ThreePage {
             iterator++;
         }
         return queue.poll();
+    }
+
+
+    /**
+     * 217. Contains Duplicate
+     *
+     * @param nums
+     * @return
+     */
+    public boolean containsDuplicate(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            if (map.containsKey(num)) {
+                return true;
+            }
+            map.put(num, 1);
+        }
+        return false;
     }
 
 
@@ -226,6 +257,7 @@ public class ThreePage {
      * @return
      */
     public int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+
         return -1;
     }
 
@@ -254,15 +286,15 @@ public class ThreePage {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        int lower = nums[0];
-        for (int i = 0; i < nums.length; i++) {
-            if (i > 0 && nums[i] != nums[i - 1] + 1) {
-                result.add(range(lower, nums[i - 1]));
-                lower = nums[i];
+        int startIndex = 0;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] != nums[i - 1] + 1) {
+                result.add(range(nums[startIndex], nums[i - 1]));
+                startIndex = i;
             }
         }
-        if (lower <= nums[nums.length - 1]) {
-            result.add(range(lower, nums[nums.length - 1]));
+        if (startIndex <= nums.length - 1) {
+            result.add(range(nums[startIndex], nums[nums.length - 1]));
         }
         return result;
     }
@@ -280,24 +312,24 @@ public class ThreePage {
      */
     public boolean isPalindrome(ListNode head) {
         if (head == null || head.next == null) {
-            return true;
+            return false;
         }
-        ListNode slow = head;
         ListNode fast = head;
+        ListNode slow = head;
         while (fast.next != null && fast.next.next != null) {
-            slow = slow.next;
             fast = fast.next.next;
+            slow = slow.next;
         }
-        ListNode mid = slow.next;
+        ListNode next = slow.next;
         slow.next = null;
-        ListNode reverse = reverseList(mid);
 
-        while (head != null && reverse != null) {
-            if (head.val != reverse.val) {
+        ListNode reverseList = reverseList(next);
+        while (head != null && reverseList != null) {
+            if (head.val != reverseList.val) {
                 return false;
             }
             head = head.next;
-            reverse = reverse.next;
+            reverseList = reverseList.next;
         }
         return true;
     }
@@ -354,7 +386,28 @@ public class ThreePage {
         if (num < 0) {
             return "";
         }
+
         return "";
+    }
+
+    private String convertToWords(int num) {
+        String[] v1 = new String[]{"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+
+        String[] v2 = new String[]{"", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+
+
+        int a = num / 100;
+
+        int b = num % 100;
+
+        int c = num % 10;
+
+        String res = "";
+
+//        res = b < 20 ? v1[b] : (v2[b / 10] +
+
+        return res;
+
     }
 
 
@@ -376,7 +429,6 @@ public class ThreePage {
         while (index < nums.length) {
             nums[index++] = 0;
         }
-
     }
 
     /**
