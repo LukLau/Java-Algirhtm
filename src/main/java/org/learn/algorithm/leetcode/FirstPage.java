@@ -1,6 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
+import sun.jvm.hotspot.ui.tree.RevPtrsTreeNodeAdapter;
 
 import java.util.*;
 
@@ -12,8 +13,8 @@ public class FirstPage {
 
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
-        List<String> result = page.restoreIpAddresses("010010");
-        System.out.println(result);
+        int[][] params = new int[][]{{1, 3}, {6, 9}};
+        page.insert(params, new int[]{2, 5});
     }
 
     /**
@@ -459,20 +460,22 @@ public class FirstPage {
             return new int[][]{};
         }
         Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
-        List<int[]> result = new ArrayList<>();
-        for (int[] interval : intervals) {
-            if (result.isEmpty() || result.get(result.size() - 1)[1] < interval[0]) {
-                result.add(interval);
+        LinkedList<int[]> linkedList = new LinkedList<>();
+        linkedList.offer(intervals[0]);
+        for (int i = 1; i < intervals.length; i++) {
+            if (linkedList.peekLast()[1] < intervals[i][0]) {
+                linkedList.offer(intervals[i]);
             } else {
-                int[] pre = result.get(result.size() - 1);
-                pre[0] = Math.min(pre[0], interval[0]);
-                pre[1] = Math.max(pre[1], interval[1]);
+                int[] last = linkedList.peekLast();
+                last[0] = Math.min(last[0], intervals[i][0]);
+                last[1] = Math.max(last[1], intervals[i][1]);
             }
         }
-        return result.toArray(new int[][]{});
+        return linkedList.toArray(new int[][]{});
     }
 
     /**
+     * todo
      * 57. Insert Interval
      *
      * @param intervals
@@ -480,27 +483,25 @@ public class FirstPage {
      * @return
      */
     public int[][] insert(int[][] intervals, int[] newInterval) {
-        if (intervals == null) {
+        if (intervals == null || intervals.length == 0) {
             return new int[][]{};
         }
         Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
-
-        LinkedList<int[]> deque = new LinkedList<>();
-
+        LinkedList<int[]> result = new LinkedList<>();
         int index = 0;
-        while (index < intervals.length && intervals[index][1] < newInterval[0]) {
-            deque.offer(intervals[index++]);
-        }
         while (index < intervals.length && intervals[index][0] <= newInterval[1]) {
-            newInterval[0] = Math.min(newInterval[0], intervals[index][0]);
-            newInterval[1] = Math.max(newInterval[1], intervals[index][1]);
+            result.offer(intervals[index++]);
+        }
+        while (index < intervals.length && intervals[index][1] >= newInterval[0]) {
+            newInterval[0] = Math.min(intervals[index][0], intervals[index][0]);
+            newInterval[1] = Math.max(intervals[index][1], intervals[index][1]);
             index++;
         }
-        deque.offer(newInterval);
+        result.offer(newInterval);
         while (index < intervals.length) {
-            deque.offer(intervals[index++]);
+            result.offer(intervals[index++]);
         }
-        return deque.toArray(new int[][]{});
+        return result.toArray(new int[][]{});
     }
 
     /**

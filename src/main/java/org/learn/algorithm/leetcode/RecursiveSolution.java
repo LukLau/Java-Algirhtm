@@ -13,8 +13,7 @@ public class RecursiveSolution {
 
     public static void main(String[] args) {
         RecursiveSolution solution = new RecursiveSolution();
-        int[] nums = new int[]{2};
-        solution.combinationSum(nums, 1);
+        System.out.println(solution.getPermutation(3, 3));
     }
 
     /**
@@ -323,26 +322,26 @@ public class RecursiveSolution {
         if (n <= 0) {
             return "";
         }
-        List<Integer> nums = new ArrayList<>();
+        List<Integer> params = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
-            nums.add(i);
+            params.add(i);
         }
-        int[] factors = new int[n + 1];
-        factors[0] = 1;
+        int[] factor = new int[n + 1];
+        factor[0] = 1;
         int base = 1;
         for (int i = 1; i <= n; i++) {
             base *= i;
-            factors[i] = i;
+            factor[i] = base;
         }
         StringBuilder builder = new StringBuilder();
         k--;
         for (int i = 0; i < n; i++) {
-            int index = k / factors[n - 1 - i];
+            int index = k / factor[n - 1 - i];
+            params.remove(index);
             builder.append(index);
-            nums.remove(index);
-            k -= index * factors[n - 1 - i];
+            k -= index * factor[n - 1 - i];
         }
-        return builder.toString();
+        return builder.length() == 0 ? "" : builder.toString();
     }
 
 

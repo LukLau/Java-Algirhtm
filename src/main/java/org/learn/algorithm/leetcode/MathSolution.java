@@ -1,6 +1,9 @@
 package org.learn.algorithm.leetcode;
 
 
+import sun.jvm.hotspot.ui.tree.RevPtrsTreeNodeAdapter;
+
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -94,6 +97,10 @@ public class MathSolution {
     }
 
     public double myPow(double x, int n) {
+        return internalPow(x, n);
+    }
+
+    public double internalPow(double x, long n) {
         if (n == 0) {
             return 1;
         }
@@ -101,7 +108,7 @@ public class MathSolution {
             n = -n;
             x = 1 / x;
         }
-        return n % 2 == 0 ? myPow(x * x, n / 2) : x * myPow(x * x, n / 2);
+        return n % 2 == 0 ? internalPow(x * x, n / 2) : x * internalPow(x * x, n / 2);
     }
 
     /**
