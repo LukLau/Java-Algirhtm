@@ -1,7 +1,6 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
-import sun.jvm.hotspot.ui.tree.RevPtrsTreeNodeAdapter;
 
 import java.util.*;
 
@@ -13,8 +12,7 @@ public class FirstPage {
 
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
-        int[][] params = new int[][]{{1, 3}, {6, 9}};
-        page.insert(params, new int[]{2, 5});
+        page.simplifyPath("/home//foo/");
     }
 
     /**
@@ -514,25 +512,25 @@ public class FirstPage {
         if (path == null || path.isEmpty()) {
             return "/";
         }
+        LinkedList<String> linkedList = new LinkedList<>();
         String[] words = path.split("/");
-        LinkedList<String> list = new LinkedList<>();
         for (String word : words) {
-            if ("".equals(word) || ".".equals(word)) {
-                continue;
-            } else if ("..".equals(word) && !list.isEmpty()) {
-                list.pollLast();
-            } else if (!"..".equals(word)) {
-                list.add(word);
+            if ("..".equals(word)) {
+                if (!linkedList.isEmpty()) {
+                    linkedList.pollLast();
+                }
+            } else if (!(".".equals(word) || "".equals(word))) {
+                linkedList.offer(word);
             }
         }
-        if (list.isEmpty()) {
+        if (linkedList.isEmpty()) {
             return "/";
         }
-        StringBuilder result = new StringBuilder();
-        for (String word : list) {
-            result.append("/").append(word);
+        String result = "";
+        for (String item : linkedList) {
+            result = result + "/" + item;
         }
-        return result.toString();
+        return result;
     }
 
     /**
@@ -541,19 +539,7 @@ public class FirstPage {
      * @param nums
      */
     public void sortColors(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return;
-        }
-        int red = 0;
-        int blue = nums.length - 1;
-        for (int i = 0; i < nums.length; i++) {
-            while (nums[i] == 2 && i < blue) {
-                swap(nums, i, blue--);
-            }
-            while (nums[i] == 0 && i > red) {
-                swap(nums, i, red++);
-            }
-        }
+
     }
 
     private void swap(int[] nums, int i, int j) {

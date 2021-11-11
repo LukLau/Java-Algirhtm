@@ -145,23 +145,23 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode fast = head;
+        ListNode current = head;
         int count = 1;
-        while (fast.next != null) {
-            fast = fast.next;
+        while (current.next != null) {
+            current = current.next;
             count++;
         }
-        fast.next = head;
+        current.next = head;
         k %= count;
-        ListNode slow = head;
+        ListNode fast = head;
         if (k != 0) {
             for (int i = 0; i < count - k; i++) {
-                slow = slow.next;
                 fast = fast.next;
+                current = current.next;
             }
         }
-        fast.next = null;
-        return slow;
+        current.next = null;
+        return fast;
     }
 
 

@@ -1,9 +1,6 @@
 package org.learn.algorithm.leetcode;
 
 
-import sun.jvm.hotspot.ui.tree.RevPtrsTreeNodeAdapter;
-
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -16,8 +13,9 @@ public class MathSolution {
 
     public static void main(String[] args) {
         MathSolution solution = new MathSolution();
-        int[] nums = new int[]{5, 4, 4, 3, 2, 1};
-        solution.nthUglyNumber(10);
+//        int[] nums = new int[]{5, 4, 4, 3, 2, 1};
+//        solution.nthUglyNumber(10);
+        solution.isNumber("005047e+6");
     }
 
     // 素数相关
@@ -112,6 +110,7 @@ public class MathSolution {
     }
 
     /**
+     * todo
      * 65. Valid Number
      *
      * @param s
@@ -121,10 +120,39 @@ public class MathSolution {
         if (s == null || s.isEmpty()) {
             return false;
         }
-        boolean seenNumberAfterE = true;
-        boolean seenNumber = true;
+        boolean seenNumberAfterE = false;
+        boolean seenNumber = false;
         boolean seenDigit = false;
-        return false;
+        boolean seenE = false;
+        char[] words = s.toCharArray();
+        for (int i = 0; i < words.length; i++) {
+            char current = words[i];
+            if (Character.isDigit(current)) {
+                seenNumber = true;
+                seenNumberAfterE = true;
+            } else if (current == 'e' || current == 'E') {
+                if (i == 0 || seenE) {
+                    return false;
+                }
+                if (!seenNumber) {
+                    return false;
+                }
+                seenE = true;
+                seenNumberAfterE = false;
+            } else if (current == '.') {
+                if (seenDigit) {
+                    return false;
+                }
+                seenDigit = true;
+            } else if (current == '-' || current == '+') {
+                if (i > 0 && (words[i - 1] != 'e' && words[i - 1] != 'E')) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return seenNumber && seenNumberAfterE;
     }
 
 
@@ -170,20 +198,16 @@ public class MathSolution {
                 line += words[endIndex].length() + 1;
                 endIndex++;
             }
+            int wordCount = endIndex - startIndex;
+            int remainSpace = maxWidth - line + 1;
             boolean lastRow = endIndex == words.length;
-            int countWord = endIndex - startIndex;
             StringBuilder builder = new StringBuilder();
-
-            if (countWord == 1) {
+            if (wordCount == 1) {
                 builder.append(words[startIndex]);
             } else {
-                int blankSpace = maxWidth - line + 1;
-
-                int countBlankSpace = lastRow ? 1 : 1 + blankSpace / (countWord - 1);
-
-                int extraBlankSpace = lastRow ? 0 : blankSpace % (countWord - 1);
-
-                builder.append(constructRow(words, startIndex, endIndex, countBlankSpace, extraBlankSpace));
+                int blankSpace = lastRow ? 1 : (1 + remainSpace / (wordCount - 1));
+                int extraSpace = lastRow ? 0 : (remainSpace % (wordCount - 1));
+                builder.append(constructRow(words, startIndex, endIndex, blankSpace, extraSpace));
             }
             result.add(trimRow(builder.toString(), maxWidth));
             startIndex = endIndex;

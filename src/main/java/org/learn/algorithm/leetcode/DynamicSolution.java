@@ -34,37 +34,6 @@ public class DynamicSolution {
     // 普通动态规划问题
 
     /**
-     * todo
-     * 91. Decode Ways
-     *
-     * @param s
-     * @return
-     */
-    public int numDecodings(String s) {
-        if (s == null || s.isEmpty()) {
-            return 0;
-        }
-        int len = s.length();
-        int[] dp = new int[len + 1];
-        dp[0] = 1;
-        dp[1] = s.charAt(0) == '0' ? 0 : 1;
-        for (int i = 2; i <= len; i++) {
-            int first = Integer.parseInt(s.substring(i - 1, i));
-            int second = Integer.parseInt(s.substring(i - 2, i));
-            if (first >= 1 && first <= 9) {
-                dp[i] += dp[i - 1];
-            }
-            if (second >= 1 && second <= 26) {
-                dp[i] += dp[i - 2];
-            }
-        }
-        return dp[len];
-    }
-
-
-    // 序列问题
-
-    /**
      * @param repository
      * @param customerQuery
      * @return
@@ -95,6 +64,37 @@ public class DynamicSolution {
             }
         }
         return result;
+    }
+
+
+    // 序列问题
+
+    /**
+     * todo
+     * 91. Decode Ways
+     *
+     * @param s
+     * @return
+     */
+    public int numDecodings(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int len = s.length();
+        int[] dp = new int[len + 1];
+        dp[0] = 1;
+        dp[1] = s.charAt(0) == '0' ? 0 : 1;
+        for (int i = 2; i <= len; i++) {
+            int first = Integer.parseInt(s.substring(i - 1, i));
+            int second = Integer.parseInt(s.substring(i - 2, i));
+            if (first >= 1 && first <= 9) {
+                dp[i] += dp[i - 1];
+            }
+            if (second >= 1 && second <= 26) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp[len];
     }
 
 
@@ -249,7 +249,7 @@ public class DynamicSolution {
                 if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1], dp[i - 1][j]), dp[i][j - 1]) + 1;
+                    dp[i][j] = Math.min(Math.min(dp[i][j - 1], dp[i - 1][j]), dp[i - 1][j - 1]) + 1;
                 }
             }
         }
