@@ -11,6 +11,12 @@ public class BinarySolution {
 
     // 旋转数组查找系列//
 
+    public static void main(String[] args) {
+        BinarySolution solution = new BinarySolution();
+        int[] nums = new int[]{10, 10, 10, 1, 10};
+        solution.findMinII(nums);
+    }
+
     /**
      * 33. Search in Rotated Sorted Array
      *
@@ -46,7 +52,6 @@ public class BinarySolution {
         return nums[left] == target ? left : -1;
     }
 
-
     /**
      * todo
      * 81. Search in Rotated Sorted Array II
@@ -67,7 +72,7 @@ public class BinarySolution {
                 return true;
             }
             if (nums[left] == nums[right]) {
-                left++;
+                right--;
             } else if (nums[left] <= nums[mid]) {
                 if (target < nums[mid] && target >= nums[left]) {
                     right = mid - 1;
@@ -80,11 +85,11 @@ public class BinarySolution {
                 } else {
                     right = mid - 1;
                 }
+
             }
         }
         return nums[left] == target;
     }
-
 
     /**
      * 34. Find First and Last Position of Element in Sorted Array
@@ -140,7 +145,6 @@ public class BinarySolution {
         }
         return left;
     }
-
 
     /**
      * 153. Find Minimum in Rotated Sorted Array
@@ -209,6 +213,10 @@ public class BinarySolution {
     }
 
 
+    // --OlogN 复杂度//
+
+    // --矩阵查询-//
+
     /**
      * 162. Find Peak Element
      *
@@ -231,11 +239,6 @@ public class BinarySolution {
         }
         return start;
     }
-
-
-    // --OlogN 复杂度//
-
-    // --矩阵查询-//
 
     /**
      * 74. Search a 2D Matrix
@@ -265,7 +268,6 @@ public class BinarySolution {
         return false;
     }
 
-
     /**
      * 240. Search a 2D Matrix II
      * todo
@@ -293,13 +295,6 @@ public class BinarySolution {
             }
         }
         return true;
-    }
-
-
-    public static void main(String[] args) {
-        BinarySolution solution = new BinarySolution();
-        int[] nums = new int[]{10, 10, 10, 1, 10};
-        solution.findMinII(nums);
     }
 
 }

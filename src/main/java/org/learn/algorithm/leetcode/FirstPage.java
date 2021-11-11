@@ -539,7 +539,19 @@ public class FirstPage {
      * @param nums
      */
     public void sortColors(int[] nums) {
-
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int red = 0;
+        int blue = nums.length - 1;
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] == 2 && i < blue) {
+                swap(nums, i, blue--);
+            }
+            while (nums[i] == 0 && i > red) {
+                swap(nums, i, red++);
+            }
+        }
     }
 
     private void swap(int[] nums, int i, int j) {
@@ -601,13 +613,13 @@ public class FirstPage {
         Stack<Integer> stack = new Stack<>();
         int result = 0;
         for (int i = 0; i <= heights.length; i++) {
-            int side = i == heights.length ? 0 : heights[i];
-            if (stack.isEmpty() || heights[stack.peek()] <= side) {
+            int height = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] <= height) {
                 stack.push(i);
             } else {
-                Integer pop = stack.pop();
-                int edge = stack.isEmpty() ? i : i - stack.peek() - 1;
-                result = Math.max(result, heights[pop] * edge);
+                int side = stack.pop();
+                int width = stack.isEmpty() ? i : i - stack.peek() - 1;
+                result = Math.max(result, width * heights[side]);
                 i--;
             }
         }

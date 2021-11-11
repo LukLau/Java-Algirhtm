@@ -75,34 +75,34 @@ public class StringSolution {
         if (s == null || t == null) {
             return "";
         }
-        int m = s.length();
-        int n = t.length();
         int[] hash = new int[256];
+        int n = t.length();
         for (int i = 0; i < n; i++) {
             hash[t.charAt(i)]++;
         }
         int result = Integer.MAX_VALUE;
+        int begin = 0;
         int head = 0;
-        int beginIndex = 0;
         int endIndex = 0;
-        while (endIndex < m) {
-            if (hash[s.charAt(endIndex++)]-- > 0) {
+        char[] words = s.toCharArray();
+        while (endIndex < words.length) {
+            if (hash[words[endIndex++]]-- > 0) {
                 n--;
             }
             while (n == 0) {
-                if (endIndex - beginIndex < result) {
-                    head = beginIndex;
-                    result = endIndex - beginIndex;
+                if (endIndex - begin < result) {
+                    head = begin;
+                    result = endIndex - begin;
                 }
-                if (hash[s.charAt(beginIndex++)]++ == 0) {
+                if (hash[s.charAt(begin++)]++ == 0) {
                     n++;
                 }
             }
         }
-        if (result != Integer.MAX_VALUE) {
-            return s.substring(head, head + result);
+        if (result == Integer.MAX_VALUE) {
+            return "";
         }
-        return "";
+        return s.substring(head, head + result);
     }
 
     /**
