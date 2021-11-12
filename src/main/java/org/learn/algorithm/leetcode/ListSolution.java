@@ -177,22 +177,22 @@ public class ListSolution {
             return null;
         }
         ListNode small = new ListNode(0);
-        ListNode big = new ListNode(0);
+        ListNode s = small;
 
-        ListNode d1 = small;
-        ListNode d2 = big;
+        ListNode big = new ListNode(0);
+        ListNode b = big;
         while (head != null) {
-            if (head.val < x) {
-                d1.next = head;
-                d1 = d1.next;
+            if (head.val <= x) {
+                s.next = head;
+                s = s.next;
             } else {
-                d2.next = head;
-                d2 = d2.next;
+                b.next = head;
+                b = b.next;
             }
             head = head.next;
         }
-        d1.next = big.next;
-        d2.next = null;
+        s.next = big.next;
+        b.next = null;
         return small.next;
     }
 

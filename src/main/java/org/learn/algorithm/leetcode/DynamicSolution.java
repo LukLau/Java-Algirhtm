@@ -15,8 +15,8 @@ public class DynamicSolution {
 
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
-        int[][] nums = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        solution.incrementPath(nums);
+//        char[][] nums = new char[][]{{'1', '0', '1', '0', '0'}, {'1', '0', '1', '1', '1'}, {"1", "1", "1", "1", "1"}, {"1", "0", "0", "1", "0"}}
+//        solution.maximalRectangle(nums);
     }
     // 背包系列问题
 
@@ -266,21 +266,20 @@ public class DynamicSolution {
         if (matrix == null || matrix.length == 0) {
             return 0;
         }
-        int row = matrix.length;
         int column = matrix[0].length;
-        int[] height = new int[column];
         int[] left = new int[column];
+        int[] height = new int[column];
         int[] right = new int[column];
         Arrays.fill(right, column);
         int result = 0;
-        for (int i = 0; i < row; i++) {
+        for (char[] row : matrix) {
             int leftEdge = 0;
             int rightEdge = column;
             for (int j = 0; j < column; j++) {
-                char tmp = matrix[i][j];
+                char tmp = row[j];
                 if (tmp == '1') {
                     height[j]++;
-                    left[j] = Math.max(left[j], leftEdge);
+                    left[j] = Math.max(leftEdge, left[j]);
                 } else {
                     height[j] = 0;
                     left[j] = leftEdge;
@@ -288,18 +287,16 @@ public class DynamicSolution {
                 }
             }
             for (int j = column - 1; j >= 0; j--) {
-                char tmp = matrix[i][j];
+                char tmp = row[j];
                 if (tmp == '1') {
                     right[j] = Math.min(right[j], rightEdge);
                 } else {
-                    right[j] = column;
                     rightEdge = j;
+                    right[j] = column;
                 }
             }
             for (int j = 0; j < column; j++) {
-                if (height[j] != 0) {
-                    result = Math.max(result, (right[j] - left[j]) * height[j]);
-                }
+                result = Math.max(result, (right[j] - left[j]) * height[j]);
             }
         }
         return result;
