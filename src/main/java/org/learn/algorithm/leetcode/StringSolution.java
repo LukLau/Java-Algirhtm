@@ -28,6 +28,7 @@ public class StringSolution {
     }
 
     /**
+     * todo
      * longest common substring
      *
      * @param str1 string字符串 the string
@@ -35,7 +36,6 @@ public class StringSolution {
      * @return string字符串
      */
     public String longestCommonSubstring(String str1, String str2) {
-        // write code here
         if (str1 == null || str2 == null) {
             return "";
         }
@@ -49,8 +49,8 @@ public class StringSolution {
                 if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
                     dp[i][j] = 1 + dp[i - 1][j - 1];
                     if (dp[i][j] > result) {
-                        result = dp[i][j];
                         index = i;
+                        result = dp[i][j];
                     }
                 }
             }
@@ -60,7 +60,6 @@ public class StringSolution {
         }
         return str1.substring(index - result, index);
     }
-
 
     // 正则表达式//
 

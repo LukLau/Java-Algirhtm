@@ -15,6 +15,7 @@ public class DynamicSolution {
 
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
+        solution.isInterleave("", "", "");
 //        char[][] nums = new char[][]{{'1', '0', '1', '0', '0'}, {'1', '0', '1', '1', '1'}, {"1", "1", "1", "1", "1"}, {"1", "0", "0", "1", "0"}}
 //        solution.maximalRectangle(nums);
     }
@@ -77,20 +78,20 @@ public class DynamicSolution {
      * @return
      */
     public int numDecodings(String s) {
-        if (s == null || s.isEmpty()) {
+        if (s == null || s.length() == 0) {
             return 0;
         }
         int len = s.length();
         int[] dp = new int[len + 1];
+
         dp[0] = 1;
-        dp[1] = s.charAt(0) == '0' ? 0 : 1;
-        for (int i = 2; i <= len; i++) {
+        for (int i = 1; i <= len; i++) {
             int first = Integer.parseInt(s.substring(i - 1, i));
-            int second = Integer.parseInt(s.substring(i - 2, i));
             if (first >= 1 && first <= 9) {
                 dp[i] += dp[i - 1];
             }
-            if (second >= 1 && second <= 26) {
+            int second = i == 1 ? 0 : Integer.parseInt(s.substring(i - 2, i));
+            if (second >= 10 && second <= 26) {
                 dp[i] += dp[i - 2];
             }
         }
@@ -349,7 +350,7 @@ public class DynamicSolution {
      * @return
      */
     public boolean isInterleave(String s1, String s2, String s3) {
-        if (s1 == null || s2 == null || s3 == null) {
+        if (s1 == null || s2 == null) {
             return false;
         }
         int m = s1.length();
@@ -371,7 +372,6 @@ public class DynamicSolution {
             }
         }
         return dp[m][n];
-
     }
 
     /**

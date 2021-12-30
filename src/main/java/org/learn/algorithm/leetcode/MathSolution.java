@@ -265,10 +265,10 @@ public class MathSolution {
      */
     public List<Integer> grayCode(int n) {
         List<Integer> result = new ArrayList<>();
-        int iterator = (int) Math.pow(2, n);
+        double iterator = Math.pow(2, n);
         for (int i = 0; i < iterator; i++) {
-            int val = (i >> 1) ^ i;
-            result.add(val);
+            int tmp = (i >> 1) ^ i;
+            result.add(tmp);
         }
         return result;
     }
