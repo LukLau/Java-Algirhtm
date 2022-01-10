@@ -1580,8 +1580,8 @@ public class InterviewOffer {
     public int NumberOf1(int n) {
         int count = 0;
         while (n != 0) {
+            n &= (n - 1);
             count++;
-            n &= n - 1;
         }
         return count;
     }

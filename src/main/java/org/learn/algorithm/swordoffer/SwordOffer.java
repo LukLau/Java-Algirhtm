@@ -118,7 +118,7 @@ public class SwordOffer {
      * @return
      */
     public int minNumberInRotateArray(int[] array) {
-        if (array == null | array.length == 0) {
+        if (array == null || array.length == 0) {
             return -1;
         }
         int left = 0;
