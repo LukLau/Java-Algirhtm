@@ -1260,17 +1260,24 @@ public class NormalSolution {
         return Math.max((long) min1 * min2 * max1, (long) max1 * max2 * max3);
     }
 
+    /**
+     * NC71 旋转数组的最小数字
+     *
+     * @param arrayMoreThanHalfNum_Solution
+     * @return
+     */
     public int minNumberInRotateArray(int[] array) {
         if (array == null || array.length == 0) {
-            return 0;
+            return -1;
         }
         int left = 0;
         int right = array.length - 1;
         while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (array[mid] == array[right]) {
+            if (array[left] == array[right]) {
                 right--;
-            } else if (array[mid] > array[right]) {
+            }
+            int mid = left + (right - left) / 2;
+            if (array[mid] > array[right]) {
                 left = mid + 1;
             } else {
                 right = mid;
@@ -1895,30 +1902,37 @@ public class NormalSolution {
         return true;
     }
 
+    /**
+     * WC93 数组中出现次数超过一半的数字
+     *
+     * @param array
+     * @return
+     */
     public int MoreThanHalfNum_Solution(int[] array) {
         if (array == null || array.length == 0) {
             return 0;
         }
         int candidate = array[0];
         int count = 0;
-        for (int num : array) {
-            if (candidate == num) {
+        for (int item : array) {
+            if (item == candidate) {
                 count++;
             } else {
                 count--;
             }
             if (count == 0) {
-                candidate = num;
+                candidate = item;
                 count = 1;
             }
         }
         count = 0;
-        for (int num : array) {
-            if (num == candidate) {
+        for (int item : array) {
+            if (candidate == item) {
                 count++;
             }
         }
-        return 2 * count > array.length ? candidate : -1;
+        return 2 * count >= array.length ? candidate : 0;
+
     }
 
     public ArrayList<ArrayList<Integer>> combinationSum2(int[] num, int target) {
