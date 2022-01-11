@@ -312,22 +312,34 @@ public class NormalSolution {
     }
 
 
+    /**
+     * NC50 链表中的节点每k个一组翻转
+     *
+     * @param head
+     * @param k
+     * @return
+     */
     public ListNode reverseKGroup(ListNode head, int k) {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode node = head;
-        for (int i = 0; i < k; i++) {
-            if (node == null) {
-                return head;
-            }
-            node = node.next;
+        ListNode current = head;
+        int count = 0;
+        while (current != null && count != k) {
+            current = current.next;
+            count++;
         }
-        ListNode reverse = reverse(head, node);
-
-        head.next = reverseKGroup(node, k);
-
-        return reverse;
+        if (count == k) {
+            ListNode reverseKGroup = reverseKGroup(current, k);
+            while (count-- > 0) {
+                ListNode tmp = head.next;
+                head.next = reverseKGroup;
+                reverseKGroup = head;
+                head = tmp;
+            }
+            head = reverseKGroup;
+        }
+        return head;
     }
 
     private ListNode reverse(ListNode start, ListNode end) {
@@ -481,8 +493,7 @@ public class NormalSolution {
         int carry = 0;
         StringBuilder builder = new StringBuilder();
         while (m >= 0 || n >= 0 || carry != 0) {
-            int val = (m >= 0 ? Character.getNumericValue(s.charAt(m)) : 0)
-                    + (n >= 0 ? Character.getNumericValue(t.charAt(n)) : 0) + carry;
+            int val = (m >= 0 ? Character.getNumericValue(s.charAt(m)) : 0) + (n >= 0 ? Character.getNumericValue(t.charAt(n)) : 0) + carry;
 
             carry = val / 10;
 
@@ -573,13 +584,15 @@ public class NormalSolution {
 
 
     /**
+     * NC32 求平方根
+     *
      * @param x int整型
      * @return int整型
      */
     public int sqrt(int x) {
         // write code here
-        double precision = 0.0001;
         double result = x;
+        double precision = 0.00001;
         while (result * result - x > precision) {
             result = (result + x / result) / 2;
         }
@@ -611,19 +624,15 @@ public class NormalSolution {
             }
         }
         StringBuilder builder = new StringBuilder();
-        int i = m;
-        int j = n;
-        while (i > 0 && j > 0) {
-            if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
-                builder.append(s1.charAt(i - 1));
-                i--;
-                j--;
+        while (m >= 1 && n >= 1) {
+            if (s1.charAt(m - 1) == s2.charAt(n - 1)) {
+                builder.append(s1.charAt(m - 1));
+                m--;
+                n--;
+            } else if (dp[m - 1][n] > dp[m][n - 1]) {
+                m--;
             } else {
-                if (dp[i - 1][j] < dp[i][j - 1]) {
-                    j--;
-                } else {
-                    i--;
-                }
+                n--;
             }
         }
         return builder.length() == 0 ? "-1" : builder.reverse().toString();
@@ -631,7 +640,7 @@ public class NormalSolution {
 
 
     /**
-     * NC50 链表中的节点每k个一组翻转
+     * NC53 删除链表的倒数第n个节点
      *
      * @param head ListNode类
      * @param n    int整型
@@ -639,26 +648,17 @@ public class NormalSolution {
      */
     public ListNode removeNthFromEnd(ListNode head, int n) {
         // write code here
-        if (head == null || head.next == null) {
-            return head;
+        if (head == null) {
+            return null;
         }
-        int count = 0;
-        ListNode current = head;
-        while (current != null && count != n) {
+        int count = 1;
+        ListNode fast = head;
+        while (fast.next != null) {
             count++;
-            current = current.next;
+            fast = fast.next;
         }
-        if (count == n) {
-            ListNode reverseKGroup = reverseKGroup(current, n);
-            while (count-- > 0) {
-                ListNode tmp = head.next;
-                head.next = reverseKGroup;
-                reverseKGroup = head;
-                head = tmp;
-            }
-            head = reverseKGroup;
-        }
-        return head;
+        
+
     }
 
     /**
@@ -1132,8 +1132,7 @@ public class NormalSolution {
         for (int i = m - 1; i >= 0; i--) {
             for (int j = n - 1; j >= 0; j--) {
 
-                int val = Character.getNumericValue(s.charAt(i)) * Character.getNumericValue(t.charAt(j))
-                        + pos[i + j + 1];
+                int val = Character.getNumericValue(s.charAt(i)) * Character.getNumericValue(t.charAt(j)) + pos[i + j + 1];
 
                 pos[i + j + 1] = val % 10;
 

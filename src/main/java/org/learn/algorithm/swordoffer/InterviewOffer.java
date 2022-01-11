@@ -924,24 +924,24 @@ public class InterviewOffer {
         if (arr == null || arr.length == 0) {
             return 0;
         }
+        long result = 0;
         int left = 0;
         int right = arr.length - 1;
-        long result = 0;
-        int leftEdge = 0;
-        int rightEdge = 0;
+        int leftSide = 0;
+        int rightSide = 0;
         while (left < right) {
             if (arr[left] <= arr[right]) {
-                if (arr[left] >= leftEdge) {
-                    leftEdge = arr[left];
+                if (arr[left] >= leftSide) {
+                    leftSide = arr[left];
                 } else {
-                    result += leftEdge - arr[left];
+                    result += leftSide - arr[left];
                 }
                 left++;
             } else {
-                if (arr[right] >= rightEdge) {
-                    rightEdge = arr[right];
+                if (arr[right] >= rightSide) {
+                    rightSide = arr[right];
                 } else {
-                    result += rightEdge - arr[right];
+                    result += rightSide - arr[right];
                 }
                 right--;
             }
