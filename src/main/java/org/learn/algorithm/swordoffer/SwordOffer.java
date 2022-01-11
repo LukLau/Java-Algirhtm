@@ -716,6 +716,12 @@ public class SwordOffer {
         return seenNumber && numberAfterE;
     }
 
+    /**
+     * NC3 链表中环的入口结点
+     *
+     * @param pHead
+     * @return
+     */
     public ListNode EntryNodeOfLoop(ListNode pHead) {
         if (pHead == null || pHead.next == null) {
             return null;
@@ -723,9 +729,9 @@ public class SwordOffer {
         ListNode slow = pHead;
         ListNode fast = pHead;
         while (fast.next != null && fast.next.next != null) {
-            fast = fast.next.next.next;
             slow = slow.next;
-            if (fast == slow) {
+            fast = fast.next.next;
+            if (slow == fast) {
                 fast = pHead;
                 while (fast != slow) {
                     fast = fast.next;
