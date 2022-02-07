@@ -13,22 +13,45 @@ import java.util.*;
 public class NormalSolution {
     public static void main(String[] args) {
         NormalSolution solution = new NormalSolution();
-        int[] param = new int[]{4, 5, 1, 6, 2, 7, 3, 8};
-        String[] nums = new String[]{"a", "b", "c", "b"};
-        solution.topKstrings(nums, 2);
+        ListNode root = new ListNode(1);
+
+        ListNode d1 = new ListNode(2);
+
+        root.next = d1;
+
+        d1.next = new ListNode(3);
+
+        solution.ReverseListV2(root);
     }
 
+    /**
+     * NC78 反转链表
+     *
+     * @param head
+     * @return
+     */
     public ListNode ReverseList(ListNode head) {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode reverseList = ReverseList(head.next);
+        ListNode prev = null;
+        while (head != null) {
+            ListNode tmp = head.next;
+            head.next = prev;
+            prev = head;
+            head = tmp;
+        }
+        return prev;
+    }
 
+    public ListNode ReverseListV2(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode node = ReverseListV2(head.next);
         head.next.next = head;
-
         head.next = null;
-
-        return reverseList;
+        return node;
     }
 
     /**
@@ -65,6 +88,7 @@ public class NormalSolution {
 
 
     /**
+     * NC48 在旋转过的有序数组中寻找目标值
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      * <p>
      * 如果目标值存在返回下标，否则返回 -1
@@ -82,10 +106,20 @@ public class NormalSolution {
         int right = nums.length - 1;
         while (left < right) {
             int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && target >= nums[left]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
             } else {
-                right = mid;
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
             }
         }
         return nums[left] == target ? left : -1;
@@ -189,19 +223,27 @@ public class NormalSolution {
     }
 
 
+    /**
+     * NC22 合并两个有序的数组
+     *
+     * @param A
+     * @param m
+     * @param B
+     * @param n
+     */
     public void merge(int A[], int m, int B[], int n) {
-        int len = m + n - 1;
+        int k = m + n - 1;
         m--;
         n--;
         while (m >= 0 && n >= 0) {
             if (A[m] > B[n]) {
-                A[len--] = A[m--];
+                A[k--] = A[m--];
             } else {
-                A[len--] = B[n--];
+                A[k--] = B[n--];
             }
         }
         while (n >= 0) {
-            A[len--] = B[n--];
+            A[k--] = B[n--];
         }
     }
 
@@ -239,20 +281,26 @@ public class NormalSolution {
     }
 
 
-    public int getLongestPalindrome(String A, int n) {
+    /**
+     * NC17 最长回文子串
+     *
+     * @param A
+     * @return
+     */
+    public int getLongestPalindrome(String A) {
         // write code here
-        if (A == null || A.isEmpty()) {
+        if (A == null || A.length() == 0) {
             return 0;
         }
         int m = A.length();
-        boolean[][] dp = new boolean[m][m];
+        int n = A.length();
+        boolean[][] dp = new boolean[m][n];
         int result = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j <= i; j++) {
-                if (A.charAt(j) == A.charAt(i) && (i - j <= 1 || dp[j + 1][i - 1])) {
+                if (A.charAt(j) == A.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1])) {
                     dp[j][i] = true;
                 }
-
                 if (dp[j][i] && i - j + 1 > result) {
                     result = i - j + 1;
                 }
@@ -260,6 +308,28 @@ public class NormalSolution {
         }
         return result;
     }
+
+
+    /**
+     * NC19 连续子数组的最大和
+     *
+     * @param array
+     * @return
+     */
+    public int FindGreatestSumOfSubArray(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int local = 0;
+        int result = Integer.MIN_VALUE;
+        for (int i = 0; i < array.length; i++) {
+            local = local > 0 ? local + array[i] : array[i];
+            result = Math.max(result, local);
+        }
+        return result;
+
+    }
+
 
     public int maxLengthV2(int[] arr) {
         if (arr == null || arr.length == 0) {
@@ -282,37 +352,6 @@ public class NormalSolution {
 
 
     /**
-     * @param head ListNode类
-     * @param k    int整型
-     * @return ListNode类
-     */
-    public ListNode reverseKGroupV2(ListNode head, int k) {
-        // write code here
-        if (head == null || head.next == null) {
-            return head;
-        }
-        ListNode current = head;
-        int count = 0;
-        while (current != null && count != k) {
-            current = current.next;
-            count++;
-        }
-        if (count == k) {
-            ListNode reverseNode = reverseKGroup(current, k);
-            while (count-- > 0) {
-                ListNode tmp = head.next;
-                head.next = reverseNode;
-                reverseNode = head;
-                head = tmp;
-            }
-            head = reverseNode;
-        }
-        return head;
-
-    }
-
-
-    /**
      * NC50 链表中的节点每k个一组翻转
      *
      * @param head
@@ -330,16 +369,34 @@ public class NormalSolution {
             count++;
         }
         if (count == k) {
-            ListNode reverseKGroup = reverseKGroup(current, k);
+            ListNode reverse = reverseKGroup(current, k);
             while (count-- > 0) {
                 ListNode tmp = head.next;
-                head.next = reverseKGroup;
-                reverseKGroup = head;
+                head.next = reverse;
+                reverse = head;
                 head = tmp;
             }
-            head = reverseKGroup;
+            head = reverse;
         }
         return head;
+    }
+
+    public ListNode reverseKGroupV2(ListNode head, int k) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode current = head;
+        for (int i = 0; i < k; i++) {
+            if (current == null) {
+                return head;
+            }
+            current = current.next;
+        }
+        ListNode listNode = reverse(head, current);
+
+        head.next = reverseKGroupV2(current, k);
+
+        return listNode;
     }
 
     private ListNode reverse(ListNode start, ListNode end) {
@@ -591,8 +648,8 @@ public class NormalSolution {
      */
     public int sqrt(int x) {
         // write code here
-        double result = x;
         double precision = 0.00001;
+        double result = x;
         while (result * result - x > precision) {
             result = (result + x / result) / 2;
         }
@@ -657,8 +714,8 @@ public class NormalSolution {
             count++;
             fast = fast.next;
         }
-        
-
+//        ListNode root = new
+        return null;
     }
 
     /**
@@ -756,6 +813,8 @@ public class NormalSolution {
 
 
     /**
+     * NC70 单链表的排序
+     *
      * @param head ListNode类 the head node
      * @return ListNode类
      */
@@ -764,16 +823,16 @@ public class NormalSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode fast = head;
         ListNode slow = head;
+        ListNode fast = head;
         while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode second = slow.next;
+        ListNode tmp = slow.next;
         slow.next = null;
         ListNode l1 = sortInList(head);
-        ListNode l2 = sortInList(second);
+        ListNode l2 = sortInList(tmp);
         return mergeTwoLists(l1, l2);
     }
 
@@ -879,6 +938,28 @@ public class NormalSolution {
         return nums.length + 1;
     }
 
+
+    /**
+     * NC31 第一个只出现一次的字符
+     *
+     * @param str
+     * @return
+     */
+    public int FirstNotRepeatingChar(String str) {
+        int[] hash = new int[512];
+        char[] words = str.toCharArray();
+        for (int i = 0; i < words.length; i++) {
+            hash[words[i]]++;
+        }
+        for (int i = 0; i < words.length; i++) {
+            if (hash[words[i]] == 1) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
     /**
      * NC133 链表的奇偶重排
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
@@ -912,6 +993,8 @@ public class NormalSolution {
     }
 
     /**
+     * NC26 括号生成
+     *
      * @param n int整型
      * @return string字符串ArrayList
      */
@@ -921,20 +1004,20 @@ public class NormalSolution {
             return new ArrayList<>();
         }
         ArrayList<String> result = new ArrayList<>();
-        intervalPath(result, 0, 0, n, "");
+        internalGenerateParenthesis(result, 0, 0, n, "");
         return result;
     }
 
-    private void intervalPath(ArrayList<String> result, int open, int close, int n, String s) {
+    private void internalGenerateParenthesis(ArrayList<String> result, int open, int close, int n, String s) {
         if (s.length() == 2 * n) {
             result.add(s);
             return;
         }
         if (open < n) {
-            intervalPath(result, open + 1, close, n, s + "(");
+            internalGenerateParenthesis(result, open + 1, close, n, s + "(");
         }
         if (close < open) {
-            intervalPath(result, open, close + 1, n, s + ")");
+            internalGenerateParenthesis(result, open, close + 1, n, s + ")");
         }
     }
 
@@ -1069,6 +1152,12 @@ public class NormalSolution {
     }
 
 
+    /**
+     * NC57 反转数字
+     *
+     * @param x
+     * @return
+     */
     public int reverse(int x) {
         // write code here
         int result = 0;
@@ -1077,10 +1166,49 @@ public class NormalSolution {
                 return 0;
             }
             result = result * 10 + x % 10;
-
             x /= 10;
         }
         return result;
+    }
+
+
+    /**
+     * NC58 找到搜索二叉树中两个错误的节点
+     *
+     * @param root TreeNode类 the root
+     * @return int整型一维数组
+     */
+    public int[] findError(TreeNode root) {
+        // write code here
+        if (root == null) {
+            return null;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode prev = null;
+        TreeNode first = null;
+        TreeNode second = null;
+        TreeNode p = root;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            if (prev != null) {
+                if (first == null && prev.val >= p.val) {
+                    first = prev;
+                }
+                if (first != null && prev.val >= p.val) {
+                    second = p;
+                }
+            }
+            prev = p;
+            p = p.right;
+        }
+        if (first == null) {
+            return null;
+        }
+        return new int[]{second.val, first.val};
     }
 
 
@@ -1262,7 +1390,7 @@ public class NormalSolution {
     /**
      * NC71 旋转数组的最小数字
      *
-     * @param arrayMoreThanHalfNum_Solution
+     * @param array
      * @return
      */
     public int minNumberInRotateArray(int[] array) {
@@ -1482,36 +1610,35 @@ public class NormalSolution {
     }
 
     /**
+     * NC23 划分链表
+     *
      * @param head ListNode类
      * @param x    int整型
      * @return ListNode类
      */
     public ListNode partition(ListNode head, int x) {
         // write code here
-        if (head == null) {
-            return null;
+        if (head == null || head.next == null) {
+            return head;
         }
-        ListNode slow = new ListNode(0);
-        ListNode s1 = slow;
+        ListNode s1 = new ListNode(0);
+        ListNode s2 = new ListNode(0);
 
-        ListNode fast = new ListNode(0);
-        ListNode f1 = fast;
-
+        ListNode fast = s1;
+        ListNode slow = s2;
         while (head != null) {
-            if (head.val < x) {
-                s1.next = head;
-                s1 = s1.next;
+            if (head.val <= x) {
+                slow.next = head;
+                slow = slow.next;
             } else {
-                f1.next = head;
-                f1 = f1.next;
+                fast.next = head;
+                fast = fast.next;
             }
             head = head.next;
         }
-        f1.next = null;
-
-        s1.next = fast.next;
-
-        return slow.next;
+        slow.next = s1.next;
+        fast.next = null;
+        return s2.next;
     }
 
 
@@ -1627,44 +1754,44 @@ public class NormalSolution {
     }
 
     /**
+     * NC20 数字字符串转化成IP地址
+     *
      * @param s string字符串
      * @return string字符串ArrayList
      */
     public ArrayList<String> restoreIpAddresses(String s) {
         // write code here
-        if (s == null || s.length() < 4) {
+        if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
         ArrayList<String> result = new ArrayList<>();
-
-        int len = s.length();
-        for (int i = 1; i < 4 && i < len - 2; i++) {
-            for (int j = i + 1; j < i + 4 && j < len - 1; j++) {
-                for (int k = j + 1; k < j + 4 && k < len; k++) {
+        int n = s.length();
+        for (int i = 1; i < 4 && i < n - 2; i++) {
+            for (int j = i + 1; j < j + 4 && j < n - 1; j++) {
+                for (int k = j + 1; k < k + 4 && k < n; k++) {
                     String a = s.substring(0, i);
                     String b = s.substring(i, j);
                     String c = s.substring(j, k);
                     String d = s.substring(k);
-                    if (checkValid(a) && checkValid(b) && checkValid(c) && checkValid(d)) {
+                    if (checkIp(a) && checkIp(b) && checkIp(c) && checkIp(d)) {
                         result.add(a + "." + b + "." + c + "." + d);
                     }
                 }
             }
         }
         return result;
-
     }
 
-    private boolean checkValid(String s) {
-        if (s.isEmpty()) {
+    private boolean checkIp(String word) {
+        if (word == null || word.length() == 0) {
             return false;
         }
-        int val = Integer.parseInt(s);
-        if (val < 0 || val > 255) {
+        int num = Integer.parseInt(word);
+        if (num < 0 || num > 255) {
             return false;
         }
-        int m = s.length();
-        return m <= 1 || s.charAt(0) != '0';
+        int len = word.length();
+        return len <= 1 || word.charAt(0) != '0';
     }
 
     /**
@@ -1700,27 +1827,35 @@ public class NormalSolution {
         return -1;
     }
 
+    /**
+     * NC27 集合的所有子集(一)
+     *
+     * @param S
+     * @return
+     */
     public ArrayList<ArrayList<Integer>> subsets(int[] S) {
         if (S == null || S.length == 0) {
             return new ArrayList<>();
         }
-        Arrays.sort(S);
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-        intervalSubSet(result, new ArrayList<Integer>(), 0, S);
+        internalSubSets(result, new ArrayList<>(), 0, S);
         return result;
+
     }
 
-    private void intervalSubSet(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> integers, int start, int[] s) {
-        result.add(new ArrayList<>(integers));
+    private void internalSubSets(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int start, int[] s) {
+        result.add(new ArrayList<>(tmp));
         for (int i = start; i < s.length; i++) {
-            integers.add(s[i]);
-            intervalSubSet(result, integers, i + 1, s);
-            integers.remove(integers.size() - 1);
+            tmp.add(s[i]);
+            internalSubSets(result, tmp, i + 1, s);
+            tmp.remove(tmp.size() - 1);
         }
     }
 
 
     /**
+     * NC56 回文数字
+     *
      * @param x int整型
      * @return bool布尔型
      */
@@ -1729,15 +1864,13 @@ public class NormalSolution {
         if (x < 0) {
             return false;
         }
-        if (x == 0) {
-            return true;
-        }
-        int result = 0;
+        long result = 0;
         while (x > result) {
             result = result * 10 + x % 10;
             x /= 10;
         }
-        return x == result || result / 10 == x;
+        return result == x || result / 10 == x;
+
     }
 
 
@@ -1908,54 +2041,63 @@ public class NormalSolution {
      * @return
      */
     public int MoreThanHalfNum_Solution(int[] array) {
-        if (array == null || array.length == 0) {
-            return 0;
-        }
         int candidate = array[0];
         int count = 0;
-        for (int item : array) {
-            if (item == candidate) {
+        for (int num : array) {
+            if (num == candidate) {
                 count++;
-            } else {
-                count--;
+                continue;
             }
+            count--;
             if (count == 0) {
-                candidate = item;
+                candidate = num;
                 count = 1;
             }
         }
         count = 0;
-        for (int item : array) {
-            if (candidate == item) {
+        for (int num : array) {
+            if (num == candidate) {
                 count++;
             }
         }
-        return 2 * count >= array.length ? candidate : 0;
-
+        return candidate;
     }
 
+    /**
+     * NC46 加起来和为目标值的组合(二)
+     *
+     * @param num
+     * @param target
+     * @return
+     */
     public ArrayList<ArrayList<Integer>> combinationSum2(int[] num, int target) {
         if (num == null || num.length == 0) {
             return new ArrayList<>();
         }
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        boolean[] used = new boolean[num.length];
         Arrays.sort(num);
-        intervalCombine(result, new ArrayList<Integer>(), 0, num, target);
+        internalCombinationSum2(result, new ArrayList<>(), 0, num, target, used);
         return result;
     }
 
-    private void intervalCombine(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> integers, int start, int[] num, int target) {
+    private void internalCombinationSum2(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int start, int[] num, int target, boolean[] used) {
         if (target == 0) {
-            result.add(new ArrayList<>(integers));
+            result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i < num.length && target >= num[i]; i++) {
-            if (i > start && num[i] == num[i - 1]) {
+        for (int i = start; i < num.length && num[i] <= target; i++) {
+            if (used[i]) {
                 continue;
             }
-            integers.add(num[i]);
-            intervalCombine(result, integers, i + 1, num, target - num[i]);
-            integers.remove(integers.size() - 1);
+            if (i > start && num[i] == num[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            used[i] = true;
+            tmp.add(num[i]);
+            internalCombinationSum2(result, tmp, i + 1, num, target - num[i], used);
+            used[i] = false;
+            tmp.remove(tmp.size() - 1);
         }
     }
 
@@ -1977,9 +2119,9 @@ public class NormalSolution {
                 return "Neither";
             }
             for (String word : words) {
-                if (!checkValid(word)) {
-                    return "Neither";
-                }
+//                if (!checkValid(word)) {
+//                    return "Neither";
+//                }
             }
             return "IPV4";
         }
@@ -2005,38 +2147,71 @@ public class NormalSolution {
         return word.indexOf("00") != 0;
     }
 
+    /**
+     * NC63 扑克牌顺子
+     *
+     * @param numbers
+     * @return
+     */
     public boolean IsContinuous(int[] numbers) {
         if (numbers == null || numbers.length == 0) {
             return false;
         }
         Arrays.sort(numbers);
-
         int zeroCount = 0;
-
-        int min = 14;
-
         int max = -1;
-
+        int min = 14;
         for (int i = 0; i < numbers.length; i++) {
-            int number = numbers[i];
-            if (number == 0) {
+            int val = numbers[i];
+            if (val == 0) {
                 zeroCount++;
                 continue;
             }
-            if (i > 0 && number == numbers[i - 1] - 1) {
+            if (i > 0 && numbers[i] == numbers[i - 1]) {
                 return false;
             }
-            if (number > max) {
-                max = number;
+            if (val > max) {
+                max = val;
             }
-            if (number < min) {
-                min = number;
+            if (val < min) {
+                min = val;
+            }
+            if (max - min > 4) {
+                return false;
             }
         }
         if (zeroCount >= 4) {
             return true;
         }
-        return max - min <= 4;
+        return max - min <= 5;
+    }
+
+    public boolean IsContinuousV2(int[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return false;
+        }
+        int result = 0;
+        int min = 14;
+        int max = -1;
+        for (int val : numbers) {
+            if (val == 0) {
+                continue;
+            }
+            if ((1 << val & result) != 0) {
+                return false;
+            }
+            if (val > max) {
+                max = val;
+            }
+            if (val < min) {
+                min = val;
+            }
+            if (max - min > 4) {
+                return false;
+            }
+            result = 1 << val | result;
+        }
+        return true;
     }
 
 
@@ -2077,30 +2252,30 @@ public class NormalSolution {
         return result.get(0);
     }
 
+    /**
+     * NC51 合并k个已排序的链表
+     *
+     * @param lists
+     * @return
+     */
     public ListNode mergeKLists(ArrayList<ListNode> lists) {
         if (lists == null || lists.isEmpty()) {
             return null;
         }
-        PriorityQueue<ListNode> queue = new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
-
-        ListNode root = new ListNode(0);
-
-        ListNode dummy = root;
-
-        for (ListNode list : lists) {
-            if (list != null) {
-                queue.offer(list);
+        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
+        for (ListNode node : lists) {
+            if (node != null) {
+                priorityQueue.offer(node);
             }
         }
-        while (!queue.isEmpty()) {
-            ListNode node = queue.poll();
-
-            dummy.next = node;
-
+        ListNode root = new ListNode(0);
+        ListNode dummy = root;
+        while (!priorityQueue.isEmpty()) {
+            ListNode poll = priorityQueue.poll();
+            dummy.next = poll;
             dummy = dummy.next;
-
-            if (node.next != null) {
-                queue.offer(node.next);
+            if (poll.next != null) {
+                priorityQueue.offer(poll.next);
             }
         }
         return root.next;
@@ -2148,17 +2323,6 @@ public class NormalSolution {
         words[j] = tmp;
     }
 
-
-    /**
-     * @param root TreeNode类 the root
-     * @return bool布尔型一维数组
-     */
-    public boolean[] judgeIt(TreeNode root) {
-        // write code here
-
-        boolean[] result = new boolean[2];
-        return null;
-    }
 
     private boolean checkBalance(TreeNode root) {
         if (root == null) {
@@ -2317,6 +2481,8 @@ public class NormalSolution {
 
 
     /**
+     * NC49 最长的括号子串
+     *
      * @param s string字符串
      * @return int整型
      */
@@ -2327,26 +2493,54 @@ public class NormalSolution {
         }
         Stack<Integer> stack = new Stack<>();
         char[] words = s.toCharArray();
-        int left = 0;
         int result = 0;
+        int left = -1;
         for (int i = 0; i < words.length; i++) {
-            char tmp = words[i];
-            if (tmp == '(') {
+            if (words[i] == '(') {
                 stack.push(i);
             } else {
-                if (!stack.isEmpty() && words[stack.peek()] == '(') {
+                if (!stack.isEmpty()) {
                     stack.pop();
                 } else {
                     left = i;
                 }
                 if (stack.isEmpty()) {
-                    result = Math.max(result, i - left + 1);
+                    result = Math.max(result, i - left);
                 } else {
                     result = Math.max(result, i - stack.peek());
                 }
-
             }
         }
+        return result;
+    }
+
+    public int longestValidParenthesesV2(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        char[] words = s.toCharArray();
+        for (int i = 0; i < words.length; i++) {
+            if (words[i] == '(' || stack.isEmpty()) {
+                stack.push(i);
+            } else if (words[stack.peek()] == '(') {
+                stack.pop();
+            } else {
+                stack.push(i);
+            }
+        }
+        int len = s.length();
+        if (stack.isEmpty()) {
+            return len;
+        }
+        int result = 0;
+        int a = len;
+        while (!stack.isEmpty()) {
+            int b = stack.pop();
+            result = Math.max(result, a - b - 1);
+            a = b;
+        }
+        result = Math.max(result, a);
         return result;
     }
 
@@ -2465,6 +2659,8 @@ public class NormalSolution {
 
 
     /**
+     * NC28 最小覆盖子串
+     *
      * @param S string字符串
      * @param T string字符串
      * @return string字符串
@@ -2475,35 +2671,34 @@ public class NormalSolution {
             return "";
         }
         int n = T.length();
-        int[] hash = new int[256];
+        int[] hash = new int[512];
         for (int i = 0; i < n; i++) {
-            int index = T.charAt(i) - 'A';
-            hash[index]++;
+            hash[T.charAt(i)]++;
         }
-        int result = Integer.MAX_VALUE;
-        int beginIndex = 0;
-        int head = 0;
         int m = S.length();
-        int endIndex = 0;
-        while (endIndex < m) {
-            int index = S.charAt(endIndex++) - 'A';
-            if (hash[index]-- > 0) {
+        int rightSide = 0;
+        int leftSide = 0;
+        int result = Integer.MAX_VALUE;
+        int head = 0;
+        while (rightSide < m) {
+            if (hash[S.charAt(rightSide++)]-- > 0) {
                 n--;
             }
             while (n == 0) {
-                if (endIndex - beginIndex < result) {
-                    head = beginIndex;
-                    result = endIndex - beginIndex;
+                if (rightSide - leftSide < result) {
+                    head = leftSide;
+                    result = Math.min(result, rightSide - leftSide);
                 }
-                if (hash[S.charAt(beginIndex++) - 'A']++ < 0) {
+                if (hash[S.charAt(leftSide++)]++ == 0) {
                     n++;
                 }
             }
         }
-        if (result != Integer.MAX_VALUE) {
-            return S.substring(head, head + result);
+        if (result == Integer.MAX_VALUE) {
+            return "";
         }
-        return "";
+        return S.substring(head, head + result);
+
     }
 
 
@@ -2518,26 +2713,30 @@ public class NormalSolution {
         if (array == null || array.length == 0) {
             return new int[]{};
         }
-        if (array.length == 2) {
-            return array;
-        }
-        int tmp = 0;
+        int result = 0;
         for (int num : array) {
-            tmp ^= num;
+            result ^= num;
         }
-        tmp &= -tmp;
-        int[] result = new int[2];
+        result &= -result;
+        int[] ans = new int[2];
         for (int num : array) {
-            if ((tmp & num) != 0) {
-                result[1] ^= num;
+            if ((num & result) != 0) {
+                ans[0] ^= num;
             } else {
-                result[0] ^= num;
+                ans[1] ^= num;
             }
         }
-        return result;
+        return ans;
     }
 
 
+    /**
+     * NC74 数字在升序数组中出现的次数
+     *
+     * @param array
+     * @param k
+     * @return
+     */
     public int GetNumberOfK(int[] array, int k) {
         if (array == null || array.length == 0) {
             return 0;
@@ -2565,9 +2764,7 @@ public class NormalSolution {
                 left = mid;
             }
         }
-        int secondIndex = left;
-
-        return secondIndex - firstIndex + 1;
+        return left - firstIndex + 1;
     }
 
 
@@ -2627,6 +2824,8 @@ public class NormalSolution {
 
 
     /**
+     * NC21 链表内指定区间反转
+     *
      * @param head ListNode类
      * @param m    int整型
      * @param n    int整型
@@ -2634,61 +2833,60 @@ public class NormalSolution {
      */
     public ListNode reverseBetween(ListNode head, int m, int n) {
         // write code here
-        if (head == null) {
-            return null;
-        }
         ListNode root = new ListNode(0);
-
         root.next = head;
 
         ListNode fast = root;
-
         ListNode slow = root;
-
-        for (int i = 0; i < m - 1; i++) {
-            slow = slow.next;
-        }
         for (int i = 0; i < n; i++) {
             fast = fast.next;
         }
-        ListNode begin = slow.next;
-
+        for (int i = 0; i < m - 1; i++) {
+            slow = slow.next;
+        }
         ListNode end = fast.next;
+        ListNode start = slow.next;
 
-        slow.next = reverse(begin, end);
+        slow.next = reverse(start, end);
 
-        begin.next = end;
+        start.next = end;
 
         return root.next;
     }
 
 
+    /**
+     * NC42 有重复项数字的全排列
+     *
+     * @param num
+     * @return
+     */
     public ArrayList<ArrayList<Integer>> permuteUnique(int[] num) {
         if (num == null || num.length == 0) {
             return new ArrayList<>();
         }
         Arrays.sort(num);
-        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
         boolean[] used = new boolean[num.length];
-        intervalPermute(result, new ArrayList<Integer>(), used, num);
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        internalPermuteUnique(result, new ArrayList<>(), num, used);
         return result;
     }
 
-    private void intervalPermute(ArrayList<ArrayList<Integer>> result, List<Integer> tmp, boolean[] used, int[] num) {
+    private void internalPermuteUnique(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int[] num, boolean[] used) {
         if (tmp.size() == num.length) {
             result.add(new ArrayList<>(tmp));
             return;
         }
         for (int i = 0; i < num.length; i++) {
-            if (i > 0 && num[i] == num[i - 1] && !used[i - 1]) {
+            if (used[i]) {
                 continue;
             }
-            if (used[i]) {
+            if (i > 0 && num[i] == num[i - 1] && !used[i - 1]) {
                 continue;
             }
             used[i] = true;
             tmp.add(num[i]);
-            intervalPermute(result, tmp, used, num);
+            internalPermuteUnique(result, tmp, num, used);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
         }
@@ -2735,33 +2933,74 @@ public class NormalSolution {
 
 
     /**
-     * @param grid int整型二维数组 the matrix
+     * NC59 矩阵的最小路径和
+     *
+     * @param matrix int整型二维数组 the matrix
      * @return int整型
      */
-    public int minPathSum(int[][] grid) {
+    public int minPathSum(int[][] matrix) {
         // write code here
-        if (grid == null || grid.length == 0) {
+        if (matrix == null || matrix.length == 0) {
             return 0;
         }
-        int row = grid.length;
-
-        int column = grid[0].length;
-
+        int row = matrix.length;
+        int column = matrix[0].length;
         int[] dp = new int[column];
-
-        for (int j = 0; j < column; j++) {
-            dp[j] = j == 0 ? grid[0][j] : dp[j - 1] + grid[0][j];
+        for (int j = 0; j < dp.length; j++) {
+            dp[j] = j == 0 ? matrix[0][0] : dp[j - 1] + matrix[0][j];
         }
         for (int i = 1; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (j == 0) {
-                    dp[j] += grid[i][j];
+                    dp[j] += matrix[i][j];
                 } else {
-                    dp[j] = Math.min(dp[j], dp[j - 1]) + grid[i][j];
+                    dp[j] = Math.min(dp[j], dp[j - 1]) + matrix[i][j];
                 }
             }
         }
         return dp[column - 1];
+    }
+
+
+    /**
+     * NC60 判断一棵二叉树是否为搜索二叉树和完全二叉树
+     *
+     * @param root TreeNode类 the root
+     * @return bool布尔型一维数组
+     */
+    public boolean[] judgeIt(TreeNode root) {
+        // write code here
+        boolean[] result = new boolean[2];
+        result[0] = checkBST(root);
+        result[1] = checkCBT(root);
+        return result;
+    }
+
+    private boolean checkCBT(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        if (root.left == null && root.right == null) {
+            return true;
+        }
+        return root.left != null && checkCBT(root.left) && checkCBT(root.right);
+    }
+
+    private boolean checkBST(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return internalBST(Integer.MIN_VALUE, root, Integer.MAX_VALUE);
+    }
+
+    private boolean internalBST(int minValue, TreeNode root, int maxValue) {
+        if (root == null) {
+            return true;
+        }
+        if (root.val <= minValue || root.val >= maxValue) {
+            return false;
+        }
+        return internalBST(minValue, root.left, root.val) && internalBST(root.val, root.right, maxValue);
     }
 
 

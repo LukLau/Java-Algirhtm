@@ -821,7 +821,6 @@ public class TreeSolution {
             return false;
         }
         if (root.left == null && root.right == null && root.val == targetSum) {
-            EntryNodeOfLoop
             return true;
         }
         return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val);
