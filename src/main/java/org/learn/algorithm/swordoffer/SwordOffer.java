@@ -4,6 +4,7 @@ import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.RandomListNode;
 import org.learn.algorithm.datastructure.TreeLinkNode;
 import org.learn.algorithm.datastructure.TreeNode;
+import sun.jvm.hotspot.debugger.win32.coff.OptionalHeaderDataDirectories;
 
 import java.util.*;
 
@@ -16,12 +17,53 @@ public class SwordOffer {
     public static void main(String[] args) {
 
         SwordOffer offer = new SwordOffer();
-
-        int a = 121;
-        Integer b = new Integer(121);
-//        System.out.println(a.equals(b));
-        System.out.println(a == b);
+        ListNode root = new ListNode(1);
+        ListNode d2 = new ListNode(2);
+        root.next = d2;
+        ListNode d3 = new ListNode(3);
+        d2.next = d3;
+        ListNode d4 = new ListNode(4);
+        d3.next = d4;
+        d4.next = new ListNode(5);
+        offer.FindKthToTail(root, 6);
+        offer.bigNumberMulti("10", "10");
     }
+
+
+    /**
+     * NC10 大数乘法
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param s string字符串 第一个整数
+     * @param t string字符串 第二个整数
+     * @return string字符串
+     */
+    public String bigNumberMulti(String s, String t) {
+        // write code here
+        if (s == null || t == null) {
+            return "0";
+        }
+        int m = s.length();
+        int n = t.length();
+        int[] pos = new int[m + n];
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                int val = Character.getNumericValue(s.charAt(i)) * Character.getNumericValue(t.charAt(j)) + pos[i + j + 1];
+
+                pos[i + j + 1] = val % 10;
+
+                pos[i + j] += val / 10;
+            }
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int num : pos) {
+            if (!(num == 0 && builder.length() == 0)) {
+                builder.append(num);
+            }
+        }
+        return builder.length() == 0 ? "0" : builder.toString();
+    }
+
 
     /**
      * WC80 二维数组中的查找
@@ -118,7 +160,7 @@ public class SwordOffer {
      * @return
      */
     public int minNumberInRotateArray(int[] array) {
-        if (array == null | array.length == 0) {
+        if (array == null || array.length == 0) {
             return -1;
         }
         int left = 0;
@@ -226,20 +268,23 @@ public class SwordOffer {
             return new ArrayList<>();
         }
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-        intervalFindPath(result, new ArrayList<>(), root, target);
+        internalPath(result, new ArrayList<>(), root, target);
         return result;
     }
 
-    private void intervalFindPath(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, TreeNode root, int target) {
+    private void internalPath(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, TreeNode root, int target) {
+        if (root == null) {
+            return;
+        }
         tmp.add(root.val);
         if (root.left == null && root.right == null && root.val == target) {
             result.add(new ArrayList<>(tmp));
         } else {
             if (root.left != null) {
-                intervalFindPath(result, tmp, root.left, target - root.val);
+                internalPath(result, tmp, root.left, target - root.val);
             }
             if (root.right != null) {
-                intervalFindPath(result, tmp, root.right, target - root.val);
+                internalPath(result, tmp, root.right, target - root.val);
             }
         }
         tmp.remove(tmp.size() - 1);
@@ -280,31 +325,40 @@ public class SwordOffer {
         return copyHead;
     }
 
+    /**
+     * NC64 二叉搜索树与双向链表
+     *
+     * @param pRootOfTree
+     * @return
+     */
     public TreeNode Convert(TreeNode pRootOfTree) {
         if (pRootOfTree == null) {
             return null;
         }
         Stack<TreeNode> stack = new Stack<>();
-        TreeNode prev = null;
-        TreeNode root = null;
+        TreeNode head = null;
         TreeNode p = pRootOfTree;
+        TreeNode prev = null;
         while (!stack.isEmpty() || p != null) {
             while (p != null) {
                 stack.push(p);
                 p = p.left;
             }
             p = stack.pop();
-            if (root == null) {
-                root = p;
-            }
+
             if (prev != null) {
                 prev.right = p;
                 p.left = prev;
+
             }
             prev = p;
+            if (head == null) {
+                head = p;
+            }
             p = p.right;
         }
-        return root;
+        return head;
+
     }
 
 
@@ -321,13 +375,12 @@ public class SwordOffer {
         }
         char[] words = str.toCharArray();
         Arrays.sort(words);
-        boolean[] used = new boolean[words.length];
         ArrayList<String> result = new ArrayList<>();
-        permutation(result, 0, words, used);
+        internalPermutation(result, words, 0);
         return result;
     }
 
-    private void permutation(ArrayList<String> result, int start, char[] words, boolean[] used) {
+    private void internalPermutation(ArrayList<String> result, char[] words, int start) {
         if (start == words.length) {
             result.add(String.valueOf(words));
             return;
@@ -336,14 +389,9 @@ public class SwordOffer {
             if (i > start && words[i] == words[start]) {
                 continue;
             }
-            if (i > start && !used[i - 1] && used[i]) {
-                continue;
-            }
-            used[i] = true;
             swapWord(words, i, start);
-            permutation(result, start + 1, words, used);
+            internalPermutation(result, words, start + 1);
             swapWord(words, i, start);
-            used[i] = false;
         }
 
     }
@@ -616,12 +664,19 @@ public class SwordOffer {
         return (int) (result * sign);
     }
 
+
+    /**
+     * WC116 构建乘积数组
+     *
+     * @param A
+     * @return
+     */
     public int[] multiply(int[] A) {
         if (A == null || A.length == 0) {
             return new int[]{};
         }
-        int[] result = new int[A.length];
         int base = 1;
+        int[] result = new int[A.length];
         for (int i = 0; i < A.length; i++) {
             result[i] = base;
             base *= A[i];
@@ -716,6 +771,12 @@ public class SwordOffer {
         return seenNumber && numberAfterE;
     }
 
+    /**
+     * NC3 链表中环的入口结点
+     *
+     * @param pHead
+     * @return
+     */
     public ListNode EntryNodeOfLoop(ListNode pHead) {
         if (pHead == null || pHead.next == null) {
             return null;
@@ -723,7 +784,7 @@ public class SwordOffer {
         ListNode slow = pHead;
         ListNode fast = pHead;
         while (fast.next != null && fast.next.next != null) {
-            fast = fast.next.next.next;
+            fast = fast.next.next;
             slow = slow.next;
             if (fast == slow) {
                 fast = pHead;
@@ -764,15 +825,15 @@ public class SwordOffer {
         }
         TreeLinkNode right = pNode.right;
         if (right != null) {
-            TreeLinkNode node = right;
-            while (node.left != null) {
-                node = node.left;
+            while (right.left != null) {
+                right = right.left;
             }
-            return node;
+            return right;
         }
         while (pNode.next != null && pNode.next.right == pNode) {
             pNode = pNode.next;
         }
+
         return pNode.next;
     }
 
@@ -784,7 +845,7 @@ public class SwordOffer {
      */
     public boolean isSymmetrical(TreeNode pRoot) {
         if (pRoot == null) {
-            return false;
+            return true;
         }
         return isSymmetrical(pRoot.left, pRoot.right);
     }
@@ -822,26 +883,29 @@ public class SwordOffer {
      * @return
      */
     public ListNode FindKthToTail(ListNode pHead, int k) {
-        if (pHead == null) {
+        if (k <= 0) {
             return null;
         }
-        ListNode fast = pHead;
+        if (pHead == null || pHead.next == null) {
+            return pHead;
+        }
         int count = 1;
+        ListNode fast = pHead;
         while (fast.next != null) {
             fast = fast.next;
             count++;
         }
         if (k > count) {
-            return pHead;
+            return null;
         }
-        ListNode root = new ListNode(0);
-        root.next = pHead;
-        ListNode dummy = root;
-        for (int i = 0; i < count - k; i++) {
-            dummy = dummy.next;
+        k %= count;
+        ListNode slow = pHead;
+        if (k != 0) {
+            for (int i = 0; i < count - k; i++) {
+                slow = slow.next;
+            }
         }
-
-        return dummy.next;
+        return slow;
     }
 
     /**
@@ -873,15 +937,11 @@ public class SwordOffer {
         if (start == word.length()) {
             return true;
         }
-        if (i < 0 || i == matrix.length || j < 0 || j == matrix[0].length || used[i][j]
-                || matrix[i][j] != word.charAt(start)) {
+        if (i < 0 || i == matrix.length || j < 0 || j == matrix[0].length || used[i][j] || matrix[i][j] != word.charAt(start)) {
             return false;
         }
         used[i][j] = true;
-        if (validPath(matrix, i - 1, j, used, start + 1, word) ||
-                validPath(matrix, i + 1, j, used, start + 1, word) ||
-                validPath(matrix, i, j - 1, used, start + 1, word) ||
-                validPath(matrix, i, j + 1, used, start + 1, word)) {
+        if (validPath(matrix, i - 1, j, used, start + 1, word) || validPath(matrix, i + 1, j, used, start + 1, word) || validPath(matrix, i, j - 1, used, start + 1, word) || validPath(matrix, i, j + 1, used, start + 1, word)) {
             return true;
         }
         used[i][j] = false;
@@ -938,30 +998,30 @@ public class SwordOffer {
     }
 
     private int count(boolean[][] used, int i, int j, int rows, int cols, int threshold) {
-        if (i < 0 || i == rows || j < 0 || j == cols || used[i][j]) {
+        int result = 0;
+        if (i < 0 || i >= rows || j < 0 || j >= cols || used[i][j]) {
             return 0;
         }
-        int count = 0;
+        int step = countCell(i) + countCell(j);
+        if (step > threshold) {
+            return 0;
+        }
         used[i][j] = true;
-        int val = getNum(i) + getNum(j);
-        if (val > threshold) {
-            return 0;
-        }
-        count++;
-        count += count(used, i - 1, j, rows, cols, threshold);
-        count += count(used, i + 1, j, rows, cols, threshold);
-        count += count(used, i, j - 1, rows, cols, threshold);
-        count += count(used, i, j + 1, rows, cols, threshold);
-        return count;
+        result++;
+        result += count(used, i - 1, j, rows, cols, threshold);
+        result += count(used, i + 1, j, rows, cols, threshold);
+        result += count(used, i, j - 1, rows, cols, threshold);
+        result += count(used, i, j + 1, rows, cols, threshold);
+        return result;
     }
 
-    private int getNum(int num) {
-        int sum = 0;
-        while (num != 0) {
-            sum += num % 10;
-            num /= 10;
+    private int countCell(int point) {
+        int val = 0;
+        while (point != 0) {
+            val += point % 10;
+            point /= 10;
         }
-        return sum;
+        return val;
     }
 
 
@@ -972,30 +1032,29 @@ public class SwordOffer {
      * @return
      */
     public int cutRope(int target) {
-        if (target <= 1) {
-            return target;
-        }
-        if (target == 2) {
-            return 2;
+        if (target <= 2) {
+            return 1;
         }
         if (target == 3) {
             return 2;
+        }
+        if (target == 4) {
+            return 4;
         }
         int[] dp = new int[target + 1];
         dp[0] = 1;
         dp[1] = 1;
         dp[2] = 2;
         dp[3] = 3;
-        for (int i = 4; i <= target; i++) {
-            int val = 0;
+        dp[4] = 4;
+        for (int i = 5; i <= target; i++) {
             for (int j = 1; j <= i / 2; j++) {
-                val = Math.max(val, dp[i - j] * dp[j]);
+                dp[i] = Math.max(dp[i], dp[j] * dp[i - j]);
             }
-            dp[i] = val;
         }
         return dp[target];
     }
-
+    
 
     /**
      * WC112 树的子结构
@@ -1064,27 +1123,27 @@ public class SwordOffer {
         if (index < 7) {
             return index;
         }
-        int[] result = new int[index];
-        result[0] = 1;
+        int[] dp = new int[index];
         int index2 = 0;
         int index3 = 0;
         int index5 = 0;
+        dp[0] = 1;
         int i = 1;
         while (i < index) {
-            int tmp = Math.min(Math.min(result[index2] * 2, result[index3] * 3), result[index5] * 5);
-            if (tmp == result[index2] * 2) {
+            int val = Math.min(Math.min(dp[index2] * 2, dp[index3] * 3), dp[index5] * 5);
+            if (val == dp[index2] * 2) {
                 index2++;
             }
-            if (tmp == result[index3] * 3) {
+            if (val == dp[index3] * 3) {
                 index3++;
             }
-            if (tmp == result[index5] * 5) {
+            if (val == dp[index5] * 5) {
                 index5++;
             }
-            result[i] = tmp;
+            dp[i] = val;
             i++;
         }
-        return result[index - 1];
+        return dp[index - 1];
     }
 
 
@@ -1209,8 +1268,7 @@ public class SwordOffer {
      */
     public int ysf(int n, int m) {
         // write code here
-        if (m < 1 || n < 1)
-            return -1;
+        if (m < 1 || n < 1) return -1;
         int last = 0;
         // i代表有目前有个人
         //最后一轮剩下2个人，所以从2开始反推
@@ -1891,6 +1949,30 @@ public class SwordOffer {
         }
         slow.next = fast;
         return root.next;
+    }
+
+
+    /**
+     * NC7 买卖股票的最好时机(一)
+     *
+     * @param prices int整型一维数组
+     * @return int整型
+     */
+    public int maxProfit(int[] prices) {
+        // write code here
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int cost = -prices[0];
+        int profit = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > cost) {
+                profit = Math.max(profit, prices[i] - cost);
+            } else {
+                cost = -prices[i];
+            }
+        }
+        return profit;
     }
 
 

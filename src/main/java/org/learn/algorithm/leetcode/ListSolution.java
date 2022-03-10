@@ -145,23 +145,23 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode fast = head;
+        ListNode current = head;
         int count = 1;
-        while (fast.next != null) {
-            fast = fast.next;
+        while (current.next != null) {
+            current = current.next;
             count++;
         }
-        fast.next = head;
+        current.next = head;
         k %= count;
-        ListNode slow = head;
+        ListNode fast = head;
         if (k != 0) {
             for (int i = 0; i < count - k; i++) {
-                slow = slow.next;
                 fast = fast.next;
+                current = current.next;
             }
         }
-        fast.next = null;
-        return slow;
+        current.next = null;
+        return fast;
     }
 
 
@@ -177,22 +177,22 @@ public class ListSolution {
             return null;
         }
         ListNode small = new ListNode(0);
-        ListNode big = new ListNode(0);
+        ListNode s = small;
 
-        ListNode d1 = small;
-        ListNode d2 = big;
+        ListNode big = new ListNode(0);
+        ListNode b = big;
         while (head != null) {
-            if (head.val < x) {
-                d1.next = head;
-                d1 = d1.next;
+            if (head.val <= x) {
+                s.next = head;
+                s = s.next;
             } else {
-                d2.next = head;
-                d2 = d2.next;
+                b.next = head;
+                b = b.next;
             }
             head = head.next;
         }
-        d1.next = big.next;
-        d2.next = null;
+        s.next = big.next;
+        b.next = null;
         return small.next;
     }
 
@@ -209,23 +209,27 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
-        ListNode slow = dummy;
-        ListNode fast = dummy;
+        ListNode root = new ListNode(0);
+        root.next = head;
+
+        ListNode slow = root;
+        ListNode fast = root;
+
         for (int i = 0; i < left - 1; i++) {
             slow = slow.next;
         }
         for (int i = 0; i < right; i++) {
             fast = fast.next;
         }
-        ListNode node = slow.next;
         ListNode end = fast.next;
+        ListNode start = slow.next;
+
         fast.next = null;
         slow.next = null;
-        slow.next = reverse(node);
-        node.next = end;
-        return dummy.next;
+
+        slow.next = reverse(start);
+        start.next = end;
+        return root.next;
     }
 
     private ListNode reverse(ListNode root) {

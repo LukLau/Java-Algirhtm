@@ -26,20 +26,6 @@ public class TreeSolution {
 
     // 判断树是不是满足标准
 
-    public int minDepth(TreeNode root) {
-        if (root == null) {
-            return 0;
-        }
-        int left = minDepth(root.left);
-
-        int right = minDepth(root.right);
-
-        return 1 + Math.min(left, right);
-    }
-
-
-    // 排序系列//
-
     public static void main(String[] args) {
         TreeSolution solution = new TreeSolution();
 
@@ -55,6 +41,20 @@ public class TreeSolution {
 
 
         solution.sortedListToBST(root);
+    }
+
+
+    // 排序系列//
+
+    public int minDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = minDepth(root.left);
+
+        int right = minDepth(root.right);
+
+        return 1 + Math.min(left, right);
     }
 
     /**
@@ -385,12 +385,12 @@ public class TreeSolution {
 
     private List<TreeNode> intervalGenerateTrees(int start, int end) {
         List<TreeNode> result = new ArrayList<>();
-        if (start == end) {
-            result.add(new TreeNode(start));
-            return result;
-        }
         if (start > end) {
             result.add(null);
+            return result;
+        }
+        if (start == end) {
+            result.add(new TreeNode(start));
             return result;
         }
         for (int i = start; i <= end; i++) {
@@ -418,8 +418,8 @@ public class TreeSolution {
      * @return
      */
     public int numTrees(int n) {
-        if (n <= 0) {
-            return 0;
+        if (n <= 1) {
+            return n;
         }
         int[] dp = new int[n + 1];
         dp[0] = 1;
@@ -462,12 +462,12 @@ public class TreeSolution {
 
     public boolean isValidBSTV2(TreeNode root) {
         if (root == null) {
-            return true;
+            return false;
         }
-        return intervalValidBST(Integer.MIN_VALUE, root, Integer.MAX_VALUE);
+        return intervalValidBST(Long.MIN_VALUE, root, Long.MAX_VALUE);
     }
 
-    private boolean intervalValidBST(int minValue, TreeNode root, int maxValue) {
+    private boolean intervalValidBST(long minValue, TreeNode root, long maxValue) {
         if (root == null) {
             return true;
         }
@@ -486,11 +486,11 @@ public class TreeSolution {
         if (root == null) {
             return;
         }
-        TreeNode first = null;
-        TreeNode second = null;
         Stack<TreeNode> stack = new Stack<>();
         TreeNode prev = null;
         TreeNode p = root;
+        TreeNode first = null;
+        TreeNode second = null;
         while (!stack.isEmpty() || p != null) {
             while (p != null) {
                 stack.push(p);
@@ -498,14 +498,15 @@ public class TreeSolution {
             }
             p = stack.pop();
 
-            if (prev != null && prev.val >= p.val) {
-                if (first == null) {
+            if (prev != null) {
+                if (first == null && prev.val >= p.val) {
                     first = prev;
                 }
-                second = p;
+                if (first != null && prev.val >= p.val) {
+                    second = p;
+                }
             }
             prev = p;
-
             p = p.right;
         }
         if (first != null) {
@@ -710,6 +711,35 @@ public class TreeSolution {
         }
     }
 
+
+    /**
+     * NC102 在二叉树中找到两个节点的最近公共祖先
+     *
+     * @param root TreeNode类
+     * @param o1   int整型
+     * @param o2   int整型
+     * @return int整型
+     */
+    public int lowestCommonAncestor(TreeNode root, int o1, int o2) {
+        // write code here
+        if (root == null) {
+            return -1;
+        }
+        if (root.val == o1 || root.val == o2) {
+            return root.val;
+        }
+        int left = lowestCommonAncestor(root.left, o1, o2);
+        int right = lowestCommonAncestor(root.right, o1, o2);
+        if (left != -1 && right != -1) {
+            return root.val;
+        } else if (left == -1) {
+            return right;
+        } else {
+            return left;
+        }
+    }
+
+
     /**
      * 236. Lowest Common Ancestor of a Binary Tree
      *
@@ -790,7 +820,7 @@ public class TreeSolution {
         if (root == null) {
             return false;
         }
-        if (root.left == null && root.right == null && targetSum == root.val) {
+        if (root.left == null && root.right == null && root.val == targetSum) {
             return true;
         }
         return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val);

@@ -12,8 +12,7 @@ public class FirstPage {
 
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
-        List<String> result = page.restoreIpAddresses("010010");
-        System.out.println(result);
+        page.simplifyPath("/home//foo/");
     }
 
     /**
@@ -181,40 +180,41 @@ public class FirstPage {
      * @return
      */
     public String intToRoman(int num) {
-        String[] one = new String[]{"", "I", "IStringSolution.I", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+        String[] one = new String[]{"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
         String[] two = new String[]{"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
         String[] three = new String[]{"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
         String[] four = new String[]{"", "M", "MM", "MMM"};
         return four[num / 1000] + three[num % 1000 / 100] + two[num % 100 / 10] + one[num % 10];
     }
 
+    /**
+     * 13. Roman to Integer
+     *
+     * @param s
+     * @return
+     */
     public int romanToInt(String s) {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        Map<String, Integer> map = new HashMap<>();
-        map.put("I", 1);
-        map.put("V", 5);
-        map.put("X", 10);
-        map.put("L", 50);
-        map.put("C", 100);
-        map.put("D", 500);
-        map.put("M", 1000);
+        Map<Character, Integer> map = new HashMap<>();
+        map.put('I', 1);
+        map.put('V', 5);
+        map.put('X', 10);
+        map.put('L', 50);
+        map.put('C', 100);
+        map.put('D', 500);
+        map.put('M', 1000);
         char[] words = s.toCharArray();
-        StringBuilder builder = new StringBuilder();
-        for (char word : words) {
-            builder.append(map.get(word + ""));
-        }
         int result = 0;
-        char[] chars = builder.toString().toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            result += Character.getNumericValue(chars[i]);
-            if (i > 0 && (Character.getNumericValue(chars[i]) > Character.getNumericValue(chars[i - 1]))) {
-                result -= 2 * Character.getNumericValue(chars[i - 1]);
+        for (int i = 0; i < words.length; i++) {
+            int val = map.get(words[i]);
+            result += val;
+            if (i > 0 && (map.get(words[i]) > map.get(words[i - 1]))) {
+                result -= 2 * map.get(words[i - 1]);
             }
         }
         return result;
-
     }
 
 
@@ -458,20 +458,22 @@ public class FirstPage {
             return new int[][]{};
         }
         Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
-        List<int[]> result = new ArrayList<>();
-        for (int[] interval : intervals) {
-            if (result.isEmpty() || result.get(result.size() - 1)[1] < interval[0]) {
-                result.add(interval);
+        LinkedList<int[]> linkedList = new LinkedList<>();
+        linkedList.offer(intervals[0]);
+        for (int i = 1; i < intervals.length; i++) {
+            if (linkedList.peekLast()[1] < intervals[i][0]) {
+                linkedList.offer(intervals[i]);
             } else {
-                int[] pre = result.get(result.size() - 1);
-                pre[0] = Math.min(pre[0], interval[0]);
-                pre[1] = Math.max(pre[1], interval[1]);
+                int[] last = linkedList.peekLast();
+                last[0] = Math.min(last[0], intervals[i][0]);
+                last[1] = Math.max(last[1], intervals[i][1]);
             }
         }
-        return result.toArray(new int[][]{});
+        return linkedList.toArray(new int[][]{});
     }
 
     /**
+     * todo
      * 57. Insert Interval
      *
      * @param intervals
@@ -479,27 +481,25 @@ public class FirstPage {
      * @return
      */
     public int[][] insert(int[][] intervals, int[] newInterval) {
-        if (intervals == null) {
+        if (intervals == null || intervals.length == 0) {
             return new int[][]{};
         }
         Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
-
-        LinkedList<int[]> deque = new LinkedList<>();
-
+        LinkedList<int[]> result = new LinkedList<>();
         int index = 0;
-        while (index < intervals.length && intervals[index][1] < newInterval[0]) {
-            deque.offer(intervals[index++]);
-        }
         while (index < intervals.length && intervals[index][0] <= newInterval[1]) {
-            newInterval[0] = Math.min(newInterval[0], intervals[index][0]);
-            newInterval[1] = Math.max(newInterval[1], intervals[index][1]);
+            result.offer(intervals[index++]);
+        }
+        while (index < intervals.length && intervals[index][1] >= newInterval[0]) {
+            newInterval[0] = Math.min(intervals[index][0], intervals[index][0]);
+            newInterval[1] = Math.max(intervals[index][1], intervals[index][1]);
             index++;
         }
-        deque.offer(newInterval);
+        result.offer(newInterval);
         while (index < intervals.length) {
-            deque.offer(intervals[index++]);
+            result.offer(intervals[index++]);
         }
-        return deque.toArray(new int[][]{});
+        return result.toArray(new int[][]{});
     }
 
     /**
@@ -512,25 +512,25 @@ public class FirstPage {
         if (path == null || path.isEmpty()) {
             return "/";
         }
+        LinkedList<String> linkedList = new LinkedList<>();
         String[] words = path.split("/");
-        LinkedList<String> list = new LinkedList<>();
         for (String word : words) {
-            if ("".equals(word) || ".".equals(word)) {
-                continue;
-            } else if ("..".equals(word) && !list.isEmpty()) {
-                list.pollLast();
-            } else if (!"..".equals(word)) {
-                list.add(word);
+            if ("..".equals(word)) {
+                if (!linkedList.isEmpty()) {
+                    linkedList.pollLast();
+                }
+            } else if (!(".".equals(word) || "".equals(word))) {
+                linkedList.offer(word);
             }
         }
-        if (list.isEmpty()) {
+        if (linkedList.isEmpty()) {
             return "/";
         }
-        StringBuilder result = new StringBuilder();
-        for (String word : list) {
-            result.append("/").append(word);
+        String result = "";
+        for (String item : linkedList) {
+            result = result + "/" + item;
         }
-        return result.toString();
+        return result;
     }
 
     /**
@@ -613,13 +613,13 @@ public class FirstPage {
         Stack<Integer> stack = new Stack<>();
         int result = 0;
         for (int i = 0; i <= heights.length; i++) {
-            int side = i == heights.length ? 0 : heights[i];
-            if (stack.isEmpty() || heights[stack.peek()] <= side) {
+            int height = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] <= height) {
                 stack.push(i);
             } else {
-                Integer pop = stack.pop();
-                int edge = stack.isEmpty() ? i : i - stack.peek() - 1;
-                result = Math.max(result, heights[pop] * edge);
+                int side = stack.pop();
+                int width = stack.isEmpty() ? i : i - stack.peek() - 1;
+                result = Math.max(result, width * heights[side]);
                 i--;
             }
         }

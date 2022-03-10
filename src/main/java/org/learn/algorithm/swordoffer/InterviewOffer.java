@@ -21,9 +21,8 @@ public class InterviewOffer {
     private int maxResult = Integer.MIN_VALUE;
 
     public static void main(String[] args) {
-        InterviewOffer interviewOffer = new InterviewOffer();
-        String param = "(3+4)*(5+(2-3))";
-        interviewOffer.calculatorII(param);
+        InterviewOffer offer = new InterviewOffer();
+
     }
 
     /**
@@ -307,22 +306,16 @@ public class InterviewOffer {
             return new ArrayList<>();
         }
         intervals.sort(Comparator.comparingInt(o -> o.start));
-        ArrayList<Interval> result = new ArrayList<>();
-        result.add(intervals.get(0));
-        int size = intervals.size();
-        int index = 0;
-        for (int i = 1; i < size; i++) {
-            Interval interval = intervals.get(i);
-            if (result.get(index).end < interval.start) {
+        LinkedList<Interval> result = new LinkedList<>();
+        for (Interval interval : intervals) {
+            if (result.isEmpty() || result.peekLast().end < interval.start) {
                 result.add(interval);
-                index++;
             } else {
-                Interval pre = result.get(index);
-                pre.start = Math.min(pre.start, interval.start);
-                pre.end = Math.max(pre.end, interval.end);
+                Interval prev = result.peekLast();
+                prev.end = Math.max(prev.end, interval.end);
             }
         }
-        return result;
+        return new ArrayList<>(result);
     }
 
     /**
@@ -637,18 +630,18 @@ public class InterviewOffer {
         if (num == null || num.length == 0 || size == 0) {
             return new ArrayList<>();
         }
-        ArrayList<Integer> result = new ArrayList<>();
         LinkedList<Integer> linkedList = new LinkedList<>();
+        ArrayList<Integer> result = new ArrayList<>();
         for (int i = 0; i < num.length; i++) {
             int index = i - size + 1;
-            if (!linkedList.isEmpty() && linkedList.peekFirst() < index) {
+            if (!linkedList.isEmpty() && index > linkedList.peekFirst()) {
                 linkedList.pollFirst();
             }
             while (!linkedList.isEmpty() && num[linkedList.peekLast()] <= num[i]) {
                 linkedList.pollLast();
             }
             linkedList.offer(i);
-            if (index >= 0) {
+            if (index >= 0 && !linkedList.isEmpty()) {
                 result.add(num[linkedList.peekFirst()]);
             }
         }
@@ -656,6 +649,8 @@ public class InterviewOffer {
     }
 
     /**
+     * NC55 最长公共前缀
+     *
      * @param strs string字符串一维数组
      * @return string字符串
      */
@@ -924,24 +919,24 @@ public class InterviewOffer {
         if (arr == null || arr.length == 0) {
             return 0;
         }
+        long result = 0;
         int left = 0;
         int right = arr.length - 1;
-        long result = 0;
-        int leftEdge = 0;
-        int rightEdge = 0;
+        int leftSide = 0;
+        int rightSide = 0;
         while (left < right) {
             if (arr[left] <= arr[right]) {
-                if (arr[left] >= leftEdge) {
-                    leftEdge = arr[left];
+                if (arr[left] >= leftSide) {
+                    leftSide = arr[left];
                 } else {
-                    result += leftEdge - arr[left];
+                    result += leftSide - arr[left];
                 }
                 left++;
             } else {
-                if (arr[right] >= rightEdge) {
-                    rightEdge = arr[right];
+                if (arr[right] >= rightSide) {
+                    rightSide = arr[right];
                 } else {
-                    result += rightEdge - arr[right];
+                    result += rightSide - arr[right];
                 }
                 right--;
             }
@@ -1016,6 +1011,8 @@ public class InterviewOffer {
     }
 
     /**
+     * NC5 二叉树根节点到叶子节点的所有路径和
+     *
      * @param root TreeNode类
      * @return int整型
      */
@@ -1025,7 +1022,6 @@ public class InterviewOffer {
             return 0;
         }
         return intervalSum(root, 0);
-
     }
 
     private int intervalSum(TreeNode root, int sum) {
@@ -1057,9 +1053,7 @@ public class InterviewOffer {
             count++;
             map.put(word, count);
         }
-        PriorityQueue<String> queue = new PriorityQueue<>(
-                (w1, w2) -> map.get(w1).equals(map.get(w2)) ?
-                        w2.compareTo(w1) : map.get(w1) - map.get(w2));
+        PriorityQueue<String> queue = new PriorityQueue<>((w1, w2) -> map.get(w1).equals(map.get(w2)) ? w2.compareTo(w1) : map.get(w1) - map.get(w2));
 
         String[][] result = new String[k][2];
         for (Map.Entry<String, Integer> item : map.entrySet()) {
@@ -1188,8 +1182,8 @@ public class InterviewOffer {
         if (arr == null || arr.length == 0) {
             return 0;
         }
-        int left = 0;
         int result = 0;
+        int left = 0;
         Map<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < arr.length; i++) {
             if (map.containsKey(arr[i])) {
@@ -1200,10 +1194,6 @@ public class InterviewOffer {
         }
         return result;
     }
-    /**
-     * todo 无重复子递增数组
-     */
-
 
     /**
      * @param s string字符串
@@ -1270,27 +1260,11 @@ public class InterviewOffer {
      * NC17 最长回文子串
      *
      * @param A
-     * @param n
      * @return
      */
-    public int getLongestPalindrome(String A, int n) {
+    public int getLongestPalindrome(String A) {
         // write code here
-        if (A == null || A.length() == 0) {
-            return 0;
-        }
-        boolean[][] dp = new boolean[n][n];
-        int result = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j <= i; j++) {
-                if (A.charAt(j) == A.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1])) {
-                    dp[j][i] = true;
-                }
-                if (dp[j][i] && i - j + 1 > result) {
-                    result = i - j + 1;
-                }
-            }
-        }
-        return result;
+        return -1;
     }
 
     public int MoreThanHalfNum_Solution(int[] array) {
@@ -1526,26 +1500,30 @@ public class InterviewOffer {
 
 
     /**
+     * NC53 删除链表的倒数第n个节点
+     *
      * @param head ListNode类
      * @param n    int整型
      * @return ListNode类
      */
     public ListNode removeNthFromEnd(ListNode head, int n) {
         // write code here
+        if (head == null) {
+            return null;
+        }
         ListNode root = new ListNode(0);
         root.next = head;
+
+        ListNode slow = root;
         ListNode fast = root;
         for (int i = 0; i < n; i++) {
             fast = fast.next;
         }
-        ListNode slow = root;
         while (fast.next != null) {
             slow = slow.next;
             fast = fast.next;
         }
-        ListNode next = slow.next;
-        slow.next = next.next;
-        next.next = null;
+        slow.next = slow.next.next;
         return root.next;
     }
 
@@ -1580,8 +1558,8 @@ public class InterviewOffer {
     public int NumberOf1(int n) {
         int count = 0;
         while (n != 0) {
+            n &= (n - 1);
             count++;
-            n &= n - 1;
         }
         return count;
     }
@@ -1957,12 +1935,11 @@ public class InterviewOffer {
      * @return int整型
      */
     public int uniquePaths(int m, int n) {
-        // write code here
         int[] dp = new int[n];
         Arrays.fill(dp, 1);
         for (int i = 1; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                dp[j] = dp[j] + (j == 0 ? 0 : dp[j - 1]);
+                dp[j] = dp[j] + (j > 0 ? dp[j - 1] : 0);
             }
         }
         return dp[n - 1];

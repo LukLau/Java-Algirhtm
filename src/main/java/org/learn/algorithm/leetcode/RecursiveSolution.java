@@ -13,8 +13,7 @@ public class RecursiveSolution {
 
     public static void main(String[] args) {
         RecursiveSolution solution = new RecursiveSolution();
-        int[] nums = new int[]{2};
-        solution.combinationSum(nums, 1);
+        System.out.println(solution.getPermutation(3, 3));
     }
 
     /**
@@ -163,31 +162,32 @@ public class RecursiveSolution {
     /**
      * 46. Permutations
      *
-     * @param nums
+     * @param num
      * @return
      */
-    public List<List<Integer>> permute(int[] nums) {
-        if (nums == null || nums.length == 0) {
+    public ArrayList<ArrayList<Integer>> permute(int[] num) {
+        if (num == null || num.length == 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> result = new ArrayList<>();
-        boolean[] used = new boolean[nums.length];
-        interPermute(result, new ArrayList<>(), used, nums);
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        boolean[] used = new boolean[num.length];
+        internalPermute(result, new ArrayList<>(), num, used);
         return result;
+
     }
 
-    private void interPermute(List<List<Integer>> result, List<Integer> tmp, boolean[] used, int[] nums) {
-        if (tmp.size() == used.length) {
+    private void internalPermute(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int[] num, boolean[] used) {
+        if (tmp.size() == num.length) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = 0; i < num.length; i++) {
             if (used[i]) {
                 continue;
             }
+            tmp.add(num[i]);
             used[i] = true;
-            tmp.add(nums[i]);
-            interPermute(result, tmp, used, nums);
+            internalPermute(result, tmp, num, used);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
         }
@@ -204,8 +204,8 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> result = new ArrayList<>();
         Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
         boolean[] used = new boolean[nums.length];
         intervalPermuteUnique(result, new ArrayList<>(), used, nums);
         return result;
@@ -216,15 +216,15 @@ public class RecursiveSolution {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = 0; i < used.length; i++) {
+        for (int i = 0; i < nums.length; i++) {
             if (used[i]) {
                 continue;
             }
-            if (i > 0 && nums[i] == nums[i - 1] && used[i - 1]) {
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
                 continue;
             }
-            tmp.add(nums[i]);
             used[i] = true;
+            tmp.add(nums[i]);
             intervalPermuteUnique(result, tmp, used, nums);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
@@ -323,26 +323,26 @@ public class RecursiveSolution {
         if (n <= 0) {
             return "";
         }
-        List<Integer> nums = new ArrayList<>();
+        List<Integer> params = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
-            nums.add(i);
+            params.add(i);
         }
-        int[] factors = new int[n + 1];
-        factors[0] = 1;
+        int[] factor = new int[n + 1];
+        factor[0] = 1;
         int base = 1;
         for (int i = 1; i <= n; i++) {
             base *= i;
-            factors[i] = i;
+            factor[i] = base;
         }
         StringBuilder builder = new StringBuilder();
         k--;
         for (int i = 0; i < n; i++) {
-            int index = k / factors[n - 1 - i];
+            int index = k / factor[n - 1 - i];
+            params.remove(index);
             builder.append(index);
-            nums.remove(index);
-            k -= index * factors[n - 1 - i];
+            k -= index * factor[n - 1 - i];
         }
-        return builder.toString();
+        return builder.length() == 0 ? "" : builder.toString();
     }
 
 

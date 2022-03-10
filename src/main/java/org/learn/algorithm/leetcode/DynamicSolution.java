@@ -15,8 +15,9 @@ public class DynamicSolution {
 
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
-        int[][] nums = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        solution.incrementPath(nums);
+        solution.isInterleave("", "", "");
+//        char[][] nums = new char[][]{{'1', '0', '1', '0', '0'}, {'1', '0', '1', '1', '1'}, {"1", "1", "1", "1", "1"}, {"1", "0", "0", "1", "0"}}
+//        solution.maximalRectangle(nums);
     }
     // 背包系列问题
 
@@ -32,37 +33,6 @@ public class DynamicSolution {
 
 
     // 普通动态规划问题
-
-    /**
-     * todo
-     * 91. Decode Ways
-     *
-     * @param s
-     * @return
-     */
-    public int numDecodings(String s) {
-        if (s == null || s.isEmpty()) {
-            return 0;
-        }
-        int len = s.length();
-        int[] dp = new int[len + 1];
-        dp[0] = 1;
-        dp[1] = s.charAt(0) == '0' ? 0 : 1;
-        for (int i = 2; i <= len; i++) {
-            int first = Integer.parseInt(s.substring(i - 1, i));
-            int second = Integer.parseInt(s.substring(i - 2, i));
-            if (first >= 1 && first <= 9) {
-                dp[i] += dp[i - 1];
-            }
-            if (second >= 1 && second <= 26) {
-                dp[i] += dp[i - 2];
-            }
-        }
-        return dp[len];
-    }
-
-
-    // 序列问题
 
     /**
      * @param repository
@@ -95,6 +65,37 @@ public class DynamicSolution {
             }
         }
         return result;
+    }
+
+
+    // 序列问题
+
+    /**
+     * todo
+     * 91. Decode Ways
+     *
+     * @param s
+     * @return
+     */
+    public int numDecodings(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        int len = s.length();
+        int[] dp = new int[len + 1];
+
+        dp[0] = 1;
+        for (int i = 1; i <= len; i++) {
+            int first = Integer.parseInt(s.substring(i - 1, i));
+            if (first >= 1 && first <= 9) {
+                dp[i] += dp[i - 1];
+            }
+            int second = i == 1 ? 0 : Integer.parseInt(s.substring(i - 2, i));
+            if (second >= 10 && second <= 26) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp[len];
     }
 
 
@@ -249,7 +250,7 @@ public class DynamicSolution {
                 if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1], dp[i - 1][j]), dp[i][j - 1]) + 1;
+                    dp[i][j] = Math.min(Math.min(dp[i][j - 1], dp[i - 1][j]), dp[i - 1][j - 1]) + 1;
                 }
             }
         }
@@ -266,21 +267,20 @@ public class DynamicSolution {
         if (matrix == null || matrix.length == 0) {
             return 0;
         }
-        int row = matrix.length;
         int column = matrix[0].length;
-        int[] height = new int[column];
         int[] left = new int[column];
+        int[] height = new int[column];
         int[] right = new int[column];
         Arrays.fill(right, column);
         int result = 0;
-        for (int i = 0; i < row; i++) {
+        for (char[] row : matrix) {
             int leftEdge = 0;
             int rightEdge = column;
             for (int j = 0; j < column; j++) {
-                char tmp = matrix[i][j];
+                char tmp = row[j];
                 if (tmp == '1') {
                     height[j]++;
-                    left[j] = Math.max(left[j], leftEdge);
+                    left[j] = Math.max(leftEdge, left[j]);
                 } else {
                     height[j] = 0;
                     left[j] = leftEdge;
@@ -288,18 +288,16 @@ public class DynamicSolution {
                 }
             }
             for (int j = column - 1; j >= 0; j--) {
-                char tmp = matrix[i][j];
+                char tmp = row[j];
                 if (tmp == '1') {
                     right[j] = Math.min(right[j], rightEdge);
                 } else {
-                    right[j] = column;
                     rightEdge = j;
+                    right[j] = column;
                 }
             }
             for (int j = 0; j < column; j++) {
-                if (height[j] != 0) {
-                    result = Math.max(result, (right[j] - left[j]) * height[j]);
-                }
+                result = Math.max(result, (right[j] - left[j]) * height[j]);
             }
         }
         return result;
@@ -352,7 +350,7 @@ public class DynamicSolution {
      * @return
      */
     public boolean isInterleave(String s1, String s2, String s3) {
-        if (s1 == null || s2 == null || s3 == null) {
+        if (s1 == null || s2 == null) {
             return false;
         }
         int m = s1.length();
@@ -374,7 +372,6 @@ public class DynamicSolution {
             }
         }
         return dp[m][n];
-
     }
 
     /**
