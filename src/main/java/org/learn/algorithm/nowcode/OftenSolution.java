@@ -511,31 +511,31 @@ public class OftenSolution {
             return 0;
         }
         int[] dp = new int[n];
-        return countQueens(dp, 0, n);
+        return internalNQueen(dp, 0, n);
     }
 
-    private int countQueens(int[] dp, int row, int n) {
-        int count = 0;
+    private int internalNQueen(int[] dp, int row, int n) {
         if (row == n) {
             return 1;
         }
+        int count = 0;
         for (int j = 0; j < n; j++) {
-            if (validQueens(dp, row, j)) {
+            if (!checkExistInternalNQueen(dp, j, row)) {
                 dp[row] = j;
-                count += countQueens(dp, row + 1, n);
+                count += internalNQueen(dp, row + 1, n);
                 dp[row] = -1;
             }
         }
         return count;
     }
 
-    private boolean validQueens(int[] dp, int row, int column) {
+    private boolean checkExistInternalNQueen(int[] dp, int column, int row) {
         for (int i = row - 1; i >= 0; i--) {
-            if (dp[i] == column || Math.abs(i - row) == Math.abs(dp[i] - column)) {
-                return false;
+            if (dp[i] == column || Math.abs(dp[i] - column) == Math.abs(i - row)) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
 

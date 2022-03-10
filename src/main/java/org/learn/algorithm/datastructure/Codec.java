@@ -1,7 +1,5 @@
 package org.learn.algorithm.datastructure;
 
-import java.util.LinkedList;
-
 /**
  * 297. Serialize and Deserialize Binary Tree
  *
@@ -10,11 +8,9 @@ import java.util.LinkedList;
  */
 public class Codec {
 
+    private int index = -1;
 
-    String Serialize(TreeNode root) {
-        if (root == null) {
-            return "#,";
-        }
+    public String Serialize(TreeNode root) {
         StringBuilder builder = new StringBuilder();
         intervalSerialize(builder, root);
         return builder.toString();
@@ -30,29 +26,25 @@ public class Codec {
         intervalSerialize(builder, root.right);
     }
 
-    TreeNode Deserialize(String str) {
+    public TreeNode Deserialize(String str) {
         if (str == null || str.isEmpty()) {
             return null;
         }
         String[] words = str.split(",");
-        LinkedList<String> linkedList = new LinkedList<>();
-        for (String word : words) {
-            linkedList.offer(word);
-        }
-        return intervalDeserialize(linkedList);
+        return internalDeserialize(words);
     }
 
-    private TreeNode intervalDeserialize(LinkedList<String> linkedList) {
-        if (linkedList.isEmpty()) {
+    private TreeNode internalDeserialize(String[] words) {
+        index++;
+        if (index == words.length) {
             return null;
         }
-        String poll = linkedList.poll();
-        if ("#".equals(poll)) {
+        if ("#".equals(words[index])) {
             return null;
         }
-        TreeNode root = new TreeNode(Integer.parseInt(poll));
-        root.left = intervalDeserialize(linkedList);
-        root.right = intervalDeserialize(linkedList);
+        TreeNode root = new TreeNode(Integer.parseInt(words[index]));
+        root.left = internalDeserialize(words);
+        root.right = internalDeserialize(words);
         return root;
     }
 

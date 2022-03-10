@@ -162,31 +162,32 @@ public class RecursiveSolution {
     /**
      * 46. Permutations
      *
-     * @param nums
+     * @param num
      * @return
      */
-    public List<List<Integer>> permute(int[] nums) {
-        if (nums == null || nums.length == 0) {
+    public ArrayList<ArrayList<Integer>> permute(int[] num) {
+        if (num == null || num.length == 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> result = new ArrayList<>();
-        boolean[] used = new boolean[nums.length];
-        interPermute(result, new ArrayList<>(), used, nums);
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        boolean[] used = new boolean[num.length];
+        internalPermute(result, new ArrayList<>(), num, used);
         return result;
+
     }
 
-    private void interPermute(List<List<Integer>> result, List<Integer> tmp, boolean[] used, int[] nums) {
-        if (tmp.size() == nums.length) {
+    private void internalPermute(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int[] num, boolean[] used) {
+        if (tmp.size() == num.length) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = 0; i < num.length; i++) {
             if (used[i]) {
                 continue;
             }
+            tmp.add(num[i]);
             used[i] = true;
-            tmp.add(nums[i]);
-            interPermute(result, tmp, used, nums);
+            internalPermute(result, tmp, num, used);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
         }
