@@ -4,6 +4,7 @@ import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.RandomListNode;
 import org.learn.algorithm.datastructure.TreeLinkNode;
 import org.learn.algorithm.datastructure.TreeNode;
+import sun.jvm.hotspot.debugger.win32.coff.OptionalHeaderDataDirectories;
 
 import java.util.*;
 
@@ -17,11 +18,44 @@ public class SwordOffer {
 
         SwordOffer offer = new SwordOffer();
 
-        int a = 121;
-        Integer b = new Integer(121);
-//        System.out.println(a.equals(b));
-        System.out.println(a == b);
+        offer.bigNumberMulti("10", "10");
     }
+
+
+    /**
+     * NC10 大数乘法
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param s string字符串 第一个整数
+     * @param t string字符串 第二个整数
+     * @return string字符串
+     */
+    public String bigNumberMulti(String s, String t) {
+        // write code here
+        if (s == null || t == null) {
+            return "0";
+        }
+        int m = s.length();
+        int n = t.length();
+        int[] pos = new int[m + n];
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                int val = Character.getNumericValue(s.charAt(i)) * Character.getNumericValue(t.charAt(j)) + pos[i + j + 1];
+
+                pos[i + j + 1] = val % 10;
+
+                pos[i + j] += val / 10;
+            }
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int num : pos) {
+            if (!(num == 0 && builder.length() == 0)) {
+                builder.append(num);
+            }
+        }
+        return builder.length() == 0 ? "0" : builder.toString();
+    }
+
 
     /**
      * WC80 二维数组中的查找
@@ -226,20 +260,23 @@ public class SwordOffer {
             return new ArrayList<>();
         }
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-        intervalFindPath(result, new ArrayList<>(), root, target);
+        internalPath(result, new ArrayList<>(), root, target);
         return result;
     }
 
-    private void intervalFindPath(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, TreeNode root, int target) {
+    private void internalPath(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, TreeNode root, int target) {
+        if (root == null) {
+            return;
+        }
         tmp.add(root.val);
         if (root.left == null && root.right == null && root.val == target) {
             result.add(new ArrayList<>(tmp));
         } else {
             if (root.left != null) {
-                intervalFindPath(result, tmp, root.left, target - root.val);
+                internalPath(result, tmp, root.left, target - root.val);
             }
             if (root.right != null) {
-                intervalFindPath(result, tmp, root.right, target - root.val);
+                internalPath(result, tmp, root.right, target - root.val);
             }
         }
         tmp.remove(tmp.size() - 1);
@@ -321,13 +358,12 @@ public class SwordOffer {
         }
         char[] words = str.toCharArray();
         Arrays.sort(words);
-        boolean[] used = new boolean[words.length];
         ArrayList<String> result = new ArrayList<>();
-        permutation(result, 0, words, used);
+        internalPermutation(result, words, 0);
         return result;
     }
 
-    private void permutation(ArrayList<String> result, int start, char[] words, boolean[] used) {
+    private void internalPermutation(ArrayList<String> result, char[] words, int start) {
         if (start == words.length) {
             result.add(String.valueOf(words));
             return;
@@ -336,14 +372,9 @@ public class SwordOffer {
             if (i > start && words[i] == words[start]) {
                 continue;
             }
-            if (i > start && !used[i - 1] && used[i]) {
-                continue;
-            }
-            used[i] = true;
             swapWord(words, i, start);
-            permutation(result, start + 1, words, used);
+            internalPermutation(result, words, start + 1);
             swapWord(words, i, start);
-            used[i] = false;
         }
 
     }
@@ -790,7 +821,7 @@ public class SwordOffer {
      */
     public boolean isSymmetrical(TreeNode pRoot) {
         if (pRoot == null) {
-            return false;
+            return true;
         }
         return isSymmetrical(pRoot.left, pRoot.right);
     }
@@ -1897,6 +1928,30 @@ public class SwordOffer {
         }
         slow.next = fast;
         return root.next;
+    }
+
+
+    /**
+     * NC7 买卖股票的最好时机(一)
+     *
+     * @param prices int整型一维数组
+     * @return int整型
+     */
+    public int maxProfit(int[] prices) {
+        // write code here
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int cost = -prices[0];
+        int profit = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > cost) {
+                profit = Math.max(profit, prices[i] - cost);
+            } else {
+                cost = -prices[i];
+            }
+        }
+        return profit;
     }
 
 
