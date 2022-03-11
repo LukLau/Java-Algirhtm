@@ -1,5 +1,6 @@
 package org.learn.algorithm.swordoffer;
 
+import com.sun.corba.se.spi.ior.iiop.IIOPFactories;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
@@ -744,8 +745,9 @@ public class NormalSolution {
             count++;
             fast = fast.next;
         }
-//        ListNode root = new
         return null;
+
+
     }
 
     /**
@@ -2403,6 +2405,8 @@ public class NormalSolution {
 
 
     /**
+     * NC13 二叉树的最大深度
+     *
      * @param root TreeNode类
      * @return int整型
      */
@@ -2548,15 +2552,22 @@ public class NormalSolution {
     }
 
 
+    /**
+     * NC12 重建二叉树
+     *
+     * @param pre
+     * @param in
+     * @return
+     */
     public TreeNode reConstructBinaryTree(int[] pre, int[] in) {
         if (pre == null || in == null) {
             return null;
         }
-        return reConstruct(0, pre, 0, in.length - 1, in);
+        return internalReConstruct(0, pre, 0, in.length - 1, in);
     }
 
-    private TreeNode reConstruct(int preStart, int[] pre, int inStart, int inEnd, int[] in) {
-        if (preStart >= pre.length || inStart > inEnd) {
+    private TreeNode internalReConstruct(int preStart, int[] pre, int inStart, int inEnd, int[] in) {
+        if (inStart > inEnd) {
             return null;
         }
         TreeNode root = new TreeNode(pre[preStart]);
@@ -2567,10 +2578,8 @@ public class NormalSolution {
                 break;
             }
         }
-        root.left = reConstruct(preStart + 1, pre, inStart, index - 1, in);
-
-        root.right = reConstruct(preStart + index - inStart + 1, pre, index + 1, inEnd, in);
-
+        root.left = internalReConstruct(preStart + 1, pre, inStart, index - 1, in);
+        root.right = internalReConstruct(preStart + index - inStart + 1, pre, index + 1, inEnd, in);
         return root;
     }
 
@@ -2644,6 +2653,8 @@ public class NormalSolution {
 
 
     /**
+     * NC11 将升序数组转化为平衡二叉搜索树
+     *
      * @param num int整型一维数组
      * @return TreeNode类
      */
@@ -2652,17 +2663,17 @@ public class NormalSolution {
         if (num == null || num.length == 0) {
             return null;
         }
-        return intervalSort(0, num.length - 1, num);
+        return internalSortedArrayToBST(num, 0, num.length - 1);
     }
 
-    private TreeNode intervalSort(int start, int end, int[] num) {
+    private TreeNode internalSortedArrayToBST(int[] num, int start, int end) {
         if (start > end) {
             return null;
         }
         int mid = start + (end - start) / 2;
         TreeNode root = new TreeNode(num[mid]);
-        root.left = intervalSort(start, mid - 1, num);
-        root.right = intervalSort(mid + 1, end, num);
+        root.left = internalSortedArrayToBST(num, start, mid - 1);
+        root.right = internalSortedArrayToBST(num, mid + 1, end);
         return root;
     }
 

@@ -1074,6 +1074,8 @@ public class InterviewOffer {
     }
 
     /**
+     * NC5 二叉树根节点到叶子节点的所有路径和
+     *
      * @param root TreeNode类
      * @return int整型
      */
@@ -1083,7 +1085,6 @@ public class InterviewOffer {
             return 0;
         }
         return intervalSum(root, 0);
-
     }
 
     private int intervalSum(TreeNode root, int sum) {
@@ -1322,27 +1323,11 @@ public class InterviewOffer {
      * NC17 最长回文子串
      *
      * @param A
-     * @param n
      * @return
      */
-    public int getLongestPalindrome(String A, int n) {
+    public int getLongestPalindrome(String A) {
         // write code here
-        if (A == null || A.length() == 0) {
-            return 0;
-        }
-        boolean[][] dp = new boolean[n][n];
-        int result = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j <= i; j++) {
-                if (A.charAt(j) == A.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1])) {
-                    dp[j][i] = true;
-                }
-                if (dp[j][i] && i - j + 1 > result) {
-                    result = i - j + 1;
-                }
-            }
-        }
-        return result;
+        return -1;
     }
 
     public int MoreThanHalfNum_Solution(int[] array) {
