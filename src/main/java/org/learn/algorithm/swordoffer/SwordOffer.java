@@ -16,15 +16,17 @@ public class SwordOffer {
     public static void main(String[] args) {
 
         SwordOffer offer = new SwordOffer();
-        ListNode root = new ListNode(1);
-        ListNode d2 = new ListNode(2);
-        root.next = d2;
-        ListNode d3 = new ListNode(3);
-        d2.next = d3;
-        ListNode d4 = new ListNode(4);
-        d3.next = d4;
-        d4.next = new ListNode(5);
-        offer.FindKthToTail(root, 6);
+//        ListNode root = new ListNode(1);
+//        ListNode d2 = new ListNode(2);
+//        root.next = d2;
+//        ListNode d3 = new ListNode(3);
+//        d2.next = d3;
+//        ListNode d4 = new ListNode(4);
+//        d3.next = d4;
+//        d4.next = new ListNode(5);
+//        offer.FindKthToTail(root, 6);
+
+        offer.stackSort(new int[]{2, 1, 5, 3, 4});
 
     }
 
@@ -568,14 +570,68 @@ public class SwordOffer {
         for (int i = 0; i < n; i++) {
             result.add(i);
         }
-        int current = 0;
+        int currentIndex = 0;
         while (result.size() > 1) {
-            int len = result.size();
-            int index = (current + m - 1) % len;
+            int index = (currentIndex + m - 1) % result.size();
             result.remove(index);
-            current = index % (len - 1);
+            currentIndex = index % result.size();
         }
-        return result.isEmpty() ? -1 : result.get(0);
+        return result.get(0);
+    }
+
+    /**
+     * todo
+     * NC125 和为K的连续子数组
+     * max length of the subarray sum = k
+     *
+     * @param arr int整型一维数组 the array
+     * @param k   int整型 target
+     * @return int整型
+     */
+    public int maxlenEqualK(int[] arr, int k) {
+        // write code here
+        int local = 0;
+        int result = 0;
+        int left = 0;
+        for (int i = 0; i < arr.length; i++) {
+            local += arr[i];
+            while (local == k) {
+                result = Math.max(result, i - left + 1);
+                local -= arr[left++];
+            }
+        }
+        return result;
+    }
+
+    /**
+     * NC130 分糖果问题
+     * pick candy
+     *
+     * @param arr int整型一维数组 the array
+     * @return int整型
+     */
+    public int candy(int[] arr) {
+        // write code here
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[arr.length];
+        Arrays.fill(dp, 1);
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i - 1] < arr[i] && dp[i] < dp[i - 1] + 1) {
+                dp[i] = dp[i - 1] + 1;
+            }
+        }
+        for (int i = arr.length - 2; i >= 0; i--) {
+            if (arr[i + 1] < arr[i] && dp[i] < dp[i + 1] + 1) {
+                dp[i] = dp[i + 1] + 1;
+            }
+        }
+        int result = 0;
+        for (int num : dp) {
+            result += num;
+        }
+        return result;
     }
 
 
@@ -584,6 +640,111 @@ public class SwordOffer {
         boolean valid = sum > 0 && (sum += Sum_Solution(n - 1)) > 0;
         return sum;
     }
+
+
+    /**
+     * 最大乘积
+     *
+     * @param A int整型一维数组
+     * @return long长整型
+     */
+    public long threeNumMaxMulti(int[] A) {
+        if (A.length < 3) {
+            return 0;
+        }
+        // write code here
+        long firstMax = Integer.MIN_VALUE;
+        long secondMax = Integer.MIN_VALUE;
+        long thirdMax = Integer.MIN_VALUE;
+
+        long firstMin = Integer.MAX_VALUE;
+        long secondMin = Integer.MAX_VALUE;
+
+        for (int number : A) {
+            if (number > firstMax) {
+                thirdMax = secondMax;
+                secondMax = firstMax;
+                firstMax = number;
+            } else if (number > secondMax) {
+                thirdMax = secondMax;
+                secondMax = number;
+            } else if (number > thirdMax) {
+                thirdMax = number;
+            }
+            if (number < firstMin) {
+                secondMin = firstMin;
+                firstMin = number;
+            } else if (number < secondMin) {
+                secondMin = number;
+            }
+        }
+        if (firstMin > 0 || firstMax < 0) {
+            return firstMax * secondMax * thirdMax;
+        }
+        return Math.max(firstMax * secondMax * thirdMax, firstMin * secondMin * firstMax);
+    }
+
+
+    /**
+     * NC114 旋转字符串
+     * 旋转字符串
+     *
+     * @param A string字符串
+     * @param B string字符串
+     * @return bool布尔型
+     */
+    public boolean rotateString(String A, String B) {
+        if (A.equals(B)) {
+            return true;
+        }
+        // write code here
+        int m = A.length();
+        int n = B.length();
+        for (int i = 1; i < m; i++) {
+            String s1 = A.substring(0, i);
+            String s2 = A.substring(i, m);
+
+            String s3 = s2 + s1;
+            if (s3.equals(B)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * todo
+     * NC115 栈和排序
+     * 栈排序
+     *
+     * @param a int整型一维数组 描述入栈顺序
+     * @return int整型一维数组
+     */
+    public int[] stackSort(int[] a) {
+        // write code here
+        if (a == null || a.length == 0) {
+            return new int[]{};
+        }
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Comparator.reverseOrder());
+        for (int number : a) {
+            priorityQueue.offer(number);
+        }
+        int[] result = new int[a.length];
+        int index = 0;
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < a.length; i++) {
+            stack.push(i);
+            while (!stack.isEmpty() && a[stack.peek()] == priorityQueue.peek()) {
+                result[index++] = priorityQueue.poll();
+                stack.pop();
+            }
+        }
+        while (!stack.isEmpty()) {
+            result[index++] = a[stack.pop()];
+        }
+        return result;
+    }
+
 
     /**
      * todo
@@ -694,6 +855,7 @@ public class SwordOffer {
     }
 
     /**
+     * WC150 表示数值的字符串
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      *
      * @param str string字符串
@@ -701,40 +863,46 @@ public class SwordOffer {
      */
     public boolean isNumeric(String str) {
         // write code here
-        if (str == null || str.isEmpty()) {
+        if (str == null) {
             return false;
         }
-        boolean numberAfterE = true;
-        boolean seenNumber = true;
+        str = str.trim();
+        if (str.isEmpty()) {
+            return false;
+        }
+        boolean seenNumber = false;
         boolean seenDigit = false;
+        boolean seenNumberAfterE = false;
         boolean seenE = false;
         char[] words = str.toCharArray();
-        int index = 0;
-        while (index < words.length) {
-            char val = words[index];
-            if (Character.isDigit(val)) {
-                numberAfterE = true;
+        for (int i = 0; i < words.length; i++) {
+            char tmp = words[i];
+            if (Character.isDigit(tmp)) {
                 seenNumber = true;
-            } else if (val == 'e' || val == 'E') {
-                if (seenE || seenDigit) {
+                seenNumberAfterE = true;
+            } else if (tmp == 'e' || tmp == 'E') {
+                if (seenE || !seenNumber) {
                     return false;
                 }
-                if (index == 0 || !Character.isDigit(words[index - 1])) {
+                if (!(Character.isDigit(words[i - 1]) || words[i - 1] == '.')) {
                     return false;
                 }
                 seenE = true;
-                numberAfterE = false;
-                seenNumber = false;
-            } else if (val == '.') {
-                if (seenDigit) {
+                seenNumberAfterE = false;
+            } else if (tmp == '-' || tmp == '+') {
+                if (i > 0 && !(words[i - 1] == 'e' || words[i - 1] == 'E')) {
+                    return false;
+                }
+            } else if (tmp == '.') {
+                if (seenDigit || seenE) {
                     return false;
                 }
                 seenDigit = true;
-            } else if (val == '-' || val == '+') {
+            } else {
+                return false;
             }
-            index++;
         }
-        return seenNumber && numberAfterE;
+        return seenNumber && seenNumberAfterE;
     }
 
     /**
@@ -1020,7 +1188,7 @@ public class SwordOffer {
         }
         return dp[target];
     }
-    
+
 
     /**
      * WC112 树的子结构
@@ -1209,17 +1377,17 @@ public class SwordOffer {
         if (arr == null || arr.length == 0) {
             return 0;
         }
-        Map<Integer, Integer> map = new HashMap<>();
         int result = 0;
+        Map<Integer, Integer> map = new HashMap<>();
         for (int num : arr) {
             if (!map.containsKey(num)) {
-                Integer left = map.getOrDefault(num - 1, 0);
-                Integer right = map.getOrDefault(num + 1, 0);
-                int val = left + right + 1;
-                result = Math.max(result, val);
-                map.put(num, val);
-                map.putIfAbsent(num - left, val);
-                map.putIfAbsent(num - right, val);
+                Integer leftSide = map.getOrDefault(num - 1, 0);
+                Integer rightSide = map.getOrDefault(num + 1, 0);
+                int tmp = leftSide + rightSide + 1;
+                result = Math.max(result, tmp);
+                map.put(num, tmp);
+                map.put(num - leftSide, tmp);
+                map.put(num + rightSide, tmp);
             }
         }
         return result;

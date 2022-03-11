@@ -22,6 +22,7 @@ public class InterviewOffer {
 
     public static void main(String[] args) {
         InterviewOffer offer = new InterviewOffer();
+        offer.solveIP("1a1.4.5.6");
 
     }
 
@@ -509,12 +510,12 @@ public class InterviewOffer {
         if (IP == null || IP.isEmpty()) {
             return "Neither";
         }
-        if (IP.indexOf(".") > 0) {
-            String[] split = IP.split("\\.");
-            if (split.length != 4) {
+        if (IP.contains(".")) {
+            String[] words = IP.split("\\.");
+            if (words.length > 4) {
                 return "Neither";
             }
-            for (String word : split) {
+            for (String word : words) {
                 if (!checkIpV4(word)) {
                     return "Neither";
                 }
@@ -522,15 +523,8 @@ public class InterviewOffer {
             return "IPv4";
         }
         String[] words = IP.split(":");
-        if (words.length != 8) {
-            return "Neither";
-        }
         for (String word : words) {
-            int length = word.length();
-            if (length <= 0) {
-                return "Neither";
-            }
-            if ("000".equals(word) || "0000".equals(word) || "00".equals(word)) {
+            if (!checkIPV6(word)) {
                 return "Neither";
             }
         }
@@ -542,11 +536,31 @@ public class InterviewOffer {
         if (length <= 0 || length > 3) {
             return false;
         }
+        char[] words = word.toCharArray();
+        for (char tmp : words) {
+            if (!Character.isDigit(tmp)) {
+                return false;
+            }
+        }
         int num = Integer.parseInt(word);
         if (num > 255 || num < 0) {
             return false;
         }
         return length <= 2 || word.charAt(0) != '0';
+    }
+
+    private boolean checkIPV6(String word) {
+        if (word == null || word.isEmpty()) {
+            return false;
+        }
+        int length = word.length();
+        if (length > 4) {
+            return false;
+        }
+        if (length > 1 && word.charAt(0) == '0' && word.charAt(1) == '0') {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -804,6 +818,9 @@ public class InterviewOffer {
     }
 
     /**
+     * https://www.nowcoder.com/practice/41c399fdb6004b31a6cbb047c641ed8a?tpId=117&tqId=37810&rp=1&ru=%2Fexam%2Foj&qru=%2Fexam%2Foj&sourceUrl=%2Fexam%2Foj%3Ftab%3D%25E7%25AE%2597%25E6%25B3%2595%25E7%25AF%2587%26topicId%3D117&difficulty=undefined&judgeStatus=undefined&tags=&title=
+     * NC132 环形链表的约瑟夫问题
+     *
      * @param n int整型
      * @param m int整型
      * @return int整型
@@ -822,6 +839,52 @@ public class InterviewOffer {
             current = index % (size - 1);
         }
         return tmp.get(0);
+    }
+
+
+    /**
+     * todo
+     * NC99 多叉树的直径
+     *
+     * @param n          int整型 树的节点个数
+     * @param Tree_edge  Interval类一维数组 树的边
+     * @param Edge_value int整型一维数组 边的权值
+     * @return int整型
+     */
+    public int treePath(int n, Interval[] Tree_edge, int[] Edge_value) {
+        // write code here
+        return -1;
+    }
+
+    /**
+     * NC111 最大数
+     *
+     * @param nums int整型一维数组
+     * @return string字符串
+     */
+    public String bigNumber(int[] nums) {
+        // write code here
+        if (nums == null || nums.length == 0) {
+            return "";
+        }
+        String[] strs = new String[nums.length];
+        for (int i = 0; i < strs.length; i++) {
+            strs[i] = String.valueOf(nums[i]);
+        }
+        Arrays.sort(strs, (o1, o2) -> {
+            String s1 = o1 + o2;
+            String s2 = o2 + o1;
+            return s2.compareTo(s1);
+        });
+        StringBuilder builder = new StringBuilder();
+        for (String str : strs) {
+            builder.append(str);
+        }
+        String result = builder.toString();
+        if (result.charAt(0) == '0') {
+            return "0";
+        }
+        return result;
     }
 
     public boolean IsBalanced_Solution(TreeNode root) {
@@ -1478,6 +1541,14 @@ public class InterviewOffer {
     }
 
 
+    /**
+     * NC88 寻找第K大
+     *
+     * @param a
+     * @param n
+     * @param K
+     * @return
+     */
     public int findKth(int[] a, int n, int K) {
         // write code here'
         K--;
