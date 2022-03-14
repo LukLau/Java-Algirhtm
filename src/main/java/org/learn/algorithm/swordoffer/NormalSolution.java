@@ -12,17 +12,20 @@ import java.util.*;
  * @date 2021/6/10
  */
 public class NormalSolution {
+    /**
+     * NC138 矩阵最长递增路径
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 递增路径的最大长度
+     *
+     * @param matrix int整型二维数组 描述矩阵的每个数
+     * @return int整型
+     */
+
+    private int incrementResult = 0;
+
     public static void main(String[] args) {
         NormalSolution solution = new NormalSolution();
-        ListNode root = new ListNode(1);
-
-        ListNode d1 = new ListNode(2);
-
-        root.next = d1;
-
-        d1.next = new ListNode(3);
-
-        solution.ReverseListV2(root);
+        solution.decodeString("0");
     }
 
     /**
@@ -87,7 +90,6 @@ public class NormalSolution {
         return false;
     }
 
-
     /**
      * NC48 在旋转过的有序数组中寻找目标值
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
@@ -133,7 +135,6 @@ public class NormalSolution {
         return jumpFloor(target - 1) + jumpFloor(target - 2);
     }
 
-
     public int maxLength(int[] arr) {
         // write code here
         if (arr == null || arr.length == 0) {
@@ -151,7 +152,6 @@ public class NormalSolution {
         }
         return result;
     }
-
 
     /**
      * WC87 最小的K个数
@@ -179,7 +179,6 @@ public class NormalSolution {
         }
         return result;
     }
-
 
     public ArrayList<Integer> GetLeastNumbers_SolutionV2(int[] input, int k) {
         if (input == null || input.length == 0 || k < 0 || k > input.length) {
@@ -222,7 +221,6 @@ public class NormalSolution {
         nums[low] = pivot;
         return low;
     }
-
 
     /**
      * NC22 合并两个有序的数组
@@ -271,7 +269,6 @@ public class NormalSolution {
         return a[reverse];
     }
 
-
     public String solve(String str) {
         // write code here
         if (str == null || str.isEmpty()) {
@@ -280,7 +277,6 @@ public class NormalSolution {
         StringBuilder builder = new StringBuilder();
         return builder.append(str).reverse().toString();
     }
-
 
     /**
      * NC17 最长回文子串
@@ -310,7 +306,6 @@ public class NormalSolution {
         return result;
     }
 
-
     /**
      * NC19 连续子数组的最大和
      *
@@ -331,7 +326,6 @@ public class NormalSolution {
 
     }
 
-
     public int maxLengthV2(int[] arr) {
         if (arr == null || arr.length == 0) {
             return 0;
@@ -350,7 +344,6 @@ public class NormalSolution {
         }
         return result;
     }
-
 
     /**
      * NC50 链表中的节点每k个一组翻转
@@ -442,7 +435,6 @@ public class NormalSolution {
         return -1;
     }
 
-
     /**
      * @param root TreeNode类
      * @param sum  int整型
@@ -472,7 +464,6 @@ public class NormalSolution {
         }
         tmp.remove(tmp.size() - 1);
     }
-
 
     /**
      * @param head1 ListNode类
@@ -518,12 +509,11 @@ public class NormalSolution {
         return prev;
     }
 
-
     /**
      * @param prices int整型一维数组
      * @return int整型
      */
-    public int maxProfit(int[] prices) {
+    public int maxProfitI(int[] prices) {
         // write code here
         if (prices == null || prices.length == 0) {
             return 0;
@@ -540,6 +530,51 @@ public class NormalSolution {
         return result;
     }
 
+    /**
+     * NC134 买卖股票的最好时机(二)
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 计算最大收益
+     *
+     * @param prices int整型一维数组 股票每一天的价格
+     * @return int整型
+     */
+    public int maxProfitMultiSell(int[] prices) {
+        // write code here
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        int cost = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            int val = prices[i];
+            if (val > cost) {
+                result += val - cost;
+            }
+            cost = val;
+        }
+        return result;
+    }
+
+    /**
+     * NC98 判断t1树中是否有与t2树完全相同的子树
+     *
+     * @param root1 TreeNode类
+     * @param root2 TreeNode类
+     * @return bool布尔型
+     */
+    public boolean isContains(TreeNode root1, TreeNode root2) {
+        // write code here
+        if (root1 == null && root2 == null) {
+            return true;
+        }
+        if (root1 == null || root2 == null) {
+            return false;
+        }
+        if (root1.val == root2.val) {
+            return isContains(root1.left, root2.left) && isContains(root1.right, root2.right);
+        }
+        return false;
+    }
 
     public String solve(String s, String t) {
         // write code here
@@ -564,7 +599,6 @@ public class NormalSolution {
         return builder.reverse().toString();
     }
 
-
     public int foundOnceNumber(int[] arr, int k) {
         // write code here
 //        int[] count = new int[32];
@@ -582,7 +616,6 @@ public class NormalSolution {
         }
         return -1;
     }
-
 
     /**
      * todo
@@ -608,7 +641,6 @@ public class NormalSolution {
         }
         return result;
     }
-
 
     public long maxWater(int[] arr) {
         // write code here
@@ -640,7 +672,6 @@ public class NormalSolution {
         return result;
     }
 
-
     /**
      * NC32 求平方根
      *
@@ -667,7 +698,7 @@ public class NormalSolution {
     public String LCS(String s1, String s2) {
         // write code here
         if (s1 == null || s2 == null) {
-            return "";
+            return "-1";
         }
         int m = s1.length();
         int n = s2.length();
@@ -677,7 +708,7 @@ public class NormalSolution {
                 if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
                     dp[i][j] = 1 + dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                    dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
                 }
             }
         }
@@ -695,7 +726,6 @@ public class NormalSolution {
         }
         return builder.length() == 0 ? "-1" : builder.reverse().toString();
     }
-
 
     /**
      * NC53 删除链表的倒数第n个节点
@@ -721,6 +751,11 @@ public class NormalSolution {
     }
 
     /**
+     * @param k    int整型
+     * @return ListNode类
+     */
+
+    /**
      * @param strs string字符串一维数组
      * @return string字符串
      */
@@ -738,12 +773,6 @@ public class NormalSolution {
         }
         return prefix;
     }
-
-    /**
-     * @param k    int整型
-     * @return ListNode类
-     */
-
 
     /**
      * NC97 字符串出现次数的TopK问题
@@ -787,7 +816,6 @@ public class NormalSolution {
         return result;
     }
 
-
     /**
      * @param l1 ListNode类
      * @param l2 ListNode类
@@ -813,7 +841,6 @@ public class NormalSolution {
         }
     }
 
-
     /**
      * NC70 单链表的排序
      *
@@ -837,7 +864,6 @@ public class NormalSolution {
         ListNode l2 = sortInList(tmp);
         return mergeTwoLists(l1, l2);
     }
-
 
     /**
      * NC96 判断一个链表是否为回文结构
@@ -868,7 +894,6 @@ public class NormalSolution {
         }
         return true;
     }
-
 
     /**
      * max increasing subsequence
@@ -901,7 +926,6 @@ public class NormalSolution {
         return result;
     }
 
-
     /**
      * todo
      * retrun the longest increasing subsequence
@@ -913,7 +937,6 @@ public class NormalSolution {
         // write code here
         return null;
     }
-
 
     /**
      * NC30 缺失的第一个正整数
@@ -940,7 +963,6 @@ public class NormalSolution {
         return nums.length + 1;
     }
 
-
     /**
      * NC31 第一个只出现一次的字符
      *
@@ -960,7 +982,6 @@ public class NormalSolution {
         }
         return -1;
     }
-
 
     /**
      * NC133 链表的奇偶重排
@@ -1023,7 +1044,6 @@ public class NormalSolution {
         }
     }
 
-
     /**
      * @param t1 TreeNode类
      * @param t2 TreeNode类
@@ -1082,6 +1102,155 @@ public class NormalSolution {
             cost = prices[i];
         }
         return result;
+    }
+
+    /**
+     * NC135 买卖股票的最好时机(三)
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfitThree(int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int[] leftSell = new int[prices.length];
+        int cost = prices[0];
+        int leftResult = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > cost) {
+                leftResult = Math.max(leftResult, prices[i] - cost);
+            } else {
+                cost = prices[i];
+            }
+            leftSell[i] = leftResult;
+        }
+        int[] rightSell = new int[prices.length + 1];
+        int rightResult = 0;
+
+        cost = prices[prices.length - 1];
+
+        for (int i = prices.length - 2; i >= 0; i--) {
+            if (prices[i] < cost) {
+                rightResult = Math.max(rightResult, cost - prices[i]);
+            } else {
+                cost = prices[i];
+            }
+            rightSell[i] = rightResult;
+        }
+        int result = 0;
+        for (int i = leftSell.length - 1; i >= 0; i--) {
+            result = Math.max(result, leftSell[i] + rightSell[i]);
+        }
+        return result;
+    }
+
+    /**
+     * NC138 矩阵最长递增路径
+     *
+     * @param matrix
+     * @return
+     */
+    public int longestIncrementMatrix(int[][] matrix) {
+        // write code here
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int result = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                int tmp = internalIncrementResult(i, j, matrix, Integer.MIN_VALUE, 0);
+                result = Math.max(result, tmp);
+            }
+        }
+        return result;
+    }
+
+    private int internalIncrementResult(int i, int j, int[][] matrix, int minValue, int result) {
+        if (i < 0 || i >= matrix.length || j < 0 || j >= matrix[i].length) {
+            return result;
+        }
+        if (matrix[i][j] <= minValue) {
+            return result;
+        }
+        int count = 0;
+        count = Math.max(count, internalIncrementResult(i - 1, j, matrix, matrix[i][j], result + 1));
+        count = Math.max(count, internalIncrementResult(i + 1, j, matrix, matrix[i][j], result + 1));
+        count = Math.max(count, internalIncrementResult(i, j - 1, matrix, matrix[i][j], result + 1));
+        count = Math.max(count, internalIncrementResult(i, j + 1, matrix, matrix[i][j], result + 1));
+        return count;
+    }
+
+
+    /**
+     * NC129 阶乘末尾0的数量
+     * the number of 0
+     *
+     * @param n long长整型 the number
+     * @return long长整型
+     */
+    public long thenumberof0(long n) {
+        // write code here
+        if (n < 5) {
+            return 0;
+        }
+        long count = 0;
+        while (n / 5 != 0) {
+            count += n / 5;
+            n /= 5;
+        }
+        return count;
+    }
+
+
+    /**
+     * todo
+     * NC142 最长重复子串
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param a string字符串 待计算字符串
+     * @return int整型
+     */
+    public int longestRepeatString(String a) {
+        // write code here
+        if (a == null || a.isEmpty()) {
+            return 0;
+        }
+        LinkedList<String> linkedList = new LinkedList<>();
+        linkedList.offer(a);
+        while (!linkedList.isEmpty()) {
+            String tmp = linkedList.pollFirst();
+//            if (validRepeatString(t))
+        }
+        return -1;
+
+    }
+
+
+    /**
+     * NC144 不相邻最大子序列和
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 计算
+     *
+     * @param n     int整型 数组的长度
+     * @param array int整型一维数组 长度为n的数组
+     * @return long长整型
+     */
+    public long maxSubsequence(int n, int[] array) {
+        // write code here
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        long prev = 0;
+        long current = array[0];
+        for (int i = 1; i < array.length; i++) {
+            long tmp = current;
+            current = Math.max(current, prev + array[i]);
+            prev = tmp;
+        }
+        return Math.max(0, Math.max(prev, current));
     }
 
 
@@ -1738,24 +1907,6 @@ public class NormalSolution {
 
 
     /**
-     * the number of 0
-     *
-     * @param n long长整型 the number
-     * @return long长整型
-     */
-    public long thenumberof0(long n) {
-        // write code here
-
-        long count = 0;
-
-        while (n / 5 != 0) {
-            count += n / 5;
-            n /= 5;
-        }
-        return count;
-    }
-
-    /**
      * NC20 数字字符串转化成IP地址
      *
      * @param s string字符串
@@ -1927,20 +2078,56 @@ public class NormalSolution {
         return dp[column - 1];
     }
 
+    /**
+     * NC83 子数组最大乘积
+     *
+     * @param arr
+     * @return
+     */
     public double maxProduct(double[] arr) {
         double max = arr[0];
         double min = arr[0];
         double result = arr[0];
-
         for (int i = 1; i < arr.length; i++) {
-            double val = arr[i];
-            double tmpMax = Math.max(Math.max(max * val, val * min), val);
-            double tmpMin = Math.min(Math.min(max * val, val * min), val);
-            result = Math.max(result, tmpMax);
+            double tmpMax = Math.max(Math.max(max * arr[i], min * arr[i]), arr[i]);
+            double tmpMin = Math.min(Math.min(min * arr[i], max * arr[i]), arr[i]);
+            result = Math.max(tmpMax, result);
             max = tmpMax;
             min = tmpMin;
         }
         return result;
+    }
+
+
+    /**
+     * NC116 把数字翻译成字符串
+     *
+     * @param nums string字符串 数字串
+     * @return int整型
+     */
+    public int decodeString(String nums) {
+        // write code here
+        if (nums == null || nums.isEmpty()) {
+            return 0;
+        }
+        int len = nums.length();
+        int[] dp = new int[len + 1];
+        dp[0] = 1;
+        for (int i = 1; i <= len; i++) {
+            String s1 = nums.substring(i - 1, i);
+            int num1 = Integer.parseInt(s1);
+            if (num1 >= 1 && num1 <= 9) {
+                dp[i] += dp[i - 1];
+            }
+            if (i > 1) {
+                String s2 = nums.substring(i - 2, i);
+                int num2 = Integer.parseInt(s2);
+                if (num2 >= 10 && num2 <= 26) {
+                    dp[i] += dp[i - 2];
+                }
+            }
+        }
+        return dp[len];
     }
 
 
@@ -2557,6 +2744,7 @@ public class NormalSolution {
 
 
     /**
+     * NC126 兑换零钱(一)
      * 最少货币数
      *
      * @param arr int整型一维数组 the array
@@ -2565,18 +2753,77 @@ public class NormalSolution {
      */
     public int minMoney(int[] arr, int aim) {
         // write code here
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
         int[] dp = new int[aim + 1];
-
-        Arrays.fill(dp, aim + 1);
-
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
         for (int i = 1; i <= aim; i++) {
+            int min = Integer.MAX_VALUE;
             for (int j = 0; j < arr.length; j++) {
-                if (i - arr[j] >= 0) {
-                    dp[i] = Math.min(dp[i], dp[i - arr[j]] + 1);
+                if (i - arr[j] >= 0 && dp[i - arr[j]] != Integer.MAX_VALUE) {
+                    min = Math.min(min, dp[i - arr[j]] + 1);
+                }
+            }
+            dp[i] = min;
+        }
+        return dp[aim] == Integer.MAX_VALUE ? -1 : dp[aim];
+    }
+
+    /**
+     * NC107 寻找峰值
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param nums int整型一维数组
+     * @return int整型
+     */
+    public int findPeakElement(int[] nums) {
+        // write code here
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < nums[mid + 1]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+
+    /**
+     * 最大正方形
+     *
+     * @param matrix char字符型二维数组
+     * @return int整型
+     */
+    public int maximumSquare(char[][] matrix) {
+        // write code here
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int[][] dp = new int[row + 1][column + 1];
+        int result = 0;
+        for (int i = 1; i <= row; i++) {
+            for (int j = 1; j <= column; j++) {
+                char tmp = matrix[i - 1][j - 1];
+                if (tmp == '1') {
+                    dp[i][j] = 1 + Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]);
+                }
+                if (dp[i][j] > 0) {
+                    result = Math.max(result, dp[i][j] * dp[i][j]);
                 }
             }
         }
-        return dp[aim] == aim + 1 ? -1 : dp[aim];
+        return result;
     }
 
 
