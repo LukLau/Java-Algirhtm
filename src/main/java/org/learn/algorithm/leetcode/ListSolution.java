@@ -142,26 +142,26 @@ public class ListSolution {
      * @return
      */
     public ListNode rotateRight(ListNode head, int k) {
-        if (head == null || head.next == null) {
-            return head;
+        if (head == null) {
+            return null;
         }
         ListNode current = head;
         int count = 1;
         while (current.next != null) {
-            current = current.next;
             count++;
+            current = current.next;
         }
         current.next = head;
+        ListNode slow = head;
         k %= count;
-        ListNode fast = head;
         if (k != 0) {
             for (int i = 0; i < count - k; i++) {
-                fast = fast.next;
+                slow = slow.next;
                 current = current.next;
             }
         }
         current.next = null;
-        return fast;
+        return slow;
     }
 
 

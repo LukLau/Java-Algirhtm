@@ -12,7 +12,7 @@ public class FirstPage {
 
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
-        page.simplifyPath("/home//foo/");
+        page.simplifyPath("/home/");
     }
 
     /**
@@ -510,25 +510,25 @@ public class FirstPage {
      */
     public String simplifyPath(String path) {
         if (path == null || path.isEmpty()) {
-            return "/";
+            return "";
         }
         LinkedList<String> linkedList = new LinkedList<>();
         String[] words = path.split("/");
-        for (String word : words) {
-            if ("..".equals(word)) {
-                if (!linkedList.isEmpty()) {
-                    linkedList.pollLast();
-                }
-            } else if (!(".".equals(word) || "".equals(word))) {
-                linkedList.offer(word);
+        for (int i = 0; i < words.length; i++) {
+            String tmp = words[i];
+            if ("..".equals(tmp) && !linkedList.isEmpty()) {
+                linkedList.pollLast();
+            } else if ("..".equals(tmp)) {
+            } else if (!(".".equals(tmp) || "".equals(tmp))) {
+                linkedList.offer(tmp);
             }
         }
         if (linkedList.isEmpty()) {
             return "/";
         }
         String result = "";
-        for (String item : linkedList) {
-            result = result + "/" + item;
+        for (String tmp : linkedList) {
+            result = result + "/" + tmp;
         }
         return result;
     }

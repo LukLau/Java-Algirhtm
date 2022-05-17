@@ -1,6 +1,5 @@
 package org.learn.algorithm.swordoffer;
 
-import com.sun.corba.se.spi.ior.iiop.IIOPFactories;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
@@ -2071,7 +2070,7 @@ public class NormalSolution {
                 if (obstacleGrid[i][j] == 1) {
                     dp[j] = 0;
                 } else {
-                    dp[j] = dp[j] + (j == 0 ? 0 : dp[j - 1]);
+                    dp[j] = dp[j] + (j > 0 ? dp[j - 1] : 0);
                 }
             }
         }
@@ -3193,27 +3192,23 @@ public class NormalSolution {
     /**
      * NC59 矩阵的最小路径和
      *
-     * @param matrix int整型二维数组 the matrix
+     * @param grid int整型二维数组 the grid
      * @return int整型
      */
-    public int minPathSum(int[][] matrix) {
+    public int minPathSum(int[][] grid) {
         // write code here
-        if (matrix == null || matrix.length == 0) {
+        if (grid == null || grid.length == 0) {
             return 0;
         }
-        int row = matrix.length;
-        int column = matrix[0].length;
+        int row = grid.length;
+        int column = grid[0].length;
         int[] dp = new int[column];
-        for (int j = 0; j < dp.length; j++) {
-            dp[j] = j == 0 ? matrix[0][0] : dp[j - 1] + matrix[0][j];
+        for (int j = 0; j < column; j++) {
+            dp[j] = grid[0][j] + (j == 0 ? 0 : dp[j - 1]);
         }
         for (int i = 1; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                if (j == 0) {
-                    dp[j] += matrix[i][j];
-                } else {
-                    dp[j] = Math.min(dp[j], dp[j - 1]) + matrix[i][j];
-                }
+                dp[j] = grid[i][j] + (j == 0 ? dp[j] : Math.min(dp[j], dp[j - 1]));
             }
         }
         return dp[column - 1];

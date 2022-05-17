@@ -120,39 +120,26 @@ public class MathSolution {
         if (s == null || s.isEmpty()) {
             return false;
         }
-        boolean seenNumberAfterE = false;
         boolean seenNumber = false;
         boolean seenDigit = false;
+        boolean seenNumberAfterE = true;
         boolean seenE = false;
         char[] words = s.toCharArray();
+
         for (int i = 0; i < words.length; i++) {
-            char current = words[i];
-            if (Character.isDigit(current)) {
+            char tmp = words[i];
+            if (Character.isDigit(tmp)) {
                 seenNumber = true;
                 seenNumberAfterE = true;
-            } else if (current == 'e' || current == 'E') {
-                if (i == 0 || seenE) {
-                    return false;
-                }
-                if (!seenNumber) {
+            } else if (Character.toLowerCase(tmp) == 'e') {
+                if (seenE || !seenNumber) {
                     return false;
                 }
                 seenE = true;
                 seenNumberAfterE = false;
-            } else if (current == '.') {
-                if (seenDigit) {
-                    return false;
-                }
-                seenDigit = true;
-            } else if (current == '-' || current == '+') {
-                if (i > 0 && (words[i - 1] != 'e' && words[i - 1] != 'E')) {
-                    return false;
-                }
-            } else {
-                return false;
             }
         }
-        return seenNumber && seenNumberAfterE;
+        return seenE && seenNumber;
     }
 
 
@@ -161,16 +148,12 @@ public class MathSolution {
             return "";
         }
         int m = a.length() - 1;
-
         int n = b.length() - 1;
-
         int carry = 0;
         StringBuilder builder = new StringBuilder();
-        while (m >= 0 || n >= 0 || carry != 0) {
+        while (m >= 0 || n >= 0 || carry > 0) {
             int val = (m >= 0 ? Character.getNumericValue(a.charAt(m--)) : 0) + (n >= 0 ? Character.getNumericValue(b.charAt(n--)) : 0) + carry;
-
             builder.append(val % 2);
-
             carry = val / 2;
         }
         return builder.reverse().toString();
@@ -192,27 +175,40 @@ public class MathSolution {
         List<String> result = new ArrayList<>();
         int startIndex = 0;
         while (startIndex < words.length) {
-            int endIndex = startIndex;
             int line = 0;
-            while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
+            int endIndex = startIndex;
+            while (endIndex < words.length && line + words[endIndex++].length() <= maxWidth - 1) {
                 line += words[endIndex].length() + 1;
-                endIndex++;
             }
-            int wordCount = endIndex - startIndex;
-            int remainSpace = maxWidth - line + 1;
-            boolean lastRow = endIndex == words.length;
             StringBuilder builder = new StringBuilder();
-            if (wordCount == 1) {
+            boolean lastRow = endIndex == words.length;
+            int countOfGap = endIndex - startIndex;
+            int blankOfSpace = lastRow ? 1 : 1 + ((maxWidth - line + 1) / (countOfGap));
+            int extraOfSpace = lastRow ? 0 : (maxWidth - line + 1) % countOfGap;
+            if (countOfGap == 1) {
                 builder.append(words[startIndex]);
             } else {
-                int blankSpace = lastRow ? 1 : (1 + remainSpace / (wordCount - 1));
-                int extraSpace = lastRow ? 0 : (remainSpace % (wordCount - 1));
-                builder.append(constructRow(words, startIndex, endIndex, blankSpace, extraSpace));
+                builder.append(constructWord(words, startIndex, endIndex, blankOfSpace, extraOfSpace));
             }
             result.add(trimRow(builder.toString(), maxWidth));
             startIndex = endIndex;
         }
         return result;
+    }
+
+    private String constructWord(String[] words, int start, int end, int blankSpace, int extraSpace) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = start; i < end; i++) {
+            builder.append(words[i]);
+            int tmp = blankSpace;
+            while (tmp-- > 0) {
+                builder.append(" ");
+            }
+            if (extraSpace-- > 0) {
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
     }
 
     private String trimRow(String tmp, int maxWidth) {
@@ -225,20 +221,6 @@ public class MathSolution {
         return tmp;
     }
 
-    private String constructRow(String[] words, int startIndex, int endIndex, int blankCount, int extraCount) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = startIndex; i < endIndex; i++) {
-            int tmp = blankCount;
-            builder.append(words[i]);
-            while (tmp-- > 0) {
-                builder.append(" ");
-            }
-            if (extraCount-- > 0) {
-                builder.append(" ");
-            }
-        }
-        return builder.toString();
-    }
 
     /**
      * 69. Sqrt(x)
@@ -247,7 +229,7 @@ public class MathSolution {
      * @return
      */
     public int mySqrt(int x) {
-        double precision = 0.00001;
+        double precision = 0.000001;
         double result = x;
         while (result * result - x > precision) {
             result = (result + x / result) / 2;
