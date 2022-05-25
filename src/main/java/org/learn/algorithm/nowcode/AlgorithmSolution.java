@@ -1,22 +1,25 @@
 package org.learn.algorithm.nowcode;
 
+import org.apache.commons.io.FileUtils;
 import org.learn.algorithm.datastructure.TreeNode;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author luk
  */
 public class AlgorithmSolution {
 
-    public static void main(String[] args) {
-        AlgorithmSolution solution = new AlgorithmSolution();
-        TreeNode root = new TreeNode(0);
-        root.left = new TreeNode(1);
-        root.right = new TreeNode(2);
+    public static void main(String[] args) throws IOException {
 
-        solution.Print(root);
+        File file = ResourceUtils.getFile("classpath:data.txt");
+        List<String> contents = FileUtils.readLines(file, "utf-8");
     }
 
     /**
@@ -124,5 +127,12 @@ public class AlgorithmSolution {
         return sum;
     }
 
+}
 
+class Node implements Serializable {
+    private String text_payload;
+
+    public String getText_payload() {
+        return text_payload;
+    }
 }
