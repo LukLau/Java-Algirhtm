@@ -5,7 +5,10 @@ import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
 
+import java.awt.*;
+import java.awt.event.MouseWheelListener;
 import java.util.*;
+import java.util.List;
 
 /**
  * @author dora
@@ -40,10 +43,10 @@ public class NormalSolution {
         }
         ListNode prev = null;
         while (head != null) {
-            ListNode tmp = head.next;
+            ListNode node = head.next;
             head.next = prev;
             prev = head;
-            head = tmp;
+            head = node;
         }
         return prev;
     }
@@ -52,10 +55,10 @@ public class NormalSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode node = ReverseListV2(head.next);
+        ListNode tmp = ReverseList(head.next);
         head.next.next = head;
         head.next = null;
-        return node;
+        return tmp;
     }
 
     /**
@@ -363,14 +366,14 @@ public class NormalSolution {
             count++;
         }
         if (count == k) {
-            ListNode reverse = reverseKGroup(current, k);
+            current = reverseKGroup(current, k);
             while (count-- > 0) {
                 ListNode tmp = head.next;
-                head.next = reverse;
-                reverse = head;
+                head.next = current;
+                current = head;
                 head = tmp;
             }
-            head = reverse;
+            head = current;
         }
         return head;
     }
@@ -379,18 +382,21 @@ public class NormalSolution {
         if (head == null || head.next == null) {
             return head;
         }
+        int count = 0;
         ListNode current = head;
-        for (int i = 0; i < k; i++) {
-            if (current == null) {
-                return head;
-            }
+        while (current != null && count != k) {
+            count++;
             current = current.next;
         }
-        ListNode listNode = reverse(head, current);
+        if (count != k) {
+            return head;
+        }
+        ListNode reverseListNode = reverseListNode(head, current);
+
 
         head.next = reverseKGroupV2(current, k);
 
-        return listNode;
+        return reverseListNode;
     }
 
     private ListNode reverse(ListNode start, ListNode end) {
@@ -3090,26 +3096,42 @@ public class NormalSolution {
      * @return ListNode类
      */
     public ListNode reverseBetween(ListNode head, int m, int n) {
-        // write code here
         ListNode root = new ListNode(0);
         root.next = head;
 
-        ListNode fast = root;
+
+        // write code here
         ListNode slow = root;
-        for (int i = 0; i < n; i++) {
-            fast = fast.next;
-        }
+
+        ListNode fast = root;
+
         for (int i = 0; i < m - 1; i++) {
             slow = slow.next;
         }
-        ListNode end = fast.next;
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+
         ListNode start = slow.next;
 
-        slow.next = reverse(start, end);
+        ListNode end = fast.next;
+
+        slow.next = reverseListNode(start, end);
 
         start.next = end;
 
         return root.next;
+    }
+
+    private ListNode reverseListNode(ListNode start, ListNode end) {
+        ListNode prev = start;
+        while (start != end) {
+            ListNode next = start.next;
+            start.next = prev;
+            prev = start;
+            start = next;
+        }
+        return prev;
     }
 
 

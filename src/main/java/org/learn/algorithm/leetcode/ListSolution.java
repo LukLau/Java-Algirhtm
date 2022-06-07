@@ -86,25 +86,8 @@ public class ListSolution {
      */
     public ListNode mergeKLists(ListNode[] lists) {
         if (lists == null || lists.length == 0) {
-            return null;
         }
-        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
-        for (ListNode node : lists) {
-            if (node != null) {
-                priorityQueue.offer(node);
-            }
-        }
-        ListNode root = new ListNode(0);
-        ListNode dummy = root;
-        while (!priorityQueue.isEmpty()) {
-            ListNode poll = priorityQueue.poll();
-            dummy.next = poll;
-            if (poll.next != null) {
-                priorityQueue.offer(poll.next);
-            }
-            dummy = dummy.next;
-        }
-        return root.next;
+        return null;
     }
 
 
