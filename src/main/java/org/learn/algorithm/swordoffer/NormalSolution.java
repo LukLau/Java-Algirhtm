@@ -1,12 +1,10 @@
 package org.learn.algorithm.swordoffer;
 
-import com.sun.corba.se.spi.ior.iiop.IIOPFactories;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
 
-import java.awt.*;
-import java.awt.event.MouseWheelListener;
+import javax.swing.text.html.HTMLEditorKit;
 import java.util.*;
 import java.util.List;
 
@@ -28,7 +26,8 @@ public class NormalSolution {
 
     public static void main(String[] args) {
         NormalSolution solution = new NormalSolution();
-        solution.decodeString("0");
+        ListNode root = new ListNode(1);
+        solution.isPail(root);
     }
 
     /**
@@ -83,7 +82,7 @@ public class NormalSolution {
         }
         ListNode fast = head;
         ListNode slow = head;
-        while (fast != null && fast.next != null) {
+        while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
             if (fast == slow) {
@@ -91,6 +90,27 @@ public class NormalSolution {
             }
         }
         return false;
+    }
+
+    public ListNode EntryNodeOfLoop(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return null;
+        }
+        ListNode fast = pHead;
+        ListNode slow = pHead;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == slow) {
+                fast = pHead;
+                while (fast != slow) {
+                    fast = fast.next;
+                    slow = slow.next;
+                }
+                return fast;
+            }
+        }
+        return null;
     }
 
     /**
@@ -748,12 +768,42 @@ public class NormalSolution {
         int count = 1;
         ListNode fast = head;
         while (fast.next != null) {
+            fast = fast.next;
             count++;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+
+        fast = root;
+
+
+        for (int i = 0; i < count - n; i++) {
             fast = fast.next;
         }
-        return null;
+        fast.next = fast.next.next;
 
+        return root.next;
+    }
 
+    public ListNode removeNthFromEndII(ListNode head, int n) {
+        if (head == null) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+
+        ListNode fast = root;
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+        ListNode slow = root;
+
+        while (fast.next != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        slow.next = slow.next.next;
+        return root.next;
     }
 
     /**
@@ -858,17 +908,37 @@ public class NormalSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode slow = head;
         ListNode fast = head;
+        ListNode slow = head;
         while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode tmp = slow.next;
+        ListNode second = slow.next;
         slow.next = null;
-        ListNode l1 = sortInList(head);
-        ListNode l2 = sortInList(tmp);
-        return mergeTwoLists(l1, l2);
+        ListNode first = sortInList(head);
+        ListNode newSecond = sortInList(second);
+
+        return sort(first, newSecond);
+    }
+
+    private ListNode sort(ListNode l1, ListNode l2) {
+        if (l1 == null && l2 == null) {
+            return null;
+        }
+        if (l1 == null) {
+            return l2;
+        }
+        if (l2 == null) {
+            return l1;
+        }
+        if (l1.val <= l2.val) {
+            l1.next = sort(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = sort(l1, l2.next);
+            return l2;
+        }
     }
 
     /**
@@ -879,18 +949,18 @@ public class NormalSolution {
      */
     public boolean isPail(ListNode head) {
         // write code here
-        if (head == null || head.next == null) {
-            return true;
+        if (head == null) {
+            return false;
         }
-        ListNode slow = head;
         ListNode fast = head;
+        ListNode slow = head;
         while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode next = slow.next;
+        ListNode newNode = slow.next;
         slow.next = null;
-        ListNode reverse = reverse(next);
+        ListNode reverse = reverse(newNode);
         while (head != null && reverse != null) {
             if (head.val != reverse.val) {
                 return false;
@@ -900,6 +970,7 @@ public class NormalSolution {
         }
         return true;
     }
+
 
     /**
      * max increasing subsequence
@@ -990,6 +1061,7 @@ public class NormalSolution {
     }
 
     /**
+     * todo
      * NC133 链表的奇偶重排
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      *
@@ -1001,25 +1073,46 @@ public class NormalSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode odd = new ListNode(0);
-        ListNode o1 = odd;
-
-        ListNode even = new ListNode(0);
-        ListNode e1 = even;
-        while (head != null) {
-            if (head.val % 2 == 1) {
-                o1.next = head;
-                o1 = o1.next;
-            } else {
-                e1.next = head;
-                e1 = e1.next;
-            }
-            head = head.next;
-        }
-        o1.next = even.next;
-        e1.next = null;
-        return odd.next;
+        return null;
     }
+
+    /**
+     * @param head ListNode类
+     * @return ListNode类
+     */
+    public ListNode deleteDuplicatesII(ListNode head) {
+        // write code here
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            return deleteDuplicatesII(head.next);
+        }
+        head.next = deleteDuplicatesII(head.next);
+        return head;
+    }
+
+    /**
+     * BM16 删除有序链表中重复的元素-II
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            ListNode current = head.next;
+            while (current != null && current.val == head.val) {
+                current = current.next;
+            }
+            return deleteDuplicates(current);
+        }
+        head.next = deleteDuplicates(head.next);
+        return head;
+    }
+
 
     /**
      * NC26 括号生成
@@ -1833,22 +1926,19 @@ public class NormalSolution {
         }
         ListNode root = new ListNode(0);
         root.next = pHead;
-        ListNode fast = root;
 
+        ListNode fast = root;
+        ListNode slow = root;
         for (int i = 0; i < k; i++) {
             fast = fast.next;
-            if (fast == null) {
-                return null;
-            }
         }
-
-        ListNode slow = root;
-
+        if (fast == null) {
+            return null;
+        }
         while (fast.next != null) {
-            slow = slow.next;
             fast = fast.next;
+            slow = slow.next;
         }
-
         return slow.next;
     }
 
@@ -2459,7 +2549,12 @@ public class NormalSolution {
         if (lists == null || lists.isEmpty()) {
             return null;
         }
-        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
+        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(new Comparator<ListNode>() {
+            @Override
+            public int compare(ListNode o1, ListNode o2) {
+                return o1.val - o2.val;
+            }
+        });
         for (ListNode node : lists) {
             if (node != null) {
                 priorityQueue.offer(node);
@@ -2468,11 +2563,12 @@ public class NormalSolution {
         ListNode root = new ListNode(0);
         ListNode dummy = root;
         while (!priorityQueue.isEmpty()) {
-            ListNode poll = priorityQueue.poll();
-            dummy.next = poll;
+            ListNode node = priorityQueue.poll();
+            dummy.next = node;
             dummy = dummy.next;
-            if (poll.next != null) {
-                priorityQueue.offer(poll.next);
+
+            if (node.next != null) {
+                priorityQueue.offer(node.next);
             }
         }
         return root.next;
