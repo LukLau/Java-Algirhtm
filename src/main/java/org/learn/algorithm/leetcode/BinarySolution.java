@@ -1,5 +1,8 @@
 package org.learn.algorithm.leetcode;
 
+import javax.print.attribute.UnmodifiableSetException;
+import java.awt.font.NumericShaper;
+
 /**
  * @author luk
  * @date 2021/4/8
@@ -13,8 +16,7 @@ public class BinarySolution {
 
     public static void main(String[] args) {
         BinarySolution solution = new BinarySolution();
-        int[] nums = new int[]{10, 10, 10, 1, 10};
-        solution.findMinII(nums);
+        solution.findPeakElement(new int[]{2});
     }
 
     /**
@@ -227,17 +229,36 @@ public class BinarySolution {
         if (nums == null || nums.length == 0) {
             return -1;
         }
-        int start = 0;
-        int end = nums.length - 1;
-        while (start < end) {
-            int mid = start + (end - start) / 2;
-            if (nums[mid] > nums[mid + 1]) {
-                end = mid;
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] >= nums[mid + 1]) {
+                right = mid;
             } else {
-                start = mid + 1;
+                left = mid + 1;
             }
         }
-        return start;
+        return left;
+    }
+
+
+    public int minNumberInRotateArray(int[] array) {
+        if (array == null || array.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = array.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (array[mid] > array[mid + 1]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return array[left];
+
     }
 
     /**

@@ -75,11 +75,9 @@ public class SwordOffer {
         if (array == null || array.length == 0) {
             return false;
         }
-        int row = array.length;
-        int column = array[0].length;
-        int i = row - 1;
+        int i = array.length - 1;
         int j = 0;
-        while (i >= 0 && j < column) {
+        while (i >= 0 && j < array[i].length) {
             int val = array[i][j];
             if (val == target) {
                 return true;
