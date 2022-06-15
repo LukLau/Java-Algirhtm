@@ -1008,7 +1008,7 @@ public class SwordOffer {
      */
     public boolean isSymmetrical(TreeNode pRoot) {
         if (pRoot == null) {
-            return true;
+            return false;
         }
         return isSymmetrical(pRoot.left, pRoot.right);
     }
@@ -1024,6 +1024,75 @@ public class SwordOffer {
             return false;
         }
         return isSymmetrical(left.left, right.right) && isSymmetrical(left.right, right.left);
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param root TreeNode类
+     * @return bool布尔型
+     */
+    public boolean isValidBST(TreeNode root) {
+        // write code here
+        if (root == null) {
+            return false;
+        }
+        return validBST(Integer.MIN_VALUE, root, Integer.MAX_VALUE);
+    }
+
+    private boolean validBST(int minValue, TreeNode root, int maxValue) {
+        if (root == null) {
+            return true;
+        }
+        if (root.val <= minValue || root.val >= maxValue) {
+            return false;
+        }
+        return validBST(minValue, root.left, root.val) && validBST(root.val, root.right, maxValue);
+    }
+
+    public boolean isCompleteTree(TreeNode root) {
+        // write code here
+        if (root == null) {
+            return true;
+        }
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+        linkedList.offer(root);
+        while (!linkedList.isEmpty()) {
+            int size = linkedList.size();
+            TreeNode prev = null;
+            for (int i = 0; i < size; i++) {
+                TreeNode poll = linkedList.poll();
+                if (poll.left == null && poll.right != null) {
+                    return false;
+                }
+                if (prev != null) {
+                    if (prev.right == null && poll.right != null) {
+                        return false;
+                    }
+                }
+                if (poll.left != null) {
+                    linkedList.offer(poll.left);
+                }
+                if (poll.right != null) {
+                    linkedList.offer(poll.right);
+                }
+                prev = poll;
+            }
+        }
+        return true;
+    }
+
+    private boolean isCompleteTree(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
+        }
+        if (left != null && right == null) {
+            return true;
+        }
+        if (left == null) {
+            return false;
+        }
+        return isCompleteTree(left) &&
     }
 
 

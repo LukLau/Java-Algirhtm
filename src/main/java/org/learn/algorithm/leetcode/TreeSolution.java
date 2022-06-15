@@ -232,6 +232,32 @@ public class TreeSolution {
         return result;
     }
 
+
+    public int[] postorderTraversalII(TreeNode root) {
+        if (root == null) {
+            return new int[]{};
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        LinkedList<Integer> result = new LinkedList<>();
+        TreeNode p = root;
+        while (!stack.isEmpty() || p != null) {
+            if (p != null) {
+                result.addFirst(p.val);
+                stack.push(p);
+                p = p.right;
+            } else {
+                p = stack.pop();
+                p = p.left;
+            }
+        }
+        int[] tmp = new int[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            tmp[i] = result.get(i);
+        }
+        return tmp;
+    }
+
+
     /**
      * 199. Binary Tree Right Side View
      *
