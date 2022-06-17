@@ -7,6 +7,7 @@ import org.learn.algorithm.datastructure.TreeNode;
 import javax.swing.text.html.HTMLEditorKit;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author dora
@@ -27,7 +28,7 @@ public class NormalSolution {
     public static void main(String[] args) {
         NormalSolution solution = new NormalSolution();
         ListNode root = new ListNode(1);
-        solution.isPail(root);
+        solution.basicCalculate("100+100");
     }
 
     /**
@@ -461,6 +462,84 @@ public class NormalSolution {
         return -1;
     }
 
+
+    /**
+     * BM49 表达式求值
+     * 表达式默认值
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 返回表达式的值
+     *
+     * @param s string字符串 待计算的表达式
+     * @return int整型
+     */
+    public int basicCalculate(String s) {
+        // write code here
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int len = s.length();
+        char sign = '+';
+        int i = 0;
+        Stack<Integer> stack = new Stack<>();
+        while (i < len) {
+            char tmp = s.charAt(i);
+            if (tmp == '(') {
+                int endIndex = i;
+                int count = 0;
+                while (endIndex < len) {
+                    char endTmp = s.charAt(endIndex);
+                    if (endTmp != '(' && endTmp != ')') {
+                        endIndex++;
+                        continue;
+                    }
+                    if (endTmp == '(') {
+                        count++;
+                    }
+                    if (endTmp == ')') {
+                        count--;
+                    }
+                    if (count == 0) {
+                        break;
+                    }
+                    endIndex++;
+                }
+                String subString = s.substring(i + 1, endIndex);
+                int value = basicCalculate(subString);
+                stack.push(value);
+                i = endIndex + 1;
+            } else if (Character.isDigit(tmp)) {
+                int val = 0;
+                while (i < len && Character.isDigit(s.charAt(i))) {
+                    val = val * 10 + Character.getNumericValue(s.charAt(i));
+                    i++;
+                }
+                stack.push(val);
+            }
+            if (i == len || s.charAt(i) != ' ') {
+                if (sign == '-') {
+                    stack.push(-1 * stack.pop());
+                }
+                if (sign == '*') {
+                    stack.push(stack.pop() * stack.pop());
+                } else if (sign == '/') {
+                    Integer secondValue = stack.pop();
+                    Integer firstValue = stack.pop();
+                    stack.push(firstValue / secondValue);
+                }
+                if (i != len) {
+                    sign = s.charAt(i);
+                }
+            }
+            i++;
+        }
+        int result = 0;
+        for (Integer num : stack) {
+            result += num;
+        }
+        return result;
+    }
+
+
     /**
      * @param root TreeNode类
      * @param sum  int整型
@@ -476,7 +555,8 @@ public class NormalSolution {
         return result;
     }
 
-    private void intervalPathSum(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, TreeNode root, int sum) {
+    private void intervalPathSum(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, TreeNode
+            root, int sum) {
         tmp.add(root.val);
         if (root.left == null && root.right == null && root.val == sum) {
             result.add(new ArrayList<>(tmp));
@@ -807,6 +887,54 @@ public class NormalSolution {
     }
 
     /**
+     * 判断岛屿数量
+     *
+     * @param grid char字符型二维数组
+     * @return int整型
+     */
+    public int islandNum(char[][] grid) {
+        // write code here
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        boolean[][] used = new boolean[row][column];
+        int count = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (used[i][j]) {
+                    continue;
+                }
+                if (grid[i][j] == '1') {
+                    count++;
+                    internalIsland(grid, i, j, used);
+
+                }
+            }
+        }
+        return count;
+    }
+
+    private void internalIsland(char[][] words, int i, int j, boolean[][] used) {
+        if (i < 0 || i == words.length || j < 0 || j == words[i].length) {
+            return;
+        }
+        if (used[i][j]) {
+            return;
+        }
+        used[i][j] = true;
+        if (words[i][j] == '0') {
+            return;
+        }
+        internalIsland(words, i - 1, j, used);
+        internalIsland(words, i + 1, j, used);
+        internalIsland(words, i, j - 1, used);
+        internalIsland(words, i, j + 1, used);
+    }
+
+
+    /**
      * @param k    int整型
      * @return ListNode类
      */
@@ -1025,16 +1153,17 @@ public class NormalSolution {
     public int minNumberDisappeared(int[] nums) {
         // write code here
         if (nums == null || nums.length == 0) {
-            return 0;
+            return -1;
         }
         for (int i = 0; i < nums.length; i++) {
-            while (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+            while (nums[i] > 0 && nums[i] < nums.length && nums[i] != nums[nums[i] - 1]) {
                 swap(nums, i, nums[i] - 1);
             }
         }
         for (int i = 0; i < nums.length; i++) {
-            if (nums[i] != i + 1) {
+            if (i + 1 != nums[i]) {
                 return i + 1;
+
             }
         }
         return nums.length + 1;
@@ -2092,7 +2221,8 @@ public class NormalSolution {
 
     }
 
-    private void internalSubSets(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int start, int[] s) {
+    private void internalSubSets(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int start,
+                                 int[] s) {
         result.add(new ArrayList<>(tmp));
         for (int i = start; i < s.length; i++) {
             tmp.add(s[i]);
@@ -2366,7 +2496,8 @@ public class NormalSolution {
         return result;
     }
 
-    private void internalCombinationSum2(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int start, int[] num, int target, boolean[] used) {
+    private void internalCombinationSum2(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp,
+                                         int start, int[] num, int target, boolean[] used) {
         if (target == 0) {
             result.add(new ArrayList<>(tmp));
             return;
@@ -3078,15 +3209,16 @@ public class NormalSolution {
             result ^= num;
         }
         result &= -result;
-        int[] ans = new int[2];
+        int[] tmp = new int[2];
         for (int num : array) {
-            if ((num & result) != 0) {
-                ans[0] ^= num;
+            if ((result & num) != 0) {
+                tmp[1] ^= num;
             } else {
-                ans[1] ^= num;
+                tmp[0] ^= num;
             }
         }
-        return ans;
+        Arrays.sort(tmp);
+        return tmp;
     }
 
 
@@ -3248,7 +3380,8 @@ public class NormalSolution {
         return result;
     }
 
-    private void internalPermuteUnique(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int[] num, boolean[] used) {
+    private void internalPermuteUnique(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp,
+                                       int[] num, boolean[] used) {
         if (tmp.size() == num.length) {
             result.add(new ArrayList<>(tmp));
             return;

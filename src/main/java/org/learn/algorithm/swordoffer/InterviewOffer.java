@@ -1,5 +1,6 @@
 package org.learn.algorithm.swordoffer;
 
+import com.sun.java.swing.ui.OkCancelDialog;
 import lombok.val;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.ListNode;
@@ -23,7 +24,7 @@ public class InterviewOffer {
 
     public static void main(String[] args) {
         InterviewOffer offer = new InterviewOffer();
-        offer.solveIP("1a1.4.5.6");
+        offer.maxInWindows(new int[]{2, 3, 4, 2, 6, 2, 5, 1}, 3);
 
     }
 
@@ -661,21 +662,21 @@ public class InterviewOffer {
      * @return
      */
     public ArrayList<Integer> maxInWindows(int[] num, int size) {
-        if (num == null || num.length == 0 || size == 0) {
+        if (num == null || num.length == 0) {
             return new ArrayList<>();
         }
         LinkedList<Integer> linkedList = new LinkedList<>();
         ArrayList<Integer> result = new ArrayList<>();
         for (int i = 0; i < num.length; i++) {
             int index = i - size + 1;
-            if (!linkedList.isEmpty() && index > linkedList.peekFirst()) {
-                linkedList.pollFirst();
-            }
             while (!linkedList.isEmpty() && num[linkedList.peekLast()] <= num[i]) {
                 linkedList.pollLast();
             }
+            if (!linkedList.isEmpty() && linkedList.peekFirst() < index) {
+                linkedList.poll();
+            }
             linkedList.offer(i);
-            if (index >= 0 && !linkedList.isEmpty()) {
+            if (index >= 0) {
                 result.add(num[linkedList.peekFirst()]);
             }
         }
@@ -1391,12 +1392,14 @@ public class InterviewOffer {
         for (int num : array) {
             if (num == candidate) {
                 count++;
+                continue;
             } else {
                 count--;
-                if (count == 0) {
-                    candidate = num;
-                    count++;
-                }
+            }
+            if (count == 0) {
+                candidate = num;
+                count++;
+
             }
         }
         count = 0;

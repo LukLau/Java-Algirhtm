@@ -372,24 +372,7 @@ public class SwordOffer {
         }
         char[] words = str.toCharArray();
         Arrays.sort(words);
-        ArrayList<String> result = new ArrayList<>();
-        internalPermutation(result, words, 0);
-        return result;
-    }
-
-    private void internalPermutation(ArrayList<String> result, char[] words, int start) {
-        if (start == words.length) {
-            result.add(String.valueOf(words));
-            return;
-        }
-        for (int i = start; i < words.length; i++) {
-            if (i > start && words[i] == words[start]) {
-                continue;
-            }
-            swapWord(words, i, start);
-            internalPermutation(result, words, start + 1);
-            swapWord(words, i, start);
-        }
+        boolean[] used = new boolean[words.length];
 
     }
 
@@ -1092,7 +1075,8 @@ public class SwordOffer {
         if (left == null) {
             return false;
         }
-        return isCompleteTree(left) &&
+        return false;
+//        return isCompleteTree(left) &&
     }
 
 
