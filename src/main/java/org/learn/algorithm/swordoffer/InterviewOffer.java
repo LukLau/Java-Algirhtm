@@ -1,6 +1,5 @@
 package org.learn.algorithm.swordoffer;
 
-import com.sun.java.swing.ui.OkCancelDialog;
 import lombok.val;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.ListNode;

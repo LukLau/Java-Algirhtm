@@ -25,7 +25,9 @@ public class SwordOffer {
         d3.next = d4;
         d4.next = new ListNode(5);
         offer.FindKthToTail(root, 6);
-        offer.bigNumberMulti("10", "10");
+
+//        offer.minCostClimbingStairs(new int[]{63, 63, 56, 31, 79, 86, 57, 79, 75, 68});
+        offer.minMoney(new int[]{5, 2, 3}, 16);
     }
 
 
@@ -373,7 +375,7 @@ public class SwordOffer {
         char[] words = str.toCharArray();
         Arrays.sort(words);
         boolean[] used = new boolean[words.length];
-
+        return null;
     }
 
     private void swapWord(char[] words, int i, int j) {
@@ -381,6 +383,308 @@ public class SwordOffer {
         words[i] = words[j];
         words[j] = tmp;
     }
+
+
+    /**
+     * BM59 N皇后问题
+     *
+     * @param n int整型 the n
+     * @return int整型
+     */
+    public int Nqueen(int n) {
+        // write code here
+        if (n <= 0) {
+            return 0;
+        }
+        int[] dp = new int[n];
+
+        return internalNqueen(dp, 0, n);
+
+    }
+
+    private int internalNqueen(int[] dp, int row, int n) {
+        int count = 0;
+        if (row == n) {
+            count++;
+            return count;
+        }
+        for (int j = 0; j < n; j++) {
+            if (isValidQueen(dp, row, j)) {
+                dp[row] = j;
+                count += internalNqueen(dp, row + 1, n);
+                dp[row] = -1;
+            }
+        }
+        return count;
+    }
+
+    private boolean isValidQueen(int[] dp, int row, int column) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (dp[i] == column || Math.abs(i - row) == Math.abs(dp[i] - column)) {
+                return false;
+
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * BM60 括号生成
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param n int整型
+     * @return string字符串ArrayList
+     */
+
+    private void internalGenerate(ArrayList<String> result, String s, int open, int close, int n) {
+        if (s.length() == 2 * n) {
+            result.add(s);
+            return;
+        }
+        if (open < n) {
+            internalGenerate(result, s + "(", open + 1, close, n);
+        }
+        if (close < open) {
+            internalGenerate(result, s + ")", open, close + 1, n);
+        }
+
+    }
+
+
+    /**
+     * BM61 矩阵最长递增路径
+     * <p>
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 递增路径的最大长度
+     *
+     * @param matrix int整型二维数组 描述矩阵的每个数
+     * @return int整型
+     */
+    public int maxIncrement(int[][] matrix) {
+        // write code here
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[matrix[0].length];
+        Arrays.fill(dp, 1);
+        for (int i = 1; i < matrix[0].length; i++) {
+            if (matrix[0][i] > matrix[0][i - 1]) {
+                dp[i] = dp[i - 1] + 1;
+            }
+        }
+        for (int i = 1; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (j == 0) {
+                    if (matrix[i][j] > matrix[i - 1][j]) {
+                        dp[i] = dp[i - 1] + 1;
+                    }
+                }
+            }
+
+        }
+        return 0;
+    }
+
+    public int maxIncremenII(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        boolean[][] used = new boolean[row][column];
+        int[][] digit = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        int result = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                int val = Integer.MIN_VALUE;
+
+                int current = matrix[i][j];
+
+                int count = 1;
+
+
+            }
+        }
+        return result;
+
+    }
+
+    private int increasementQueue(int min, int[][] matrix, int i, int j, boolean[][] used) {
+        if (i < 0 || i == matrix.length || j < 0 || j == matrix[i].length || used[i][j]) {
+            return 0;
+        }
+        int val = matrix[i][j];
+
+        if (val < min) {
+            return 0;
+        }
+        int count = 1;
+        used[i][j] = true;
+        count = Math.max(count, increasementQueue(val, matrix, i - 1, j, used));
+        count += increasementQueue(val, matrix, i + 1, j, used);
+        count += increasementQueue(val, matrix, i, j - 1, used);
+        count += increasementQueue(val, matrix, i, j + 1, used);
+        used[i][j] = false;
+        return count;
+    }
+
+
+    /**
+     * BM64 最小花费爬楼梯
+     * <p>
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param cost int整型一维数组
+     * @return int整型
+     */
+    public int minCostClimbingStairs(int[] cost) {
+        // write code here
+        if (cost == null || cost.length == 0) {
+            return 0;
+        }
+        if (cost.length == 1) {
+            return cost[0];
+        }
+        int[] dp = new int[cost.length];
+        dp[0] = cost[0];
+        dp[1] = cost[1];
+        for (int i = 2; i < cost.length; i++) {
+            dp[i] = Math.min(dp[i - 1], dp[i - 2]) + cost[i];
+        }
+        return Math.min(dp[cost.length - 2], dp[cost.length - 1]);
+    }
+
+    public int minCostClimbingStairsII(int[] cost) {
+        if (cost == null || cost.length == 0) {
+            return 0;
+        }
+        int prev = 0;
+        int current = 0;
+        for (int val : cost) {
+            int tmp = current;
+
+            current = Math.min(current, prev) + val;
+
+            prev = tmp;
+        }
+        return Math.min(prev, current);
+    }
+
+
+    /**
+     * BM65 最长公共子序列(二)
+     * longest common subsequence
+     *
+     * @param s1 string字符串 the string
+     * @param s2 string字符串 the string
+     * @return string字符串
+     */
+    public String LCS(String s1, String s2) {
+        // write code here
+        if (s1 == null || s2 == null) {
+            return "-1";
+        }
+        int m = s1.length();
+        int n = s2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
+                    dp[i][j] = 1 + dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
+                }
+            }
+        }
+        StringBuilder builder = new StringBuilder();
+        while (m >= 1 && n >= 1) {
+            if (s1.charAt(m - 1) == s2.charAt(n - 1)) {
+                builder.append(s1.charAt(m - 1));
+                m--;
+                n--;
+            } else if (dp[m - 1][n] > dp[m][n - 1]) {
+                m--;
+            } else {
+                n--;
+            }
+        }
+        return builder.length() == 0 ? "-1" : builder.reverse().toString();
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * longest common substring
+     *
+     * @param str1 string字符串 the string
+     * @param str2 string字符串 the string
+     * @return string字符串
+     */
+    public String LongestCommonSubstring(String str1, String str2) {
+        // write code here
+        if (str1 == null || str2 == null) {
+            return "-1";
+        }
+        int m = str1.length();
+        int n = str2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        int result = 0;
+        int endIndex = -1;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                    if (dp[i][j] > result) {
+                        result = dp[i][j];
+                        endIndex = i;
+                    }
+                }
+            }
+        }
+        if (result == 0) {
+            return "-1";
+        }
+        return str1.substring(endIndex - result, endIndex);
+
+    }
+
+
+    /**
+     * BM68 矩阵的最小路径和
+     *
+     * @param matrix int整型二维数组 the matrix
+     * @return int整型
+     */
+    public int minPathSum(int[][] matrix) {
+        // write code here
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int[] dp = new int[column];
+        for (int j = 0; j < column; j++) {
+            dp[j] = j == 0 ? matrix[0][j] : dp[j - 1] + matrix[0][j];
+        }
+        for (int i = 1; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                dp[j] = (j > 0 ? Math.min(dp[j], dp[j - 1]) : dp[j]) + matrix[i][j];
+            }
+        }
+        return dp[column - 1];
+    }
+
+
+    /**
+     * BM60 括号生成
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param n int整型
+     * @return string字符串ArrayList
+     */
+
 
     public ArrayList<String> PermutationV2(String str) {
         if (str == null) {
@@ -474,6 +778,37 @@ public class SwordOffer {
         }
         return left - firstIndex + 1;
     }
+
+
+    /**
+     * 解码
+     *
+     * @param nums string字符串 数字串
+     * @return int整型
+     */
+    public int decodeNumsWay(String nums) {
+        // write code here
+        if (nums == null || nums.length() == 0) {
+            return 0;
+        }
+        int len = nums.length();
+        int[] dp = new int[len + 1];
+        dp[0] = 1;
+        for (int i = 1; i <= len; i++) {
+            String first = nums.substring(i - 1, i);
+            int firstValue = Integer.parseInt(first);
+            if (firstValue >= 1 && firstValue <= 9) {
+                dp[i] = dp[i - 1];
+            }
+            String second = i >= 2 ? nums.substring(i - 2, i) : "0";
+            int secondValue = Integer.parseInt(second);
+            if (secondValue >= 10 && secondValue <= 26) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp[len];
+    }
+
 
     /**
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
@@ -1702,10 +2037,296 @@ public class SwordOffer {
         }
     }
 
+    /**
+     * BM71 最长上升子序列(一)
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * 给定数组的最长严格上升子序列的长度。
+     *
+     * @param arr int整型一维数组 给定的数组
+     * @return int整型
+     */
+    public int LIS(int[] arr) {
+        // write code here
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[arr.length];
+        Arrays.fill(dp, 1);
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+                    dp[i] = dp[j] + 1;
+                }
+            }
+        }
+        int result = 0;
+        for (int num : dp) {
+            result = Math.max(result, num);
+        }
+        return result;
+    }
+
+
+    /**
+     * BM72 连续子数组的最大和
+     *
+     * @param array
+     * @return
+     */
+    public int FindGreatestSumOfSubArray(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int local = Integer.MIN_VALUE;
+        int global = Integer.MIN_VALUE;
+        for (int num : array) {
+            local = local >= 0 ? local + num : num;
+            global = Math.max(local, global);
+        }
+        return global;
+    }
+
+
+    /**
+     * BM73 最长回文子串
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param A string字符串
+     * @return int整型
+     */
+    public int getLongestPalindrome(String A) {
+        // write code here
+        if (A == null || A.length() == 0) {
+            return 0;
+        }
+        int result = 0;
+        int len = A.length();
+        boolean[][] dp = new boolean[len][len];
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (A.charAt(j) == A.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1])) {
+                    dp[j][i] = true;
+                }
+                if (dp[j][i] && i - j + 1 > result) {
+                    result = i - j + 1;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * BM74 数字字符串转化成IP地址
+     *
+     * @param s string字符串
+     * @return string字符串ArrayList
+     */
+    public ArrayList<String> restoreIpAddresses(String s) {
+        // write code here
+
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        ArrayList<String> result = new ArrayList<>();
+        int len = s.length();
+        for (int i = 1; i < 4 && i < len - 2; i++) {
+            for (int j = i + 1; j < j + 4 && j < len - 1; j++) {
+                for (int k = j + 1; k < k + 4 && k < len; k++) {
+                    String a = s.substring(0, i);
+                    String b = s.substring(i, j);
+                    String c = s.substring(j, k);
+                    String d = s.substring(k);
+
+                    if (validIP(a) && validIP(b) && validIP(c) && validIP(d)) {
+                        result.add(a + "." + b + "." + c + "." + d);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean validIP(String word) {
+        if (word.isEmpty()) {
+            return false;
+        }
+        int num = Integer.parseInt(word);
+        if (num < 0 || num > 255) {
+            return false;
+        }
+        return word.length() <= 1 || word.charAt(0) != '0';
+    }
+
+
+    /**
+     * todo
+     * BM75 编辑距离(一)
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param str1 string字符串
+     * @param str2 string字符串
+     * @return int整型
+     */
+    public int editDistance(String str1, String str2) {
+        // write code here
+        if (str1 == null || str2 == null) {
+            return 0;
+        }
+        int m = str1.length();
+        int n = str2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = dp[i - 1][0] + 1;
+        }
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = dp[0][j - 1] + 1;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = 1 + Math.min(dp[i - 1][j], Math.min(dp[i][j - 1], dp[i - 1][j - 1]));
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+
     private void swap(int[] nums, int i, int j) {
         int val = nums[i];
         nums[i] = nums[j];
         nums[j] = val;
+    }
+
+
+    /**
+     * BM76 正则表达式匹配
+     * <p>
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param str     string字符串
+     * @param pattern string字符串
+     * @return bool布尔型
+     */
+    public boolean match(String str, String pattern) {
+        // write code here
+        if (pattern.isEmpty()) {
+            return str.isEmpty();
+        }
+        int m = str.length();
+        int n = pattern.length();
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = pattern.charAt(j - 1) == '*' && dp[0][j - 2];
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (str.charAt(i - 1) == pattern.charAt(j - 1) || pattern.charAt(j - 1) == '.') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (pattern.charAt(j - 1) == '*') {
+//                    if (str.charAt(i - 1) != pattern.charAt(j - 2) && pattern.charAt(j - 2) != '.') {
+//                        dp[i][j] = dp[i][j - 2];
+//                    } else {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
+//                    }
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+
+    /**
+     * BM77 最长的括号子串
+     *
+     * @param s string字符串
+     * @return int整型
+     */
+    public int longestValidParentheses(String s) {
+        // write code here
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        int len = s.length();
+        int result = 0;
+        int left = -1;
+        for (int i = 0; i < len; i++) {
+            if (s.charAt(i) == '(') {
+                stack.push(i);
+            } else {
+                if (!stack.isEmpty() && s.charAt(stack.peek()) == '(') {
+                    stack.pop();
+                } else {
+                    left = i;
+                }
+                if (stack.isEmpty()) {
+                    result = Math.max(result, i - left);
+                } else {
+                    result = Math.max(result, i - stack.peek());
+                }
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * BM78 打家劫舍(一)
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param nums int整型一维数组
+     * @return int整型
+     */
+    public int rob(int[] nums) {
+        // write code here
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int prev = 0;
+        int current = 0;
+        for (int value : nums) {
+            int tmp = current;
+            current = Math.max(current, prev + value);
+            prev = tmp;
+        }
+        return Math.max(prev, current);
+    }
+
+
+    /**
+     * todo
+     * BM79 打家劫舍(二)
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param nums int整型一维数组
+     * @return int整型
+     */
+    public int robII(int[] nums) {
+        // write code here
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        return Math.max(internalRob(nums, 0, nums.length - 1), internalRob(nums, 1, nums.length - 2));
+    }
+
+    private int internalRob(int[] nums, int start, int end) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int prev = 0;
+        int current = 0;
+        for (int i = start; i <= end; i = i + 2) {
+            int value = nums[i];
+            int tmp = current;
+            current = Math.max(current, prev + value);
+            prev = tmp;
+        }
+        return Math.max(prev, current);
     }
 
 
