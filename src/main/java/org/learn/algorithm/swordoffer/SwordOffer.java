@@ -1,10 +1,8 @@
 package org.learn.algorithm.swordoffer;
 
-import org.learn.algorithm.datastructure.ListNode;
-import org.learn.algorithm.datastructure.RandomListNode;
-import org.learn.algorithm.datastructure.TreeLinkNode;
-import org.learn.algorithm.datastructure.TreeNode;
+import org.learn.algorithm.datastructure.*;
 
+import javax.imageio.metadata.IIOMetadataFormat;
 import java.util.*;
 
 /**
@@ -2320,13 +2318,80 @@ public class SwordOffer {
         }
         int prev = 0;
         int current = 0;
-        for (int i = start; i <= end; i = i + 2) {
+        for (int i = start; i <= end; i = i + 1) {
             int value = nums[i];
             int tmp = current;
             current = Math.max(current, prev + value);
             prev = tmp;
         }
         return Math.max(prev, current);
+    }
+
+
+    /**
+     * BM80 买卖股票的最好时机(一)
+     *
+     * @param prices int整型一维数组
+     * @return int整型
+     */
+    public int maxProfitII(int[] prices) {
+        // write code here
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int cost = prices[0];
+        int result = 0;
+        for (int price : prices) {
+            if (price > cost) {
+                result += price - cost;
+            }
+            cost = price;
+        }
+        return result;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 两次交易所能获得的最大收益
+     *
+     * @param prices int整型一维数组 股票每一天的价格
+     * @return int整型
+     */
+    public int maxProfitIII(int[] prices) {
+        // write code here
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int len = prices.length;
+        int[] left = new int[len];
+        int leftCost = prices[0];
+        int leftMaxValue = 0;
+        for (int i = 0; i < prices.length; i++) {
+            int price = prices[i];
+            if (price > leftCost) {
+                leftMaxValue = Math.max(leftMaxValue, price - leftCost);
+            } else {
+                leftCost = price;
+            }
+            left[i] = leftMaxValue;
+        }
+        int[] right = new int[len + 1];
+        int rightCost = prices[len - 1];
+        int rightMaxValue = 0;
+        for (int i = len - 2; i >= 0; i--) {
+            if (prices[i] < rightCost) {
+                rightMaxValue = Math.max(rightMaxValue, rightCost - prices[i]);
+            } else {
+                rightCost = prices[i];
+            }
+            right[i] = rightMaxValue;
+        }
+        int result = 0;
+        for (int i = 1; i < len; i++) {
+            result = Math.max(result, left[i] + right[i + 1]);
+        }
+        return result;
     }
 
 
@@ -2353,6 +2418,115 @@ public class SwordOffer {
         t1.left = mergeTrees(t1.left, t2.left);
         t1.right = mergeTrees(t1.right, t2.right);
         return t1;
+    }
+
+
+    /**
+     * BM83 字符串变形
+     *
+     * @param s
+     * @param n
+     * @return
+     */
+    public String trans(String s, int n) {
+        // write code here
+        if (s == null || s.isEmpty()) {
+            return "";
+        }
+        String[] words = s.split(" ");
+        for (int i = words.length - 1; i >= 0; i--) {
+            String tmp = words[i];
+            char[] charArray = tmp.toCharArray();
+            for (char c : charArray) {
+            }
+        }
+        return "";
+    }
+
+
+    /**
+     * BM86 大数加法
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 计算两个数之和
+     *
+     * @param s string字符串 表示第一个整数
+     * @param t string字符串 表示第二个整数
+     * @return string字符串
+     */
+    public String bigNumCalculate(String s, String t) {
+        // write code here
+        if (s == null || t == null) {
+            return "";
+        }
+        int m = s.length() - 1;
+        int n = t.length() - 1;
+        int carry = 0;
+        StringBuilder builder = new StringBuilder();
+        while (m >= 0 || n >= 0 || carry > 0) {
+            int val = (m >= 0 ? Character.getNumericValue(s.charAt(m--)) : 0) + (n >= 0 ? Character.getNumericValue(t.charAt(n--)) : 0) + carry;
+
+            int tmp = val % 10;
+
+            builder.append(tmp);
+
+            carry = val / 10;
+
+        }
+        return builder.reverse().toString();
+    }
+
+
+    /**
+     * BM87 合并两个有序的数组
+     *
+     * @param A
+     * @param m
+     * @param B
+     * @param n
+     */
+    public void merge(int A[], int m, int B[], int n) {
+        int k = m + n - 1;
+        m--;
+        n--;
+        while (m >= 0 && n >= 0) {
+            if (A[m] > B[n]) {
+                A[k--] = B[n--];
+            } else {
+                A[k--] = A[m--];
+            }
+        }
+        while (n >= 0) {
+            A[k--] = B[n--];
+        }
+
+    }
+
+
+    /**
+     * BM89 合并区间
+     *
+     * @param intervals
+     * @return
+     */
+    public ArrayList<Interval> merge(ArrayList<Interval> intervals) {
+        if (intervals == null || intervals.isEmpty()) {
+            return new ArrayList<>();
+        }
+        intervals.sort(new Comparator<Interval>() {
+            @Override
+            public int compare(Interval o1, Interval o2) {
+                return o1.start - o2.start;
+            }
+        });
+        ArrayList<Interval> result = new ArrayList<>();
+        int index = 0;
+        int size = intervals.size();
+        while (index < size) {
+//            if (!result.isEmpty() && result.get(index).end >= intervals.get()) {
+//
+//            }
+        }
+        return result;
     }
 
 
