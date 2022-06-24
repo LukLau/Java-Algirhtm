@@ -25,7 +25,7 @@ public class SwordOffer {
         offer.FindKthToTail(root, 6);
 
 //        offer.minCostClimbingStairs(new int[]{63, 63, 56, 31, 79, 86, 57, 79, 75, 68});
-        offer.minMoney(new int[]{5, 2, 3}, 16);
+        offer.maxArea(new int[]{1, 7, 3, 2, 4, 5, 8, 2, 7});
     }
 
 
@@ -1748,39 +1748,6 @@ public class SwordOffer {
     }
 
     /**
-     * NC89 字符串变形
-     *
-     * @param s
-     * @param n
-     * @return
-     */
-    public String trans(String s, int n) {
-        // write code here
-        if (s == null || s.isEmpty()) {
-            return "";
-        }
-        char[] words = s.toCharArray();
-        for (int i = 0; i < words.length; i++) {
-            char tmp = words[i];
-            if (Character.isLowerCase(tmp)) {
-                words[i] = Character.toUpperCase(tmp);
-            } else {
-                words[i] = Character.toLowerCase(tmp);
-            }
-        }
-        s = String.valueOf(words);
-        String[] tmp = s.split(" ", -1);
-        StringBuilder builder = new StringBuilder();
-        for (int i = tmp.length - 1; i >= 0; i--) {
-            builder.append(tmp[i]);
-            if (i > 0) {
-                builder.append(" ");
-            }
-        }
-        return builder.toString();
-    }
-
-    /**
      * NC95 数组中的最长连续子序列
      * max increasing subsequence
      *
@@ -2518,13 +2485,140 @@ public class SwordOffer {
                 return o1.start - o2.start;
             }
         });
-        ArrayList<Interval> result = new ArrayList<>();
+        LinkedList<Interval> linkedList = new LinkedList<>();
         int index = 0;
         int size = intervals.size();
         while (index < size) {
-//            if (!result.isEmpty() && result.get(index).end >= intervals.get()) {
-//
-//            }
+            Interval current = intervals.get(index);
+            if (!linkedList.isEmpty() && linkedList.peekLast().end >= current.start) {
+                Interval prev = linkedList.peekLast();
+                prev.end = Math.max(prev.end, current.end);
+            } else {
+                linkedList.offer(current);
+            }
+            index++;
+        }
+        return new ArrayList<>(linkedList);
+    }
+
+    /**
+     * BM90 最小覆盖子串
+     *
+     * @param S string字符串
+     * @param T string字符串
+     * @return string字符串
+     */
+    public String minWindowii(String S, String T) {
+        // write code here
+        if (S == null || T == null) {
+            return "";
+        }
+        int m = S.length();
+        int n = T.length();
+        int[] hash = new int[512];
+        for (int i = 0; i < n; i++) {
+            hash[T.charAt(i)]++;
+        }
+        int result = Integer.MAX_VALUE;
+        int end = 0;
+        int begin = 0;
+        int head = 0;
+        while (end < m) {
+            if (hash[S.charAt(end++)]-- > 0) {
+                n--;
+            }
+            while (n == 0) {
+                if (end - begin < result) {
+                    result = end - begin;
+                    head = begin;
+                }
+                if (hash[S.charAt(begin++)]++ == 0) {
+                    n++;
+                }
+            }
+        }
+        if (result == Integer.MAX_VALUE) {
+            return "";
+        }
+        return S.substring(head, head + result);
+    }
+
+
+    /**
+     * BM92 最长无重复子数组
+     *
+     * @param arr int整型一维数组 the array
+     * @return int整型
+     */
+    public int maxLength(int[] arr) {
+        // write code here
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        int left = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if (map.containsKey(arr[i])) {
+                left = Math.max(left, map.get(arr[i]) + 1);
+            }
+            map.put(arr[i], i);
+            result = Math.max(result, i - left + 1);
+        }
+        return result;
+    }
+
+    public int maxLengthii(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int[] hash = new int[arr.length];
+        int result = 0;
+        int left = 0;
+        for (int i = 0; i < arr.length; i++) {
+            result = Math.max(result, i - left + 1);
+
+            left = Math.max(i, hash[arr[i]]);
+
+            hash[arr[i]] = i + 1;
+        }
+        return result;
+    }
+
+    /**
+     * BM93 盛水最多的容器
+     * <p>
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param height int整型一维数组
+     * @return int整型
+     */
+    public int maxArea(int[] height) {
+        // write code here
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        int leftSide = 0;
+        int rightSide = 0;
+        int left = 0;
+        int right = height.length - 1;
+        while (left < right) {
+            if (height[left] <= height[right]) {
+                if (height[left] >= leftSide) {
+                    leftSide = height[left];
+                } else {
+                    result += leftSide - height[left];
+                }
+                left++;
+            } else {
+                if (height[right] >= rightSide) {
+                    rightSide = height[right];
+                } else {
+                    result += rightSide - height[right];
+                }
+                right--;
+            }
         }
         return result;
     }
