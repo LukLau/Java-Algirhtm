@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+
 import java.util.*;
 
 /**
@@ -24,7 +25,7 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.isPalindrome(1112);
+        solution.lengthOfLongestSubstringII("pwwkew");
     }
 
     /**
@@ -196,11 +197,11 @@ public class StringSolution {
                 if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else if (p.charAt(j - 1) == '*') {
-                    if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
-                        dp[i][j] = dp[i][j - 2];
-                    } else {
-                        dp[i][j] = dp[i][j - 1] || dp[i - 1][j] || dp[i][j - 2];
-                    }
+//                    if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
+//                        dp[i][j] = dp[i][j - 2];
+//                    } else {
+                    dp[i][j] = dp[i][j - 2] || dp[i][j - 1] || dp[i - 1][j];
+//                    }
                 }
             }
         }
@@ -222,17 +223,22 @@ public class StringSolution {
             return s.isEmpty();
         }
         int m = s.length();
-
         int n = p.length();
-
         boolean[][] dp = new boolean[m + 1][n + 1];
-
         dp[0][0] = true;
-
         for (int j = 1; j <= n; j++) {
-            dp[0][j] = p.charAt(j - 1) == '*';
+            dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j];
         }
-        return false;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+                }
+            }
+        }
+        return dp[m][n];
     }
 
     /**
@@ -267,10 +273,10 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        int result = 0;
-        int[] hash = new int[512];
-        int left = 0;
+        int[] hash = new int[256];
         char[] words = s.toCharArray();
+        int left = 0;
+        int result = 0;
         for (int i = 0; i < words.length; i++) {
             left = Math.max(left, hash[s.charAt(i)]);
 

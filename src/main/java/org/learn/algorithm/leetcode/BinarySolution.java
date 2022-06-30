@@ -116,7 +116,7 @@ public class BinarySolution {
             }
         }
         if (nums[left] != target) {
-            return new int[]{-1, -1};
+            return result;
         }
         result[0] = left;
         right = nums.length - 1;

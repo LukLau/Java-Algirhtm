@@ -3,6 +3,7 @@ package org.learn.algorithm.leetcode;
 import org.learn.algorithm.datastructure.WordDictionary;
 
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * @author luk
@@ -137,8 +138,8 @@ public class RecursiveSolution {
         if (candidates == null || candidates.length == 0) {
             return new ArrayList<>();
         }
-        Arrays.sort(candidates);
         List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(candidates);
         intervalCombinationSum2(result, new ArrayList<>(), candidates, 0, target);
         return result;
     }
@@ -148,7 +149,7 @@ public class RecursiveSolution {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i < candidates.length && target >= candidates[i]; i++) {
+        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
             if (i > start && candidates[i] == candidates[i - 1]) {
                 continue;
             }
@@ -162,32 +163,32 @@ public class RecursiveSolution {
     /**
      * 46. Permutations
      *
-     * @param num
+     * @param nums
      * @return
      */
-    public ArrayList<ArrayList<Integer>> permute(int[] num) {
-        if (num == null || num.length == 0) {
+    public List<List<Integer>> permute(int[] nums) {
+        if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-        boolean[] used = new boolean[num.length];
-        internalPermute(result, new ArrayList<>(), num, used);
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        internalPermute(result, new ArrayList<>(), nums, used);
         return result;
-
     }
 
-    private void internalPermute(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int[] num, boolean[] used) {
-        if (tmp.size() == num.length) {
+    private void internalPermute(List<List<Integer>> result, List<Integer> tmp, int[] nums, boolean[] used) {
+        if (tmp.size() == nums.length) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = 0; i < num.length; i++) {
+        for (int i = 0; i < nums.length; i++) {
             if (used[i]) {
                 continue;
             }
-            tmp.add(num[i]);
+            tmp.add(nums[i]);
             used[i] = true;
-            internalPermute(result, tmp, num, used);
+            internalPermute(result, tmp, nums, used);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
         }
@@ -204,14 +205,14 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        Arrays.sort(nums);
         List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
         boolean[] used = new boolean[nums.length];
-        intervalPermuteUnique(result, new ArrayList<>(), used, nums);
+        internalPermuteUnique(result, new ArrayList<>(), nums, used);
         return result;
     }
 
-    private void intervalPermuteUnique(List<List<Integer>> result, List<Integer> tmp, boolean[] used, int[] nums) {
+    private void internalPermuteUnique(List<List<Integer>> result, List<Integer> tmp, int[] nums, boolean[] used) {
         if (tmp.size() == nums.length) {
             result.add(new ArrayList<>(tmp));
             return;
@@ -225,7 +226,7 @@ public class RecursiveSolution {
             }
             used[i] = true;
             tmp.add(nums[i]);
-            intervalPermuteUnique(result, tmp, used, nums);
+            internalPermuteUnique(result, tmp, nums, used);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
         }
@@ -320,29 +321,13 @@ public class RecursiveSolution {
      * @return
      */
     public String getPermutation(int n, int k) {
-        if (n <= 0) {
-            return "";
-        }
-        List<Integer> params = new ArrayList<>();
+        List<Integer> nums = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
-            params.add(i);
+            nums.add(i);
         }
-        int[] factor = new int[n + 1];
-        factor[0] = 1;
-        int base = 1;
-        for (int i = 1; i <= n; i++) {
-            base *= i;
-            factor[i] = base;
-        }
-        StringBuilder builder = new StringBuilder();
-        k--;
-        for (int i = 0; i < n; i++) {
-            int index = k / factor[n - 1 - i];
-            params.remove(index);
-            builder.append(index);
-            k -= index * factor[n - 1 - i];
-        }
-        return builder.length() == 0 ? "" : builder.toString();
+        int base  = 1;
+
+        return "";
     }
 
 

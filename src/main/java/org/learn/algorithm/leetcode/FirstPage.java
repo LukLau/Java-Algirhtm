@@ -12,7 +12,7 @@ public class FirstPage {
 
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
-        page.simplifyPath("/home//foo/");
+        page.simplifyPath("/home/");
     }
 
     /**
@@ -91,24 +91,24 @@ public class FirstPage {
         if (digits == null || digits.isEmpty()) {
             return new ArrayList<>();
         }
-        String[] map = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
-        LinkedList<String> linkedList = new LinkedList<>();
-        linkedList.offer("");
+        String[] combine = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        LinkedList<String> result = new LinkedList<>();
+        result.offer("");
         int len = digits.length();
         for (int i = 0; i < len; i++) {
-            char digit = digits.charAt(i);
-            int index = Character.getNumericValue(digit);
-            String word = map[index];
-            while (linkedList.peekFirst().length() == i) {
-                char[] words = word.toCharArray();
-                String prefix = linkedList.pollFirst();
-                for (char tmp : words) {
-                    linkedList.offer(prefix + tmp);
+            int index = Character.getNumericValue(digits.charAt(i));
 
+            String content = combine[index];
+
+            while (result.peekFirst().length() == i) {
+                String prev = result.poll();
+
+                for (char t : content.toCharArray()) {
+                    result.offer(prev + t);
                 }
             }
         }
-        return linkedList;
+        return result;
     }
 
     /**
@@ -330,28 +330,24 @@ public class FirstPage {
         if (height == null || height.length == 0) {
             return 0;
         }
-        int leftEdge = 0;
-
-        int rightEdge = 0;
-
+        int result = 0;
         int left = 0;
         int right = height.length - 1;
-
-        int result = 0;
-
+        int leftSide = 0;
+        int rightSide = 0;
         while (left < right) {
             if (height[left] <= height[right]) {
-                if (leftEdge <= height[left]) {
-                    leftEdge = height[left];
+                if (height[left] >= leftSide) {
+                    leftSide = height[left];
                 } else {
-                    result += leftEdge - height[left];
+                    result += leftSide - height[left];
                 }
                 left++;
             } else {
-                if (rightEdge <= height[right]) {
-                    rightEdge = height[right];
+                if (height[right] >= rightSide) {
+                    rightSide = height[right];
                 } else {
-                    result += rightEdge - height[right];
+                    result += rightSide - height[right];
                 }
                 right--;
             }
@@ -401,24 +397,56 @@ public class FirstPage {
         }
         int m = num1.length();
         int n = num2.length();
-        int[] pos = new int[m + n];
+        int[] dp = new int[m + n];
         for (int i = m - 1; i >= 0; i--) {
             for (int j = n - 1; j >= 0; j--) {
-                int val = Character.getNumericValue(num1.charAt(i)) * Character.getNumericValue(num2.charAt(j)) + pos[i + j + 1];
+                int val = (Character.getNumericValue(num1.charAt(i)) * Character.getNumericValue(num2.charAt(j))) + dp[i + j + 1];
 
-                pos[i + j + 1] = val % 10;
+                dp[i + j + 1] = val % 10;
 
-                pos[i + j] += val / 10;
+                dp[i + j] += val / 10;
             }
         }
         StringBuilder builder = new StringBuilder();
-        for (int num : pos) {
-            if (!(builder.length() == 0 && num == 0)) {
+        for (int num : dp) {
+            if (!(num == 0 && builder.length() == 0)) {
                 builder.append(num);
             }
         }
         return builder.length() == 0 ? "0" : builder.toString();
     }
+
+    /**
+     * 48. Rotate Image
+     *
+     * @param matrix
+     */
+    public void rotate(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return;
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < i; j++) {
+                swapMatrix(matrix, i, j);
+            }
+        }
+        for (int[] row : matrix) {
+            swapRow(row, 0, row.length - 1);
+        }
+    }
+
+    private void swapMatrix(int[][] matrix, int i, int j) {
+        int val = matrix[i][j];
+        matrix[i][j] = matrix[j][i];
+        matrix[j][i] = val;
+    }
+
+    private void swapRow(int[] row, int start, int end) {
+        for (int i = start; i <= (start + end) / 2; i++) {
+            swap(row, i, end - i);
+        }
+    }
+
 
     /**
      * 49. Group Anagrams
@@ -457,19 +485,22 @@ public class FirstPage {
         if (intervals == null || intervals.length == 0) {
             return new int[][]{};
         }
-        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
-        LinkedList<int[]> linkedList = new LinkedList<>();
-        linkedList.offer(intervals[0]);
-        for (int i = 1; i < intervals.length; i++) {
-            if (linkedList.peekLast()[1] < intervals[i][0]) {
-                linkedList.offer(intervals[i]);
+        Arrays.sort(intervals, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[0] - o2[0];
+            }
+        });
+        LinkedList<int[]> result = new LinkedList<>();
+        for (int[] interval : intervals) {
+            if (!result.isEmpty() && result.peekLast()[1] >= interval[0]) {
+                int[] last = result.peekLast();
+                last[1] = Math.max(last[1], interval[1]);
             } else {
-                int[] last = linkedList.peekLast();
-                last[0] = Math.min(last[0], intervals[i][0]);
-                last[1] = Math.max(last[1], intervals[i][1]);
+                result.offer(interval);
             }
         }
-        return linkedList.toArray(new int[][]{});
+        return result.toArray(new int[][]{});
     }
 
     /**
@@ -484,20 +515,26 @@ public class FirstPage {
         if (intervals == null || intervals.length == 0) {
             return new int[][]{};
         }
-        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
         LinkedList<int[]> result = new LinkedList<>();
-        int index = 0;
-        while (index < intervals.length && intervals[index][0] <= newInterval[1]) {
-            result.offer(intervals[index++]);
+        int endIndex = 0;
+        Arrays.sort(intervals, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[0] - o2[0];
+            }
+        });
+        while (endIndex < intervals.length && intervals[endIndex][1] < newInterval[0]) {
+            result.offer(intervals[endIndex]);
+            endIndex++;
         }
-        while (index < intervals.length && intervals[index][1] >= newInterval[0]) {
-            newInterval[0] = Math.min(intervals[index][0], intervals[index][0]);
-            newInterval[1] = Math.max(intervals[index][1], intervals[index][1]);
-            index++;
+        while (endIndex < intervals.length && intervals[endIndex][0] <= newInterval[1]) {
+            newInterval[0] = Math.min(newInterval[0], intervals[endIndex][0]);
+            newInterval[1] = Math.max(newInterval[1], intervals[endIndex][1]);
+            endIndex++;
         }
         result.offer(newInterval);
-        while (index < intervals.length) {
-            result.offer(intervals[index++]);
+        while (endIndex < intervals.length) {
+            result.offer(intervals[endIndex++]);
         }
         return result.toArray(new int[][]{});
     }
@@ -512,25 +549,24 @@ public class FirstPage {
         if (path == null || path.isEmpty()) {
             return "/";
         }
-        LinkedList<String> linkedList = new LinkedList<>();
         String[] words = path.split("/");
+        LinkedList<String> linkedList = new LinkedList<>();
         for (String word : words) {
-            if ("..".equals(word)) {
-                if (!linkedList.isEmpty()) {
-                    linkedList.pollLast();
-                }
-            } else if (!(".".equals(word) || "".equals(word))) {
+            if (word.isEmpty()) {
+                continue;
+            }
+            if ("..".equals(word) && !linkedList.isEmpty()) {
+                linkedList.pollLast();
+            } else if (!"..".equals(word) && !".".equals(word)) {
                 linkedList.offer(word);
             }
         }
-        if (linkedList.isEmpty()) {
-            return "/";
-        }
         String result = "";
-        for (String item : linkedList) {
-            result = result + "/" + item;
+        for (String tmp : linkedList) {
+            result = result + "/" + tmp;
         }
-        return result;
+        return result.isEmpty() ? "/" : result;
+
     }
 
     /**

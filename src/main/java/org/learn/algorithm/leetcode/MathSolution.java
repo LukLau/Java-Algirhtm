@@ -118,41 +118,23 @@ public class MathSolution {
      */
     public boolean isNumber(String s) {
         if (s == null || s.isEmpty()) {
-            return false;
+            return true;
         }
-        boolean seenNumberAfterE = false;
-        boolean seenNumber = false;
+        boolean seenE = true;
+        boolean seenSign = false;
+        boolean seenNumber = true;
+        boolean seenEAfterNumber = true;
         boolean seenDigit = false;
-        boolean seenE = false;
         char[] words = s.toCharArray();
-        for (int i = 0; i < words.length; i++) {
-            char current = words[i];
-            if (Character.isDigit(current)) {
+        int endIndex = 0;
+        while (endIndex < words.length) {
+            char tmp = words[endIndex];
+            if (Character.isDigit(tmp)) {
                 seenNumber = true;
-                seenNumberAfterE = true;
-            } else if (current == 'e' || current == 'E') {
-                if (i == 0 || seenE) {
-                    return false;
-                }
-                if (!seenNumber) {
-                    return false;
-                }
-                seenE = true;
-                seenNumberAfterE = false;
-            } else if (current == '.') {
-                if (seenDigit) {
-                    return false;
-                }
-                seenDigit = true;
-            } else if (current == '-' || current == '+') {
-                if (i > 0 && (words[i - 1] != 'e' && words[i - 1] != 'E')) {
-                    return false;
-                }
-            } else {
-                return false;
+                seenEAfterNumber = true;
             }
         }
-        return seenNumber && seenNumberAfterE;
+        return false;
     }
 
 
@@ -192,24 +174,23 @@ public class MathSolution {
         List<String> result = new ArrayList<>();
         int startIndex = 0;
         while (startIndex < words.length) {
-            int endIndex = startIndex;
             int line = 0;
+            int endIndex = startIndex;
             while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
                 line += words[endIndex].length() + 1;
                 endIndex++;
             }
-            int wordCount = endIndex - startIndex;
-            int remainSpace = maxWidth - line + 1;
             boolean lastRow = endIndex == words.length;
-            StringBuilder builder = new StringBuilder();
-            if (wordCount == 1) {
-                builder.append(words[startIndex]);
+            int workCount = endIndex - startIndex;
+            StringBuilder tmp = new StringBuilder();
+            if (workCount == 1) {
+                tmp.append(words[startIndex]);
             } else {
-                int blankSpace = lastRow ? 1 : (1 + remainSpace / (wordCount - 1));
-                int extraSpace = lastRow ? 0 : (remainSpace % (wordCount - 1));
-                builder.append(constructRow(words, startIndex, endIndex, blankSpace, extraSpace));
+                int blankCount = lastRow ? 1 : 1 + (maxWidth - line + 1) / (workCount - 1);
+                int extraBlank = lastRow ? 0 : (maxWidth - line + 1) % (workCount - 1);
+                tmp.append(constructRow(words, startIndex, endIndex, blankCount, extraBlank));
             }
-            result.add(trimRow(builder.toString(), maxWidth));
+            result.add(trimRow(tmp.toString(), maxWidth));
             startIndex = endIndex;
         }
         return result;
@@ -249,7 +230,7 @@ public class MathSolution {
     public int mySqrt(int x) {
         double precision = 0.00001;
         double result = x;
-        while (result * result - x > precision) {
+        while (result * result - x  > precision) {
             result = (result + x / result) / 2;
         }
         return (int) result;

@@ -948,37 +948,6 @@ public class SwordOffer {
         return result;
     }
 
-    /**
-     * NC130 分糖果问题
-     * pick candy
-     *
-     * @param arr int整型一维数组 the array
-     * @return int整型
-     */
-    public int candy(int[] arr) {
-        // write code here
-        if (arr == null || arr.length == 0) {
-            return 0;
-        }
-        int[] dp = new int[arr.length];
-        Arrays.fill(dp, 1);
-        for (int i = 1; i < arr.length; i++) {
-            if (arr[i - 1] < arr[i] && dp[i] < dp[i - 1] + 1) {
-                dp[i] = dp[i - 1] + 1;
-            }
-        }
-        for (int i = arr.length - 2; i >= 0; i--) {
-            if (arr[i + 1] < arr[i] && dp[i] < dp[i + 1] + 1) {
-                dp[i] = dp[i + 1] + 1;
-            }
-        }
-        int result = 0;
-        for (int num : dp) {
-            result += num;
-        }
-        return result;
-    }
-
 
     public int Sum_Solution(int n) {
         int sum = n;
@@ -2622,6 +2591,75 @@ public class SwordOffer {
         }
         return result;
     }
+
+
+    /**
+     * BM95 分糖果问题
+     * pick candy
+     *
+     * @param arr int整型一维数组 the array
+     * @return int整型
+     */
+    public int candy(int[] arr) {
+        // write code here
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[arr.length];
+        Arrays.fill(dp, 1);
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] > arr[i - 1] && dp[i] < dp[i - 1] + 1) {
+                dp[i] = dp[i - 1] + 1;
+            }
+
+        }
+        for (int i = arr.length - 2; i >= 0; i--) {
+            if (arr[i] > arr[i + 1] && dp[i] < dp[i + 1] + 1) {
+                dp[i] = dp[i + 1] + 1;
+            }
+
+        }
+        int result = 0;
+        for (int tmp : dp) {
+            result += tmp;
+        }
+        return result;
+    }
+
+
+    /**
+     * todo
+     * BM96 主持人调度（二）
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * 计算成功举办活动需要多少名主持人
+     *
+     * @param n        int整型 有n个活动
+     * @param startEnd int整型二维数组 startEnd[i][0]用于表示第i个活动的开始时间，startEnd[i][1]表示第i个活动的结束时间
+     * @return int整型
+     */
+    public int minmumNumberOfHostii(int n, int[][] startEnd) {
+        // write code here
+        if (startEnd == null || startEnd.length == 0) {
+            return 0;
+        }
+        Arrays.sort(startEnd, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[0] - o2[0];
+            }
+        });
+        PriorityQueue<int[]> queue = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
+        for (int[] tmp : startEnd) {
+            if (!queue.isEmpty() && queue.peek()[1] <= tmp[0]) {
+                queue.poll();
+            }
+            queue.offer(tmp);
+
+        }
+        return queue.size();
+    }
+
 
 
     /**

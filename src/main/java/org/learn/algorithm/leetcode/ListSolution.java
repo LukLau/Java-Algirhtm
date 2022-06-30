@@ -101,19 +101,20 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
-        ListNode root = dummy;
-        while (root.next != null && root.next.next != null) {
-            ListNode slow = root.next;
-            ListNode fast = root.next.next;
-            root.next = fast;
-            ListNode next = fast.next;
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode dummy = root;
+        while (dummy.next != null && dummy.next.next != null) {
+            ListNode slow = dummy.next;
+            ListNode fast = dummy.next.next;
+            slow.next = fast.next;
             fast.next = slow;
-            slow.next = next;
-            root = root.next.next;
+
+            dummy.next = fast;
+
+            dummy = slow;
         }
-        return dummy.next;
+        return root.next;
     }
 
 
@@ -128,23 +129,22 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode current = head;
         int count = 1;
-        while (current.next != null) {
-            current = current.next;
-            count++;
-        }
-        current.next = head;
-        k %= count;
         ListNode fast = head;
+        while (fast.next != null) {
+            count++;
+            fast = fast.next;
+        }
+        fast.next = head;
+        k %= count;
         if (k != 0) {
             for (int i = 0; i < count - k; i++) {
+                head = head.next;
                 fast = fast.next;
-                current = current.next;
             }
         }
-        current.next = null;
-        return fast;
+        fast.next = null;
+        return head;
     }
 
 
