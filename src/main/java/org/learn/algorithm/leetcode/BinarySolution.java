@@ -76,7 +76,7 @@ public class BinarySolution {
             if (nums[left] == nums[right]) {
                 right--;
             } else if (nums[left] <= nums[mid]) {
-                if (target < nums[mid] && target >= nums[left]) {
+                if (target < nums[mid] && nums[left] <= target) {
                     right = mid - 1;
                 } else {
                     left = mid + 1;
@@ -87,7 +87,6 @@ public class BinarySolution {
                 } else {
                     right = mid - 1;
                 }
-
             }
         }
         return nums[left] == target;

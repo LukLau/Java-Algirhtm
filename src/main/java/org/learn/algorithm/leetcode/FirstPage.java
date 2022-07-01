@@ -580,6 +580,7 @@ public class FirstPage {
         }
         int red = 0;
         int blue = nums.length - 1;
+
         for (int i = 0; i < nums.length; i++) {
             while (nums[i] == 2 && i < blue) {
                 swap(nums, i, blue--);
@@ -649,13 +650,13 @@ public class FirstPage {
         Stack<Integer> stack = new Stack<>();
         int result = 0;
         for (int i = 0; i <= heights.length; i++) {
-            int height = i == heights.length ? 0 : heights[i];
-            if (stack.isEmpty() || heights[stack.peek()] <= height) {
+            int h = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] < h) {
                 stack.push(i);
             } else {
-                int side = stack.pop();
+                int leftSide = stack.pop();
                 int width = stack.isEmpty() ? i : i - stack.peek() - 1;
-                result = Math.max(result, width * heights[side]);
+                result = Math.max(result, width * heights[leftSide]);
                 i--;
             }
         }

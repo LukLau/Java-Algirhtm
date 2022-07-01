@@ -250,7 +250,7 @@ public class DynamicSolution {
                 if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = Math.min(Math.min(dp[i][j - 1], dp[i - 1][j]), dp[i - 1][j - 1]) + 1;
+                    dp[i][j] = 1 + Math.min(dp[i][j - 1], Math.min(dp[i - 1][j - 1], dp[i - 1][j]));
                 }
             }
         }
@@ -267,40 +267,16 @@ public class DynamicSolution {
         if (matrix == null || matrix.length == 0) {
             return 0;
         }
+        int row = matrix.length;
         int column = matrix[0].length;
         int[] left = new int[column];
         int[] height = new int[column];
-        int[] right = new int[column];
-        Arrays.fill(right, column);
-        int result = 0;
-        for (char[] row : matrix) {
-            int leftEdge = 0;
-            int rightEdge = column;
+        for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                char tmp = row[j];
-                if (tmp == '1') {
-                    height[j]++;
-                    left[j] = Math.max(leftEdge, left[j]);
-                } else {
-                    height[j] = 0;
-                    left[j] = leftEdge;
-                    leftEdge = j + 1;
-                }
-            }
-            for (int j = column - 1; j >= 0; j--) {
-                char tmp = row[j];
-                if (tmp == '1') {
-                    right[j] = Math.min(right[j], rightEdge);
-                } else {
-                    rightEdge = j;
-                    right[j] = column;
-                }
-            }
-            for (int j = 0; j < column; j++) {
-                result = Math.max(result, (right[j] - left[j]) * height[j]);
+                char word = matrix[i][j];
             }
         }
-        return result;
+        return 0;
     }
 
     /**

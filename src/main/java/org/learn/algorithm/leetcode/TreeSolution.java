@@ -29,18 +29,14 @@ public class TreeSolution {
     public static void main(String[] args) {
         TreeSolution solution = new TreeSolution();
 
-        ListNode root = new ListNode(-1);
-
-        ListNode n1 = new ListNode(0);
-
-        root.next = n1;
-
-        n1.next = new ListNode(1);
-
-        n1.next.next = new ListNode(2);
+        TreeNode root = new TreeNode(1);
+        TreeNode left = new TreeNode(2);
+        left.left = new TreeNode(4);
+        root.left = left;
+        root.right = new TreeNode(3);
 
 
-        solution.sortedListToBST(root);
+        solution.rightSideView(root);
     }
 
 
@@ -269,19 +265,19 @@ public class TreeSolution {
             return new ArrayList<>();
         }
         List<Integer> result = new ArrayList<>();
-        intervalRightSideView(result, root, 0);
+        interRightSideView(result, root, 0);
         return result;
     }
 
-    private void intervalRightSideView(List<Integer> result, TreeNode root, int currentLevel) {
+    private void interRightSideView(List<Integer> result, TreeNode root, int expected) {
         if (root == null) {
             return;
         }
-        if (result.size() == currentLevel) {
+        if (result.size() == expected) {
             result.add(root.val);
         }
-        intervalRightSideView(result, root.right, currentLevel + 1);
-        intervalRightSideView(result, root.left, currentLevel + 1);
+        interRightSideView(result, root.right, expected + 1);
+        interRightSideView(result, root.left, expected + 1);
     }
 
     /**
