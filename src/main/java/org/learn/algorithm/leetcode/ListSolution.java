@@ -156,8 +156,8 @@ public class ListSolution {
      * @return
      */
     public ListNode partition(ListNode head, int x) {
-        if (head == null) {
-            return null;
+        if (head == null || head.next == null) {
+            return head;
         }
         ListNode small = new ListNode(0);
         ListNode s = small;
@@ -165,7 +165,7 @@ public class ListSolution {
         ListNode big = new ListNode(0);
         ListNode b = big;
         while (head != null) {
-            if (head.val <= x) {
+            if (head.val < x) {
                 s.next = head;
                 s = s.next;
             } else {
@@ -174,8 +174,8 @@ public class ListSolution {
             }
             head = head.next;
         }
-        s.next = big.next;
         b.next = null;
+        s.next = big.next;
         return small.next;
     }
 
@@ -197,22 +197,29 @@ public class ListSolution {
 
         ListNode slow = root;
         ListNode fast = root;
-
         for (int i = 0; i < left - 1; i++) {
             slow = slow.next;
         }
         for (int i = 0; i < right; i++) {
             fast = fast.next;
         }
-        ListNode end = fast.next;
-        ListNode start = slow.next;
+        ListNode need = slow.next;
 
-        fast.next = null;
-        slow.next = null;
+        slow.next = reverseNode(need, fast.next);
 
-        slow.next = reverse(start);
-        start.next = end;
         return root.next;
+
+    }
+
+    private ListNode reverseNode(ListNode head, ListNode tail) {
+        ListNode end = tail;
+        while (head != end) {
+            ListNode tmp = head.next;
+            head.next = tail;
+            tail = head;
+            head = tmp;
+        }
+        return tail;
     }
 
     private ListNode reverse(ListNode root) {

@@ -15,7 +15,7 @@ public class MathSolution {
         MathSolution solution = new MathSolution();
 //        int[] nums = new int[]{5, 4, 4, 3, 2, 1};
 //        solution.nthUglyNumber(10);
-        solution.isNumber("005047e+6");
+        solution.grayCode(2);
     }
 
     // 素数相关
@@ -230,7 +230,7 @@ public class MathSolution {
     public int mySqrt(int x) {
         double precision = 0.00001;
         double result = x;
-        while (result * result - x  > precision) {
+        while (result * result - x > precision) {
             result = (result + x / result) / 2;
         }
         return (int) result;
@@ -246,8 +246,8 @@ public class MathSolution {
      */
     public List<Integer> grayCode(int n) {
         List<Integer> result = new ArrayList<>();
-        double iterator = Math.pow(2, n);
-        for (int i = 0; i < iterator; i++) {
+        int num = 1 << n;
+        for (int i = 0; i < num; i++) {
             int tmp = (i >> 1) ^ i;
             result.add(tmp);
         }

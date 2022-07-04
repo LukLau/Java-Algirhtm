@@ -292,24 +292,23 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        Arrays.sort(nums);
         List<List<Integer>> result = new ArrayList<>();
-        intervalUniqueSet(result, new ArrayList<>(), 0, nums);
+        Arrays.sort(nums);
+        internalSubsetsWithDup(result, new ArrayList<>(), 0, nums);
         return result;
     }
 
-    private void intervalUniqueSet(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
+    private void internalSubsetsWithDup(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
         result.add(new ArrayList<>(tmp));
         for (int i = start; i < nums.length; i++) {
             if (i > start && nums[i] == nums[i - 1]) {
                 continue;
             }
             tmp.add(nums[i]);
-            intervalUniqueSet(result, tmp, i + 1, nums);
+            internalSubsetsWithDup(result, tmp, i + 1, nums);
             tmp.remove(tmp.size() - 1);
         }
     }
-
 
     /**
      * todo
