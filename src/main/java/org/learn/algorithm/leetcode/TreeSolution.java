@@ -1008,7 +1008,7 @@ public class TreeSolution {
         if (root.left == null && root.right == null) {
             return val * 10 + root.val;
         }
-        return intervalSumNumbers(root.left, val * 10 + root.val) + intervalSumNumbers(root.right, val * 10 + root.val);
+        return intervalSumNumbers(root.left, val * 10 + root.val) + intervalSumNumbers(root.right,  val * 10 + root.val);
     }
 
 

@@ -537,8 +537,8 @@ public class DynamicSolution {
         if (prices == null || prices.length == 0) {
             return 0;
         }
-        int cost = prices[0];
         int result = 0;
+        int cost = prices[0];
         for (int i = 1; i < prices.length; i++) {
             if (prices[i] > cost) {
                 result = Math.max(result, prices[i] - cost);
@@ -560,9 +560,7 @@ public class DynamicSolution {
             return 0;
         }
         int result = 0;
-
         int cost = prices[0];
-
         for (int i = 1; i < prices.length; i++) {
             if (prices[i] > cost) {
                 result += prices[i] - cost;
@@ -583,31 +581,31 @@ public class DynamicSolution {
             return 0;
         }
         int len = prices.length;
-        int[] leftProfit = new int[len];
+        int[] left = new int[len];
+        int leftResult = 0;
         int leftCost = prices[0];
-        int profit = 0;
         for (int i = 1; i < len; i++) {
             if (prices[i] > leftCost) {
-                profit = Math.max(profit, prices[i] - leftCost);
-                leftProfit[i] = profit;
+                leftResult = Math.max(leftResult, prices[i] - leftCost);
             } else {
                 leftCost = prices[i];
             }
+            left[i] = leftResult;
         }
-        profit = 0;
-        int[] rightProfit = new int[len + 1];
+        int[] right = new int[len + 1];
+        int rightResult = 0;
         int rightCost = prices[len - 1];
         for (int i = len - 2; i >= 0; i--) {
             if (prices[i] < rightCost) {
-                profit = Math.max(profit, rightCost - prices[i]);
-                rightProfit[i] = profit;
+                rightResult = Math.max(rightResult, rightCost - prices[i]);
             } else {
                 rightCost = prices[i];
             }
+            right[i] = rightResult;
         }
         int result = 0;
-        for (int i = 0; i < len; i++) {
-            result = Math.max(result, leftProfit[i] + rightProfit[i + 1]);
+        for (int i = 1; i < left.length; i++) {
+            result = Math.max(result, left[i] + right[i]);
         }
         return result;
     }

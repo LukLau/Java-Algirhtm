@@ -504,35 +504,12 @@ public class RecursiveSolution {
         int column = board[0].length;
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                boolean edge = i == 0 || i == row - 1 || j == 0 || j == column - 1;
-                if (edge && board[i][j] == 'O') {
-                    intervalSolve(i, j, board);
-                }
-            }
-        }
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                char word = board[i][j];
-                if (word == 'a') {
-                    board[i][j] = 'O';
-                } else if (word == 'O') {
-                    board[i][j] = 'X';
+                if (board[i][j]== 'Q') {
+                    internalSurroundedRegion(i,j);
                 }
             }
         }
     }
-
-    private void intervalSolve(int i, int j, char[][] board) {
-        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || board[i][j] != 'O') {
-            return;
-        }
-        board[i][j] = 'a';
-        intervalSolve(i - 1, j, board);
-        intervalSolve(i + 1, j, board);
-        intervalSolve(i, j - 1, board);
-        intervalSolve(i, j + 1, board);
-    }
-
 
     /**
      * 200. Number of Islands
