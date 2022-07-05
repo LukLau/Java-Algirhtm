@@ -504,11 +504,35 @@ public class RecursiveSolution {
         int column = board[0].length;
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                if (board[i][j]== 'Q') {
-                    internalSurroundedRegion(i,j);
+                if (board[i][j] == 'O') {
+                    internalSurroundedRegion(board, i, j);
                 }
             }
         }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                char tmp = board[i][j];
+
+                if (tmp == 'o') {
+                    if (i == 0 || i == row - 1 || j == 0 || j == column - 1) {
+                        board[i][j] = 'O';
+                    } else {
+                        board[i][j] = 'X';
+                    }
+                }
+            }
+        }
+    }
+
+    private void internalSurroundedRegion(char[][] board, int i, int j) {
+        if (i < 0 || i == board.length || j < 0 || j == board[i].length || board[i][j] == 'X' || board[i][j] == 'o') {
+            return;
+        }
+        board[i][j] = 'o';
+        internalSurroundedRegion(board, i - 1, j);
+        internalSurroundedRegion(board, i + 1, j);
+        internalSurroundedRegion(board, i, j - 1);
+        internalSurroundedRegion(board, i, j + 1);
     }
 
     /**
