@@ -25,7 +25,7 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.lengthOfLongestSubstringII("pwwkew");
+        solution.partition("aab");
     }
 
     /**
@@ -352,23 +352,19 @@ public class StringSolution {
             return new ArrayList<>();
         }
         List<List<String>> result = new ArrayList<>();
-        intervalPartition(result, new ArrayList<>(), 0, s.toCharArray());
+        internalPartition(result, new ArrayList<>(), s);
         return result;
     }
 
-    private void intervalPartition(List<List<String>> result, List<String> tmp, int start, char[] words) {
-        if (start == words.length) {
+    private void internalPartition(List<List<String>> result, List<String> tmp, String s) {
+        if (s.isEmpty()) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i < words.length; i++) {
-            if (validPalindrome(words, start, i)) {
-                StringBuilder t = new StringBuilder();
-                for (int j = start; j <= i; j++) {
-                    t.append(words[j]);
-                }
-                tmp.add(t.toString());
-                intervalPartition(result, tmp, i + 1, words);
+        for (int i = 0; i < s.length(); i++) {
+            if (validPalindrome(s, 0, i)) {
+                tmp.add(s.substring(0, i + 1));
+                internalPartition(result, tmp, s.substring(i + 1));
                 tmp.remove(tmp.size() - 1);
             }
         }
@@ -413,21 +409,18 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        int m = s.length();
-        int[] cut = new int[m];
-        boolean[][] dp = new boolean[m][m];
-        dp[0][0] = true;
-        for (int i = 1; i < m; i++) {
-            int minCut = i;
-            for (int j = 0; j <= i; j++) {
-                dp[j][i] = s.charAt(j) == s.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1]);
-                if (dp[j][i]) {
-                    minCut = j == 0 ? 0 : Math.min(cut[j - 1] + 1, minCut);
+        int len = s.length();
+        int[] dp = new int[len + 1];
+        for (int i = 0; i < len; i++) {
+            int min = i;
+            for (int j = 0; j < i; j++) {
+                if (validPalindrome(s, j, i)) {
+                    min = j == 0 ? 0 : Math.min(min, 1 + dp[j - 1]);
                 }
             }
-            cut[i] = minCut;
+            dp[i] = min;
         }
-        return cut[m - 1];
+        return dp[len - 1];
     }
 
     /**
