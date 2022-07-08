@@ -86,25 +86,8 @@ public class ListSolution {
      */
     public ListNode mergeKLists(ListNode[] lists) {
         if (lists == null || lists.length == 0) {
-            return null;
         }
-        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
-        for (ListNode node : lists) {
-            if (node != null) {
-                priorityQueue.offer(node);
-            }
-        }
-        ListNode root = new ListNode(0);
-        ListNode dummy = root;
-        while (!priorityQueue.isEmpty()) {
-            ListNode poll = priorityQueue.poll();
-            dummy.next = poll;
-            if (poll.next != null) {
-                priorityQueue.offer(poll.next);
-            }
-            dummy = dummy.next;
-        }
-        return root.next;
+        return null;
     }
 
 
@@ -118,19 +101,20 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
-        ListNode root = dummy;
-        while (root.next != null && root.next.next != null) {
-            ListNode slow = root.next;
-            ListNode fast = root.next.next;
-            root.next = fast;
-            ListNode next = fast.next;
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode dummy = root;
+        while (dummy.next != null && dummy.next.next != null) {
+            ListNode slow = dummy.next;
+            ListNode fast = dummy.next.next;
+            slow.next = fast.next;
             fast.next = slow;
-            slow.next = next;
-            root = root.next.next;
+
+            dummy.next = fast;
+
+            dummy = slow;
         }
-        return dummy.next;
+        return root.next;
     }
 
 
@@ -145,23 +129,22 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode current = head;
         int count = 1;
-        while (current.next != null) {
-            current = current.next;
-            count++;
-        }
-        current.next = head;
-        k %= count;
         ListNode fast = head;
+        while (fast.next != null) {
+            count++;
+            fast = fast.next;
+        }
+        fast.next = head;
+        k %= count;
         if (k != 0) {
             for (int i = 0; i < count - k; i++) {
+                head = head.next;
                 fast = fast.next;
-                current = current.next;
             }
         }
-        current.next = null;
-        return fast;
+        fast.next = null;
+        return head;
     }
 
 
@@ -173,8 +156,8 @@ public class ListSolution {
      * @return
      */
     public ListNode partition(ListNode head, int x) {
-        if (head == null) {
-            return null;
+        if (head == null || head.next == null) {
+            return head;
         }
         ListNode small = new ListNode(0);
         ListNode s = small;
@@ -182,7 +165,7 @@ public class ListSolution {
         ListNode big = new ListNode(0);
         ListNode b = big;
         while (head != null) {
-            if (head.val <= x) {
+            if (head.val < x) {
                 s.next = head;
                 s = s.next;
             } else {
@@ -191,8 +174,8 @@ public class ListSolution {
             }
             head = head.next;
         }
-        s.next = big.next;
         b.next = null;
+        s.next = big.next;
         return small.next;
     }
 
@@ -214,22 +197,29 @@ public class ListSolution {
 
         ListNode slow = root;
         ListNode fast = root;
-
         for (int i = 0; i < left - 1; i++) {
             slow = slow.next;
         }
         for (int i = 0; i < right; i++) {
             fast = fast.next;
         }
-        ListNode end = fast.next;
-        ListNode start = slow.next;
+        ListNode need = slow.next;
 
-        fast.next = null;
-        slow.next = null;
+        slow.next = reverseNode(need, fast.next);
 
-        slow.next = reverse(start);
-        start.next = end;
         return root.next;
+
+    }
+
+    private ListNode reverseNode(ListNode head, ListNode tail) {
+        ListNode end = tail;
+        while (head != end) {
+            ListNode tmp = head.next;
+            head.next = tail;
+            tail = head;
+            head = tmp;
+        }
+        return tail;
     }
 
     private ListNode reverse(ListNode root) {

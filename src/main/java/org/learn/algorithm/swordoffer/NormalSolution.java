@@ -1,11 +1,11 @@
 package org.learn.algorithm.swordoffer;
 
-import com.sun.corba.se.spi.ior.iiop.IIOPFactories;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
 
 import java.util.*;
+import java.util.List;
 
 /**
  * @author dora
@@ -25,7 +25,9 @@ public class NormalSolution {
 
     public static void main(String[] args) {
         NormalSolution solution = new NormalSolution();
-        solution.decodeString("0");
+        ListNode root = new ListNode(1);
+//        solution.basicCalculate("100+100");
+        solution.minMoney(new int[]{5, 2, 3}, 20);
     }
 
     /**
@@ -40,10 +42,10 @@ public class NormalSolution {
         }
         ListNode prev = null;
         while (head != null) {
-            ListNode tmp = head.next;
+            ListNode node = head.next;
             head.next = prev;
             prev = head;
-            head = tmp;
+            head = node;
         }
         return prev;
     }
@@ -52,10 +54,10 @@ public class NormalSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode node = ReverseListV2(head.next);
+        ListNode tmp = ReverseList(head.next);
         head.next.next = head;
         head.next = null;
-        return node;
+        return tmp;
     }
 
     /**
@@ -80,7 +82,7 @@ public class NormalSolution {
         }
         ListNode fast = head;
         ListNode slow = head;
-        while (fast != null && fast.next != null) {
+        while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
             if (fast == slow) {
@@ -88,6 +90,27 @@ public class NormalSolution {
             }
         }
         return false;
+    }
+
+    public ListNode EntryNodeOfLoop(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return null;
+        }
+        ListNode fast = pHead;
+        ListNode slow = pHead;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == slow) {
+                fast = pHead;
+                while (fast != slow) {
+                    fast = fast.next;
+                    slow = slow.next;
+                }
+                return fast;
+            }
+        }
+        return null;
     }
 
     /**
@@ -363,14 +386,14 @@ public class NormalSolution {
             count++;
         }
         if (count == k) {
-            ListNode reverse = reverseKGroup(current, k);
+            current = reverseKGroup(current, k);
             while (count-- > 0) {
                 ListNode tmp = head.next;
-                head.next = reverse;
-                reverse = head;
+                head.next = current;
+                current = head;
                 head = tmp;
             }
-            head = reverse;
+            head = current;
         }
         return head;
     }
@@ -379,18 +402,21 @@ public class NormalSolution {
         if (head == null || head.next == null) {
             return head;
         }
+        int count = 0;
         ListNode current = head;
-        for (int i = 0; i < k; i++) {
-            if (current == null) {
-                return head;
-            }
+        while (current != null && count != k) {
+            count++;
             current = current.next;
         }
-        ListNode listNode = reverse(head, current);
+        if (count != k) {
+            return head;
+        }
+        ListNode reverseListNode = reverseListNode(head, current);
+
 
         head.next = reverseKGroupV2(current, k);
 
-        return listNode;
+        return reverseListNode;
     }
 
     private ListNode reverse(ListNode start, ListNode end) {
@@ -434,6 +460,84 @@ public class NormalSolution {
         }
         return -1;
     }
+
+
+    /**
+     * BM49 表达式求值
+     * 表达式默认值
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 返回表达式的值
+     *
+     * @param s string字符串 待计算的表达式
+     * @return int整型
+     */
+    public int basicCalculate(String s) {
+        // write code here
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int len = s.length();
+        char sign = '+';
+        int i = 0;
+        Stack<Integer> stack = new Stack<>();
+        while (i < len) {
+            char tmp = s.charAt(i);
+            if (tmp == '(') {
+                int endIndex = i;
+                int count = 0;
+                while (endIndex < len) {
+                    char endTmp = s.charAt(endIndex);
+                    if (endTmp != '(' && endTmp != ')') {
+                        endIndex++;
+                        continue;
+                    }
+                    if (endTmp == '(') {
+                        count++;
+                    }
+                    if (endTmp == ')') {
+                        count--;
+                    }
+                    if (count == 0) {
+                        break;
+                    }
+                    endIndex++;
+                }
+                String subString = s.substring(i + 1, endIndex);
+                int value = basicCalculate(subString);
+                stack.push(value);
+                i = endIndex + 1;
+            } else if (Character.isDigit(tmp)) {
+                int val = 0;
+                while (i < len && Character.isDigit(s.charAt(i))) {
+                    val = val * 10 + Character.getNumericValue(s.charAt(i));
+                    i++;
+                }
+                stack.push(val);
+            }
+            if (i == len || s.charAt(i) != ' ') {
+                if (sign == '-') {
+                    stack.push(-1 * stack.pop());
+                }
+                if (sign == '*') {
+                    stack.push(stack.pop() * stack.pop());
+                } else if (sign == '/') {
+                    Integer secondValue = stack.pop();
+                    Integer firstValue = stack.pop();
+                    stack.push(firstValue / secondValue);
+                }
+                if (i != len) {
+                    sign = s.charAt(i);
+                }
+            }
+            i++;
+        }
+        int result = 0;
+        for (Integer num : stack) {
+            result += num;
+        }
+        return result;
+    }
+
 
     /**
      * @param root TreeNode类
@@ -742,13 +846,91 @@ public class NormalSolution {
         int count = 1;
         ListNode fast = head;
         while (fast.next != null) {
+            fast = fast.next;
             count++;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+
+        fast = root;
+
+
+        for (int i = 0; i < count - n; i++) {
             fast = fast.next;
         }
-        return null;
+        fast.next = fast.next.next;
 
-
+        return root.next;
     }
+
+    public ListNode removeNthFromEndII(ListNode head, int n) {
+        if (head == null) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+
+        ListNode fast = root;
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+        ListNode slow = root;
+
+        while (fast.next != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        slow.next = slow.next.next;
+        return root.next;
+    }
+
+    /**
+     * 判断岛屿数量
+     *
+     * @param grid char字符型二维数组
+     * @return int整型
+     */
+    public int islandNum(char[][] grid) {
+        // write code here
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        boolean[][] used = new boolean[row][column];
+        int count = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (used[i][j]) {
+                    continue;
+                }
+                if (grid[i][j] == '1') {
+                    count++;
+                    internalIsland(grid, i, j, used);
+
+                }
+            }
+        }
+        return count;
+    }
+
+    private void internalIsland(char[][] words, int i, int j, boolean[][] used) {
+        if (i < 0 || i == words.length || j < 0 || j == words[i].length) {
+            return;
+        }
+        if (used[i][j]) {
+            return;
+        }
+        used[i][j] = true;
+        if (words[i][j] == '0') {
+            return;
+        }
+        internalIsland(words, i - 1, j, used);
+        internalIsland(words, i + 1, j, used);
+        internalIsland(words, i, j - 1, used);
+        internalIsland(words, i, j + 1, used);
+    }
+
 
     /**
      * @param k    int整型
@@ -852,17 +1034,37 @@ public class NormalSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode slow = head;
         ListNode fast = head;
+        ListNode slow = head;
         while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode tmp = slow.next;
+        ListNode second = slow.next;
         slow.next = null;
-        ListNode l1 = sortInList(head);
-        ListNode l2 = sortInList(tmp);
-        return mergeTwoLists(l1, l2);
+        ListNode first = sortInList(head);
+        ListNode newSecond = sortInList(second);
+
+        return sort(first, newSecond);
+    }
+
+    private ListNode sort(ListNode l1, ListNode l2) {
+        if (l1 == null && l2 == null) {
+            return null;
+        }
+        if (l1 == null) {
+            return l2;
+        }
+        if (l2 == null) {
+            return l1;
+        }
+        if (l1.val <= l2.val) {
+            l1.next = sort(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = sort(l1, l2.next);
+            return l2;
+        }
     }
 
     /**
@@ -873,18 +1075,18 @@ public class NormalSolution {
      */
     public boolean isPail(ListNode head) {
         // write code here
-        if (head == null || head.next == null) {
-            return true;
+        if (head == null) {
+            return false;
         }
-        ListNode slow = head;
         ListNode fast = head;
+        ListNode slow = head;
         while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode next = slow.next;
+        ListNode newNode = slow.next;
         slow.next = null;
-        ListNode reverse = reverse(next);
+        ListNode reverse = reverse(newNode);
         while (head != null && reverse != null) {
             if (head.val != reverse.val) {
                 return false;
@@ -894,6 +1096,7 @@ public class NormalSolution {
         }
         return true;
     }
+
 
     /**
      * max increasing subsequence
@@ -948,16 +1151,17 @@ public class NormalSolution {
     public int minNumberDisappeared(int[] nums) {
         // write code here
         if (nums == null || nums.length == 0) {
-            return 0;
+            return -1;
         }
         for (int i = 0; i < nums.length; i++) {
-            while (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+            while (nums[i] > 0 && nums[i] < nums.length && nums[i] != nums[nums[i] - 1]) {
                 swap(nums, i, nums[i] - 1);
             }
         }
         for (int i = 0; i < nums.length; i++) {
-            if (nums[i] != i + 1) {
+            if (i + 1 != nums[i]) {
                 return i + 1;
+
             }
         }
         return nums.length + 1;
@@ -984,6 +1188,7 @@ public class NormalSolution {
     }
 
     /**
+     * todo
      * NC133 链表的奇偶重排
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      *
@@ -995,25 +1200,46 @@ public class NormalSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode odd = new ListNode(0);
-        ListNode o1 = odd;
-
-        ListNode even = new ListNode(0);
-        ListNode e1 = even;
-        while (head != null) {
-            if (head.val % 2 == 1) {
-                o1.next = head;
-                o1 = o1.next;
-            } else {
-                e1.next = head;
-                e1 = e1.next;
-            }
-            head = head.next;
-        }
-        o1.next = even.next;
-        e1.next = null;
-        return odd.next;
+        return null;
     }
+
+    /**
+     * @param head ListNode类
+     * @return ListNode类
+     */
+    public ListNode deleteDuplicatesII(ListNode head) {
+        // write code here
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            return deleteDuplicatesII(head.next);
+        }
+        head.next = deleteDuplicatesII(head.next);
+        return head;
+    }
+
+    /**
+     * BM16 删除有序链表中重复的元素-II
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            ListNode current = head.next;
+            while (current != null && current.val == head.val) {
+                current = current.next;
+            }
+            return deleteDuplicates(current);
+        }
+        head.next = deleteDuplicates(head.next);
+        return head;
+    }
+
 
     /**
      * NC26 括号生成
@@ -1827,22 +2053,19 @@ public class NormalSolution {
         }
         ListNode root = new ListNode(0);
         root.next = pHead;
-        ListNode fast = root;
 
+        ListNode fast = root;
+        ListNode slow = root;
         for (int i = 0; i < k; i++) {
             fast = fast.next;
-            if (fast == null) {
-                return null;
-            }
         }
-
-        ListNode slow = root;
-
+        if (fast == null) {
+            return null;
+        }
         while (fast.next != null) {
-            slow = slow.next;
             fast = fast.next;
+            slow = slow.next;
         }
-
         return slow.next;
     }
 
@@ -2063,15 +2286,18 @@ public class NormalSolution {
         int row = obstacleGrid.length;
         int column = obstacleGrid[0].length;
         int[] dp = new int[column];
-        for (int j = 0; j < column; j++) {
-            dp[j] = obstacleGrid[0][j] == 1 ? 0 : (j == 0 ? 1 : dp[j - 1]);
+        if (obstacleGrid[0][0] == 0) {
+            dp[0] = 1;
+        }
+        for (int j = 1; j < column; j++) {
+            dp[j] = obstacleGrid[0][j] == 1 ? 0 : dp[j - 1];
         }
         for (int i = 1; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (obstacleGrid[i][j] == 1) {
                     dp[j] = 0;
                 } else {
-                    dp[j] = dp[j] + (j == 0 ? 0 : dp[j - 1]);
+                    dp[j] += j == 0 ? 0 : dp[j - 1];
                 }
             }
         }
@@ -2453,7 +2679,12 @@ public class NormalSolution {
         if (lists == null || lists.isEmpty()) {
             return null;
         }
-        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
+        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(new Comparator<ListNode>() {
+            @Override
+            public int compare(ListNode o1, ListNode o2) {
+                return o1.val - o2.val;
+            }
+        });
         for (ListNode node : lists) {
             if (node != null) {
                 priorityQueue.offer(node);
@@ -2462,11 +2693,12 @@ public class NormalSolution {
         ListNode root = new ListNode(0);
         ListNode dummy = root;
         while (!priorityQueue.isEmpty()) {
-            ListNode poll = priorityQueue.poll();
-            dummy.next = poll;
+            ListNode node = priorityQueue.poll();
+            dummy.next = node;
             dummy = dummy.next;
-            if (poll.next != null) {
-                priorityQueue.offer(poll.next);
+
+            if (node.next != null) {
+                priorityQueue.offer(node.next);
             }
         }
         return root.next;
@@ -2763,7 +2995,7 @@ public class NormalSolution {
             int min = Integer.MAX_VALUE;
             for (int j = 0; j < arr.length; j++) {
                 if (i - arr[j] >= 0 && dp[i - arr[j]] != Integer.MAX_VALUE) {
-                    min = Math.min(min, dp[i - arr[j]] + 1);
+                    min = Math.min(min, 1 + dp[i - arr[j]]);
                 }
             }
             dp[i] = min;
@@ -2976,15 +3208,16 @@ public class NormalSolution {
             result ^= num;
         }
         result &= -result;
-        int[] ans = new int[2];
+        int[] tmp = new int[2];
         for (int num : array) {
-            if ((num & result) != 0) {
-                ans[0] ^= num;
+            if ((result & num) != 0) {
+                tmp[1] ^= num;
             } else {
-                ans[1] ^= num;
+                tmp[0] ^= num;
             }
         }
-        return ans;
+        Arrays.sort(tmp);
+        return tmp;
     }
 
 
@@ -3090,26 +3323,42 @@ public class NormalSolution {
      * @return ListNode类
      */
     public ListNode reverseBetween(ListNode head, int m, int n) {
-        // write code here
         ListNode root = new ListNode(0);
         root.next = head;
 
-        ListNode fast = root;
+
+        // write code here
         ListNode slow = root;
-        for (int i = 0; i < n; i++) {
-            fast = fast.next;
-        }
+
+        ListNode fast = root;
+
         for (int i = 0; i < m - 1; i++) {
             slow = slow.next;
         }
-        ListNode end = fast.next;
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+
         ListNode start = slow.next;
 
-        slow.next = reverse(start, end);
+        ListNode end = fast.next;
+
+        slow.next = reverseListNode(start, end);
 
         start.next = end;
 
         return root.next;
+    }
+
+    private ListNode reverseListNode(ListNode start, ListNode end) {
+        ListNode prev = start;
+        while (start != end) {
+            ListNode next = start.next;
+            start.next = prev;
+            prev = start;
+            start = next;
+        }
+        return prev;
     }
 
 
@@ -3193,26 +3442,26 @@ public class NormalSolution {
     /**
      * NC59 矩阵的最小路径和
      *
-     * @param matrix int整型二维数组 the matrix
+     * @param grid int整型二维数组 the matrix
      * @return int整型
      */
-    public int minPathSum(int[][] matrix) {
+    public int minPathSum(int[][] grid) {
         // write code here
-        if (matrix == null || matrix.length == 0) {
+        if (grid == null || grid.length == 0) {
             return 0;
         }
-        int row = matrix.length;
-        int column = matrix[0].length;
+        int row = grid.length;
+        int column = grid[0].length;
         int[] dp = new int[column];
-        for (int j = 0; j < dp.length; j++) {
-            dp[j] = j == 0 ? matrix[0][0] : dp[j - 1] + matrix[0][j];
+        for (int j = 0; j < column; j++) {
+            dp[j] = j == 0 ? grid[0][j] : dp[j - 1] + grid[0][j];
         }
         for (int i = 1; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (j == 0) {
-                    dp[j] += matrix[i][j];
+                    dp[j] += grid[i][j];
                 } else {
-                    dp[j] = Math.min(dp[j], dp[j - 1]) + matrix[i][j];
+                    dp[j] = Math.min(dp[j], dp[j - 1]) + grid[i][j];
                 }
             }
         }

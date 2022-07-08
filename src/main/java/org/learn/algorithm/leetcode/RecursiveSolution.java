@@ -3,6 +3,7 @@ package org.learn.algorithm.leetcode;
 import org.learn.algorithm.datastructure.WordDictionary;
 
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * @author luk
@@ -137,8 +138,8 @@ public class RecursiveSolution {
         if (candidates == null || candidates.length == 0) {
             return new ArrayList<>();
         }
-        Arrays.sort(candidates);
         List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(candidates);
         intervalCombinationSum2(result, new ArrayList<>(), candidates, 0, target);
         return result;
     }
@@ -148,7 +149,7 @@ public class RecursiveSolution {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i < candidates.length && target >= candidates[i]; i++) {
+        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
             if (i > start && candidates[i] == candidates[i - 1]) {
                 continue;
             }
@@ -162,32 +163,32 @@ public class RecursiveSolution {
     /**
      * 46. Permutations
      *
-     * @param num
+     * @param nums
      * @return
      */
-    public ArrayList<ArrayList<Integer>> permute(int[] num) {
-        if (num == null || num.length == 0) {
+    public List<List<Integer>> permute(int[] nums) {
+        if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-        boolean[] used = new boolean[num.length];
-        internalPermute(result, new ArrayList<>(), num, used);
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        internalPermute(result, new ArrayList<>(), nums, used);
         return result;
-
     }
 
-    private void internalPermute(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int[] num, boolean[] used) {
-        if (tmp.size() == num.length) {
+    private void internalPermute(List<List<Integer>> result, List<Integer> tmp, int[] nums, boolean[] used) {
+        if (tmp.size() == nums.length) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = 0; i < num.length; i++) {
+        for (int i = 0; i < nums.length; i++) {
             if (used[i]) {
                 continue;
             }
-            tmp.add(num[i]);
+            tmp.add(nums[i]);
             used[i] = true;
-            internalPermute(result, tmp, num, used);
+            internalPermute(result, tmp, nums, used);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
         }
@@ -204,14 +205,14 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        Arrays.sort(nums);
         List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
         boolean[] used = new boolean[nums.length];
-        intervalPermuteUnique(result, new ArrayList<>(), used, nums);
+        internalPermuteUnique(result, new ArrayList<>(), nums, used);
         return result;
     }
 
-    private void intervalPermuteUnique(List<List<Integer>> result, List<Integer> tmp, boolean[] used, int[] nums) {
+    private void internalPermuteUnique(List<List<Integer>> result, List<Integer> tmp, int[] nums, boolean[] used) {
         if (tmp.size() == nums.length) {
             result.add(new ArrayList<>(tmp));
             return;
@@ -225,7 +226,7 @@ public class RecursiveSolution {
             }
             used[i] = true;
             tmp.add(nums[i]);
-            intervalPermuteUnique(result, tmp, used, nums);
+            internalPermuteUnique(result, tmp, nums, used);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
         }
@@ -243,7 +244,6 @@ public class RecursiveSolution {
         List<List<Integer>> result = new ArrayList<>();
         intervalCombine(result, new ArrayList<>(), 1, n, k);
         return result;
-
     }
 
     private void intervalCombine(List<List<Integer>> result, List<Integer> tmp, int start, int n, int k) {
@@ -292,24 +292,23 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        Arrays.sort(nums);
         List<List<Integer>> result = new ArrayList<>();
-        intervalUniqueSet(result, new ArrayList<>(), 0, nums);
+        Arrays.sort(nums);
+        internalSubsetsWithDup(result, new ArrayList<>(), 0, nums);
         return result;
     }
 
-    private void intervalUniqueSet(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
+    private void internalSubsetsWithDup(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
         result.add(new ArrayList<>(tmp));
         for (int i = start; i < nums.length; i++) {
             if (i > start && nums[i] == nums[i - 1]) {
                 continue;
             }
             tmp.add(nums[i]);
-            intervalUniqueSet(result, tmp, i + 1, nums);
+            internalSubsetsWithDup(result, tmp, i + 1, nums);
             tmp.remove(tmp.size() - 1);
         }
     }
-
 
     /**
      * todo
@@ -320,29 +319,13 @@ public class RecursiveSolution {
      * @return
      */
     public String getPermutation(int n, int k) {
-        if (n <= 0) {
-            return "";
-        }
-        List<Integer> params = new ArrayList<>();
+        List<Integer> nums = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
-            params.add(i);
+            nums.add(i);
         }
-        int[] factor = new int[n + 1];
-        factor[0] = 1;
         int base = 1;
-        for (int i = 1; i <= n; i++) {
-            base *= i;
-            factor[i] = base;
-        }
-        StringBuilder builder = new StringBuilder();
-        k--;
-        for (int i = 0; i < n; i++) {
-            int index = k / factor[n - 1 - i];
-            params.remove(index);
-            builder.append(index);
-            k -= index * factor[n - 1 - i];
-        }
-        return builder.length() == 0 ? "" : builder.toString();
+
+        return "";
     }
 
 
@@ -424,9 +407,7 @@ public class RecursiveSolution {
         int row = board.length;
 
         int column = board[0].length;
-
         boolean[][] used = new boolean[row][column];
-
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (board[i][j] == word.charAt(0) && validExist(used, i, j, 0, board, word)) {
@@ -441,21 +422,20 @@ public class RecursiveSolution {
         if (k == word.length()) {
             return true;
         }
-        if (i < 0 || i >= used.length || j < 0 || j >= used[i].length || used[i][j] || board[i][j] != word.charAt(k)) {
+        if (i < 0 || i == board.length || j < 0 || j == board[i].length
+                || used[i][j] || board[i][j] != word.charAt(k)) {
             return false;
         }
         used[i][j] = true;
         if (validExist(used, i - 1, j, k + 1, board, word) ||
-
                 validExist(used, i + 1, j, k + 1, board, word) ||
-
                 validExist(used, i, j - 1, k + 1, board, word) ||
-
                 validExist(used, i, j + 1, k + 1, board, word)) {
             return true;
         }
         used[i][j] = false;
         return false;
+
     }
 
 
@@ -524,35 +504,36 @@ public class RecursiveSolution {
         int column = board[0].length;
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                boolean edge = i == 0 || i == row - 1 || j == 0 || j == column - 1;
-                if (edge && board[i][j] == 'O') {
-                    intervalSolve(i, j, board);
+                if (board[i][j] == 'O') {
+                    internalSurroundedRegion(board, i, j);
                 }
             }
         }
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                char word = board[i][j];
-                if (word == 'a') {
-                    board[i][j] = 'O';
-                } else if (word == 'O') {
-                    board[i][j] = 'X';
+                char tmp = board[i][j];
+
+                if (tmp == 'o') {
+                    if (i == 0 || i == row - 1 || j == 0 || j == column - 1) {
+                        board[i][j] = 'O';
+                    } else {
+                        board[i][j] = 'X';
+                    }
                 }
             }
         }
     }
 
-    private void intervalSolve(int i, int j, char[][] board) {
-        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || board[i][j] != 'O') {
+    private void internalSurroundedRegion(char[][] board, int i, int j) {
+        if (i < 0 || i == board.length || j < 0 || j == board[i].length || board[i][j] == 'X' || board[i][j] == 'o') {
             return;
         }
-        board[i][j] = 'a';
-        intervalSolve(i - 1, j, board);
-        intervalSolve(i + 1, j, board);
-        intervalSolve(i, j - 1, board);
-        intervalSolve(i, j + 1, board);
+        board[i][j] = 'o';
+        internalSurroundedRegion(board, i - 1, j);
+        internalSurroundedRegion(board, i + 1, j);
+        internalSurroundedRegion(board, i, j - 1);
+        internalSurroundedRegion(board, i, j + 1);
     }
-
 
     /**
      * 200. Number of Islands
@@ -577,6 +558,21 @@ public class RecursiveSolution {
         }
         return count;
     }
+
+
+    /**
+     * https://leetcode.cn/problems/parse-lisp-expression/solution/lisp-yu-fa-jie-xi-by-leetcode-solution-zycb/
+     * todo
+     * 736. Lisp 语法解析
+     *
+     * @param expression
+     * @return
+     */
+    public int evaluate(String expression) {
+        return -1;
+
+    }
+
 
     private void intervalIslands(char[][] grid, int i, int j) {
         if (i < 0 || i == grid.length || j < 0 || j == grid[i].length) {

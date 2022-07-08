@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+
 import java.util.*;
 
 /**
@@ -24,7 +25,8 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.isPalindrome(1112);
+        solution.lengthOfLongestSubstringTwoDistinct("eceba");
+
     }
 
     /**
@@ -146,32 +148,33 @@ public class StringSolution {
      * @return: the length of the longest substring T that contains at most 2 distinct characters
      */
     public int lengthOfLongestSubstringTwoDistinct(String s) {
-        // Write your code here
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        Map<Character, Integer> map = new HashMap<>();
         int result = 0;
         int left = 0;
+        Map<Character, Integer> map = new HashMap<>();
         char[] words = s.toCharArray();
         for (int i = 0; i < words.length; i++) {
-            char tmp = words[i];
-            Integer count = map.getOrDefault(tmp, 0);
-            map.put(tmp, count + 1);
+            char tmp = s.charAt(i);
+            int num = map.getOrDefault(tmp, 0);
+            map.put(tmp, num + 1);
+
             while (map.size() > 2) {
-                char leftEdge = words[left++];
-                Integer leftCount = map.get(leftEdge);
-                leftCount--;
-                if (leftCount == 0) {
-                    map.remove(leftEdge);
+                Integer count = map.get(s.charAt(left));
+                count--;
+                if (count == 0) {
+                    map.remove(s.charAt(left));
                 } else {
-                    map.put(leftEdge, leftCount);
+                    map.put(s.charAt(left), count);
                 }
+                left++;
             }
             result = Math.max(result, i - left + 1);
         }
         return result;
     }
+
 
     /**
      * 10. Regular Expression Matching
@@ -196,11 +199,11 @@ public class StringSolution {
                 if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else if (p.charAt(j - 1) == '*') {
-                    if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
-                        dp[i][j] = dp[i][j - 2];
-                    } else {
-                        dp[i][j] = dp[i][j - 1] || dp[i - 1][j] || dp[i][j - 2];
-                    }
+//                    if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
+//                        dp[i][j] = dp[i][j - 2];
+//                    } else {
+                    dp[i][j] = dp[i][j - 2] || dp[i][j - 1] || dp[i - 1][j];
+//                    }
                 }
             }
         }
@@ -218,21 +221,26 @@ public class StringSolution {
      * @return
      */
     public boolean isMatchII(String s, String p) {
-        if (p.isEmpty()) {
-            return s.isEmpty();
+        if (s.isEmpty()) {
+            return p.isEmpty();
         }
         int m = s.length();
-
         int n = p.length();
-
         boolean[][] dp = new boolean[m + 1][n + 1];
-
         dp[0][0] = true;
-
         for (int j = 1; j <= n; j++) {
-            dp[0][j] = p.charAt(j - 1) == '*';
+            dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j - 1];
         }
-        return false;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+                }
+            }
+        }
+        return dp[m][n];
     }
 
     /**
@@ -267,10 +275,10 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        int result = 0;
-        int[] hash = new int[512];
-        int left = 0;
+        int[] hash = new int[256];
         char[] words = s.toCharArray();
+        int left = 0;
+        int result = 0;
         for (int i = 0; i < words.length; i++) {
             left = Math.max(left, hash[s.charAt(i)]);
 
@@ -346,23 +354,19 @@ public class StringSolution {
             return new ArrayList<>();
         }
         List<List<String>> result = new ArrayList<>();
-        intervalPartition(result, new ArrayList<>(), 0, s.toCharArray());
+        internalPartition(result, new ArrayList<>(), s);
         return result;
     }
 
-    private void intervalPartition(List<List<String>> result, List<String> tmp, int start, char[] words) {
-        if (start == words.length) {
+    private void internalPartition(List<List<String>> result, List<String> tmp, String s) {
+        if (s.isEmpty()) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i < words.length; i++) {
-            if (validPalindrome(words, start, i)) {
-                StringBuilder t = new StringBuilder();
-                for (int j = start; j <= i; j++) {
-                    t.append(words[j]);
-                }
-                tmp.add(t.toString());
-                intervalPartition(result, tmp, i + 1, words);
+        for (int i = 0; i < s.length(); i++) {
+            if (validPalindrome(s, 0, i)) {
+                tmp.add(s.substring(0, i + 1));
+                internalPartition(result, tmp, s.substring(i + 1));
                 tmp.remove(tmp.size() - 1);
             }
         }
@@ -407,21 +411,18 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        int m = s.length();
-        int[] cut = new int[m];
-        boolean[][] dp = new boolean[m][m];
-        dp[0][0] = true;
-        for (int i = 1; i < m; i++) {
-            int minCut = i;
-            for (int j = 0; j <= i; j++) {
-                dp[j][i] = s.charAt(j) == s.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1]);
-                if (dp[j][i]) {
-                    minCut = j == 0 ? 0 : Math.min(cut[j - 1] + 1, minCut);
+        int len = s.length();
+        int[] dp = new int[len + 1];
+        for (int i = 0; i < len; i++) {
+            int min = i;
+            for (int j = 0; j < i; j++) {
+                if (validPalindrome(s, j, i)) {
+                    min = j == 0 ? 0 : Math.min(min, 1 + dp[j - 1]);
                 }
             }
-            cut[i] = minCut;
+            dp[i] = min;
         }
-        return cut[m - 1];
+        return dp[len - 1];
     }
 
     /**

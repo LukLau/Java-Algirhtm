@@ -1,5 +1,8 @@
 package org.learn.algorithm.leetcode;
 
+import javax.print.attribute.UnmodifiableSetException;
+import java.awt.font.NumericShaper;
+
 /**
  * @author luk
  * @date 2021/4/8
@@ -13,8 +16,7 @@ public class BinarySolution {
 
     public static void main(String[] args) {
         BinarySolution solution = new BinarySolution();
-        int[] nums = new int[]{10, 10, 10, 1, 10};
-        solution.findMinII(nums);
+        solution.findPeakElement(new int[]{2});
     }
 
     /**
@@ -74,7 +76,7 @@ public class BinarySolution {
             if (nums[left] == nums[right]) {
                 right--;
             } else if (nums[left] <= nums[mid]) {
-                if (target < nums[mid] && target >= nums[left]) {
+                if (target < nums[mid] && nums[left] <= target) {
                     right = mid - 1;
                 } else {
                     left = mid + 1;
@@ -85,7 +87,6 @@ public class BinarySolution {
                 } else {
                     right = mid - 1;
                 }
-
             }
         }
         return nums[left] == target;
@@ -114,7 +115,7 @@ public class BinarySolution {
             }
         }
         if (nums[left] != target) {
-            return new int[]{-1, -1};
+            return result;
         }
         result[0] = left;
         right = nums.length - 1;
@@ -177,11 +178,8 @@ public class BinarySolution {
         int end = nums.length - 1;
         while (start < end) {
             if (nums[start] == nums[end]) {
-                start++;
+                end--;
                 continue;
-            }
-            if (nums[start] < nums[end]) {
-                break;
             }
             int mid = start + (end - start) / 2;
             if (nums[mid] > nums[end]) {
@@ -227,17 +225,39 @@ public class BinarySolution {
         if (nums == null || nums.length == 0) {
             return -1;
         }
-        int start = 0;
-        int end = nums.length - 1;
-        while (start < end) {
-            int mid = start + (end - start) / 2;
-            if (nums[mid] > nums[mid + 1]) {
-                end = mid;
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] >= nums[mid + 1]) {
+                right = mid;
             } else {
-                start = mid + 1;
+                left = mid + 1;
             }
         }
-        return start;
+        return left;
+    }
+
+
+    public int minNumberInRotateArray(int[] array) {
+        if (array == null || array.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = array.length - 1;
+        while (left < right) {
+            if (array[left] == array[right]) {
+                left++;
+            }
+            int mid = left + (right - left) / 2;
+            if (array[mid] > array[right]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return array[left];
+
     }
 
     /**

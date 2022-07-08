@@ -20,21 +20,20 @@ public class TwoPage {
      * @return
      */
     public String reverseWords(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return "";
         }
         s = s.trim();
-        if (s.isEmpty()) {
-            return "";
-        }
+
         String[] words = s.split(" ");
         StringBuilder builder = new StringBuilder();
         for (int i = words.length - 1; i >= 0; i--) {
-            if (words[i].isEmpty()) {
+            String word = words[i];
+            if (word.isEmpty()) {
                 continue;
             }
-            builder.append(words[i]);
-            if (i > 0) {
+            builder.append(word);
+            if (i != 0) {
                 builder.append(" ");
             }
         }

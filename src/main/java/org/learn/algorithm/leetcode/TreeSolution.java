@@ -4,10 +4,8 @@ import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.TreeNode;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import javax.swing.text.html.HTMLEditorKit;
+import java.util.*;
 
 /**
  * 树的解决方案
@@ -29,18 +27,14 @@ public class TreeSolution {
     public static void main(String[] args) {
         TreeSolution solution = new TreeSolution();
 
-        ListNode root = new ListNode(-1);
-
-        ListNode n1 = new ListNode(0);
-
-        root.next = n1;
-
-        n1.next = new ListNode(1);
-
-        n1.next.next = new ListNode(2);
+        TreeNode root = new TreeNode(1);
+        TreeNode left = new TreeNode(2);
+        left.left = new TreeNode(4);
+        root.left = left;
+        root.right = new TreeNode(3);
 
 
-        solution.sortedListToBST(root);
+        solution.rightSideView(root);
     }
 
 
@@ -232,6 +226,32 @@ public class TreeSolution {
         return result;
     }
 
+
+    public int[] postorderTraversalII(TreeNode root) {
+        if (root == null) {
+            return new int[]{};
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        LinkedList<Integer> result = new LinkedList<>();
+        TreeNode p = root;
+        while (!stack.isEmpty() || p != null) {
+            if (p != null) {
+                result.addFirst(p.val);
+                stack.push(p);
+                p = p.right;
+            } else {
+                p = stack.pop();
+                p = p.left;
+            }
+        }
+        int[] tmp = new int[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            tmp[i] = result.get(i);
+        }
+        return tmp;
+    }
+
+
     /**
      * 199. Binary Tree Right Side View
      *
@@ -243,19 +263,19 @@ public class TreeSolution {
             return new ArrayList<>();
         }
         List<Integer> result = new ArrayList<>();
-        intervalRightSideView(result, root, 0);
+        interRightSideView(result, root, 0);
         return result;
     }
 
-    private void intervalRightSideView(List<Integer> result, TreeNode root, int currentLevel) {
+    private void interRightSideView(List<Integer> result, TreeNode root, int expected) {
         if (root == null) {
             return;
         }
-        if (result.size() == currentLevel) {
+        if (result.size() == expected) {
             result.add(root.val);
         }
-        intervalRightSideView(result, root.right, currentLevel + 1);
-        intervalRightSideView(result, root.left, currentLevel + 1);
+        interRightSideView(result, root.right, expected + 1);
+        interRightSideView(result, root.left, expected + 1);
     }
 
     /**
@@ -380,28 +400,28 @@ public class TreeSolution {
         if (n <= 0) {
             return new ArrayList<>();
         }
-        return intervalGenerateTrees(1, n);
+        return internalGenerateTrees(1, n);
     }
 
-    private List<TreeNode> intervalGenerateTrees(int start, int end) {
+    private List<TreeNode> internalGenerateTrees(int start, int end) {
         List<TreeNode> result = new ArrayList<>();
-        if (start > end) {
-            result.add(null);
-            return result;
-        }
         if (start == end) {
             result.add(new TreeNode(start));
             return result;
         }
+        if (start > end) {
+            result.add(null);
+            return result;
+        }
         for (int i = start; i <= end; i++) {
-            List<TreeNode> leftNodes = intervalGenerateTrees(start, i - 1);
-            List<TreeNode> rightNodes = intervalGenerateTrees(i + 1, end);
+            List<TreeNode> leftNodes = internalGenerateTrees(start, i - 1);
+            List<TreeNode> rightNoes = internalGenerateTrees(i + 1, end);
             for (TreeNode leftNode : leftNodes) {
-                for (TreeNode rightNode : rightNodes) {
-                    TreeNode root = new TreeNode(i);
-                    root.left = leftNode;
-                    root.right = rightNode;
-                    result.add(root);
+                for (TreeNode rightNoe : rightNoes) {
+                    TreeNode node = new TreeNode(i);
+                    node.left = leftNode;
+                    node.right = rightNoe;
+                    result.add(node);
                 }
             }
         }
@@ -464,17 +484,17 @@ public class TreeSolution {
         if (root == null) {
             return false;
         }
-        return intervalValidBST(Long.MIN_VALUE, root, Long.MAX_VALUE);
+        return internalIsValid(Long.MIN_VALUE, root, Long.MAX_VALUE);
     }
 
-    private boolean intervalValidBST(long minValue, TreeNode root, long maxValue) {
+    private boolean internalIsValid(long minValue, TreeNode root, long maxValue) {
         if (root == null) {
             return true;
         }
-        if (root.val <= minValue || root.val >= maxValue) {
+        if (minValue >= root.val || root.val >= maxValue) {
             return false;
         }
-        return intervalValidBST(minValue, root.left, root.val) && intervalValidBST(root.val, root.right, maxValue);
+        return internalIsValid(minValue, root.left, root.val) && internalIsValid(root.val, root.right, maxValue);
     }
 
     /**
@@ -488,23 +508,20 @@ public class TreeSolution {
         }
         Stack<TreeNode> stack = new Stack<>();
         TreeNode prev = null;
-        TreeNode p = root;
         TreeNode first = null;
         TreeNode second = null;
+        TreeNode p = root;
         while (!stack.isEmpty() || p != null) {
             while (p != null) {
                 stack.push(p);
                 p = p.left;
             }
             p = stack.pop();
-
-            if (prev != null) {
-                if (first == null && prev.val >= p.val) {
+            if (prev != null && prev.val >= p.val) {
+                if (first == null) {
                     first = prev;
                 }
-                if (first != null && prev.val >= p.val) {
-                    second = p;
-                }
+                second = p;
             }
             prev = p;
             p = p.right;
@@ -526,17 +543,17 @@ public class TreeSolution {
         if (nums == null || nums.length == 0) {
             return null;
         }
-        return intervalSorted(nums, 0, nums.length - 1);
+        return internalSortedArrayToBST(nums, 0, nums.length - 1);
     }
 
-    private TreeNode intervalSorted(int[] nums, int start, int end) {
+    private TreeNode internalSortedArrayToBST(int[] nums, int start, int end) {
         if (start > end) {
             return null;
         }
         int mid = start + (end - start) / 2;
         TreeNode root = new TreeNode(nums[mid]);
-        root.left = intervalSorted(nums, start, mid - 1);
-        root.right = intervalSorted(nums, mid + 1, end);
+        root.left = internalSortedArrayToBST(nums, start, mid - 1);
+        root.right = internalSortedArrayToBST(nums, mid + 1, end);
         return root;
     }
 
@@ -556,20 +573,19 @@ public class TreeSolution {
         if (head.next == null) {
             return new TreeNode(head.val);
         }
+        ListNode prev = head;
         ListNode fast = head;
         ListNode slow = head;
-        ListNode prev = head;
         while (fast != null && fast.next != null) {
             prev = slow;
             slow = slow.next;
             fast = fast.next.next;
         }
+        ListNode second = slow.next;
         prev.next = null;
         TreeNode root = new TreeNode(slow.val);
         root.left = sortedListToBST(head);
-        ListNode next = slow.next;
-        slow.next = null;
-        root.right = sortedListToBST(next);
+        root.right = sortedListToBST(second);
         return root;
     }
 
@@ -641,8 +657,8 @@ public class TreeSolution {
         if (preStart >= preorder.length || inStart > inEnd) {
             return null;
         }
-        int index = 0;
         TreeNode root = new TreeNode(preorder[preStart]);
+        int index = 0;
         for (int i = inStart; i <= inEnd; i++) {
             if (inorder[i] == root.val) {
                 index = i;
@@ -898,15 +914,15 @@ public class TreeSolution {
         }
         Node current = root;
         while (current.left != null) {
-            Node tmp = current.left;
+            Node nextHead = current.left;
             while (current != null) {
                 current.left.next = current.right;
-                if (current.next != null) {
+                if (current.right != null && current.next != null) {
                     current.right.next = current.next.left;
                 }
                 current = current.next;
             }
-            current = tmp;
+            current = nextHead;
         }
         return root;
     }
@@ -924,27 +940,29 @@ public class TreeSolution {
         Node current = root;
         while (current != null) {
             Node head = null;
-            Node prev = null;
+            Node level = null;
             while (current != null) {
                 if (current.left != null) {
                     if (head == null) {
                         head = current.left;
+                        level = head;
                     } else {
-                        prev.next = current.left;
+                        head.next = current.left;
+                        head = head.next;
                     }
-                    prev = current.left;
                 }
                 if (current.right != null) {
                     if (head == null) {
                         head = current.right;
+                        level = head;
                     } else {
-                        prev.next = current.right;
+                        head.next = current.right;
+                        head = head.next;
                     }
-                    prev = current.right;
                 }
                 current = current.next;
             }
-            current = head;
+            current = level;
         }
         return root;
     }
@@ -990,8 +1008,7 @@ public class TreeSolution {
         if (root.left == null && root.right == null) {
             return val * 10 + root.val;
         }
-        return intervalSumNumbers(root.left, val * 10 + root.val)
-                + intervalSumNumbers(root.right, val * 10 + root.val);
+        return intervalSumNumbers(root.left, val * 10 + root.val) + intervalSumNumbers(root.right,  val * 10 + root.val);
     }
 
 

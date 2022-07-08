@@ -1,6 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 
+import java.nio.file.StandardWatchEventKinds;
 import java.util.*;
 
 /**
@@ -15,7 +16,7 @@ public class MathSolution {
         MathSolution solution = new MathSolution();
 //        int[] nums = new int[]{5, 4, 4, 3, 2, 1};
 //        solution.nthUglyNumber(10);
-        solution.isNumber("005047e+6");
+        solution.grayCode(2);
     }
 
     // 素数相关
@@ -118,41 +119,23 @@ public class MathSolution {
      */
     public boolean isNumber(String s) {
         if (s == null || s.isEmpty()) {
-            return false;
+            return true;
         }
-        boolean seenNumberAfterE = false;
-        boolean seenNumber = false;
+        boolean seenE = true;
+        boolean seenSign = false;
+        boolean seenNumber = true;
+        boolean seenEAfterNumber = true;
         boolean seenDigit = false;
-        boolean seenE = false;
         char[] words = s.toCharArray();
-        for (int i = 0; i < words.length; i++) {
-            char current = words[i];
-            if (Character.isDigit(current)) {
+        int endIndex = 0;
+        while (endIndex < words.length) {
+            char tmp = words[endIndex];
+            if (Character.isDigit(tmp)) {
                 seenNumber = true;
-                seenNumberAfterE = true;
-            } else if (current == 'e' || current == 'E') {
-                if (i == 0 || seenE) {
-                    return false;
-                }
-                if (!seenNumber) {
-                    return false;
-                }
-                seenE = true;
-                seenNumberAfterE = false;
-            } else if (current == '.') {
-                if (seenDigit) {
-                    return false;
-                }
-                seenDigit = true;
-            } else if (current == '-' || current == '+') {
-                if (i > 0 && (words[i - 1] != 'e' && words[i - 1] != 'E')) {
-                    return false;
-                }
-            } else {
-                return false;
+                seenEAfterNumber = true;
             }
         }
-        return seenNumber && seenNumberAfterE;
+        return false;
     }
 
 
@@ -192,24 +175,23 @@ public class MathSolution {
         List<String> result = new ArrayList<>();
         int startIndex = 0;
         while (startIndex < words.length) {
-            int endIndex = startIndex;
             int line = 0;
+            int endIndex = startIndex;
             while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
                 line += words[endIndex].length() + 1;
                 endIndex++;
             }
-            int wordCount = endIndex - startIndex;
-            int remainSpace = maxWidth - line + 1;
             boolean lastRow = endIndex == words.length;
-            StringBuilder builder = new StringBuilder();
-            if (wordCount == 1) {
-                builder.append(words[startIndex]);
+            int workCount = endIndex - startIndex;
+            StringBuilder tmp = new StringBuilder();
+            if (workCount == 1) {
+                tmp.append(words[startIndex]);
             } else {
-                int blankSpace = lastRow ? 1 : (1 + remainSpace / (wordCount - 1));
-                int extraSpace = lastRow ? 0 : (remainSpace % (wordCount - 1));
-                builder.append(constructRow(words, startIndex, endIndex, blankSpace, extraSpace));
+                int blankCount = lastRow ? 1 : 1 + (maxWidth - line + 1) / (workCount - 1);
+                int extraBlank = lastRow ? 0 : (maxWidth - line + 1) % (workCount - 1);
+                tmp.append(constructRow(words, startIndex, endIndex, blankCount, extraBlank));
             }
-            result.add(trimRow(builder.toString(), maxWidth));
+            result.add(trimRow(tmp.toString(), maxWidth));
             startIndex = endIndex;
         }
         return result;
@@ -265,10 +247,32 @@ public class MathSolution {
      */
     public List<Integer> grayCode(int n) {
         List<Integer> result = new ArrayList<>();
-        double iterator = Math.pow(2, n);
-        for (int i = 0; i < iterator; i++) {
+        int num = 1 << n;
+        for (int i = 0; i < num; i++) {
             int tmp = (i >> 1) ^ i;
             result.add(tmp);
+        }
+        return result;
+    }
+
+    public int longestConsecutive(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        Map<Integer, Integer> map = new HashMap<>();
+        int result = 0;
+        for (int num : nums) {
+            if (!map.containsKey(num)) {
+                Integer left = map.getOrDefault(num - 1, 0);
+                Integer right = map.getOrDefault(num + 1, 0);
+
+                int val = left + right + 1;
+                result = Math.max(result, val);
+
+                map.put(num - left, val);
+                map.put(num + right, val);
+                map.put(num, val);
+            }
         }
         return result;
     }
@@ -287,26 +291,34 @@ public class MathSolution {
         }
         int result = 0;
         for (int i = 0; i < points.length; i++) {
-            Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
-            int overlap = 0;
             int number = 0;
+            int overlap = 0;
+            Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
             for (int j = i + 1; j < points.length; j++) {
                 int x = points[j][0] - points[i][0];
                 int y = points[j][1] - points[i][1];
+
                 if (x == 0 && y == 0) {
                     overlap++;
                     continue;
                 }
                 int gcd = gcd(x, y);
+
                 x /= gcd;
                 y /= gcd;
+
                 Map<Integer, Integer> tmp = map.getOrDefault(x, new HashMap<>());
                 Integer count = tmp.getOrDefault(y, 0);
-                tmp.put(y, count + 1);
+
+                count++;
+
+                tmp.put(y, count);
+
                 map.put(x, tmp);
-                number = Math.max(number, map.get(x).get(y));
+
+                number = Math.max(number, count);
             }
-            result = Math.max(result, 1 + overlap + number);
+            result = Math.max(result, 1 + number + overlap);
         }
         return result;
     }
@@ -330,8 +342,9 @@ public class MathSolution {
         int min = nums[0];
         int result = nums[0];
         for (int i = 1; i < nums.length; i++) {
-            int tmpMax = Math.max(Math.max(max * nums[i], min * nums[i]), nums[i]);
-            int tmpMin = Math.min(Math.min(max * nums[i], min * nums[i]), nums[i]);
+            int val = nums[i];
+            int tmpMax = Math.max(Math.max(val * max, min * val), val);
+            int tmpMin = Math.min(Math.min(val * max, min * val), val);
             result = Math.max(result, tmpMax);
             max = tmpMax;
             min = tmpMin;

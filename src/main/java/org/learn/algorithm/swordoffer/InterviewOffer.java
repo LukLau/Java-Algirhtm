@@ -1,5 +1,6 @@
 package org.learn.algorithm.swordoffer;
 
+import lombok.val;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
@@ -22,7 +23,20 @@ public class InterviewOffer {
 
     public static void main(String[] args) {
         InterviewOffer offer = new InterviewOffer();
-        offer.solveIP("1a1.4.5.6");
+
+        ListNode root = new ListNode(1);
+
+        ListNode d1 = new ListNode(2);
+
+        root.next = d1;
+
+        d1.next = new ListNode(3);
+
+        d1.next.next = new ListNode(4);
+
+        d1.next.next.next = new ListNode(5);
+
+        offer.reorderList(root);
 
     }
 
@@ -571,6 +585,24 @@ public class InterviewOffer {
      * @param o2   int整型
      * @return int整型
      */
+    public int lowestCommonAncestorII(TreeNode root, int o1, int o2) {
+        // write code here
+        if (root == null) {
+            return -1;
+        }
+        if (root.val == o1 || root.val == o2) {
+            return root.val;
+        }
+        if (o1 < root.val && root.val < o2) {
+            return root.val;
+        } else if (o1 < root.val) {
+            return lowestCommonAncestor(root.left, o1, o2);
+        } else {
+            return lowestCommonAncestor(root.right, o1, o2);
+        }
+    }
+
+
     public int lowestCommonAncestor(TreeNode root, int o1, int o2) {
         // write code here
         if (root == null) {
@@ -588,6 +620,7 @@ public class InterviewOffer {
         } else {
             return left;
         }
+
     }
 
     /**
@@ -641,21 +674,21 @@ public class InterviewOffer {
      * @return
      */
     public ArrayList<Integer> maxInWindows(int[] num, int size) {
-        if (num == null || num.length == 0 || size == 0) {
+        if (num == null || num.length == 0) {
             return new ArrayList<>();
         }
         LinkedList<Integer> linkedList = new LinkedList<>();
         ArrayList<Integer> result = new ArrayList<>();
         for (int i = 0; i < num.length; i++) {
             int index = i - size + 1;
-            if (!linkedList.isEmpty() && index > linkedList.peekFirst()) {
-                linkedList.pollFirst();
-            }
             while (!linkedList.isEmpty() && num[linkedList.peekLast()] <= num[i]) {
                 linkedList.pollLast();
             }
+            if (!linkedList.isEmpty() && linkedList.peekFirst() < index) {
+                linkedList.poll();
+            }
             linkedList.offer(i);
-            if (index >= 0 && !linkedList.isEmpty()) {
+            if (index >= 0) {
                 result.add(num[linkedList.peekFirst()]);
             }
         }
@@ -739,26 +772,60 @@ public class InterviewOffer {
         if (pre == null || in == null) {
             return null;
         }
-        return buildTree(0, pre, 0, in.length - 1, in);
+        return reConstructBinaryTree(0, pre, 0, in.length - 1, in);
     }
 
-    private TreeNode buildTree(int preStart, int[] pre, int inStart, int inEnd, int[] in) {
-        if (preStart == pre.length || inStart > inEnd) {
+    private TreeNode reConstructBinaryTree(int preStart, int[] pre, int inStart, int inEnd, int[] in) {
+        if (preStart >= pre.length || inStart > inEnd) {
             return null;
         }
-        int val = pre[preStart];
-        int index = 0;
+        TreeNode root = new TreeNode(pre[preStart]);
+        int index = -1;
         for (int i = inStart; i <= inEnd; i++) {
-            if (in[i] == val) {
+            if (in[i] == root.val) {
                 index = i;
                 break;
             }
         }
-        TreeNode root = new TreeNode(val);
-        root.left = buildTree(preStart + 1, pre, inStart, index - 1, in);
-        root.right = buildTree(preStart + index - inStart + 1, pre, index + 1, inEnd, in);
+        root.left = reConstructBinaryTree(preStart + 1, pre, inStart, index - 1, in);
+        root.right = reConstructBinaryTree(preStart + index - inStart + 1, pre, index + 1, inEnd, in);
         return root;
     }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 求二叉树的右视图
+     *
+     * @param xianxu  int整型一维数组 先序遍历
+     * @param zhongxu int整型一维数组 中序遍历
+     * @return int整型一维数组
+     */
+    public int[] treeRightView(int[] xianxu, int[] zhongxu) {
+        // write code here
+        TreeNode root = reConstructBinaryTree(xianxu, zhongxu);
+        List<Integer> result = new ArrayList<>();
+        calculate(result, root, 0, 1);
+        int[] tmp = new int[result.size()];
+        int index = 0;
+        for (Integer integer : result) {
+            tmp[index] = integer;
+        }
+        return tmp;
+    }
+
+    private void calculate(List<Integer> result, TreeNode root, int currentLevel, int expectedLevel) {
+        if (root == null) {
+            return;
+        }
+        if (currentLevel + 1 == expectedLevel) {
+            result.add(root.val);
+            expectedLevel = expectedLevel + 1;
+        }
+        calculate(result, root.right, currentLevel + 1, expectedLevel);
+        calculate(result, root.left, currentLevel + 1, expectedLevel);
+    }
+
 
     /**
      * @param root TreeNode类 the root of binary tree
@@ -1034,31 +1101,33 @@ public class InterviewOffer {
         if (head == null || head.next == null) {
             return;
         }
-        ListNode fast = head;
         ListNode slow = head;
+        ListNode fast = head;
         while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode next = slow.next;
 
-        ListNode reverseNode = reverseNode(next);
+        ListNode listNode = slow.next;
 
         slow.next = null;
 
-        ListNode d1 = head;
-        while (d1 != null && reverseNode != null) {
-            ListNode tmp = d1.next;
+        ListNode reverseNode = reverseNode(listNode);
 
-            d1.next = reverseNode;
+        ListNode dummy = head;
 
-            ListNode reverse2 = reverseNode.next;
+        while (dummy != null && reverseNode != null) {
+            ListNode d1 = dummy.next;
 
-            reverseNode.next = tmp;
+            ListNode next = reverseNode.next;
 
-            d1 = reverseNode.next;
+            dummy.next = reverseNode;
 
-            reverseNode = reverse2;
+            reverseNode.next = d1;
+
+            dummy = d1;
+
+            reverseNode = next;
         }
     }
 
@@ -1268,21 +1337,19 @@ public class InterviewOffer {
             return false;
         }
         Stack<Character> stack = new Stack<>();
-
         char[] words = s.toCharArray();
-
-        for (char word : words) {
-            if (word == '(') {
+        for (int i = 0; i < words.length; i++) {
+            char tmp = words[i];
+            if (tmp == '(') {
                 stack.push(')');
-            } else if (word == '[') {
-                stack.push(']');
-            } else if (word == '{') {
+            } else if (tmp == '{') {
                 stack.push('}');
-            } else {
-                if (stack.isEmpty() || stack.peek() != word) {
-                    return false;
-                }
+            } else if (tmp == '[') {
+                stack.push(']');
+            } else if (!stack.isEmpty() && stack.peek() == tmp) {
                 stack.pop();
+            } else {
+                return false;
             }
         }
         return stack.isEmpty();
@@ -1339,12 +1406,14 @@ public class InterviewOffer {
         for (int num : array) {
             if (num == candidate) {
                 count++;
+                continue;
             } else {
                 count--;
-                if (count == 0) {
-                    candidate = num;
-                    count++;
-                }
+            }
+            if (count == 0) {
+                candidate = num;
+                count++;
+
             }
         }
         count = 0;
@@ -1361,12 +1430,12 @@ public class InterviewOffer {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode slow = head;
         ListNode fast = head;
-        while (fast != null && fast.next != null) {
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
-            if (slow == fast) {
+            if (fast == slow) {
                 fast = head;
                 while (fast != slow) {
                     fast = fast.next;
@@ -2010,7 +2079,7 @@ public class InterviewOffer {
         Arrays.fill(dp, 1);
         for (int i = 1; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                dp[j] = dp[j] + (j > 0 ? dp[j - 1] : 0);
+                dp[j] += j == 0 ? 0 : dp[j - 1];
             }
         }
         return dp[n - 1];

@@ -15,7 +15,13 @@ public class DynamicSolution {
 
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
-        solution.isInterleave("", "", "");
+        char[][] matrix = new char[][]{{'0', '1', '1', '0', '1'}, {'1', '1', '0', '1', '0'}, {'0', '1', '1', '1', '0'}, {'1', '1', '1', '1', '0'}, {'1', '1', '1', '1', '1'}, {'0', '0', '0', '0', '0'}};
+//        solution.numDecodings("12");
+//        solution.maximalRectangle(matrix);
+        List<List<Integer>> lists = solution.generate(4);
+        System.out.println(lists);
+
+//        solution.isInterleave("", "", "");
 //        char[][] nums = new char[][]{{'1', '0', '1', '0', '0'}, {'1', '0', '1', '1', '1'}, {"1", "1", "1", "1", "1"}, {"1", "0", "0", "1", "0"}}
 //        solution.maximalRectangle(nums);
     }
@@ -83,15 +89,16 @@ public class DynamicSolution {
         }
         int len = s.length();
         int[] dp = new int[len + 1];
-
         dp[0] = 1;
         for (int i = 1; i <= len; i++) {
-            int first = Integer.parseInt(s.substring(i - 1, i));
-            if (first >= 1 && first <= 9) {
+            String first = s.substring(i - 1, i);
+            int firstValue = Integer.parseInt(first);
+            if (firstValue >= 1 && firstValue <= 9) {
                 dp[i] += dp[i - 1];
             }
-            int second = i == 1 ? 0 : Integer.parseInt(s.substring(i - 2, i));
-            if (second >= 10 && second <= 26) {
+            String second = i >= 2 ? s.substring(i - 2, i) : "0";
+            int secondValue = Integer.parseInt(second);
+            if (secondValue >= 10 && secondValue <= 26) {
                 dp[i] += dp[i - 2];
             }
         }
@@ -250,7 +257,7 @@ public class DynamicSolution {
                 if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = Math.min(Math.min(dp[i][j - 1], dp[i - 1][j]), dp[i - 1][j - 1]) + 1;
+                    dp[i][j] = 1 + Math.min(dp[i][j - 1], Math.min(dp[i - 1][j - 1], dp[i - 1][j]));
                 }
             }
         }
@@ -258,6 +265,7 @@ public class DynamicSolution {
     }
 
     /**
+     * todo
      * 85. Maximal Rectangle
      *
      * @param matrix
@@ -267,39 +275,52 @@ public class DynamicSolution {
         if (matrix == null || matrix.length == 0) {
             return 0;
         }
+        int row = matrix.length;
         int column = matrix[0].length;
+        int result = 0;
         int[] left = new int[column];
         int[] height = new int[column];
         int[] right = new int[column];
         Arrays.fill(right, column);
-        int result = 0;
-        for (char[] row : matrix) {
-            int leftEdge = 0;
-            int rightEdge = column;
+        for (int i = 0; i < row; i++) {
+            int leftSide = 0;
+            int rightSide = column;
             for (int j = 0; j < column; j++) {
-                char tmp = row[j];
-                if (tmp == '1') {
-                    height[j]++;
-                    left[j] = Math.max(leftEdge, left[j]);
+                char word = matrix[i][j];
+                if (word == '1') {
+                    height[j] = height[j] + 1;
+                    left[j] = Math.max(left[j], leftSide);
                 } else {
                     height[j] = 0;
-                    left[j] = leftEdge;
-                    leftEdge = j + 1;
+                    left[j] = leftSide;
+                    leftSide = j + 1;
                 }
             }
             for (int j = column - 1; j >= 0; j--) {
-                char tmp = row[j];
-                if (tmp == '1') {
-                    right[j] = Math.min(right[j], rightEdge);
+                char word = matrix[i][j];
+                if (word == '1') {
+                    right[j] = Math.min(right[j], rightSide);
                 } else {
-                    rightEdge = j;
                     right[j] = column;
+                    rightSide = j;
                 }
             }
             for (int j = 0; j < column; j++) {
-                result = Math.max(result, (right[j] - left[j]) * height[j]);
+                if (height[j] == 0) {
+                    continue;
+                }
+                int val = height[j] * (right[j] - left[j]);
+                if (val >= result) {
+                    System.out.println("row:" + i + " column: " + j + " result:" + val);
+                    result = val;
+                }
             }
         }
+        // 0 1 1 3 4
+        // 2 2 3 4 5
+        // --------//
+        // 0 1 1 3 0
+        // 4 2 4 4 5
         return result;
     }
 
@@ -350,7 +371,7 @@ public class DynamicSolution {
      * @return
      */
     public boolean isInterleave(String s1, String s2, String s3) {
-        if (s1 == null || s2 == null) {
+        if (s1 == null || s2 == null || s3 == null) {
             return false;
         }
         int m = s1.length();
@@ -368,7 +389,7 @@ public class DynamicSolution {
         }
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                dp[i][j] = (s1.charAt(i - 1) == s3.charAt(i + j - 1) && dp[i - 1][j]) || (s2.charAt(j - 1) == s3.charAt(i + j - 1) && dp[i][j - 1]);
+                dp[i][j] = (dp[i - 1][j] && s1.charAt(i - 1) == s3.charAt(i + j - 1)) || (dp[i][j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1));
             }
         }
         return dp[m][n];
@@ -388,7 +409,7 @@ public class DynamicSolution {
         int m = s.length();
         int n = t.length();
         int[][] dp = new int[m + 1][n + 1];
-        for (int i = 0; i <= m; i++) {
+        for (int i = 1; i <= m; i++) {
             dp[i][0] = 1;
         }
         for (int i = 1; i <= m; i++) {
@@ -413,8 +434,9 @@ public class DynamicSolution {
         for (int i = 0; i < numRows; i++) {
             List<Integer> tmp = new ArrayList<>();
             tmp.add(1);
-            for (int j = i - 1; j >= 1; j--) {
-                int val = result.get(i - 1).get(j) + result.get(i - 1).get(j - 1);
+            for (int j = 1; j <= i - 1; j++) {
+                List<Integer> previous = result.get(i - 1);
+                int val = previous.get(j - 1) + previous.get(j);
                 tmp.add(val);
             }
             if (i > 0) {
@@ -435,13 +457,19 @@ public class DynamicSolution {
         if (rowIndex < 0) {
             return new ArrayList<>();
         }
-        List<Integer> result = new ArrayList<>(rowIndex);
+        List<Integer> result = new ArrayList<>();
+
+        result.add(1);
+
         for (int i = 0; i <= rowIndex; i++) {
+
             for (int j = i - 1; j >= 1; j--) {
                 int val = result.get(j) + result.get(j - 1);
                 result.set(j, val);
             }
-            result.add(1);
+            if (i > 0) {
+                result.add(1);
+            }
         }
         return result;
     }
@@ -457,19 +485,17 @@ public class DynamicSolution {
      */
     public int minimumTotal(List<List<Integer>> triangle) {
         if (triangle == null || triangle.isEmpty()) {
-            return 0;
+            return Integer.MAX_VALUE;
         }
         int size = triangle.size();
-        List<Integer> row = triangle.get(size - 1);
         for (int i = size - 2; i >= 0; i--) {
-            List<Integer> current = triangle.get(i);
-            int len = current.size();
-            for (int j = 0; j < len; j++) {
-                int val = Math.min(row.get(j), row.get(j + 1)) + current.get(j);
-                row.set(j, val);
+            int currentLevel = triangle.get(i).size();
+            for (int j = 0; j < currentLevel; j++) {
+                int val = Math.min(triangle.get(i + 1).get(j), triangle.get(i + 1).get(j + 1)) + triangle.get(i).get(j);
+                triangle.get(i).set(j, val);
             }
         }
-        return row.get(0);
+        return triangle.get(0).get(0);
     }
 
     /**
@@ -511,8 +537,8 @@ public class DynamicSolution {
         if (prices == null || prices.length == 0) {
             return 0;
         }
-        int cost = prices[0];
         int result = 0;
+        int cost = prices[0];
         for (int i = 1; i < prices.length; i++) {
             if (prices[i] > cost) {
                 result = Math.max(result, prices[i] - cost);
@@ -534,9 +560,7 @@ public class DynamicSolution {
             return 0;
         }
         int result = 0;
-
         int cost = prices[0];
-
         for (int i = 1; i < prices.length; i++) {
             if (prices[i] > cost) {
                 result += prices[i] - cost;
@@ -557,31 +581,31 @@ public class DynamicSolution {
             return 0;
         }
         int len = prices.length;
-        int[] leftProfit = new int[len];
+        int[] left = new int[len];
+        int leftResult = 0;
         int leftCost = prices[0];
-        int profit = 0;
         for (int i = 1; i < len; i++) {
             if (prices[i] > leftCost) {
-                profit = Math.max(profit, prices[i] - leftCost);
-                leftProfit[i] = profit;
+                leftResult = Math.max(leftResult, prices[i] - leftCost);
             } else {
                 leftCost = prices[i];
             }
+            left[i] = leftResult;
         }
-        profit = 0;
-        int[] rightProfit = new int[len + 1];
+        int[] right = new int[len + 1];
+        int rightResult = 0;
         int rightCost = prices[len - 1];
         for (int i = len - 2; i >= 0; i--) {
             if (prices[i] < rightCost) {
-                profit = Math.max(profit, rightCost - prices[i]);
-                rightProfit[i] = profit;
+                rightResult = Math.max(rightResult, rightCost - prices[i]);
             } else {
                 rightCost = prices[i];
             }
+            right[i] = rightResult;
         }
         int result = 0;
-        for (int i = 0; i < len; i++) {
-            result = Math.max(result, leftProfit[i] + rightProfit[i + 1]);
+        for (int i = 1; i < left.length; i++) {
+            result = Math.max(result, left[i] + right[i]);
         }
         return result;
     }

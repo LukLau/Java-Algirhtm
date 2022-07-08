@@ -1,5 +1,7 @@
 package org.learn.algorithm.datastructure;
 
+import java.util.LinkedList;
+
 /**
  * 297. Serialize and Deserialize Binary Tree
  *
@@ -10,42 +12,50 @@ public class Codec {
 
     private int index = -1;
 
-    public String Serialize(TreeNode root) {
+
+    String Serialize(TreeNode root) {
         StringBuilder builder = new StringBuilder();
-        intervalSerialize(builder, root);
+        internalSerialize(root, builder);
         return builder.toString();
     }
 
-    private void intervalSerialize(StringBuilder builder, TreeNode root) {
+    private void internalSerialize(TreeNode root, StringBuilder builder) {
         if (root == null) {
             builder.append("#,");
             return;
         }
-        builder.append(root.val).append(",");
-        intervalSerialize(builder, root.left);
-        intervalSerialize(builder, root.right);
+        builder.append(root.val + ",");
+        internalSerialize(root.left, builder);
+        internalSerialize(root.right, builder);
     }
 
-    public TreeNode Deserialize(String str) {
+    TreeNode Deserialize(String str) {
         if (str == null || str.isEmpty()) {
             return null;
         }
         String[] words = str.split(",");
-        return internalDeserialize(words);
+        LinkedList<String> linkedList = new LinkedList<>();
+        for (String word : words) {
+            linkedList.offer(word);
+        }
+        return Deserialize(linkedList);
+
+
     }
 
-    private TreeNode internalDeserialize(String[] words) {
-        index++;
-        if (index == words.length) {
+    private TreeNode Deserialize(LinkedList<String> linkedList) {
+        if (linkedList.isEmpty()) {
             return null;
         }
-        if ("#".equals(words[index])) {
+        String poll = linkedList.poll();
+        if ("#".equals(poll)) {
             return null;
         }
-        TreeNode root = new TreeNode(Integer.parseInt(words[index]));
-        root.left = internalDeserialize(words);
-        root.right = internalDeserialize(words);
+        TreeNode root = new TreeNode(Integer.parseInt(poll));
+        root.left = Deserialize(linkedList);
+        root.right = Deserialize(linkedList);
         return root;
     }
+
 
 }
