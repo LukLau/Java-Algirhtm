@@ -26,7 +26,8 @@ public class NormalSolution {
     public static void main(String[] args) {
         NormalSolution solution = new NormalSolution();
         ListNode root = new ListNode(1);
-        solution.basicCalculate("100+100");
+//        solution.basicCalculate("100+100");
+        solution.minMoney(new int[]{5, 2, 3}, 20);
     }
 
     /**
@@ -553,8 +554,7 @@ public class NormalSolution {
         return result;
     }
 
-    private void intervalPathSum(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, TreeNode
-            root, int sum) {
+    private void intervalPathSum(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, TreeNode root, int sum) {
         tmp.add(root.val);
         if (root.left == null && root.right == null && root.val == sum) {
             result.add(new ArrayList<>(tmp));
@@ -2219,8 +2219,7 @@ public class NormalSolution {
 
     }
 
-    private void internalSubSets(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int start,
-                                 int[] s) {
+    private void internalSubSets(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int start, int[] s) {
         result.add(new ArrayList<>(tmp));
         for (int i = start; i < s.length; i++) {
             tmp.add(s[i]);
@@ -2497,8 +2496,7 @@ public class NormalSolution {
         return result;
     }
 
-    private void internalCombinationSum2(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp,
-                                         int start, int[] num, int target, boolean[] used) {
+    private void internalCombinationSum2(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int start, int[] num, int target, boolean[] used) {
         if (target == 0) {
             result.add(new ArrayList<>(tmp));
             return;
@@ -2997,7 +2995,7 @@ public class NormalSolution {
             int min = Integer.MAX_VALUE;
             for (int j = 0; j < arr.length; j++) {
                 if (i - arr[j] >= 0 && dp[i - arr[j]] != Integer.MAX_VALUE) {
-                    min = Math.min(min, dp[i - arr[j]] + 1);
+                    min = Math.min(min, 1 + dp[i - arr[j]]);
                 }
             }
             dp[i] = min;
@@ -3381,8 +3379,7 @@ public class NormalSolution {
         return result;
     }
 
-    private void internalPermuteUnique(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp,
-                                       int[] num, boolean[] used) {
+    private void internalPermuteUnique(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int[] num, boolean[] used) {
         if (tmp.size() == num.length) {
             result.add(new ArrayList<>(tmp));
             return;

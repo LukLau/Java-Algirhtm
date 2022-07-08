@@ -559,6 +559,21 @@ public class RecursiveSolution {
         return count;
     }
 
+
+    /**
+     * https://leetcode.cn/problems/parse-lisp-expression/solution/lisp-yu-fa-jie-xi-by-leetcode-solution-zycb/
+     * todo
+     * 736. Lisp 语法解析
+     *
+     * @param expression
+     * @return
+     */
+    public int evaluate(String expression) {
+        return -1;
+
+    }
+
+
     private void intervalIslands(char[][] grid, int i, int j) {
         if (i < 0 || i == grid.length || j < 0 || j == grid[i].length) {
             return;
