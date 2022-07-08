@@ -2146,7 +2146,6 @@ public class SwordOffer {
      * @return bool布尔型
      */
     public boolean match(String str, String pattern) {
-        // write code here
         if (pattern.isEmpty()) {
             return str.isEmpty();
         }
@@ -2162,11 +2161,11 @@ public class SwordOffer {
                 if (str.charAt(i - 1) == pattern.charAt(j - 1) || pattern.charAt(j - 1) == '.') {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else if (pattern.charAt(j - 1) == '*') {
-//                    if (str.charAt(i - 1) != pattern.charAt(j - 2) && pattern.charAt(j - 2) != '.') {
-//                        dp[i][j] = dp[i][j - 2];
-//                    } else {
-                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
-//                    }
+                    if (str.charAt(i - 1) != pattern.charAt(j - 2) && pattern.charAt(j - 2) != '.') {
+                        dp[i][j] = dp[i][j - 2];
+                    } else {
+                        dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
+                    }
                 }
             }
         }
@@ -2659,7 +2658,6 @@ public class SwordOffer {
         }
         return queue.size();
     }
-
 
 
     /**

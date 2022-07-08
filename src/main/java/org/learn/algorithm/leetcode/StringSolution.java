@@ -25,7 +25,7 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.partition("aab");
+        solution.isMatchII("aab", "c*a*b");
     }
 
     /**
@@ -219,15 +219,15 @@ public class StringSolution {
      * @return
      */
     public boolean isMatchII(String s, String p) {
-        if (p.isEmpty()) {
-            return s.isEmpty();
+        if (s.isEmpty()) {
+            return p.isEmpty();
         }
         int m = s.length();
         int n = p.length();
         boolean[][] dp = new boolean[m + 1][n + 1];
         dp[0][0] = true;
         for (int j = 1; j <= n; j++) {
-            dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j];
+            dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j - 1];
         }
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {

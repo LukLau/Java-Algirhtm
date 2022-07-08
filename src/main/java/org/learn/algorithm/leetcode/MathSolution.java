@@ -290,26 +290,34 @@ public class MathSolution {
         }
         int result = 0;
         for (int i = 0; i < points.length; i++) {
-            Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
-            int overlap = 0;
             int number = 0;
+            int overlap = 0;
+            Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
             for (int j = i + 1; j < points.length; j++) {
                 int x = points[j][0] - points[i][0];
                 int y = points[j][1] - points[i][1];
+
                 if (x == 0 && y == 0) {
                     overlap++;
                     continue;
                 }
                 int gcd = gcd(x, y);
+
                 x /= gcd;
                 y /= gcd;
+
                 Map<Integer, Integer> tmp = map.getOrDefault(x, new HashMap<>());
                 Integer count = tmp.getOrDefault(y, 0);
-                tmp.put(y, count + 1);
+
+                count++;
+
+                tmp.put(y, count);
+
                 map.put(x, tmp);
-                number = Math.max(number, map.get(x).get(y));
+
+                number = Math.max(number, count);
             }
-            result = Math.max(result, 1 + overlap + number);
+            result = Math.max(result, 1 + number + overlap);
         }
         return result;
     }
@@ -657,7 +665,6 @@ public class MathSolution {
                 stack.push(Integer.parseInt(token));
             }
         }
-        return stack.pop();
     }
 
     /**
