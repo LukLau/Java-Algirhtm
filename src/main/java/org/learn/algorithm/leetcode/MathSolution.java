@@ -1,6 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 
+import java.nio.file.StandardWatchEventKinds;
 import java.util.*;
 
 /**
@@ -341,8 +342,9 @@ public class MathSolution {
         int min = nums[0];
         int result = nums[0];
         for (int i = 1; i < nums.length; i++) {
-            int tmpMax = Math.max(Math.max(max * nums[i], min * nums[i]), nums[i]);
-            int tmpMin = Math.min(Math.min(max * nums[i], min * nums[i]), nums[i]);
+            int val = nums[i];
+            int tmpMax = Math.max(Math.max(val * max, min * val), val);
+            int tmpMin = Math.min(Math.min(val * max, min * val), val);
             result = Math.max(result, tmpMax);
             max = tmpMax;
             min = tmpMin;

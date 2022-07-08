@@ -23,7 +23,20 @@ public class InterviewOffer {
 
     public static void main(String[] args) {
         InterviewOffer offer = new InterviewOffer();
-        offer.maxInWindows(new int[]{2, 3, 4, 2, 6, 2, 5, 1}, 3);
+
+        ListNode root = new ListNode(1);
+
+        ListNode d1 = new ListNode(2);
+
+        root.next = d1;
+
+        d1.next = new ListNode(3);
+
+        d1.next.next = new ListNode(4);
+
+        d1.next.next.next = new ListNode(5);
+
+        offer.reorderList(root);
 
     }
 
@@ -1088,31 +1101,33 @@ public class InterviewOffer {
         if (head == null || head.next == null) {
             return;
         }
-        ListNode fast = head;
         ListNode slow = head;
+        ListNode fast = head;
         while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode next = slow.next;
 
-        ListNode reverseNode = reverseNode(next);
+        ListNode listNode = slow.next;
 
         slow.next = null;
 
-        ListNode d1 = head;
-        while (d1 != null && reverseNode != null) {
-            ListNode tmp = d1.next;
+        ListNode reverseNode = reverseNode(listNode);
 
-            d1.next = reverseNode;
+        ListNode dummy = head;
 
-            ListNode reverse2 = reverseNode.next;
+        while (dummy != null && reverseNode != null) {
+            ListNode d1 = dummy.next;
 
-            reverseNode.next = tmp;
+            ListNode next = reverseNode.next;
 
-            d1 = reverseNode.next;
+            dummy.next = reverseNode;
 
-            reverseNode = reverse2;
+            reverseNode.next = d1;
+
+            dummy = d1;
+
+            reverseNode = next;
         }
     }
 
@@ -1415,12 +1430,12 @@ public class InterviewOffer {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode slow = head;
         ListNode fast = head;
-        while (fast != null && fast.next != null) {
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
             fast = fast.next.next;
             slow = slow.next;
-            if (slow == fast) {
+            if (fast == slow) {
                 fast = head;
                 while (fast != slow) {
                     fast = fast.next;

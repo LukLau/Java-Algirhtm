@@ -2642,21 +2642,15 @@ public class SwordOffer {
         if (startEnd == null || startEnd.length == 0) {
             return 0;
         }
-        Arrays.sort(startEnd, new Comparator<int[]>() {
-            @Override
-            public int compare(int[] o1, int[] o2) {
-                return o1[0] - o2[0];
+        Arrays.sort(startEnd, Comparator.comparingInt(o -> o[0]));
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
+        for (int[] item : startEnd) {
+            if (!priorityQueue.isEmpty() && priorityQueue.peek()[1] <= item[0]) {
+                priorityQueue.poll();
             }
-        });
-        PriorityQueue<int[]> queue = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
-        for (int[] tmp : startEnd) {
-            if (!queue.isEmpty() && queue.peek()[1] <= tmp[0]) {
-                queue.poll();
-            }
-            queue.offer(tmp);
-
+            priorityQueue.offer(item);
         }
-        return queue.size();
+        return priorityQueue.size();
     }
 
 

@@ -178,11 +178,8 @@ public class BinarySolution {
         int end = nums.length - 1;
         while (start < end) {
             if (nums[start] == nums[end]) {
-                start++;
+                end--;
                 continue;
-            }
-            if (nums[start] < nums[end]) {
-                break;
             }
             int mid = start + (end - start) / 2;
             if (nums[mid] > nums[end]) {
