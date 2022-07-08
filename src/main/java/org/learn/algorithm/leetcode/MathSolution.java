@@ -667,6 +667,7 @@ public class MathSolution {
                 stack.push(Integer.parseInt(token));
             }
         }
+        return stack.pop();
     }
 
     /**

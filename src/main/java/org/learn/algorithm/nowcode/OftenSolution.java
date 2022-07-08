@@ -15,10 +15,13 @@ public class OftenSolution {
 
     public static void main(String[] args) {
         OftenSolution solution = new OftenSolution();
-        ArrayList<String[]> strings = solution.solveNQueens(4);
-        for (String[] word : strings) {
-            System.out.println(Arrays.toString(word));
-        }
+//        ArrayList<String[]> strings = solution.solveNQueens(4);
+//        for (String[] word : strings) {
+//            System.out.println(Arrays.toString(word));
+//        }
+
+        generateSentence(
+                "this is a sentence it is not a good one and it is also bad", 5, 2);
     }
 
 
@@ -536,6 +539,65 @@ public class OftenSolution {
             }
         }
         return false;
+    }
+
+    public static String generateSentence(String sentence, int length, int lookBack) {
+        String[] words = sentence.split(" ");
+        if (words.length == 0) {
+            return sentence;
+        }
+        if (lookBack > length) {
+            throw new IllegalArgumentException("lookBack exceeds length");
+        }
+
+        List<String> newWords = new ArrayList<>();
+
+        generateLeading(newWords, words, lookBack);
+
+        for (int ig = lookBack; ig < length; ig++) {
+            List<String> prevs = newWords.subList(newWords.size() - lookBack, newWords.size());
+            String chosenWord = randomNextWord(words, prevs);
+            newWords.add(chosenWord);
+        }
+
+        return String.join(" ", newWords);
+    }
+
+    // 生成最初的几个单词
+    private static void generateLeading(List<String> newWords, String[] words, int lookBack) {
+        int randIdx = new Random().nextInt(words.length);
+        for (int i = 0; i < lookBack; i++) {
+            newWords.add(safeGetWord(words, randIdx + i));
+        }
+    }
+
+    private static String randomNextWord(String[] words, List<String> prevs) {
+        int randomBeginIndex = new Random().nextInt(words.length);
+
+        for (int _i = 0; _i < words.length; _i++) {
+            int idx = randomBeginIndex + _i;
+            // 试匹配一个词组
+            int matchedCount = 0;
+
+            for (int j = 0; j < prevs.size(); j++) {
+                if (!safeGetWord(words, idx + j).equals(prevs.get(j))) {
+                    matchedCount = -1;
+                    break;
+                }
+
+                matchedCount++;
+            }
+
+            if (matchedCount == prevs.size()) {
+                return safeGetWord(words, idx + prevs.size());
+            }
+        }
+
+        return null;
+    }
+
+    private static String safeGetWord(String[] words, int index) {
+        return words[index % words.length];
     }
 
 

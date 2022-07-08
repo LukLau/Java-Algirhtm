@@ -25,7 +25,8 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.isMatchII("aab", "c*a*b");
+        solution.lengthOfLongestSubstringTwoDistinct("eceba");
+
     }
 
     /**
@@ -147,32 +148,33 @@ public class StringSolution {
      * @return: the length of the longest substring T that contains at most 2 distinct characters
      */
     public int lengthOfLongestSubstringTwoDistinct(String s) {
-        // Write your code here
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        Map<Character, Integer> map = new HashMap<>();
         int result = 0;
         int left = 0;
+        Map<Character, Integer> map = new HashMap<>();
         char[] words = s.toCharArray();
         for (int i = 0; i < words.length; i++) {
-            char tmp = words[i];
-            Integer count = map.getOrDefault(tmp, 0);
-            map.put(tmp, count + 1);
+            char tmp = s.charAt(i);
+            int num = map.getOrDefault(tmp, 0);
+            map.put(tmp, num + 1);
+
             while (map.size() > 2) {
-                char leftEdge = words[left++];
-                Integer leftCount = map.get(leftEdge);
-                leftCount--;
-                if (leftCount == 0) {
-                    map.remove(leftEdge);
+                Integer count = map.get(s.charAt(left));
+                count--;
+                if (count == 0) {
+                    map.remove(s.charAt(left));
                 } else {
-                    map.put(leftEdge, leftCount);
+                    map.put(s.charAt(left), count);
                 }
+                left++;
             }
             result = Math.max(result, i - left + 1);
         }
         return result;
     }
+
 
     /**
      * 10. Regular Expression Matching

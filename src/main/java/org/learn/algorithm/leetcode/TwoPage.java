@@ -1,7 +1,6 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
-import sun.security.util.Length;
 
 import java.util.*;
 

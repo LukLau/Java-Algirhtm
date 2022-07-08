@@ -41,13 +41,12 @@ public class VipSolution {
             return root;
         }
         TreeNode left = root.left;
-        TreeNode newRoot = upsideDownBinaryTree(root.left);
+        TreeNode upsideDown = upsideDownBinaryTree(left);
         left.left = root.right;
         left.right = root;
         root.left = null;
         root.right = null;
-        return newRoot;
-
+        return upsideDown;
         // write your code here
     }
 
@@ -68,19 +67,19 @@ public class VipSolution {
         }
         int m = s.length();
         int n = t.length();
-        int diff = Math.min(m, n);
-        for (int i = 0; i < diff; i++) {
+        int min = Math.min(m, n);
+        for (int i = 0; i < min; i++) {
             if (s.charAt(i) != t.charAt(i)) {
-                if (m == n) {
-                    return s.substring(i + 1).equals(t.substring(i + 1));
-                } else if (m < n) {
+                if (m < n) {
                     return s.substring(i).equals(t.substring(i + 1));
+                } else if (m == n) {
+                    return s.substring(i + 1).equals(t.substring(i + 1));
                 } else {
                     return s.substring(i + 1).equals(t.substring(i));
                 }
             }
         }
-        return Math.abs(m - n) <= 1;
+        return false;
     }
 
     /**

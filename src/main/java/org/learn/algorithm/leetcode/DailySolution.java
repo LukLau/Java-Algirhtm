@@ -30,20 +30,7 @@ public class DailySolution {
         if (dictionary == null || dictionary.isEmpty()) {
             return "";
         }
-        dictionary.sort(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-//                if (o1.length() < o2.length()) {
-//                    return -1;
-//                }
-//                String s1 = o1 + o2;
-//                String s2 = o2 + o1;
-
-//                return s1.compareTo(s2);
-
-                return o1.compareTo(o2);
-            }
-        });
+        dictionary.sort(Comparator.naturalOrder());
         String[] words = sentence.split(" ");
 
         StringBuilder builder = new StringBuilder();
@@ -66,6 +53,17 @@ public class DailySolution {
             }
         }
         return builder.toString();
+    }
+
+    /**
+     * todo
+     * 1217
+     *
+     * @param position
+     * @return
+     */
+    public int minCostToMoveChips(int[] position) {
+        return -1;
     }
 
 
