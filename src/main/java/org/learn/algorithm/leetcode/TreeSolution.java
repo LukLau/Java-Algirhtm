@@ -274,8 +274,9 @@ public class TreeSolution {
         if (result.size() == expected) {
             result.add(root.val);
         }
-        interRightSideView(result, root.right, expected + 1);
-        interRightSideView(result, root.left, expected + 1);
+        expected++;
+        interRightSideView(result, root.right, expected);
+        interRightSideView(result, root.left, expected);
     }
 
     /**
@@ -1008,7 +1009,7 @@ public class TreeSolution {
         if (root.left == null && root.right == null) {
             return val * 10 + root.val;
         }
-        return intervalSumNumbers(root.left, val * 10 + root.val) + intervalSumNumbers(root.right,  val * 10 + root.val);
+        return intervalSumNumbers(root.left, val * 10 + root.val) + intervalSumNumbers(root.right, val * 10 + root.val);
     }
 
 

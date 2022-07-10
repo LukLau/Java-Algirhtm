@@ -3,7 +3,6 @@ package org.learn.algorithm.leetcode;
 import org.learn.algorithm.datastructure.WordDictionary;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * @author luk
@@ -14,7 +13,8 @@ public class RecursiveSolution {
 
     public static void main(String[] args) {
         RecursiveSolution solution = new RecursiveSolution();
-        System.out.println(solution.getPermutation(3, 3));
+        char[][] words = new char[][]{{'1', '1', '1', '1', '0'}, {'1', '1', '0', '1', '0'}, {'1', '1', '0', '0', '0'}, {'0', '0', '0', '0', '0'}};
+        solution.numIslands(words);
     }
 
     /**
@@ -548,11 +548,30 @@ public class RecursiveSolution {
         int row = grid.length;
         int column = grid[0].length;
         int count = 0;
+        boolean[][] used = new boolean[row][column];
+        int[][] matrix = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        LinkedList<int[]> linkedList = new LinkedList<>();
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (grid[i][j] == '1') {
                     count++;
-                    intervalIslands(grid, i, j);
+                    linkedList.offer(new int[]{i, j});
+                    while (!linkedList.isEmpty()) {
+                        int[] current = linkedList.poll();
+                        if (used[current[0]][current[1]]) {
+                            continue;
+                        }
+                        used[current[0]][current[1]] = true;
+                        grid[current[0]][current[1]] = '0';
+                        for (int[] digits : matrix) {
+                            int x = current[0] + digits[0];
+                            int y = current[1] + digits[1];
+                            if (x < 0 || x >= row || y < 0 || y >= column || grid[x][y] == '0') {
+                                continue;
+                            }
+                            linkedList.offer(new int[]{x, y});
+                        }
+                    }
                 }
             }
         }
@@ -676,33 +695,31 @@ public class RecursiveSolution {
      * @return
      */
     public boolean wordBreak(String s, List<String> wordDict) {
-        if (s == null || s.isEmpty()) {
+        if (s == null || s.isEmpty() || wordDict == null || wordDict.isEmpty()) {
             return false;
         }
         Map<String, Boolean> map = new HashMap<>();
-        return intervalWordBreak(map, s, wordDict);
+        return internalWordBreak(s, wordDict, map);
     }
 
-    private boolean intervalWordBreak(Map<String, Boolean> map, String s, List<String> wordDict) {
-        if (map.containsKey(s)) {
-            return map.get(s);
-        }
+    private boolean internalWordBreak(String s, List<String> wordDict, Map<String, Boolean> map) {
         if (s.isEmpty()) {
             return true;
         }
-        for (String word : wordDict) {
-            int index = s.indexOf(word);
-            if (index != 0) {
-                continue;
-            }
-            if (intervalWordBreak(map, s.substring(word.length()), wordDict)) {
-                return true;
+        if (map.containsKey(s)) {
+            return map.get(s);
+        }
+        for (String prefix : wordDict) {
+            if (s.startsWith(prefix)) {
+                String remain = s.substring(prefix.length());
+                if (internalWordBreak(remain, wordDict, map)) {
+                    return true;
+                }
             }
         }
         map.put(s, false);
         return false;
     }
-
 
     /**
      * 140. Word Break II
@@ -716,33 +733,32 @@ public class RecursiveSolution {
             return new ArrayList<>();
         }
         Map<String, List<String>> map = new HashMap<>();
-        return intervalWordBreakII(map, s, wordDict);
+        return intervalWordBreakII(s, wordDict, map);
     }
 
-    private List<String> intervalWordBreakII(Map<String, List<String>> map, String s, List<String> wordDict) {
+    private List<String> intervalWordBreakII(String s, List<String> wordDict, Map<String, List<String>> map) {
+        List<String> result = new ArrayList<>();
+        if (s.isEmpty()) {
+            result.add("");
+            return result;
+        }
         if (map.containsKey(s)) {
             return map.get(s);
         }
-        List<String> result = new ArrayList<>();
-        if (s.isEmpty()) {
-            result.add(s);
-            return result;
-        }
-        for (String word : wordDict) {
-            int index = s.indexOf(word);
-            if (index != 0) {
-                continue;
-            }
-            List<String> tmpList = intervalWordBreakII(map, s.substring(word.length()), wordDict);
-            for (String tmp : tmpList) {
-                String s1 = word + (tmp.isEmpty() ? "" : " " + tmp);
-                result.add(s1);
+
+        for (String prefix : wordDict) {
+            if (s.startsWith(prefix)) {
+                String remain = s.substring(prefix.length());
+                List<String> breakWords = intervalWordBreakII(remain, wordDict, map);
+                for (String breakWord : breakWords) {
+                    String combineWord = prefix + (breakWord.isEmpty() ? "" : " " + breakWord);
+                    result.add(combineWord);
+                }
             }
         }
         map.put(s, result);
         return result;
     }
-
 
     /**
      * 241. Different Ways to Add Parentheses

@@ -1,6 +1,8 @@
 package org.learn.algorithm.leetcode;
 
 
+import org.learn.algorithm.datastructure.ListNode;
+
 import java.util.*;
 
 /**
@@ -293,26 +295,25 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return "";
         }
-        int m = s.length();
-        boolean[][] dp = new boolean[m][m];
+        int len = s.length();
         int result = 0;
-        int head = 0;
-        for (int i = 0; i < m; i++) {
+        int begin = 0;
+        boolean[][] dp = new boolean[len][len];
+        for (int i = 0; i < len; i++) {
             for (int j = 0; j <= i; j++) {
-                if (s.charAt(j) == s.charAt(i) && (i - j <= 2 || dp[j + 1][i + 1])) {
+                if (s.charAt(j) == s.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1])) {
                     dp[j][i] = true;
                 }
                 if (dp[j][i] && i - j + 1 > result) {
                     result = i - j + 1;
-
-                    head = j;
+                    begin = j;
                 }
             }
         }
-        if (result != 0) {
-            return s.substring(head, head + result);
+        if (result == 0) {
+            return "";
         }
-        return "";
+        return s.substring(begin, begin + result);
     }
 
     public String longestPalindromeII(String s) {

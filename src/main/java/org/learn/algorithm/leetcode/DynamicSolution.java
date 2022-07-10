@@ -625,10 +625,10 @@ public class DynamicSolution {
         }
         int[][] dp = new int[k + 1][prices.length];
         for (int i = 1; i <= k; i++) {
-            int cost = -prices[0];
+            int cost = prices[0];
             for (int j = 1; j < prices.length; j++) {
-                dp[i][j] = Math.max(dp[i][j - 1], cost + prices[j]);
-                cost = Math.max(cost, dp[i - 1][j - 1] - prices[j]);
+                dp[i][j] = Math.max(dp[i][j - 1], prices[j] - cost);
+                cost = Math.min(cost, prices[j] - dp[i - 1][j - 1]);
             }
         }
         return dp[k][prices.length - 1];
@@ -667,7 +667,7 @@ public class DynamicSolution {
         int robPrev = 0;
         for (int num : nums) {
             int tmp = robCurrent;
-            robCurrent = Math.max(robPrev + num, robCurrent);
+            robCurrent = Math.max(robCurrent, robPrev + num);
             robPrev = tmp;
         }
         return Math.max(robCurrent, robPrev);
@@ -820,6 +820,32 @@ public class DynamicSolution {
         }
         return dp[0][0];
     }
+
+    public int calculateMinimumHPII(int[][] dungeon) {
+        int row = dungeon.length;
+        int column = dungeon[0].length;
+        int[] dp = new int[column];
+
+        for (int j = column - 1; j >= 0; j--) {
+            if (j == column - 1) {
+                dp[j] = Math.max(1, 1 - dungeon[row - 1][j]);
+            } else {
+                dp[j] = Math.max(1, dp[j + 1] - dungeon[row - 1][j]);
+            }
+        }
+
+        for (int i = row - 2; i >= 0; i--) {
+            for (int j = column - 1; j >= 0; j--) {
+                if (j == column - 1) {
+                    dp[j] = Math.max(1, dp[j] - dungeon[i][j]);
+                } else {
+                    dp[j] = Math.max(1, Math.min(dp[j], dp[j + 1]) - dungeon[i][j]);
+                }
+            }
+        }
+        return dp[0];
+    }
+
 
     /**
      * 289. Game of Life

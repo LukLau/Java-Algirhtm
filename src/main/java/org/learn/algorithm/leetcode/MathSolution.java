@@ -1,6 +1,8 @@
 package org.learn.algorithm.leetcode;
 
 
+import sun.security.provider.Sun;
+
 import java.nio.file.StandardWatchEventKinds;
 import java.util.*;
 
@@ -16,7 +18,7 @@ public class MathSolution {
         MathSolution solution = new MathSolution();
 //        int[] nums = new int[]{5, 4, 4, 3, 2, 1};
 //        solution.nthUglyNumber(10);
-        solution.grayCode(2);
+        solution.isHappy(19);
     }
 
     // 素数相关
@@ -247,10 +249,10 @@ public class MathSolution {
      */
     public List<Integer> grayCode(int n) {
         List<Integer> result = new ArrayList<>();
-        int num = 1 << n;
-        for (int i = 0; i < num; i++) {
-            int tmp = (i >> 1) ^ i;
-            result.add(tmp);
+        int count = (int) Math.pow(2, n);
+        for (int i = 0; i < count; i++) {
+            int val = (i >> 1) ^ i;
+            result.add(val);
         }
         return result;
     }
@@ -458,10 +460,11 @@ public class MathSolution {
         int result = 0;
         for (int i = 0; i < 32; i++) {
             result <<= 1;
-            if ((n & 1) != 0) {
+            boolean remain = (n & (1 << i)) != 0;
+
+            if (remain) {
                 result++;
             }
-            n >>= 1;
         }
         return result;
     }
@@ -518,7 +521,33 @@ public class MathSolution {
             shiftCount++;
         }
         return m << shiftCount;
+    }
 
+    /**
+     * 202. Happy Number
+     *
+     * @param n
+     * @return
+     */
+    public boolean isHappy(int n) {
+        Set<Integer> used = new HashSet<>();
+        while (true) {
+            if (used.contains(n)) {
+                return false;
+            }
+            int sum = 0;
+            int tmp = n;
+            while (tmp != 0) {
+                int mod = tmp % 10;
+                sum += mod * mod;
+                tmp /= 10;
+            }
+            if (sum == 1) {
+                return true;
+            }
+            n = sum;
+            used.add(n);
+        }
     }
 
 
@@ -569,12 +598,12 @@ public class MathSolution {
         for (int num : nums) {
             if (num == candidate) {
                 count++;
-            } else {
-                count--;
-                if (count == 0) {
-                    candidate = num;
-                    count = 1;
-                }
+                continue;
+            }
+            count--;
+            if (count == 0) {
+                candidate = num;
+                count = 1;
             }
         }
         return candidate;
@@ -1014,5 +1043,20 @@ public class MathSolution {
 
         }
         return null;
+    }
+
+    /**
+     * 172. Factorial Trailing Zeroes
+     *
+     * @param n
+     * @return
+     */
+    public int trailingZeroes(int n) {
+        int count = 0;
+        while (n / 5 != 0) {
+            count += n / 5;
+        }
+        return count;
+
     }
 }

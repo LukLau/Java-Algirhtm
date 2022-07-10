@@ -67,4 +67,19 @@ public class DailySolution {
     }
 
 
+    /**
+     * 1473. Paint House III
+     *
+     * @param houses
+     * @param cost
+     * @param m
+     * @param n
+     * @param target
+     * @return
+     */
+    public int minCost(int[] houses, int[][] cost, int m, int n, int target) {
+        return -1;
+    }
+
+
 }

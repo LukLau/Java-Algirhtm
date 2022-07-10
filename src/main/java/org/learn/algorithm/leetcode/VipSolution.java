@@ -3,6 +3,7 @@ package org.learn.algorithm.leetcode;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.Point;
 import org.learn.algorithm.datastructure.TreeNode;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitterReturnValueHandler;
 
 import java.util.*;
 
@@ -27,7 +28,7 @@ public class VipSolution {
     public static void main(String[] args) {
         VipSolution solution = new VipSolution();
         int[] nums = new int[]{1, 3, 2};
-        solution.verifyPreorder(nums);
+        solution.findMissingRanges(new int[]{2147483647}, 0, 2147483647);
     }
 
     /**
@@ -93,19 +94,26 @@ public class VipSolution {
      */
     public List<String> findMissingRanges(int[] nums, int lower, int upper) {
         // write your code here
+        return internalFindMissingRanges(nums, lower, upper);
+    }
+
+    private List<String> internalFindMissingRanges(int[] nums, long lower, long upper) {
         if (nums == null) {
             return new ArrayList<>();
         }
-        long pre = lower;
         List<String> result = new ArrayList<>();
-        for (int num : nums) {
-            if (num > pre && num >= pre + 1) {
-                result.add(range(pre, num - 1));
-            }
-            pre = ((long) num + 1);
+        if (nums.length == 0) {
+            result.add(range(lower, upper));
+            return result;
         }
-        if (pre <= upper) {
-            result.add(range(pre, upper));
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] > lower) {
+                result.add(range(lower, nums[i] - 1));
+            }
+            lower = (long) nums[i] + 1;
+        }
+        if (lower <= upper) {
+            result.add(range(lower + 1, upper));
         }
         return result;
     }

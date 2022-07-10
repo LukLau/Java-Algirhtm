@@ -2,7 +2,8 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.Node;
 
-import java.util.List;
+import javax.swing.*;
+import java.util.*;
 
 /**
  * 图相关
@@ -20,7 +21,45 @@ public class GraphSolution {
      * @return
      */
     public Node cloneGraph(Node node) {
-        return null;
+        if (node == null) {
+            return null;
+        }
+        Set<Integer> used = new HashSet<>();
+
+        LinkedList<Node> linkedList = new LinkedList<>();
+
+        linkedList.offer(node);
+
+        Node root = null;
+        while (!linkedList.isEmpty()) {
+            Node prev = linkedList.poll();
+
+            if (used.contains(prev.val)) {
+                continue;
+            }
+            Node expectedNode = new Node(prev.val);
+
+            if (root == null) {
+                root = expectedNode;
+            }
+            used.add(expectedNode.val);
+
+            List<Node> prevNeighbors = prev.neighbors;
+
+            List<Node> expectedNeighbors = new ArrayList<>();
+
+            if (prevNeighbors != null && !prevNeighbors.isEmpty()) {
+                for (Node prevNeighbor : prevNeighbors) {
+                    if (prevNeighbor != null) {
+                        Node expectedNeighbor = new Node(prevNeighbor.val);
+                        expectedNeighbors.add(expectedNeighbor);
+                        linkedList.offer(prevNeighbor);
+                    }
+                }
+            }
+            expectedNode.neighbors = expectedNeighbors;
+        }
+        return root;
     }
 
 
