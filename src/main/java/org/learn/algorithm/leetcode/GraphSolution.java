@@ -72,6 +72,15 @@ public class GraphSolution {
      * @return
      */
     public boolean canFinish(int numCourses, int[][] prerequisites) {
+        if (prerequisites == null || prerequisites.length == 0) {
+            return false;
+        }
+        Arrays.sort(prerequisites, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return 0;
+            }
+        });
         return false;
     }
 

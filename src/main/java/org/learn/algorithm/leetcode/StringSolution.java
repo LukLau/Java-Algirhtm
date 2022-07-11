@@ -316,6 +316,35 @@ public class StringSolution {
         return s.substring(begin, begin + result);
     }
 
+
+    /**
+     * 205. Isomorphic Strings
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isIsomorphic(String s, String t) {
+        if (s == null || t == null) {
+            return false;
+        }
+        int m = s.length();
+        int n = t.length();
+        Map<Character, Integer> map1 = new HashMap<>();
+        Map<Character, Integer> map2 = new HashMap<>();
+        for (int i = 0; i < m; i++) {
+            int idx1 = map1.getOrDefault(s.charAt(i), i);
+            int idx2 = map2.getOrDefault(t.charAt(i), i);
+            if (idx1 != idx2) {
+                return false;
+            }
+            map1.put(s.charAt(i), idx1);
+            map2.put(t.charAt(i), idx2);
+        }
+        return true;
+    }
+
+
     public String longestPalindromeII(String s) {
         if (s == null || s.isEmpty()) {
             return "";
