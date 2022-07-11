@@ -476,9 +476,9 @@ public class RecursiveSolution {
             return;
         }
         s += board[i][j];
-        if (!wordDictionary.startWith(s)) {
-            return;
-        }
+//        if (!wordDictionary.startWith(s)) {
+//            return;
+//        }
         if (wordDictionary.search(s)) {
             result.add(s);
         }
