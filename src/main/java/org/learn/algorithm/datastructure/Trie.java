@@ -37,10 +37,11 @@ public class Trie {
 
         TrieNode p = root;
         for (char c : words) {
-            if (p.next[c - 'a'] == null) {
+            int index = c - 'a';
+            if (p.next[index] == null) {
                 return false;
             }
-            p = p.next[c - 'a'];
+            p = p.next[index];
         }
         return word.equals(p.word);
     }
@@ -56,7 +57,7 @@ public class Trie {
 
     private boolean internalSearch(TrieNode p, int start, char[] words) {
         if (start == words.length) {
-            return root.word != null;
+            return p.word != null;
         }
         char word = words[start];
         if (word == '.') {
@@ -65,13 +66,11 @@ public class Trie {
                     return true;
                 }
             }
-        } else {
-            if (p.next[word - 'a'] == null) {
-                return false;
-            }
-            return internalSearch(p.next[word - 'a'], start + 1, words);
         }
-        return false;
+        if (p.next[word - 'a'] == null) {
+            return false;
+        }
+        return internalSearch(p.next[word - 'a'], start + 1, words);
     }
 
 
