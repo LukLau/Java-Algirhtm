@@ -334,32 +334,7 @@ public class DynamicSolution {
         if (matrix == null || matrix.length == 0) {
             return 0;
         }
-        int row = matrix.length;
-        int column = matrix[0].length;
-        int[][] dp = new int[row][column];
-
-        int result = 0;
-        for (int i = 0; i < row; i++) {
-            if (matrix[i][0] == '1') {
-                dp[i][0] = 1;
-                result = 1;
-            }
-        }
-        for (int j = 0; j < column; j++) {
-            if (matrix[0][j] == '1') {
-                dp[0][j] = 1;
-                result = 1;
-            }
-        }
-        for (int i = 1; i < row; i++) {
-            for (int j = 1; j < column; j++) {
-                if (matrix[i][j] == '1') {
-                    dp[i][j] = 1 + Math.min(dp[i - 1][j], Math.min(dp[i][j - 1], dp[i - 1][j - 1]));
-                    result = Math.max(result, dp[i][j] * dp[i][j]);
-                }
-            }
-        }
-        return result;
+        return -1;
     }
 
     /**
@@ -686,7 +661,7 @@ public class DynamicSolution {
         if (nums.length == 1) {
             return 1;
         }
-        return Math.max(intervalRob(nums, 1, nums.length - 1), intervalRob(nums, 0, nums.length - 2));
+        return Math.max(intervalRob(nums, 0, nums.length - 2), intervalRob(nums, 1, nums.length - 1));
     }
 
     // 房子颜色问题
@@ -696,7 +671,7 @@ public class DynamicSolution {
         int robCurrent = 0;
         for (int i = start; i <= end; i++) {
             int tmp = robCurrent;
-            robCurrent = Math.max(robPrev + nums[i], robCurrent);
+            robCurrent = Math.max(robCurrent, robPrev + nums[i]);
             robPrev = tmp;
         }
         return Math.max(robCurrent, robPrev);

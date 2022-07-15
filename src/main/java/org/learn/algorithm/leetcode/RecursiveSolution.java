@@ -1,6 +1,6 @@
 package org.learn.algorithm.leetcode;
 
-import org.learn.algorithm.datastructure.WordDictionary;
+import org.learn.algorithm.datastructure.Trie;
 
 import java.util.*;
 
@@ -13,8 +13,9 @@ public class RecursiveSolution {
 
     public static void main(String[] args) {
         RecursiveSolution solution = new RecursiveSolution();
-        char[][] words = new char[][]{{'1', '1', '1', '1', '0'}, {'1', '1', '0', '1', '0'}, {'1', '1', '0', '0', '0'}, {'0', '0', '0', '0', '0'}};
-        solution.numIslands(words);
+        char[][] words = new char[][]{{'o', 'a', 'b', 'n'}, {'o', 't', 'a', 'e'}, {'a', 'h', 'k', 'r'}, {'a', 'f', 'l', 'v'}};
+        String[] tmp = new String[]{"oa", "oaa"};
+        solution.findWords(words, tmp);
     }
 
     /**
@@ -350,7 +351,7 @@ public class RecursiveSolution {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i <= n; i++) {
+        for (int i = start; i <= 9 && i <= n; i++) {
             tmp.add(i);
             combineSum3(result, tmp, i + 1, k, n - i);
             tmp.remove(tmp.size() - 1);
@@ -451,42 +452,42 @@ public class RecursiveSolution {
         if (board == null || board.length == 0) {
             return new ArrayList<>();
         }
-        WordDictionary wordDictionary = new WordDictionary();
+        List<String> result = new ArrayList<>();
+        Trie trie = new Trie();
         for (String word : words) {
-            wordDictionary.addWord(word);
+            trie.insert(word);
         }
         int row = board.length;
-
         int column = board[0].length;
-
         boolean[][] used = new boolean[row][column];
-
-        List<String> result = new ArrayList<>();
-
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                intervalDfs(result, used, i, j, wordDictionary, "", board);
+                if (trie.startsWith(String.valueOf(board[i][j]))) {
+                    internalFindWords(result, trie, i, j, board, used, "");
+                }
             }
         }
         return result;
+
     }
 
-    private void intervalDfs(List<String> result, boolean[][] used, int i, int j, WordDictionary wordDictionary, String s, char[][] board) {
-        if (i < 0 || i >= used.length || j <= 0 || j >= used[i].length) {
+    private void internalFindWords(List<String> result, Trie trie, int i, int j, char[][] board, boolean[][] used, String s) {
+        if (i < 0 || i == board.length || j < 0 || j == board[i].length || used[i][j]) {
             return;
         }
         s += board[i][j];
-//        if (!wordDictionary.startWith(s)) {
-//            return;
-//        }
-        if (wordDictionary.search(s)) {
+
+        if (trie.search(s) && !result.contains(s)) {
             result.add(s);
         }
+        if (!trie.startsWith(s)) {
+            return;
+        }
         used[i][j] = true;
-        intervalDfs(result, used, i - 1, j, wordDictionary, s, board);
-        intervalDfs(result, used, i + 1, j, wordDictionary, s, board);
-        intervalDfs(result, used, i, j - 1, wordDictionary, s, board);
-        intervalDfs(result, used, i, j + 1, wordDictionary, s, board);
+        internalFindWords(result, trie, i - 1, j, board, used, s);
+        internalFindWords(result, trie, i + 1, j, board, used, s);
+        internalFindWords(result, trie, i, j - 1, board, used, s);
+        internalFindWords(result, trie, i, j + 1, board, used, s);
         used[i][j] = false;
     }
 

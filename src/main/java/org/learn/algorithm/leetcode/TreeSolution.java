@@ -1013,4 +1013,18 @@ public class TreeSolution {
     }
 
 
+    // 线段树系列 //
+
+    /**
+     * 218. The Skyline Problem
+     * todo
+     *
+     * @param buildings
+     * @return
+     */
+    public List<List<Integer>> getSkyline(int[][] buildings) {
+        return null;
+    }
+
+
 }

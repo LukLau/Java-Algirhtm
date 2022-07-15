@@ -15,8 +15,8 @@ public class ThreePage {
 
     public static void main(String[] args) {
         ThreePage page = new ThreePage();
-        int[] nums = new int[]{0, 1, 2, 4, 5, 7};
-        page.summaryRanges(nums);
+        int[] nums = new int[]{3, 2, 3, 1, 2, 4, 5, 5, 6};
+        page.containsNearbyDuplicate(new int[]{1,2,3,1,2,3},2);
     }
 
 
@@ -145,16 +145,43 @@ public class ThreePage {
         if (nums == null || nums.length == 0) {
             return -1;
         }
-        PriorityQueue<Integer> queue = new PriorityQueue<>(nums.length, Comparator.reverseOrder());
-        for (int num : nums) {
-            queue.offer(num);
+
+        int index = nums.length - k;
+        int partition = getPartition(nums, 0, nums.length - 1);
+        while (partition != index) {
+            if (partition < index) {
+                partition = getPartition(nums, partition + 1, nums.length - 1);
+            } else {
+                partition = getPartition(nums, 0, partition - 1);
+            }
         }
-        int iterator = 1;
-        while (iterator < k) {
-            Integer poll = queue.poll();
-            iterator++;
+        return nums[partition];
+    }
+
+    private int getPartition(int[] nums, int start, int end) {
+        int pivot = nums[start];
+        while (start < end) {
+            while (start < end && nums[end] >= pivot) {
+                end--;
+            }
+            if (start < end) {
+                swap(nums, start, end);
+            }
+            while (start < end && nums[start] <= pivot) {
+                start++;
+            }
+            if (start < end) {
+                swap(nums, start, end);
+            }
         }
-        return queue.poll();
+        nums[start] = pivot;
+        return start;
+    }
+
+    private void swap(int[] nums, int start, int end) {
+        int val = nums[start];
+        nums[start] = nums[end];
+        nums[end] = val;
     }
 
 
@@ -178,19 +205,6 @@ public class ThreePage {
         return false;
     }
 
-
-    /**
-     * 218. The Skyline Problem
-     * todo
-     *
-     * @param buildings
-     * @return
-     */
-    public List<List<Integer>> getSkyline(int[][] buildings) {
-        return null;
-    }
-
-
     /**
      * 219. Contains Duplicate II
      *
@@ -199,12 +213,11 @@ public class ThreePage {
      * @return
      */
     public boolean containsNearbyDuplicate(int[] nums, int k) {
-        Set<Integer> set = new HashSet<>();
+        Map<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
-            if (i > k) {
-                set.remove(nums[i - 1 - k]);
-            }
-            if (!set.add(nums[i])) {
+            int val = nums[i];
+            Integer previous = map.put(val, i);
+            if (previous != null && Math.abs(i - previous) <= k) {
                 return true;
             }
         }
