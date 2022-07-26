@@ -15,7 +15,9 @@ public class RecursiveSolution {
         RecursiveSolution solution = new RecursiveSolution();
         char[][] words = new char[][]{{'o', 'a', 'b', 'n'}, {'o', 't', 'a', 'e'}, {'a', 'h', 'k', 'r'}, {'a', 'f', 'l', 'v'}};
         String[] tmp = new String[]{"oa", "oaa"};
-        solution.findWords(words, tmp);
+//        solution.findWords(words, tmp);
+        List<Integer> diffWaysToCompute = solution.diffWaysToCompute("2*3-4*5");
+        System.out.println(diffWaysToCompute);
     }
 
     /**
@@ -768,49 +770,51 @@ public class RecursiveSolution {
      * @return
      */
     public List<Integer> diffWaysToCompute(String expression) {
-        if (expression == null || expression.isEmpty()) {
+        if (expression == null || expression.length() == 0) {
             return new ArrayList<>();
         }
-        int start = 0;
-        int len = expression.length();
-        int tmp = 0;
-        List<String> params = new ArrayList<>();
-        while (start < len) {
-            if (Character.isDigit(expression.charAt(start))) {
-                while (start < len && Character.isDigit(expression.charAt(start))) {
-                    tmp = tmp * 10 + Character.getNumericValue(expression.charAt(start));
-                    start++;
+        List<String> words = new ArrayList<>();
+        char[] expressions = expression.toCharArray();
+        int index = 0;
+        while (index < expressions.length) {
+            if (Character.isDigit(expressions[index])) {
+                int tmp = 0;
+                while (index < expressions.length && Character.isDigit(expressions[index])) {
+                    tmp = tmp * 10 + Character.getNumericValue(expressions[index++]);
                 }
-                params.add(String.valueOf(tmp));
-                tmp = 0;
+                words.add(String.valueOf(tmp));
             }
-            if (start != len) {
-                params.add(String.valueOf(expression.charAt(start)));
+            if (index < expressions.length && expressions[index] != ' ') {
+                words.add(String.valueOf(expressions[index]));
             }
-            start++;
+            index++;
         }
-        return intervalDiff(0, params.size() - 1, params);
+        return intervalDiff(0, words.size() - 1, words);
     }
 
     private List<Integer> intervalDiff(int start, int end, List<String> params) {
         List<Integer> result = new ArrayList<>();
+        if (start > end) {
+            return result;
+        }
         if (start == end) {
             result.add(Integer.parseInt(params.get(start)));
+            return result;
         }
         for (int i = start + 1; i <= end - 1; i = i + 2) {
-            List<Integer> leftNodes = intervalDiff(start, i - 1, params);
-            List<Integer> rightNodes = intervalDiff(i + 1, end, params);
+            List<Integer> leftNums = intervalDiff(start, i - 1, params);
+            List<Integer> rightNums = intervalDiff(i + 1, end, params);
             String sign = params.get(i);
-            for (Integer left : leftNodes) {
-                for (Integer rightNode : rightNodes) {
+            for (Integer leftNum : leftNums) {
+                for (Integer rightNum : rightNums) {
                     if ("+".equals(sign)) {
-                        result.add(left + rightNode);
+                        result.add(leftNum + rightNum);
                     } else if ("-".equals(sign)) {
-                        result.add(left - rightNode);
+                        result.add(leftNum - rightNum);
                     } else if ("*".equals(sign)) {
-                        result.add(left * rightNode);
-                    } else {
-                        result.add(left / rightNode);
+                        result.add(leftNum * rightNum);
+                    } else if ("/".equals(sign)) {
+                        result.add(leftNum / rightNum);
                     }
                 }
             }

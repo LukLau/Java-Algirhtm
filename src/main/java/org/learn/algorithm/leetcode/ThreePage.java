@@ -475,6 +475,47 @@ public class ThreePage {
 
 
     /**
+     * 242. Valid Anagram
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isAnagram(String s, String t) {
+        if (s == null || t == null) {
+            return false;
+        }
+        if (s.equals(t)) {
+            return false;
+        }
+        if (s.length() != t.length()) {
+            return false;
+        }
+        int len = s.length();
+        Map<Character, Integer> map1 = new HashMap<>();
+        Map<Character, Integer> map2 = new HashMap<>();
+        for (int i = 0; i < len; i++) {
+            char s1 = s.charAt(i);
+            char t1 = t.charAt(i);
+
+            Integer count1 = map1.getOrDefault(s1, 0);
+            Integer count2 = map2.getOrDefault(t1, 0);
+            count2++;
+            count1++;
+
+            map1.put(s1, count1);
+            map2.put(t1, count2);
+        }
+        for (int i = 0; i < len; i++) {
+            if (!map1.get(s.charAt(i)).equals(map2.get(t.charAt(i)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
      * todo
      * 299. Bulls and Cows
      *
