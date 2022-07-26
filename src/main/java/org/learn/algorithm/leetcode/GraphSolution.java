@@ -2,6 +2,7 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.Node;
 
+import javax.print.attribute.PrintRequestAttribute;
 import javax.swing.*;
 import java.util.*;
 
@@ -75,12 +76,15 @@ public class GraphSolution {
         if (prerequisites == null || prerequisites.length == 0) {
             return false;
         }
-        Arrays.sort(prerequisites, new Comparator<int[]>() {
-            @Override
-            public int compare(int[] o1, int[] o2) {
-                return 0;
-            }
-        });
+        List<Integer> vertex = new ArrayList<>();
+        List<List<Integer>> edges = new ArrayList<>();
+
+        for (int i = 0; i < prerequisites.length; i++) {
+
+
+        }
+
+
         return false;
     }
 

@@ -82,4 +82,15 @@ public class DailySolution {
     }
 
 
+    /**
+     * 749 隔离病毒
+     *
+     * @param isInfected
+     * @return
+     */
+    public int containVirus(int[][] isInfected) {
+        return -1;
+    }
+
+
 }

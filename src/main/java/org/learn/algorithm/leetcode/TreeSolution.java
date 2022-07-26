@@ -719,12 +719,14 @@ public class TreeSolution {
         if (root == null || root == p || root == q) {
             return root;
         }
-        if (root.val > p.val && root.val > q.val) {
-            return lowestCommonAncestor(root.left, p, q);
-        } else if (root.val < p.val && root.val < q.val) {
-            return lowestCommonAncestor(root.right, p, q);
-        } else {
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.left, p, q);
+        if (left != null && right != null) {
             return root;
+        } else if (left != null) {
+            return left;
+        } else {
+            return right;
         }
     }
 
@@ -733,8 +735,8 @@ public class TreeSolution {
      * NC102 在二叉树中找到两个节点的最近公共祖先
      *
      * @param root TreeNode类
-     * @param o1   int整型
-     * @param o2   int整型
+     * @param p    int整型
+     * @param q    int整型
      * @return int整型
      */
     public int lowestCommonAncestor(TreeNode root, int o1, int o2) {
@@ -766,18 +768,17 @@ public class TreeSolution {
      * @return
      */
     public TreeNode lowestCommonAncestorII(TreeNode root, TreeNode p, TreeNode q) {
-        if (root == null || root == p || root == q) {
+        if (root == p || root == q || root == null) {
             return root;
         }
-        TreeNode left = lowestCommonAncestor(root.left, p, q);
-        TreeNode right = lowestCommonAncestor(root.right, p, q);
-        if (left != null && right != null) {
+        if ((p.val < root.val && root.val < q.val) || (q.val < root.val && root.val < p.val)) {
             return root;
-        } else if (left != null) {
-            return left;
-        } else {
-            return right;
+        } else if ((p.val < root.val && q.val < root.val)) {
+            return lowestCommonAncestor(root.left, p, q);
+        } else if (root.val < p.val && root.val < q.val) {
+            return lowestCommonAncestor(root.right, p, q);
         }
+        return null;
     }
 
     /**

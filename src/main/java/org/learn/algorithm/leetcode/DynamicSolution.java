@@ -334,7 +334,29 @@ public class DynamicSolution {
         if (matrix == null || matrix.length == 0) {
             return 0;
         }
-        return -1;
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int[][] dp = new int[row][column];
+        int result = 0;
+        for (int j = 0; j < column; j++) {
+            if (matrix[0][j] == '1') {
+                dp[0][j] = 1;
+                result = 1;
+            }
+        }
+        for (int i = 1; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (matrix[i][j] == '1') {
+                    if (j == 0) {
+                        dp[i][j] = 1;
+                    } else {
+                        dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j]), dp[i - 1][j - 1]) + 1;
+                    }
+                    result = Math.max(result, dp[i][j] * dp[i][j]);
+                }
+            }
+        }
+        return result;
     }
 
     /**

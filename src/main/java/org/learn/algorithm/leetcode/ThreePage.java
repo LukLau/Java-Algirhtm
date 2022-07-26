@@ -2,6 +2,7 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
+import org.slf4j.event.SubstituteLoggingEvent;
 
 import java.util.*;
 
@@ -16,7 +17,9 @@ public class ThreePage {
     public static void main(String[] args) {
         ThreePage page = new ThreePage();
         int[] nums = new int[]{3, 2, 3, 1, 2, 4, 5, 5, 6};
-        page.containsNearbyDuplicate(new int[]{1,2,3,1,2,3},2);
+//        page.containsNearbyDuplicate(new int[]{1, 2, 3, 1, 2, 3}, 2);
+        int[] tmp = new int[]{0, 1, 2, 4, 5, 7};
+        page.summaryRanges(tmp);
     }
 
 
@@ -296,16 +299,17 @@ public class ThreePage {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        int startIndex = 0;
-        for (int i = 1; i < nums.length; i++) {
-            if (nums[i] != nums[i - 1] + 1) {
-                result.add(range(nums[startIndex], nums[i - 1]));
-                startIndex = i;
+        Integer prev = null;
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] != nums[i - 1] + 1) {
+                result.add(range(nums[prev], nums[i - 1]));
+                prev = i;
+            }
+            if (prev == null) {
+                prev = i;
             }
         }
-        if (startIndex <= nums.length - 1) {
-            result.add(range(nums[startIndex], nums[nums.length - 1]));
-        }
+        result.add(range(nums[prev], nums[nums.length - 1]));
         return result;
     }
 
@@ -322,7 +326,7 @@ public class ThreePage {
      */
     public boolean isPalindrome(ListNode head) {
         if (head == null || head.next == null) {
-            return false;
+            return true;
         }
         ListNode fast = head;
         ListNode slow = head;
@@ -331,9 +335,11 @@ public class ThreePage {
             slow = slow.next;
         }
         ListNode next = slow.next;
+
         slow.next = null;
 
         ListNode reverseList = reverseList(next);
+
         while (head != null && reverseList != null) {
             if (head.val != reverseList.val) {
                 return false;

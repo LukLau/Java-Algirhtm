@@ -3,6 +3,7 @@ package org.learn.algorithm.leetcode;
 import org.learn.algorithm.datastructure.ListNode;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 第二页
@@ -169,20 +170,17 @@ public class TwoPage {
         if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
-        Set<String> result = new HashSet<>();
-
+        List<String> result = new ArrayList<>();
         Set<String> used = new HashSet<>();
-
         int len = s.length();
-
-
-        for (int i = 0; i <= len - 10; i = i + 1) {
+        for (int i = 0; i < len - 9; i++) {
             String tmp = s.substring(i, i + 10);
             if (!used.add(tmp)) {
                 result.add(tmp);
             }
         }
-        return new ArrayList<>(result);
+        result = result.stream().distinct().collect(Collectors.toList());
+        return result;
     }
 
 
