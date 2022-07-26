@@ -16,7 +16,7 @@ public class ThreePage {
     public static void main(String[] args) {
         ThreePage page = new ThreePage();
         int[] nums = new int[]{3, 2, 3, 1, 2, 4, 5, 5, 6};
-        page.containsNearbyDuplicate(new int[]{1,2,3,1,2,3},2);
+        page.containsNearbyDuplicate(new int[]{1, 2, 3, 1, 2, 3}, 2);
     }
 
 
@@ -369,7 +369,7 @@ public class ThreePage {
      */
     public int[] productExceptSelf(int[] nums) {
         if (nums == null || nums.length == 0) {
-            return new int[]{};
+            return nums;
         }
         int[] result = new int[nums.length];
         int base = 1;

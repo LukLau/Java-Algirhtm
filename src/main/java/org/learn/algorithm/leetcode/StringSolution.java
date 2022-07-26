@@ -67,6 +67,8 @@ public class StringSolution {
 
     // 正则表达式//
 
+    // 滑动窗口系列 //
+
     /**
      * 76. Minimum Window Substring
      *
@@ -117,20 +119,20 @@ public class StringSolution {
      */
     public int[] maxSlidingWindow(int[] nums, int k) {
         if (nums == null || nums.length == 0) {
-            return new int[]{};
+            return null;
         }
-        LinkedList<Integer> linkedList = new LinkedList<Integer>();
+        LinkedList<Integer> linkedList = new LinkedList<>();
         List<Integer> result = new ArrayList<>();
         for (int i = 0; i < nums.length; i++) {
             int index = i - k + 1;
             if (!linkedList.isEmpty() && linkedList.peekFirst() < index) {
-                linkedList.poll();
+                linkedList.pollFirst();
             }
             while (!linkedList.isEmpty() && nums[linkedList.peekLast()] <= nums[i]) {
                 linkedList.pollLast();
             }
             linkedList.offer(i);
-            if (index >= 0) {
+            if (index >= 0 && !linkedList.isEmpty()) {
                 result.add(nums[linkedList.peekFirst()]);
             }
         }
