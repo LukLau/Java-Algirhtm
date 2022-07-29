@@ -300,18 +300,17 @@ public class BinarySolution {
         if (matrix == null || matrix.length == 0) {
             return false;
         }
-        int column = matrix[0].length;
         int row = matrix.length;
-        int i = 0;
-        int j = column - 1;
-        while (i < row && j >= 0) {
-            int val = matrix[i][j];
-            if (val == target) {
+        int column = matrix[0].length;
+        int i = row - 1;
+        int j = 0;
+        while (i >= 0 && j < column) {
+            if (matrix[i][j] == target) {
                 return true;
-            } else if (val < target) {
-                i++;
+            } else if (matrix[i][j] < target) {
+                j++;
             } else {
-                j--;
+                i--;
             }
         }
         return true;

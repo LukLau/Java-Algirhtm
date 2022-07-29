@@ -28,7 +28,8 @@ public class VipSolution {
     public static void main(String[] args) {
         VipSolution solution = new VipSolution();
         int[] nums = new int[]{1, 3, 2};
-        solution.findMissingRanges(new int[]{2147483647}, 0, 2147483647);
+        solution.isStrobogrammatic("96801866799810896");
+//        solution.findMissingRanges(new int[]{2147483647}, 0, 2147483647);
     }
 
     /**
@@ -174,15 +175,14 @@ public class VipSolution {
      * @return
      */
     public int shortestDistance(String[] words, String word1, String word2) {
-        // Write your code here
         int index1 = -1;
         int index2 = -1;
         int result = Integer.MAX_VALUE;
         for (int i = 0; i < words.length; i++) {
-            String word = words[i];
-            if (word.equals(word1)) {
+            String tmp = words[i];
+            if (word1.equals(tmp)) {
                 index1 = i;
-            } else if (word.equals(word2)) {
+            } else if (word2.equals(tmp)) {
                 index2 = i;
             }
             if (index1 != -1 && index2 != -1) {
@@ -202,13 +202,14 @@ public class VipSolution {
         if (num == null || num.isEmpty()) {
             return false;
         }
-        char[] words = num.toCharArray();
+        String reverse = new StringBuilder(num).reverse().toString();
+
         Map<Character, Character> map = getNum();
-        StringBuilder builder = new StringBuilder();
-        for (char word : words) {
-            builder.append(map.get(word));
-        }
-        return builder.reverse().toString().equals(num);
+
+        int len = num.length();
+
+
+
     }
 
     private Map<Character, Character> getNum() {
