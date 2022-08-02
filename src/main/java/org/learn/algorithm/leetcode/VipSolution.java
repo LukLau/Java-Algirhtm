@@ -3,6 +3,7 @@ package org.learn.algorithm.leetcode;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.Point;
 import org.learn.algorithm.datastructure.TreeNode;
+import org.learn.algorithm.nowcode.OftenSolution;
 
 import java.util.*;
 
@@ -32,11 +33,12 @@ public class VipSolution {
 //        int count = solution.strobogrammaticInRangeII("50", "300");
 //        System.out.println(count);
 
-        Interval o1 = new Interval(0, 30);
-        Interval o2 = new Interval(5, 10);
-        Interval o3 = new Interval(15, 20);
-
-        solution.minMeetingRooms(Arrays.asList(o1, o2, o3));
+//        Interval o1 = new Interval(0, 30);
+//        Interval o2 = new Interval(5, 10);
+//        Interval o3 = new Interval(15, 20);
+//
+//        solution.minMeetingRooms(Arrays.asList(o1, o2, o3));
+        solution.verifyPreorder(new int[]{4, 3, 5, 1, 2, 3});
 
 
     }
@@ -374,7 +376,7 @@ public class VipSolution {
             return 0;
         }
         int count = 0;
-        if (isUnivalSubTree(root, root.val)) {
+        if (isUnival(root, root.val)) {
             count++;
         }
         count += countUnivalSubtrees(root.left);
@@ -382,11 +384,11 @@ public class VipSolution {
         return count;
     }
 
-    private boolean isUnivalSubTree(TreeNode root, int val) {
+    private boolean isUnival(TreeNode root, int val) {
         if (root == null) {
             return true;
         }
-        return root.val == val && isUnivalSubTree(root.left, root.val) && isUnivalSubTree(root.right, root.val);
+        return root.val == val && isUnival(root.left, root.val) && isUnival(root.right, root.val);
     }
 
     /**
@@ -449,24 +451,29 @@ public class VipSolution {
         if (preorder == null || preorder.length == 0) {
             return false;
         }
-        return intervalVerifyPreorder(Integer.MIN_VALUE, Integer.MAX_VALUE, 0, preorder.length - 1, preorder);
+        return internalVerifyPreorder(0,preorder.length -1, preorder);
     }
 
-    private boolean intervalVerifyPreorder(int minValue, int maxValue, int start, int end, int[] preorder) {
+    private boolean internalVerifyPreorder(int start, int end, int[] preorder) {
         if (start > end) {
-            return true;
-        }
-        int val = preorder[start], i = 0;
-        if (val <= minValue || val >= maxValue) {
             return false;
         }
-        for (i = start + 1; i <= end; ++i) {
-            if (preorder[i] >= val) {
-                break;
-            }
+        if (start == end) {
+            return true;
         }
-        return intervalVerifyPreorder(minValue, val, start + 1, i - 1, preorder) &&
-                intervalVerifyPreorder(val, maxValue, i, end, preorder);
+        int root = preorder[start];
+        int currentIndex = start + 1;
+        while (currentIndex <= end && preorder[currentIndex] < root) {
+            currentIndex++;
+        }
+        int tmp = currentIndex;
+        while (tmp <= end && preorder[tmp] > root) {
+            tmp++;
+        }
+        if (currentIndex == end + 1 || tmp == end + 1) {
+            return true;
+        }
+        return internalVerifyPreorder(start + 1, currentIndex - 1, preorder) && internalVerifyPreorder(currentIndex, end, preorder);
     }
 
     /**
