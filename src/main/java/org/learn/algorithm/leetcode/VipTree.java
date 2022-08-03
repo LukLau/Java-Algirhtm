@@ -12,6 +12,7 @@ public class VipTree {
      */
     public boolean isValidSerialization(String preorder) {
         // write your code here
+        return false;
     }
 
 
@@ -26,20 +27,20 @@ public class VipTree {
         if (root == null) {
             return 0;
         }
-
-        return internalCountUnival(root,);
+        int count = 0;
+        if (isUnivalTree(root, root.val)) {
+            count++;
+        }
+        count += countUnivalSubtrees(root.left);
+        count += countUnivalSubtrees(root.right);
+        return count;
     }
 
-    private int internalCountUnival(TreeNode root, ) {
+    private boolean isUnivalTree(TreeNode root, int val) {
         if (root == null) {
-            return 0;
+            return true;
         }
-        if (root.left == null && root.right == null) {
-            return 1;
-        }
-        int count = 0;
-
-        if (root.)
+        return root.val == val && isUnivalTree(root.left, root.val) && isUnivalTree(root.right, root.val);
     }
 
 

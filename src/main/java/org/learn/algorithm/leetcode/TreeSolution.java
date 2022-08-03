@@ -29,12 +29,12 @@ public class TreeSolution {
 
         TreeNode root = new TreeNode(1);
         TreeNode left = new TreeNode(2);
-        left.left = new TreeNode(4);
+//        left.left = new TreeNode(4);
         root.left = left;
         root.right = new TreeNode(3);
 
 
-        solution.rightSideView(root);
+        solution.binaryTreePaths(root);
     }
 
 
@@ -792,27 +792,29 @@ public class TreeSolution {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        intervalBinaryTree(result, "", root);
+        internalBinaryTreePath(result, "", root);
         return result;
     }
 
-    // --- //
-    private void intervalBinaryTree(List<String> result, String s, TreeNode root) {
+    private void internalBinaryTreePath(List<String> result, String s, TreeNode root) {
         if (root == null) {
             return;
         }
         if (s.isEmpty()) {
-            s = s + root.val;
+            s += root.val;
         } else {
-            s = s + "->" + root.val;
+            s += "->" + root.val;
         }
         if (root.left == null && root.right == null) {
             result.add(s);
             return;
         }
-        intervalBinaryTree(result, s, root.left);
-        intervalBinaryTree(result, s, root.right);
+        internalBinaryTreePath(result, s, root.left);
+        internalBinaryTreePath(result, s, root.right);
     }
+
+    // --- //
+
 
     /**
      * 104. Maximum Depth of Binary Tree

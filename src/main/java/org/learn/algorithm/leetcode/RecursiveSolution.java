@@ -17,8 +17,9 @@ public class RecursiveSolution {
         char[][] words = new char[][]{{'o', 'a', 'b', 'n'}, {'o', 't', 'a', 'e'}, {'a', 'h', 'k', 'r'}, {'a', 'f', 'l', 'v'}};
         String[] tmp = new String[]{"oa", "oaa"};
 //        solution.findWords(words, tmp);
-        List<Integer> diffWaysToCompute = solution.diffWaysToCompute("2*3-4*5");
-        System.out.println(diffWaysToCompute);
+//        List<Integer> diffWaysToCompute = solution.diffWaysToCompute("2*3-4*5");
+//        System.out.println(diffWaysToCompute);
+        solution.getFactors(8);
     }
 
     /**
@@ -392,7 +393,6 @@ public class RecursiveSolution {
             tmp.remove(tmp.size() - 1);
         }
     }
-
 
     // --DFS/BFS //
 

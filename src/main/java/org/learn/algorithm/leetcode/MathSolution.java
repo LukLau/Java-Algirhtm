@@ -1094,4 +1094,18 @@ public class MathSolution {
         return count;
 
     }
+
+
+    /**
+     * 258. Add Digits
+     * todo
+     *
+     * @param num
+     * @return
+     */
+    public int addDigits(int num) {
+        return -1;
+
+    }
+
 }

@@ -3,7 +3,7 @@ package org.learn.algorithm.leetcode;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.Point;
 import org.learn.algorithm.datastructure.TreeNode;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitterReturnValueHandler;
+import org.learn.algorithm.nowcode.OftenSolution;
 
 import java.util.*;
 
@@ -28,8 +28,19 @@ public class VipSolution {
     public static void main(String[] args) {
         VipSolution solution = new VipSolution();
         int[] nums = new int[]{1, 3, 2};
-        solution.isStrobogrammatic("96801866799810896");
+//        solution.isStrobogrammatic("96801866799810896");
 //        solution.findMissingRanges(new int[]{2147483647}, 0, 2147483647);
+//        int count = solution.strobogrammaticInRangeII("50", "300");
+//        System.out.println(count);
+
+//        Interval o1 = new Interval(0, 30);
+//        Interval o2 = new Interval(5, 10);
+//        Interval o3 = new Interval(15, 20);
+//
+//        solution.minMeetingRooms(Arrays.asList(o1, o2, o3));
+        solution.verifyPreorder(new int[]{4, 3, 5, 1, 2, 3});
+
+
     }
 
     /**
@@ -312,17 +323,18 @@ public class VipSolution {
         if (strings == null || strings.length == 0) {
             return new ArrayList<>();
         }
-        Map<String, List<String>> result = new HashMap<>();
-        intervalGroup(result, strings);
-        return new ArrayList<>(result.values());
+        Map<String, List<String>> map = new HashMap<>();
+        intervalGroup(map, strings);
+        return new ArrayList<>(map.values());
+
     }
 
     private void intervalGroup(Map<String, List<String>> result, String[] words) {
         for (String word : words) {
-            String shiftWord = shiftWord(word);
-            List<String> tmp = result.getOrDefault(shiftWord, new ArrayList<>());
+            String shiftWords = shiftWord(word);
+            List<String> tmp = result.getOrDefault(shiftWords, new ArrayList<>());
             tmp.add(word);
-            result.put(shiftWord, tmp);
+            result.put(shiftWords, tmp);
         }
     }
 
@@ -349,7 +361,7 @@ public class VipSolution {
             return 0;
         }
         int count = 0;
-        if (isUnivalSubTree(root, root.val)) {
+        if (isUnival(root, root.val)) {
             count++;
         }
         count += countUnivalSubtrees(root.left);
@@ -357,11 +369,11 @@ public class VipSolution {
         return count;
     }
 
-    private boolean isUnivalSubTree(TreeNode root, int val) {
+    private boolean isUnival(TreeNode root, int val) {
         if (root == null) {
             return true;
         }
-        return root.val == val && isUnivalSubTree(root.left, root.val) && isUnivalSubTree(root.right, root.val);
+        return root.val == val && isUnival(root.left, root.val) && isUnival(root.right, root.val);
     }
 
     /**
@@ -377,13 +389,14 @@ public class VipSolution {
             return false;
         }
         intervals.sort(Comparator.comparingInt(o -> o.start));
-        Interval pre = intervals.get(0);
-        for (int i = 1; i < intervals.size(); i++) {
-            Interval current = intervals.get(i);
-            if (current.start < pre.end) {
+
+        Integer prevEnd = null;
+
+        for (Interval interval : intervals) {
+            if (prevEnd != null && interval.start >= prevEnd) {
                 return false;
             }
-            pre = current;
+            prevEnd = interval.end;
         }
         return true;
     }
@@ -401,15 +414,15 @@ public class VipSolution {
         if (intervals == null || intervals.isEmpty()) {
             return 0;
         }
-        PriorityQueue<Integer> queue = new PriorityQueue<>();
         intervals.sort(Comparator.comparingInt(o -> o.start));
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>();
         for (Interval interval : intervals) {
-            if (!queue.isEmpty() && queue.peek() < interval.start) {
-                queue.poll();
+            if (!priorityQueue.isEmpty() && interval.start >= priorityQueue.peek()) {
+                priorityQueue.poll();
             }
-            queue.offer(interval.end);
+            priorityQueue.offer(interval.end);
         }
-        return queue.size();
+        return priorityQueue.size();
     }
 
     /**
@@ -423,24 +436,29 @@ public class VipSolution {
         if (preorder == null || preorder.length == 0) {
             return false;
         }
-        return intervalVerifyPreorder(Integer.MIN_VALUE, Integer.MAX_VALUE, 0, preorder.length - 1, preorder);
+        return internalVerifyPreorder(0, preorder.length - 1, preorder);
     }
 
-    private boolean intervalVerifyPreorder(int minValue, int maxValue, int start, int end, int[] preorder) {
+    private boolean internalVerifyPreorder(int start, int end, int[] preorder) {
         if (start > end) {
-            return true;
-        }
-        int val = preorder[start], i = 0;
-        if (val <= minValue || val >= maxValue) {
             return false;
         }
-        for (i = start + 1; i <= end; ++i) {
-            if (preorder[i] >= val) {
-                break;
-            }
+        if (start == end) {
+            return true;
         }
-        return intervalVerifyPreorder(minValue, val, start + 1, i - 1, preorder) &&
-                intervalVerifyPreorder(val, maxValue, i, end, preorder);
+        int root = preorder[start];
+        int currentIndex = start + 1;
+        while (currentIndex <= end && preorder[currentIndex] < root) {
+            currentIndex++;
+        }
+        int tmp = currentIndex;
+        while (tmp <= end && preorder[tmp] > root) {
+            tmp++;
+        }
+        if (tmp < end) {
+            return false;
+        }
+        return internalVerifyPreorder(start + 1, currentIndex - 1, preorder) && internalVerifyPreorder(currentIndex, end, preorder);
     }
 
     /**
@@ -946,6 +964,49 @@ public class VipSolution {
             }
         }
         return new ArrayList<>(map.values());
+    }
+
+    public int strobogrammaticInRangeII(String low, String high) {
+        int m = low.length();
+        int n = high.length();
+        int count = 0;
+        for (int i = m; i <= n; i++) {
+            count += internalStrobogrammatic("", i, low, high);
+            count += internalStrobogrammatic("0", i, low, high);
+            count += internalStrobogrammatic("1", i, low, high);
+            count += internalStrobogrammatic("8", i, low, high);
+
+        }
+        return count;
+    }
+
+    private int internalStrobogrammatic(String s, int len, String low, String high) {
+        int n = high.length();
+        int wordLen = s.length();
+        if (wordLen > n) {
+            return 0;
+        }
+        int count = 0;
+        if (s.length() == len) {
+            if (s.charAt(0) == '0') {
+                return 0;
+            }
+            if (s.length() == low.length() && low.compareTo(s) > 0) {
+                return 0;
+            }
+            if (s.length() == high.length() && high.compareTo(s) < 0) {
+                return 0;
+            }
+
+            count++;
+            System.out.println(s);
+        }
+        count += internalStrobogrammatic("0" + s + "0", len, low, high);
+        count += internalStrobogrammatic("1" + s + "1", len, low, high);
+        count += internalStrobogrammatic("6" + s + "9", len, low, high);
+        count += internalStrobogrammatic("8" + s + "8", len, low, high);
+        count += internalStrobogrammatic("9" + s + "6", len, low, high);
+        return count;
     }
 
 
