@@ -204,10 +204,18 @@ public class VipSolution {
         }
         String reverse = new StringBuilder(num).reverse().toString();
 
-        Map<Character, Character> map = getNum();
-
         int len = num.length();
 
+        Map<Character, Character> map = getNum();
+
+        for (int i = 0; i < len; i++) {
+            char tmp = num.charAt(i);
+
+            if (map.getOrDefault(tmp, ' ') != reverse.charAt(i)) {
+                return false;
+            }
+        }
+        return true;
 
 
     }
@@ -231,36 +239,19 @@ public class VipSolution {
      */
     public List<String> findStrobogrammatic(int n) {
         // write your code here
-        if (n < 0) {
+        if (n <= 0) {
             return new ArrayList<>();
         }
-        List<String> result = new ArrayList<>();
-        if (n == 0) {
-            result.add("");
-            return result;
-        }
-        intervalFind(result, "", n);
-        intervalFind(result, "0", n);
-        intervalFind(result, "1", n);
-        intervalFind(result, "8", n);
-        return result;
+
+        return null;
+
     }
 
+//    private List<String> generateWords()
+
+
     private void intervalFind(List<String> result, String s, int n) {
-        if (s.length() > n) {
-            return;
-        }
-        if (s.length() == n) {
-            result.add(s);
-            return;
-        }
-        if (s.length() < n - 2) {
-            intervalFind(result, "0" + s + "0", n);
-        }
-        intervalFind(result, "1" + s + "1", n);
-        intervalFind(result, "6" + s + "9", n);
-        intervalFind(result, "8" + s + "8", n);
-        intervalFind(result, "9" + s + "6", n);
+
     }
 
     /**

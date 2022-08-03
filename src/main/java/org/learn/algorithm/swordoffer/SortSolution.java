@@ -125,7 +125,7 @@ public class SortSolution {
             return;
         }
         for (int i = nums.length / 2 - 1; i >= 0; i--) {
-            adjustHeap(nums, i, nums.length - 1);
+            adjustHeap(nums, i, nums.length);
         }
         for (int i = nums.length - 1; i > 0; i--) {
             swap(nums, 0, i);
@@ -135,6 +135,17 @@ public class SortSolution {
 
     private void adjustHeap(int[] nums, int k, int len) {
         int tmp = nums[k];
+//        for (int i = 2 * k + 1; i < len; i = 2 * i + 1) {
+//            if (i + 1 < len && nums[i] < nums[i + 1]) {
+//                i = i + 1;
+//            }
+//            if (nums[i] < tmp) {
+//                break;
+//            }
+//            swap(nums, i, k);
+//            k = i;
+//        }
+//        nums[k] = tmp;
         for (int i = 2 * k + 1; i < len; i = 2 * i + 1) {
             if (i + 1 < len && nums[i] < nums[i + 1]) {
                 i = i + 1;

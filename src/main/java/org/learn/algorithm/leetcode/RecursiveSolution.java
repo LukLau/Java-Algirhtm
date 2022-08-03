@@ -2,6 +2,7 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.Trie;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -373,21 +374,21 @@ public class RecursiveSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        intervalGetFactors(result, new ArrayList<>(), 2, n / 2, n);
+        intervalGetFactors(result, new ArrayList<>(), 2, n / 2, 1, n);
         return result;
     }
 
-    private void intervalGetFactors(List<List<Integer>> result, List<Integer> tmp, int start, int end, int n) {
-        if (n == 1) {
+    private void intervalGetFactors(List<List<Integer>> result, List<Integer> tmp, int start, int end, int value, int n) {
+        if (value == n) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i <= end; i++) {
+        for (int i = start; i <= end && value * i <= n; i++) {
             if (n % i != 0) {
                 continue;
             }
             tmp.add(i);
-            intervalGetFactors(result, tmp, i, end, n / i);
+            intervalGetFactors(result, tmp, i, end, value * i, n);
             tmp.remove(tmp.size() - 1);
         }
     }
