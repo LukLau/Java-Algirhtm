@@ -451,7 +451,7 @@ public class VipSolution {
         if (preorder == null || preorder.length == 0) {
             return false;
         }
-        return internalVerifyPreorder(0,preorder.length -1, preorder);
+        return internalVerifyPreorder(0, preorder.length - 1, preorder);
     }
 
     private boolean internalVerifyPreorder(int start, int end, int[] preorder) {
@@ -470,8 +470,8 @@ public class VipSolution {
         while (tmp <= end && preorder[tmp] > root) {
             tmp++;
         }
-        if (currentIndex == end + 1 || tmp == end + 1) {
-            return true;
+        if (tmp < end) {
+            return false;
         }
         return internalVerifyPreorder(start + 1, currentIndex - 1, preorder) && internalVerifyPreorder(currentIndex, end, preorder);
     }
