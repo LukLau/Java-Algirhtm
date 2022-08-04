@@ -2,6 +2,8 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.TreeNode;
 
+import java.util.Stack;
+
 public class VipTree {
 
     /**
