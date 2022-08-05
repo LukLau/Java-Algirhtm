@@ -362,6 +362,31 @@ public class RecursiveSolution {
         }
     }
 
+    /**
+     * 377. Combination Sum IV
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int combinationSum4(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int[][] dp = new int[target + 1][nums.length];
+
+        for (int i = 1; i <= target; i++) {
+            for (int j = 0; j < nums.length; j++) {
+                if (i >= nums[j]) {
+                    dp[i][j] = 1 + dp[i - nums[j]][j];
+                } else {
+                    dp[i][j] = dp[i][j - 1];
+                }
+            }
+        }
+        return dp[target][nums.length - 1];
+    }
+
 
     /**
      * 254

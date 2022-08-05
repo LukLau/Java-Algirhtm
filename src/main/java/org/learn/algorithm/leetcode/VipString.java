@@ -2,14 +2,18 @@ package org.learn.algorithm.leetcode;
 
 import org.springframework.context.event.EventListenerMethodProcessor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class VipString {
 
+    public static void main(String[] args) {
+        VipString vipString = new VipString();
+        vipString.generatePalindromes("aab");
+    }
+
     /**
+     * 266 Palindrome Permutation
+     *
      * @param s: the given string
      * @return: if a permutation of the string could form a palindrome
      */
@@ -39,6 +43,8 @@ public class VipString {
     }
 
     /**
+     * 267 Palindrome Permutation II
+     *
      * @param s: the given string
      * @return: all the palindromic permutations (without duplicates) of it
      * we will sort your return value in output
@@ -56,32 +62,66 @@ public class VipString {
             map.put(word, count);
         }
         String odd = "";
-        List<String> evens = new ArrayList<>();
+        StringBuilder builder = new StringBuilder();
         for (Map.Entry<Character, Integer> item : map.entrySet()) {
             Character key = item.getKey();
             int count = item.getValue();
             if (count % 2 != 0) {
-                if (!odd.equals(String.valueOf(key))) {
+                if (!odd.isEmpty() && !odd.equals(String.valueOf(key))) {
                     return new ArrayList<>();
                 }
                 odd = String.valueOf(key);
             }
-            StringBuilder builder = new StringBuilder();
             for (int j = 0; j < count / 2; j++) {
                 builder.append(key);
             }
-            evens.add(builder.toString());
-        }
-        return null;
-    }
-
-    private void generateWords(List<String> generateWords, List<String> evens, String s, boolean[] used) {
-
-        for (int i = 0; i < evens.size(); i++) {
-
         }
 
+
+        List<String> params = new ArrayList<>();
+
+        generateWords(params, 0, builder.toString().toCharArray());
+
+        List<String> result = new ArrayList<>();
+
+        for (String param : params) {
+            String reverse = new StringBuilder(param).reverse().toString();
+            result.add(param + odd + reverse);
+        }
+        return result;
     }
 
+    private void generateWords(List<String> result, int start, char[] words) {
+        if (start == words.length) {
+            result.add(String.valueOf(words));
+            return;
+        }
+        for (int i = start; i < words.length; i++) {
+            if (i > start && words[i] == words[start]) {
+                continue;
+            }
+            swap(words, i, start);
+            generateWords(result, start + 1, words);
+            swap(words, i, start);
+        }
+    }
+
+
+    private void swap(char[] words, int i, int j) {
+        char tmp = words[i];
+        words[i] = words[j];
+        words[j] = tmp;
+    }
+
+
+    /**
+     * 273. Integer to English Words
+     *
+     * @param num
+     * @return
+     */
+    public String numberToWords(int num) {
+        return "";
+    }
 
 }
