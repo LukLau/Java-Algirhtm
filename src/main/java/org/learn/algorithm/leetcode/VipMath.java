@@ -87,19 +87,14 @@ public class VipMath {
         int cows = 0;
         int len = secret.length();
         int[] hash1 = new int[10];
-//        int[] hash2 = new int[10];
-        for (int i = 0; i < len; i++) {
-            hash1[Character.getNumericValue(secret.charAt(i))]++;
-            hash1[Character.getNumericValue(guess.charAt(i))]--;
-        }
         for (int i = 0; i < len; i++) {
             if (secret.charAt(i) == guess.charAt(i)) {
                 bulls++;
             } else {
-                if (hash1[Character.getNumericValue(guess.charAt(i))]++ > 0) {
+                if (hash1[Character.getNumericValue(guess.charAt(i))]-- > 0) {
                     cows++;
                 }
-                if (hash1[Character.getNumericValue(secret.charAt(i))]-- < 0) {
+                if (hash1[Character.getNumericValue(secret.charAt(i))]++ < 0) {
                     cows++;
                 }
             }

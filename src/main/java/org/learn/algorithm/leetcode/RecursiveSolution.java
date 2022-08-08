@@ -373,18 +373,18 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-        int[][] dp = new int[target + 1][nums.length];
+        int[] combine = new int[target + 1];
+
+        combine[0] = 1;
 
         for (int i = 1; i <= target; i++) {
             for (int j = 0; j < nums.length; j++) {
-                if (i >= nums[j]) {
-                    dp[i][j] = 1 + dp[i - nums[j]][j];
-                } else {
-                    dp[i][j] = dp[i][j - 1];
+                if (i - nums[j] >= 0) {
+                    combine[i] += combine[i - nums[j]];
                 }
             }
         }
-        return dp[target][nums.length - 1];
+        return combine[target];
     }
 
 
