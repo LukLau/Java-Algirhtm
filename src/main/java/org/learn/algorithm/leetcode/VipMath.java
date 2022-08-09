@@ -1,10 +1,36 @@
 package org.learn.algorithm.leetcode;
 
+import java.util.Arrays;
+
 public class VipMath {
 
     public static void main(String[] args) {
         VipMath vipMath = new VipMath();
         vipMath.getHint("1807", "7810");
+    }
+
+
+    /**
+     * @param nums: A list of integers
+     * @return: nothing
+     */
+    public void wiggleSort(int[] nums) {
+        // write your code here
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        Arrays.sort(nums);
+        for (int i = 1; i < nums.length; i = i + 2) {
+            if (i + 1 < nums.length) {
+                swap(nums, i, i + 1);
+            }
+        }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int val = nums[j];
+        nums[j] = nums[i];
+        nums[i] = val;
     }
 
 
