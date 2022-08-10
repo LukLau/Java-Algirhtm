@@ -44,6 +44,4 @@ public class VipTree {
         }
         return root.val == val && isUnivalTree(root.left, root.val) && isUnivalTree(root.right, root.val);
     }
-
-
 }
