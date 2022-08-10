@@ -1,10 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 
-import org.springframework.scheduling.config.ScheduledTask;
-
 import java.util.*;
-import java.util.function.IntToDoubleFunction;
 
 /**
  * 数学理论
@@ -19,7 +16,8 @@ public class MathSolution {
 //        int[] nums = new int[]{5, 4, 4, 3, 2, 1};
 //        solution.nthUglyNumber(10);
 //        solution.calculate("(1+(4+5+2)-3)+(6+8)");
-        solution.calculateII("3+2*2");
+//        solution.calculateII("3+2*2");
+        System.out.println(solution.numberToWords(12345));
     }
 
     // 素数相关
@@ -1106,6 +1104,79 @@ public class MathSolution {
     public int addDigits(int num) {
         return -1;
 
+    }
+
+
+    // --数字转化为阿拉伯， 汉子 -- //
+
+    /**
+     * 273. Integer to English Words
+     * 太艰难了  终于pass了
+     *
+     * @param num
+     * @return
+     */
+    public String numberToWords(int num) {
+        if (num == 0) {
+            return "Zero";
+        }
+        String[] belowTwenty = new String[]{"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve",
+                "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+        String[] moreThanTwenty = new String[]{"", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+        String[] moreThousand = new String[]{"", "Thousand", "Million", "Billion"};
+        List<String> result = new ArrayList<>();
+
+        int index = 0;
+
+        while (num > 0) {
+
+            int remain = num % 1000;
+
+            String read = generateWord(remain, belowTwenty, moreThanTwenty);
+
+            if (index > 0 && !read.isEmpty()) {
+                read = read + " " + moreThousand[index];
+            }
+            if (!read.isEmpty()) {
+                result.add(read);
+            }
+
+            index++;
+
+            num /= 1000;
+        }
+        StringBuilder builder = new StringBuilder();
+
+        int len = result.size();
+        for (int i = len - 1; i >= 0; i--) {
+            builder.append(result.get(i));
+            if (i != 0) {
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
+    }
+
+    private String generateWord(int num, String[] belowTwenty, String[] moreThanTwenty) {
+        StringBuilder builder = new StringBuilder();
+
+        String threeNum = belowTwenty[num / 100];
+
+        if (!"Zero".equals(threeNum)) {
+            builder.append(threeNum).append(" Hundred");
+        }
+        int twoNum = num % 100;
+
+        if (twoNum < 20 && twoNum > 0) {
+            builder.append(" ").append(belowTwenty[twoNum % 20]);
+        } else {
+            builder.append(" ").append(moreThanTwenty[twoNum / 10]);
+            int oneNum = twoNum % 10;
+            if (oneNum > 0) {
+                builder.append(" ").append(belowTwenty[oneNum]);
+            }
+        }
+        return builder.toString().trim();
     }
 
 }

@@ -19,7 +19,8 @@ public class RecursiveSolution {
 //        solution.findWords(words, tmp);
 //        List<Integer> diffWaysToCompute = solution.diffWaysToCompute("2*3-4*5");
 //        System.out.println(diffWaysToCompute);
-        solution.getFactors(8);
+//        solution.getFactors(8);
+        solution.combinationSum4(new int[]{1, 2, 3}, 4);
     }
 
     /**
@@ -373,18 +374,17 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-        int[][] dp = new int[target + 1][nums.length];
+        int[] result = new int[target + 1];
+        result[0] = 1;
 
         for (int i = 1; i <= target; i++) {
             for (int j = 0; j < nums.length; j++) {
-                if (i >= nums[j]) {
-                    dp[i][j] = 1 + dp[i - nums[j]][j];
-                } else {
-                    dp[i][j] = dp[i][j - 1];
+                if (i - nums[j] >= 0) {
+                    result[i] += result[i - nums[j]];
                 }
             }
         }
-        return dp[target][nums.length - 1];
+        return result[target];
     }
 
 

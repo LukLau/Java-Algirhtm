@@ -41,12 +41,12 @@ public class EncodeSolution {
         if (strs == null || strs.isEmpty()) {
             return "";
         }
-        int len = strs.size();
         StringBuilder builder = new StringBuilder();
+        int len = strs.size();
         for (int i = 0; i < len; i++) {
             builder.append(strs.get(i));
             if (i != len - 1) {
-                builder.append(len).append("#,");
+                builder.append(len).append(",");
             }
         }
         return builder.toString();
@@ -63,12 +63,12 @@ public class EncodeSolution {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        String[] words = str.split("#,");
+        String[] words = str.split(",");
         for (int i = 0; i < words.length; i++) {
             String word = words[i];
             if (i != words.length - 1) {
-                int lastIndexOf = word.lastIndexOf(String.valueOf(words.length));
-                word = word.substring(0, lastIndexOf);
+                int lastIndex = word.lastIndexOf(String.valueOf(words.length));
+                word = word.substring(0, lastIndex);
             }
             result.add(word);
         }
