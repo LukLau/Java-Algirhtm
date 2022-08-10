@@ -1,5 +1,9 @@
 package org.learn.algorithm.leetcode;
 
+import org.apache.tomcat.Jar;
+import org.springframework.boot.context.properties.bind.handler.IgnoreTopLevelConverterNotFoundBindHandler;
+import org.springframework.jdbc.core.metadata.TableMetaDataProvider;
+
 public class VipDynamicProgram {
 
     public static void main(String[] args) {
@@ -7,7 +11,9 @@ public class VipDynamicProgram {
 
         VipDynamicProgram dynamicProgram = new VipDynamicProgram();
 
-        System.out.println(dynamicProgram.minCostIIFollowUp(costs));
+//        System.out.println(dynamicProgram.minCostIIFollowUp(costs));
+
+        dynamicProgram.numSquares(12);
 
     }
 
@@ -97,5 +103,57 @@ public class VipDynamicProgram {
         }
         return costs[costs.length - 1][firstSmall];
     }
+
+
+    /**
+     * todo
+     * 276 Paint Fence
+     *
+     * @param n: non-negative integer, n posts
+     * @param k: non-negative integer, k colors
+     * @return: an integer, the total number of ways
+     */
+    public int numWays(int n, int k) {
+        // write your code here
+        int[][] dp = new int[n + 1][k + 1];
+        for (int i = 1; i <= k; i++) {
+            for (int j = 1; j <= n; j++) {
+//                dp[i][j] =  dp[i][j-1] +
+            }
+        }
+        return 0;
+    }
+
+
+    /**
+     * dp[i] = dp[i-j * j] + dp[j*j], dp[i-1];
+     * 279. Perfect Squares
+     *
+     * @param n
+     * @return
+     */
+    public int numSquares(int n) {
+        if (n <= 1) {
+            return n;
+        }
+        int[] dp = new int[n + 1];
+
+        dp[1] = 1;
+
+        for (int i = 1; i <= n; i++) {
+            dp[i] = i;
+            for (int j = 1; j * j <= i; j++) {
+                if (j * j == i) {
+                    dp[i] = 1;
+                    break;
+                } else {
+                    int remain = i - j * j;
+                    dp[i] = Math.min(dp[remain] + 1, dp[i]);
+                }
+            }
+        }
+        return dp[n];
+    }
+
 
 }

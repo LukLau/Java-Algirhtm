@@ -2,7 +2,6 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.Trie;
 
-import javax.swing.*;
 import java.util.*;
 
 /**

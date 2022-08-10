@@ -1,10 +1,36 @@
 package org.learn.algorithm.leetcode;
 
+import java.util.Arrays;
+
 public class VipMath {
 
     public static void main(String[] args) {
         VipMath vipMath = new VipMath();
         vipMath.getHint("1807", "7810");
+    }
+
+
+    /**
+     * @param nums: A list of integers
+     * @return: nothing
+     */
+    public void wiggleSort(int[] nums) {
+        // write your code here
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        Arrays.sort(nums);
+        for (int i = 1; i < nums.length; i = i + 2) {
+            if (i + 1 < nums.length) {
+                swap(nums, i, i + 1);
+            }
+        }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int val = nums[j];
+        nums[j] = nums[i];
+        nums[i] = val;
     }
 
 
@@ -87,19 +113,14 @@ public class VipMath {
         int cows = 0;
         int len = secret.length();
         int[] hash1 = new int[10];
-//        int[] hash2 = new int[10];
-        for (int i = 0; i < len; i++) {
-            hash1[Character.getNumericValue(secret.charAt(i))]++;
-            hash1[Character.getNumericValue(guess.charAt(i))]--;
-        }
         for (int i = 0; i < len; i++) {
             if (secret.charAt(i) == guess.charAt(i)) {
                 bulls++;
             } else {
-                if (hash1[Character.getNumericValue(guess.charAt(i))]++ > 0) {
+                if (hash1[Character.getNumericValue(guess.charAt(i))]-- > 0) {
                     cows++;
                 }
-                if (hash1[Character.getNumericValue(secret.charAt(i))]-- < 0) {
+                if (hash1[Character.getNumericValue(secret.charAt(i))]++ < 0) {
                     cows++;
                 }
             }
