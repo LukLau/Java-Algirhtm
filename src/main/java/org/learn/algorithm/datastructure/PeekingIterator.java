@@ -9,34 +9,50 @@ import java.util.Iterator;
  * @date 2021/4/20
  */
 public class PeekingIterator implements Iterator<Integer> {
+    private Integer peek;
 
-    private Integer peek = null;
     private Iterator<Integer> iterator;
+
+    private Integer prev;
 
     public PeekingIterator(Iterator<Integer> iterator) {
         // initialize any member here.
         this.iterator = iterator;
-        peek = iterator.next();
+
+        if (iterator != null && iterator.hasNext()) {
+            peek = iterator.next();
+        }
+
     }
 
-    /**
-     * Returns the next element in the iteration without advancing the iterator.
-     */
-
+    // Returns the next element in the iteration without advancing the iterator.
     public Integer peek() {
         return peek;
     }
 
+    // hasNext() and next() should behave the same as in the Iterator interface.
+    // Override them if needed.
     @Override
     public Integer next() {
-        Integer next = iterator.hasNext() ? iterator.next() : null;
-        int pre = peek;
-        peek = next;
-        return pre;
+        if (iterator == null || !iterator.hasNext()) {
+            prev = peek;
+            return peek;
+        }
+        prev = peek;
+
+        peek = iterator.next();
+
+        return prev;
     }
 
     @Override
     public boolean hasNext() {
-        return peek != null;
+        if (iterator == null) {
+            return false;
+        }
+        if (iterator.hasNext()) {
+            return true;
+        }
+        return prev != null && !prev.equals(peek);
     }
 }

@@ -2,6 +2,7 @@ package org.learn.algorithm.leetcode;
 
 import org.thymeleaf.expression.Strings;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -197,5 +198,36 @@ public class FourPage {
         }
         intervalGenerate(result, 0, pos + 1, s, word);
     }
+
+    /**
+     * 283. Move Zeroes
+     *
+     * @param nums
+     */
+    public void moveZeroes(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int zeroIndex = 0;
+//        int endIndex = nums.length - 1;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0) {
+                swap(nums, zeroIndex++, i);
+            }
+        }
+//        while (zeroIndex < endIndex) {
+//            if (nums[endIndex] != 0) {
+//                swap(nums, endIndex, zeroIndex++);
+//            }
+//            endIndex--;
+//        }
+    }
+
+    private void swap(int[] nums, int start, int end) {
+        int val = nums[start];
+        nums[start] = nums[end];
+        nums[end] = val;
+    }
+
 
 }

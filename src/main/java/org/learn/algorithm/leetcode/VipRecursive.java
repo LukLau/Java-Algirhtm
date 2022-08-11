@@ -1,14 +1,18 @@
 package org.learn.algorithm.leetcode;
 
 import javax.sound.midi.Track;
+import java.security.cert.CertificateParsingException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class VipRecursive {
 
     public static void main(String[] args) {
         VipRecursive vipRecursive = new VipRecursive();
-        System.out.println(vipRecursive.addOperators("123", 6));
+        System.out.println(vipRecursive.addOperators("101",
+                45));
 
     }
 
@@ -25,41 +29,44 @@ public class VipRecursive {
         }
         List<String> result = new ArrayList<>();
         internalAddOperators(result, "", num, "", 0, 0, target);
+        Collections.sort(result);
         return result;
     }
 
-    private void internalAddOperators(List<String> result, String num, String s, String sign, int val, int previous, int target) {
+    private void internalAddOperators(List<String> result, String num, String s, String sign, long val, long previous, long target) {
         if (s.isEmpty()) {
             return;
         }
+
         for (int i = 0; i < s.length(); i++) {
             String substring = s.substring(0, i + 1);
-            int parseValue = Integer.parseInt(substring);
+            if (substring.length() >= 2 && substring.charAt(0) == '0') {
+                continue;
+            }
+            long parseValue = Long.parseLong(substring);
+
             String remain = s.substring(i + 1);
 
-
-            if (!sign.isEmpty()) {
-//                num = num + sign + substring;
-//            } else {
-                val = Integer.parseInt(substring);
-//                num = substring;
-            }
+            long tmpValue;
             if (sign.equals("+")) {
-                val += parseValue;
+                tmpValue = val + parseValue;
             } else if (sign.equals("-")) {
-                val -= parseValue;
+                tmpValue = val - parseValue;
+                parseValue = -parseValue;
             } else if (sign.equals("*")) {
-                val = val - previous + previous * parseValue;
-            } else if (sign.equals("/")) {
-                val = val - previous + previous / parseValue;
+                tmpValue = val - previous + previous * parseValue;
+            } else {
+                tmpValue = parseValue;
             }
-            if (val == target) {
-                result.add(num);
+
+            String tmp = num + sign + substring;
+
+            if (tmpValue == target && remain.isEmpty()) {
+                result.add(tmp);
             }
-            internalAddOperators(result, num + sign + substring, remain, "+", val, parseValue, target);
-            internalAddOperators(result, num + sign + substring, remain, "-", val, parseValue, target);
-            internalAddOperators(result, num + sign + substring, remain, "*", val, parseValue, target);
-            internalAddOperators(result, num + sign + substring, remain, "/", val, parseValue, target);
+            internalAddOperators(result, tmp, remain, "*", tmpValue, sign.isEmpty() ? tmpValue : previous * parseValue, target);
+            internalAddOperators(result, tmp, remain, "+", tmpValue, parseValue, target);
+            internalAddOperators(result, tmp, remain, "-", tmpValue, parseValue, target);
         }
 
     }
