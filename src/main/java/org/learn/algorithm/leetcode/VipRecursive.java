@@ -6,6 +6,12 @@ import java.util.List;
 
 public class VipRecursive {
 
+    public static void main(String[] args) {
+        VipRecursive vipRecursive = new VipRecursive();
+        System.out.println(vipRecursive.addOperators("123", 6));
+
+    }
+
     /**
      * @param num:    a string contains only digits 0-9
      * @param target: An integer
@@ -18,13 +24,12 @@ public class VipRecursive {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        internalAddOperators(result, num, "", "", 0, 0, target);
+        internalAddOperators(result, "", num, "", 0, 0, target);
         return result;
     }
 
     private void internalAddOperators(List<String> result, String num, String s, String sign, int val, int previous, int target) {
-        if (val == target) {
-            result.add(s);
+        if (s.isEmpty()) {
             return;
         }
         for (int i = 0; i < s.length(); i++) {
@@ -34,30 +39,27 @@ public class VipRecursive {
 
 
             if (!sign.isEmpty()) {
-                num = num + sign + substring;
-            } else {
-                num = substring;
+//                num = num + sign + substring;
+//            } else {
+                val = Integer.parseInt(substring);
+//                num = substring;
             }
             if (sign.equals("+")) {
                 val += parseValue;
             } else if (sign.equals("-")) {
                 val -= parseValue;
-            }  else if (sign.equals("*")) {
-                val -=  previous + previous * parseValue;
+            } else if (sign.equals("*")) {
+                val = val - previous + previous * parseValue;
             } else if (sign.equals("/")) {
-
+                val = val - previous + previous / parseValue;
             }
-            if (sign.isEmpty()) {
-                internalAddOperators(result, substring, remain, "+", parseValue, parseValue, target);
-                internalAddOperators(result, substring, remain, "-", parseValue, parseValue, target);
-                internalAddOperators(result, substring, remain, "*", parseValue, parseValue, target);
-                internalAddOperators(result, substring, remain, "/", parseValue, parseValue, target);
-            } else {
-                if (sign.equals("*")) {
-//                    internalAddOperators(result, num + sign + substring, , , , , );
-                }
-
+            if (val == target) {
+                result.add(num);
             }
+            internalAddOperators(result, num + sign + substring, remain, "+", val, parseValue, target);
+            internalAddOperators(result, num + sign + substring, remain, "-", val, parseValue, target);
+            internalAddOperators(result, num + sign + substring, remain, "*", val, parseValue, target);
+            internalAddOperators(result, num + sign + substring, remain, "/", val, parseValue, target);
         }
 
     }
