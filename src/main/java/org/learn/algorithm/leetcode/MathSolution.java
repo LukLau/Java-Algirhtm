@@ -563,26 +563,6 @@ public class MathSolution {
     }
 
 
-    /**
-     * @param nums: an array containing n + 1 integers which is between 1 and n
-     * @return: the duplicate one
-     */
-    public int findDuplicate(int[] nums) {
-        // write your code here
-        int base = 0;
-        for (int num : nums) {
-            int remain = num & Integer.MAX_VALUE;
-
-            boolean exist = (base & (1 << remain)) != 0;
-            if (exist) {
-                return num;
-            }
-            base = base ^ (1 << remain);
-        }
-        return -1;
-    }
-
-
     // 摩尔投票法
 
     /**
@@ -1178,5 +1158,28 @@ public class MathSolution {
         }
         return builder.toString().trim();
     }
+
+    // 重复数字相关问题 //
+
+
+    /**
+     * https://leetcode.com/problems/find-the-duplicate-number/solution/
+     *
+     * 287. Find the Duplicate Number
+     *
+     * @param nums
+     * @return
+     */
+    public int findDuplicate(int[] nums) {
+        Arrays.sort(nums);
+
+        for (int i = 1; i < nums.length ;i++) {
+            if (nums[i] ==nums[i-1]) {
+                return nums[i];
+            }
+        }
+        return -1;
+    }
+
 
 }

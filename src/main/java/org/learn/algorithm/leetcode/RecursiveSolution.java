@@ -670,6 +670,75 @@ public class RecursiveSolution {
         }
     }
 
+
+
+    /**
+     * #282 Expression Add Operators
+     *
+     * @param num:    a string contains only digits 0-9
+     * @param target: An integer
+     * @return: return all possibilities
+     * we will sort your return value in output
+     */
+    public List<String> addOperatorsii(String num, int target) {
+        // write your code here
+        if (num == null || num.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        internalAddOperators(result, "", num, "", 0, 0, target);
+//        Collections.sort(result);
+        return result;
+    }
+
+    private void internalAddOperators(List<String> result, String expression, String words, String sign, long val, long previous, long target) {
+        if (words.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < words.length(); i++) {
+            String substring = words.substring(0, i + 1);
+            if (substring.length() >= 2 && substring.charAt(0) == '0') {
+                continue;
+            }
+            long parseValue = Long.parseLong(substring);
+
+            String remain = words.substring(i + 1);
+
+            long tmpValue;
+            switch (sign) {
+                case "+":
+                    tmpValue = val + parseValue;
+                    break;
+                case "-":
+                    tmpValue = val - parseValue;
+                    parseValue = -parseValue;
+                    break;
+                case "*":
+                    tmpValue = val - previous + previous * parseValue;
+                    break;
+                default:
+                    tmpValue = parseValue;
+                    break;
+            }
+            String tmp = expression + sign + substring;
+
+            if (val == target && remain.isEmpty()) {
+                result.add(tmp);
+            }
+            long multi;
+            if (sign.equals("*")) {
+                multi = previous * parseValue;
+            } else {
+                multi = parseValue;
+            }
+            internalAddOperators(result, tmp, remain, "*", tmpValue, multi, target);
+            internalAddOperators(result, tmp, remain, "+", tmpValue, parseValue, target);
+            internalAddOperators(result, tmp, remain, "-", tmpValue, parseValue, target);
+        }
+    }
+
+
     // ---- //
 
 

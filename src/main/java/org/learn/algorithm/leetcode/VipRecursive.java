@@ -1,9 +1,7 @@
 package org.learn.algorithm.leetcode;
 
-import javax.sound.midi.Track;
-import java.security.cert.CertificateParsingException;
+import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,64 +9,54 @@ public class VipRecursive {
 
     public static void main(String[] args) {
         VipRecursive vipRecursive = new VipRecursive();
-        System.out.println(vipRecursive.addOperators("101",
-                45));
+//        System.out.println(vipRecursive.addOperators("2320",
+//                8));
+        int[][] rooms = new int[][]{{2147483647, -1, 0, 2147483647}, {2147483647, 2147483647, 2147483647, -1}, {2147483647, -1, 2147483647, -1}, {0, -1, 2147483647, 2147483647}};
 
+        vipRecursive.wallsAndGates(rooms);
     }
+
+    // DSF //
+
 
     /**
-     * @param num:    a string contains only digits 0-9
-     * @param target: An integer
-     * @return: return all possibilities
-     * we will sort your return value in output
+     * 286 Walls and Gates
+     *
+     * @param rooms: m x n 2D grid
+     * @return: nothing
      */
-    public List<String> addOperators(String num, int target) {
+    public void wallsAndGates(int[][] rooms) {
         // write your code here
-        if (num == null || num.isEmpty()) {
-            return new ArrayList<>();
-        }
-        List<String> result = new ArrayList<>();
-        internalAddOperators(result, "", num, "", 0, 0, target);
-        Collections.sort(result);
-        return result;
-    }
-
-    private void internalAddOperators(List<String> result, String num, String s, String sign, long val, long previous, long target) {
-        if (s.isEmpty()) {
+        if (rooms == null || rooms.length == 0) {
             return;
         }
-
-        for (int i = 0; i < s.length(); i++) {
-            String substring = s.substring(0, i + 1);
-            if (substring.length() >= 2 && substring.charAt(0) == '0') {
-                continue;
+        int row = rooms.length;
+        int column = rooms[0].length;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (rooms[i][j] == 0) {
+                    internalWallsAndGates(0, i, j, rooms);
+                }
             }
-            long parseValue = Long.parseLong(substring);
-
-            String remain = s.substring(i + 1);
-
-            long tmpValue;
-            if (sign.equals("+")) {
-                tmpValue = val + parseValue;
-            } else if (sign.equals("-")) {
-                tmpValue = val - parseValue;
-                parseValue = -parseValue;
-            } else if (sign.equals("*")) {
-                tmpValue = val - previous + previous * parseValue;
-            } else {
-                tmpValue = parseValue;
-            }
-
-            String tmp = num + sign + substring;
-
-            if (tmpValue == target && remain.isEmpty()) {
-                result.add(tmp);
-            }
-            internalAddOperators(result, tmp, remain, "*", tmpValue, sign.isEmpty() ? tmpValue : previous * parseValue, target);
-            internalAddOperators(result, tmp, remain, "+", tmpValue, parseValue, target);
-            internalAddOperators(result, tmp, remain, "-", tmpValue, parseValue, target);
         }
-
     }
+
+    private void internalWallsAndGates(int value, int i, int j, int[][] rooms) {
+        if (i < 0 || i == rooms.length || j < 0 || j == rooms[i].length) {
+            return;
+        }
+        if (rooms[i][j] == -1) {
+            return;
+        }
+//        if (rooms[i][j] > value || value == 0) {
+        if (value == 0 || rooms[i][j] > value) {
+            rooms[i][j] = value;
+            internalWallsAndGates(value + 1, i - 1, j, rooms);
+            internalWallsAndGates(value + 1, i + 1, j, rooms);
+            internalWallsAndGates(value + 1, i, j - 1, rooms);
+            internalWallsAndGates(value + 1, i, j + 1, rooms);
+        }
+    }
+
 
 }

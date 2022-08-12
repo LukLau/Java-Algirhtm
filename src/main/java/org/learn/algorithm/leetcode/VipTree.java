@@ -106,6 +106,36 @@ public class VipTree {
             TreeNode pop = stack.pop();
         }
         return null;
+    }
+
+
+    /**
+     * #285 Inorder Successor in BST
+     *
+     * @param root: The root of the BST.
+     * @param p:    You need find the successor node of p.
+     * @return: Successor of p.
+     */
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        // write your code here
+        if (root == null) {
+            return null;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode prev = root;
+        while (!stack.isEmpty() || prev != null) {
+            while (prev != null) {
+                stack.push(prev);
+                prev = prev.left;
+            }
+            prev = stack.pop();
+            if (prev == p) {
+                return prev.right;
+            }
+            prev = prev.right;
+        }
+        return null;
+
 
     }
 

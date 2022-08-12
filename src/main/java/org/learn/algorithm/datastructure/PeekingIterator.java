@@ -34,25 +34,17 @@ public class PeekingIterator implements Iterator<Integer> {
     // Override them if needed.
     @Override
     public Integer next() {
-        if (iterator == null || !iterator.hasNext()) {
-            prev = peek;
-            return peek;
-        }
+        Integer next = iterator.hasNext() ? iterator.next() : null;
+
         prev = peek;
 
-        peek = iterator.next();
+        peek = next;
 
         return prev;
     }
 
     @Override
     public boolean hasNext() {
-        if (iterator == null) {
-            return false;
-        }
-        if (iterator.hasNext()) {
-            return true;
-        }
-        return prev != null && !prev.equals(peek);
+        return peek != null;
     }
 }
