@@ -1,8 +1,10 @@
 package org.learn.algorithm.leetcode;
 
-import org.thymeleaf.expression.Strings;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.context.request.WebRequestInterceptor;
 
-import javax.swing.*;
+import javax.servlet.*;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -11,11 +13,18 @@ import java.util.*;
  * @author luk
  * @date 2021/4/26
  */
-public class FourPage {
+public class FourPage implements WebRequestInterceptor, Filter {
 
     public static void main(String[] args) {
         FourPage fourPage = new FourPage();
-        fourPage.generateAbbreviations("word");
+//        fourPage.generateAbbreviations("word");
+//        String pattern = "abba";
+//        String s = "dog cat cat dog";
+//        fourPage.wordPattern(pattern, s);
+
+        String pattern = "abab";
+        String word = "redblueredblue";
+        fourPage.wordPatternMatch(pattern, word);
     }
 
 
@@ -230,4 +239,93 @@ public class FourPage {
     }
 
 
+    /**
+     * 290. Word Pattern
+     *
+     * @param pattern
+     * @param s
+     * @return
+     */
+    public boolean wordPattern(String pattern, String s) {
+        if (pattern == null || s == null) {
+            return false;
+        }
+        String[] words = s.split(" ");
+        if (pattern.length() != words.length) {
+            return false;
+        }
+        Map<Character, Integer> word1 = new HashMap<>();
+
+        Map<String, Integer> word2 = new HashMap<>();
+
+        for (int i = 0; i < words.length; i++) {
+            char patternCharacter = pattern.charAt(i);
+            int index1 = word1.getOrDefault(patternCharacter, i);
+            int index2 = word2.getOrDefault(words[i], i);
+            if (index1 != index2) {
+                return false;
+            }
+            word1.put(patternCharacter, i);
+            word2.put(words[i], i);
+        }
+        return true;
+    }
+
+
+    /**
+     * 291 Word Pattern II
+     *
+     * @param pattern: a string,denote pattern string
+     * @param str:     a string, denote matching string
+     * @return: a boolean
+     */
+    public boolean wordPatternMatch(String pattern, String str) {
+        // write your code here
+        if (pattern == null || str == null) {
+            return false;
+        }
+        int len = str.length();
+        for (int i = 1; i < len; i++) {
+            Map<Character, String> tmp = new HashMap<>();
+            if (checkValid(tmp, 0, pattern, i, str)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkValid(Map<Character, String> map, int patternStart, String pattern, int startIndex, String str) {
+        if (str.isEmpty()) {
+            return true;
+        }
+        if (pattern.isEmpty()) {
+            return false;
+        }
+        String word = map.getOrDefault(pattern.charAt(patternStart), "");
+        if (!word.isEmpty()) {
+            if (str.startsWith(word)) {
+                return checkValid(map, patternStart + 1, pattern, startIndex + 1, str.substring(startIndex + 1));
+            } else {
+                return false;
+            }
+        }
+        word = str.substring(0, startIndex);
+
+        map.put(pattern.charAt(patternStart), word);
+
+        return checkValid(map, patternStart + 1, pattern, startIndex, str.substring(startIndex));
+    }
+
+    private boolean internalWordPattern(Map<Character, String> map, int patternStart, String pattern, int index, String str) {
+        if (str.isEmpty()) {
+            return true;
+        }
+        if (patternStart == pattern.length()) {
+            return false;
+        }
+        String word = map.getOrDefault(pattern.charAt(patternStart), "");
+
+
+        return false;
+    }
 }

@@ -136,27 +136,40 @@ public class VipString {
             return dict;
         }
         // write your code here
-        List<String> result = new ArrayList<>();
-        Map<String,PriorityQueue<String>> map = new HashMap<>();
+
+        Map<String, PriorityQueue<String>> map = new HashMap<>();
 
         for (String word : dict) {
-            int len = word.length();
-            if (len <= 2) {
-                result.add(word);
-                continue;
-            }
-            PriorityQueue<String> priorityQueue = map.getOrDefault(word, new PriorityQueue<>((o1, o2) -> o2.length() - o1.length()));
+            String abbr = getAbbr(word);
+            PriorityQueue<String> priorityQueue = map.getOrDefault(abbr, new PriorityQueue<>((o1, o2) -> o2.length() - o1.length()));
 
             if (priorityQueue.isEmpty()) {
                 priorityQueue.offer(word);
+            } else {
+                boolean existUnique = true;
+                for (String prefix : priorityQueue) {
+
+
+
+
+                }
             }
-
-
         }
+        return null;
     }
 
-//    private String getAbbr()
+    private String getAbbr(String word) {
 
+        int len = word.length();
+        if (len <= 2) {
+            return word;
+        }
+        String abbr = String.valueOf(word.charAt(0) + len + word.charAt(len - 1));
+        if (abbr.length() == len) {
+            return word;
+        }
+        return abbr;
+    }
 
 
 }
