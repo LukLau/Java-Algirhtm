@@ -5,6 +5,7 @@ import org.learn.algorithm.datastructure.Point;
 import org.learn.algorithm.datastructure.TreeNode;
 import org.learn.algorithm.nowcode.OftenSolution;
 
+import java.awt.font.NumericShaper;
 import java.util.*;
 
 /**
@@ -38,7 +39,10 @@ public class VipSolution {
 //        Interval o3 = new Interval(15, 20);
 //
 //        solution.minMeetingRooms(Arrays.asList(o1, o2, o3));
-        solution.verifyPreorder(new int[]{4, 3, 5, 1, 2, 3});
+//        solution.verifyPreorder(new int[]{4, 3, 5, 1, 2, 3});
+//        solution.verifyPreorder(new int[]{3, 2, 1, 4});
+//        solution.verifyPreorder(new int[]{4, 2, 1, 3});
+        solution.verifyPreorderII(new int[]{4, 3, 5, 1, 2, 3});
 
 
     }
@@ -436,30 +440,58 @@ public class VipSolution {
         if (preorder == null || preorder.length == 0) {
             return false;
         }
-        return internalVerifyPreorder(0, preorder.length - 1, preorder);
+        Stack<Integer> stack = new Stack<>();
+        Integer prev = null;
+        for (int i = 0; i < preorder.length; i++) {
+            int val = preorder[i];
+
+            if (prev != null && prev >= val) {
+                return false;
+            }
+            while (!stack.isEmpty() && preorder[stack.peek()] < val) {
+                prev = preorder[stack.pop()];
+            }
+            stack.push(i);
+        }
+        return true;
+    }
+
+    public boolean verifyPreorderII(int[] preorder) {
+        if (preorder == null || preorder.length == 0) {
+            return true;
+        }
+        int index = -1;
+        Integer prev = null;
+        for (int i = 0; i < preorder.length; i++) {
+            int val = preorder[i];
+            if (prev != null && prev >= val) {
+                return false;
+            }
+            while (index >= 0 && preorder[index] < val) {
+                prev = preorder[index--];
+            }
+            preorder[++index] = val;
+        }
+        return true;
     }
 
     private boolean internalVerifyPreorder(int start, int end, int[] preorder) {
-        if (start > end) {
-            return false;
-        }
         if (start == end) {
             return true;
         }
-        int root = preorder[start];
-        int currentIndex = start + 1;
-        while (currentIndex <= end && preorder[currentIndex] < root) {
-            currentIndex++;
-        }
-        int tmp = currentIndex;
-        while (tmp <= end && preorder[tmp] > root) {
+        int tmp = start + 1;
+        while (tmp < end && preorder[tmp] < preorder[start]) {
             tmp++;
         }
-        if (tmp < end) {
-            return false;
+        int mid = tmp;
+        while (mid < end && preorder[mid] > preorder[mid]) {
+            mid++;
         }
-        return internalVerifyPreorder(start + 1, currentIndex - 1, preorder) && internalVerifyPreorder(currentIndex, end, preorder);
+
+
+        return false;
     }
+
 
     /**
      * todo

@@ -284,20 +284,17 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        int left = 0;
-
         Map<Character, Integer> map = new HashMap<>();
+        int left = 0;
         int result = 0;
-
         char[] words = s.toCharArray();
-
         for (int i = 0; i < words.length; i++) {
             if (map.containsKey(words[i])) {
                 left = Math.max(left, map.get(words[i]) + 1);
             }
             result = Math.max(result, i - left + 1);
-
             map.put(words[i], i);
+
         }
         return result;
     }
@@ -306,18 +303,10 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        int[] hash = new int[256];
+
+        int[]hash = new int[256];
         char[] words = s.toCharArray();
-        int left = 0;
-        int result = 0;
-        for (int i = 0; i < words.length; i++) {
-            left = Math.max(left, hash[s.charAt(i)]);
 
-            result = Math.max(result, i - left + 1);
-
-            hash[s.charAt(i)] = i + 1;
-        }
-        return result;
     }
 
     public String longestPalindrome(String s) {

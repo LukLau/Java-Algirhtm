@@ -2,12 +2,32 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.TreeNode;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class VipTree {
+
+    public static void main(String[] args) {
+        VipTree vipTree = new VipTree();
+
+
+        TreeNode root = new TreeNode(1);
+
+        TreeNode node3 = new TreeNode(3);
+
+        TreeNode node2 = new TreeNode(2);
+        TreeNode node4 = new TreeNode(4);
+        TreeNode node5 = new TreeNode(5);
+
+        node3.left = node2;
+        node3.right = node4;
+
+        node4.right = node5;
+        root.right = node3;
+
+//        vipTree.longestConsecutiveii(root);
+
+
+    }
 
     /**
      * 255. Verify Preorder Sequence in Binary Search Tree
@@ -135,8 +155,88 @@ public class VipTree {
             prev = prev.right;
         }
         return null;
+    }
 
 
+    //  ---二叉树 最长连续序列问题----//
+
+
+    /**
+     * 298. Binary Tree Longest Consecutive Sequence
+     *
+     * @param root: the root of binary tree
+     * @return: the length of the longest consecutive sequence path
+     */
+
+
+    public int longestConsecutive(TreeNode root) {
+        // write your code here
+        if (root == null) {
+            return 0;
+        }
+//        LinkedList<TreeNode> linkedList = new LinkedList<>();
+//
+//        linkedList.offer(root);
+//        int result = 0;
+//        while (!linkedList.isEmpty()) {
+//
+//            TreeNode node = linkedList.poll();
+//
+//            int tmp = dfsLongestConsecutive(node, node.val);
+//
+//            result = Math.max(result, tmp);
+//
+//            if (node.left != null) {
+//                linkedList.offer(node.left);
+//            }
+//            if (node.right != null) {
+//                linkedList.offer(node.right);
+//            }
+//        }
+//        return result;
+
+        dfsLongestConsecutiveii(root, Integer.MIN_VALUE, 0);
+
+        return longestConsecutive;
+    }
+
+
+    private int longestConsecutive = 0;
+
+    private void dfsLongestConsecutiveii(TreeNode root, int val, int current) {
+        if (root == null) {
+            return;
+        }
+        if (root.val == val + 1) {
+            current = current + 1;
+        } else {
+            current = 1;
+        }
+        longestConsecutive = Math.max(longestConsecutive, current);
+        dfsLongestConsecutiveii(root.left, root.val, current);
+        dfsLongestConsecutiveii(root.right, root.val, current);
+    }
+
+
+    /**
+     * https://www.lintcode.com/problem/614
+     *
+     * @param root: the root of binary tree
+     * @return: the length of the longest consecutive sequence path
+     */
+    public int longestConsecutive2(TreeNode root) {
+        // write your code here
+        if (root == null) {
+            return 0;
+        }
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+        linkedList.offer(root);
+        while (!linkedList.isEmpty()) {
+            TreeNode poll = linkedList.poll();
+
+        }
+//        intervalLongest(root,)
+        return internalDFS(root, Integer.MIN_VALUE,0);
     }
 
 

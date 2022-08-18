@@ -1,5 +1,6 @@
 package org.learn.algorithm.datastructure;
 
+import java.util.Comparator;
 import java.util.PriorityQueue;
 
 /**
@@ -10,32 +11,46 @@ import java.util.PriorityQueue;
  */
 public class MedianFinder {
 
-    private final PriorityQueue<Integer> small;
+    public static void main(String[] args) {
+        MedianFinder medianFinder = new MedianFinder();
+        medianFinder.addNum(1);
+        medianFinder.addNum(2);
+        medianFinder.addNum(3);
 
-    private final PriorityQueue<Integer> big;
+        double median = medianFinder.findMedian();
+
+        System.out.println(median);
+//        medianFinder.addNum(4);
+//        medianFinder.addNum(5);
+//        medianFinder.addNum(6);
 
 
-    /**
-     * initialize your data structure here.
-     */
+    }
+
+    private PriorityQueue<Integer> previous = new PriorityQueue<>(Comparator.reverseOrder());
+
+    private PriorityQueue<Integer> after = new PriorityQueue<>();
+
     public MedianFinder() {
-        small = new PriorityQueue<>((o1, o2) -> o2 - o1);
-        big = new PriorityQueue<>();
 
     }
 
     public void addNum(int num) {
-        small.offer(num);
-        big.offer(small.poll());
-        if (big.size() > small.size()) {
-            small.offer(big.poll());
+        previous.offer(num);
+        after.offer(previous.poll());
+        if (after.size() > previous.size()) {
+            previous.offer(after.poll());
         }
+
+
     }
 
     public double findMedian() {
-        if (small.size() > big.size()) {
-            return small.peek() / 1.0;
+        if (previous.size() > after.size()) {
+            return previous.peek() / 1.0;
         }
-        return (small.peek() + big.peek()) / 2.0;
+        return (previous.peek() + after.peek()) / 2.0;
     }
+
+
 }
