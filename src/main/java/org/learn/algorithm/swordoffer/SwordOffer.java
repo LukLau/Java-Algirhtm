@@ -14,18 +14,6 @@ public class SwordOffer {
     public static void main(String[] args) {
 
         SwordOffer offer = new SwordOffer();
-//        ListNode root = new ListNode(1);
-//        ListNode d2 = new ListNode(2);
-//        root.next = d2;
-//        ListNode d3 = new ListNode(3);
-//        d2.next = d3;
-//        ListNode d4 = new ListNode(4);
-//        d3.next = d4;
-//        d4.next = new ListNode(5);
-//        offer.FindKthToTail(root, 6);
-//
-////        offer.minCostClimbingStairs(new int[]{63, 63, 56, 31, 79, 86, 57, 79, 75, 68});
-//        offer.maxArea(new int[]{1, 7, 3, 2, 4, 5, 8, 2, 7});
 
         TreeNode root = new TreeNode(1);
         TreeNode node2 = new TreeNode(2);
@@ -691,7 +679,7 @@ public class SwordOffer {
      * BM60 括号生成
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      *
-     * @param n int整型
+     * @param str int整型
      * @return string字符串ArrayList
      */
 
@@ -1348,7 +1336,12 @@ public class SwordOffer {
     }
 
     /**
+<<<<<<< HEAD
      * {1,2,3,5,#,7,8}
+=======
+     * the tick: 无需 判断结点是否为null,再插入
+     * {3,1,7,#,#,6,8}
+>>>>>>> c085356f15ad630bf8b82d55adc207aa01c6908c
      *
      * @param root
      * @return
@@ -1360,64 +1353,21 @@ public class SwordOffer {
         }
         LinkedList<TreeNode> linkedList = new LinkedList<>();
         linkedList.offer(root);
-
+        boolean isComplete = false;
         while (!linkedList.isEmpty()) {
-            int size = linkedList.size();
-            TreeNode nextLevel = null;
-            for (int i = 0; i < size; i++) {
+            TreeNode poll = linkedList.poll();
 
-                TreeNode poll = linkedList.poll();
-
-                if (poll.left == null) {
-                    if (poll.right != null) {
-                        return false;
-                    }
-                }
-                if (poll.left != null) {
-                    linkedList.offer(poll.left);
-
-                    if (nextLevel == null) {
-                        nextLevel = poll.left;
-                        if (i > 0) {
-                            return false;
-                        }
-                    }
-                }
-                if (poll.right != null) {
-                    linkedList.offer(poll.right);
-
-                    if (nextLevel == null) {
-                        nextLevel = poll.right;
-
-                        if (i > 0) {
-                            return false;
-                        }
-                    }
-
-                }
-
-                if (nextLevel != null) {
-                    if (poll.left == null && poll.right != null) {
-                        return false;
-                    }
-                }
+            if (poll == null) {
+                isComplete = true;
+                continue;
             }
+            if (isComplete) {
+                return false;
+            }
+            linkedList.offer(poll.left);
+            linkedList.offer(poll.right);
         }
         return true;
-    }
-
-    private boolean isCompleteTree(TreeNode left, TreeNode right) {
-        if (left == null && right == null) {
-            return true;
-        }
-        if (left != null && right == null) {
-            return true;
-        }
-        if (left == null) {
-            return false;
-        }
-        return false;
-//        return isCompleteTree(left) &&
     }
 
 

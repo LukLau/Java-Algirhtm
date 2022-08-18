@@ -3,6 +3,7 @@ package org.learn.algorithm.leetcode;
 import org.learn.algorithm.datastructure.TreeNode;
 
 import java.util.*;
+import java.util.spi.CurrencyNameProvider;
 
 /**
  * 动态规划问题
@@ -18,13 +19,22 @@ public class DynamicSolution {
         char[][] matrix = new char[][]{{'0', '1', '1', '0', '1'}, {'1', '1', '0', '1', '0'}, {'0', '1', '1', '1', '0'}, {'1', '1', '1', '1', '0'}, {'1', '1', '1', '1', '1'}, {'0', '0', '0', '0', '0'}};
 //        solution.numDecodings("12");
 //        solution.maximalRectangle(matrix);
-        List<List<Integer>> lists = solution.generate(4);
-        System.out.println(lists);
+//        List<List<Integer>> lists = solution.generate(4);
+//        System.out.println(lists);
 
 //        solution.isInterleave("", "", "");
 //        char[][] nums = new char[][]{{'1', '0', '1', '0', '0'}, {'1', '0', '1', '1', '1'}, {"1", "1", "1", "1", "1"}, {"1", "0", "0", "1", "0"}}
 //        solution.maximalRectangle(nums);
+
+//        int[][] games = new int[][]{{0, 1, 0}, {0, 0, 1}, {1, 1, 1}, {0, 0, 0}};
+        int[][] games = new int[][]{{0, 0}};
+
+        solution.gameOfLife(games);
+
+
     }
+
+
     // 背包系列问题
 
     /**
@@ -855,43 +865,47 @@ public class DynamicSolution {
         }
         int row = board.length;
         int column = board[0].length;
-        int[][] matrix = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+        int[][] matrix = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                intervalGame(i, j, board, matrix);
+                internalGameOfLive(board, i, j, matrix);
             }
         }
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (board[i][j] == -1) {
                     board[i][j] = 0;
-                } else if (board[i][j] == -2) {
+                } else if (board[i][j] < -1) {
                     board[i][j] = 1;
                 }
             }
         }
-
     }
 
-    private void intervalGame(int i, int j, int[][] board, int[][] matrix) {
-        int liveCount = 0;
-        for (int[] item : matrix) {
-            int x = i + item[0];
-            int y = j + item[1];
-            if (x < 0 || x == board.length || y < 0 || y == board[x].length) {
+    private void internalGameOfLive(int[][] board, int currentX, int currentY, int[][] matrix) {
+        boolean currentCellLive = false;
+        if (board[currentX][currentY] == 1) {
+            currentCellLive = true;
+        }
+        int neighborLiveCount = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            int x = currentX + matrix[i][0];
+            int y = currentY + matrix[i][1];
+            if (x < 0 || x >= board.length || y < 0 || y >= board[currentX].length) {
                 continue;
             }
             if (Math.abs(board[x][y]) == 1) {
-                liveCount++;
+                neighborLiveCount++;
             }
         }
-        if (board[i][j] == 1 && !(liveCount == 2 || liveCount == 3)) {
-            board[i][j] = -1;
+        if (!currentCellLive && neighborLiveCount == 3) {
+            board[currentX][currentY] = -2;
         }
-        if (board[i][j] == 0 && liveCount == 3) {
-            board[i][j] = -2;
+        if (currentCellLive && (neighborLiveCount < 2 || neighborLiveCount > 3)) {
+            board[currentX][currentY] = -1;
         }
     }
+
 
     /**
      * todo
