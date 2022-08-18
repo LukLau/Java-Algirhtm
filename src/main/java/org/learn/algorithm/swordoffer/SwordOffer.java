@@ -14,18 +14,30 @@ public class SwordOffer {
     public static void main(String[] args) {
 
         SwordOffer offer = new SwordOffer();
-        ListNode root = new ListNode(1);
-        ListNode d2 = new ListNode(2);
-        root.next = d2;
-        ListNode d3 = new ListNode(3);
-        d2.next = d3;
-        ListNode d4 = new ListNode(4);
-        d3.next = d4;
-        d4.next = new ListNode(5);
-        offer.FindKthToTail(root, 6);
+//        ListNode root = new ListNode(1);
+//        ListNode d2 = new ListNode(2);
+//        root.next = d2;
+//        ListNode d3 = new ListNode(3);
+//        d2.next = d3;
+//        ListNode d4 = new ListNode(4);
+//        d3.next = d4;
+//        d4.next = new ListNode(5);
+//        offer.FindKthToTail(root, 6);
+//
+////        offer.minCostClimbingStairs(new int[]{63, 63, 56, 31, 79, 86, 57, 79, 75, 68});
+//        offer.maxArea(new int[]{1, 7, 3, 2, 4, 5, 8, 2, 7});
 
-//        offer.minCostClimbingStairs(new int[]{63, 63, 56, 31, 79, 86, 57, 79, 75, 68});
-        offer.maxArea(new int[]{1, 7, 3, 2, 4, 5, 8, 2, 7});
+        TreeNode root = new TreeNode(1);
+        TreeNode node2 = new TreeNode(2);
+        TreeNode node3 = new TreeNode(3);
+        node2.left = new TreeNode(4);
+        node2.right = new TreeNode(5);
+        root.left = node2;
+        TreeNode node6 = new TreeNode(6);
+        node3.left = node6;
+        root.right = node3;
+
+        offer.isCompleteTree(root);
     }
 
 
@@ -1335,33 +1347,60 @@ public class SwordOffer {
         return validBST(minValue, root.left, root.val) && validBST(root.val, root.right, maxValue);
     }
 
+    /**
+     * {1,2,3,5,#,7,8}
+     *
+     * @param root
+     * @return
+     */
     public boolean isCompleteTree(TreeNode root) {
         // write code here
         if (root == null) {
-            return true;
+            return false;
         }
         LinkedList<TreeNode> linkedList = new LinkedList<>();
         linkedList.offer(root);
+
         while (!linkedList.isEmpty()) {
             int size = linkedList.size();
-            TreeNode prev = null;
+            TreeNode nextLevel = null;
             for (int i = 0; i < size; i++) {
+
                 TreeNode poll = linkedList.poll();
-                if (poll.left == null && poll.right != null) {
-                    return false;
-                }
-                if (prev != null) {
-                    if (prev.right == null && poll.right != null) {
+
+                if (poll.left == null) {
+                    if (poll.right != null) {
                         return false;
                     }
                 }
                 if (poll.left != null) {
                     linkedList.offer(poll.left);
+
+                    if (nextLevel == null) {
+                        nextLevel = poll.left;
+                        if (i > 0) {
+                            return false;
+                        }
+                    }
                 }
                 if (poll.right != null) {
                     linkedList.offer(poll.right);
+
+                    if (nextLevel == null) {
+                        nextLevel = poll.right;
+
+                        if (i > 0) {
+                            return false;
+                        }
+                    }
+
                 }
-                prev = poll;
+
+                if (nextLevel != null) {
+                    if (poll.left == null && poll.right != null) {
+                        return false;
+                    }
+                }
             }
         }
         return true;

@@ -4,6 +4,7 @@ import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Point;
 import org.learn.algorithm.datastructure.TreeLinkNode;
 import org.learn.algorithm.datastructure.TreeNode;
+import org.springframework.dao.TypeMismatchDataAccessException;
 
 import java.util.*;
 
@@ -20,10 +21,71 @@ public class OftenSolution {
 //            System.out.println(Arrays.toString(word));
 //        }
 
-        generateSentence(
-                "this is a sentence it is not a good one and it is also bad", 5, 2);
+        int[] nums = new int[]{1, 2, 4, 3, 5};
+//        System.out.println(solution.VerifySquenceOfBST(nums));
+        solution.VerifySquenceOfBSTii(new int[]{10, 2});
+//        generateSentence(
+//        "this is a sentence it is not a good one and it is also bad", 5, 2);
     }
 
+    public static String generateSentence(String sentence, int length, int lookBack) {
+        String[] words = sentence.split(" ");
+        if (words.length == 0) {
+            return sentence;
+        }
+        if (lookBack > length) {
+            throw new IllegalArgumentException("lookBack exceeds length");
+        }
+
+        List<String> newWords = new ArrayList<>();
+
+        generateLeading(newWords, words, lookBack);
+
+        for (int ig = lookBack; ig < length; ig++) {
+            List<String> prevs = newWords.subList(newWords.size() - lookBack, newWords.size());
+            String chosenWord = randomNextWord(words, prevs);
+            newWords.add(chosenWord);
+        }
+
+        return String.join(" ", newWords);
+    }
+
+    // 生成最初的几个单词
+    private static void generateLeading(List<String> newWords, String[] words, int lookBack) {
+        int randIdx = new Random().nextInt(words.length);
+        for (int i = 0; i < lookBack; i++) {
+            newWords.add(safeGetWord(words, randIdx + i));
+        }
+    }
+
+    private static String randomNextWord(String[] words, List<String> prevs) {
+        int randomBeginIndex = new Random().nextInt(words.length);
+
+        for (int _i = 0; _i < words.length; _i++) {
+            int idx = randomBeginIndex + _i;
+            // 试匹配一个词组
+            int matchedCount = 0;
+
+            for (int j = 0; j < prevs.size(); j++) {
+                if (!safeGetWord(words, idx + j).equals(prevs.get(j))) {
+                    matchedCount = -1;
+                    break;
+                }
+
+                matchedCount++;
+            }
+
+            if (matchedCount == prevs.size()) {
+                return safeGetWord(words, idx + prevs.size());
+            }
+        }
+
+        return null;
+    }
+
+    private static String safeGetWord(String[] words, int index) {
+        return words[index % words.length];
+    }
 
     /**
      * WC1 二叉树的最小深度
@@ -246,7 +308,6 @@ public class OftenSolution {
         return prev;
     }
 
-
     /**
      * WC16 词语序列 ii
      * todo
@@ -393,7 +454,6 @@ public class OftenSolution {
         return left;
     }
 
-
     /**
      * WC79 斐波那契数列
      *
@@ -431,7 +491,6 @@ public class OftenSolution {
         return 2 * jumpFloorII(target - 1);
     }
 
-
     /**
      * WC108 二叉搜索树的后序遍历序列
      *
@@ -444,14 +503,14 @@ public class OftenSolution {
         }
         int endIndex = sequence.length - 1;
         while (endIndex > 0) {
-            int index = endIndex - 1;
-            while (index >= 0 && sequence[index] > sequence[endIndex]) {
-                index--;
+            int tmp = endIndex - 1;
+            while (tmp >= 0 && sequence[tmp] > sequence[endIndex]) {
+                tmp--;
             }
-            while (index >= 0 && sequence[index] < sequence[endIndex]) {
-                index--;
+            while (tmp >= 0 && sequence[tmp] < sequence[endIndex]) {
+                tmp--;
             }
-            if (index != -1) {
+            if (tmp >= 0) {
                 return false;
             }
             endIndex--;
@@ -459,6 +518,30 @@ public class OftenSolution {
         return true;
     }
 
+    public boolean VerifySquenceOfBSTii(int[] sequence) {
+        if (sequence == null || sequence.length == 0) {
+            return false;
+        }
+        return internalVerifySequence(0, sequence.length - 1, sequence);
+    }
+
+    private boolean internalVerifySequence(int start, int end, int[] sequence) {
+        if (start >= end) {
+            return true;
+        }
+        int tmp = start;
+        while (tmp < end && sequence[tmp] < sequence[end]) {
+            tmp++;
+        }
+        int mid = tmp;
+        while (mid < end && sequence[mid] > sequence[end]) {
+            mid++;
+        }
+        if (mid == end) {
+            return internalVerifySequence(start, tmp - 1, sequence) && internalVerifySequence(tmp, end - 1, sequence);
+        }
+        return false;
+    }
 
     /**
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
@@ -539,65 +622,6 @@ public class OftenSolution {
             }
         }
         return false;
-    }
-
-    public static String generateSentence(String sentence, int length, int lookBack) {
-        String[] words = sentence.split(" ");
-        if (words.length == 0) {
-            return sentence;
-        }
-        if (lookBack > length) {
-            throw new IllegalArgumentException("lookBack exceeds length");
-        }
-
-        List<String> newWords = new ArrayList<>();
-
-        generateLeading(newWords, words, lookBack);
-
-        for (int ig = lookBack; ig < length; ig++) {
-            List<String> prevs = newWords.subList(newWords.size() - lookBack, newWords.size());
-            String chosenWord = randomNextWord(words, prevs);
-            newWords.add(chosenWord);
-        }
-
-        return String.join(" ", newWords);
-    }
-
-    // 生成最初的几个单词
-    private static void generateLeading(List<String> newWords, String[] words, int lookBack) {
-        int randIdx = new Random().nextInt(words.length);
-        for (int i = 0; i < lookBack; i++) {
-            newWords.add(safeGetWord(words, randIdx + i));
-        }
-    }
-
-    private static String randomNextWord(String[] words, List<String> prevs) {
-        int randomBeginIndex = new Random().nextInt(words.length);
-
-        for (int _i = 0; _i < words.length; _i++) {
-            int idx = randomBeginIndex + _i;
-            // 试匹配一个词组
-            int matchedCount = 0;
-
-            for (int j = 0; j < prevs.size(); j++) {
-                if (!safeGetWord(words, idx + j).equals(prevs.get(j))) {
-                    matchedCount = -1;
-                    break;
-                }
-
-                matchedCount++;
-            }
-
-            if (matchedCount == prevs.size()) {
-                return safeGetWord(words, idx + prevs.size());
-            }
-        }
-
-        return null;
-    }
-
-    private static String safeGetWord(String[] words, int index) {
-        return words[index % words.length];
     }
 
 

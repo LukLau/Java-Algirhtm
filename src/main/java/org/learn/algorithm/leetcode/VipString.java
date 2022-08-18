@@ -153,6 +153,7 @@ public class VipString {
 
 
         }
+        return null;
     }
 
 //    private String getAbbr()
