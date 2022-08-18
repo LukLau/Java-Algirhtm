@@ -13,7 +13,7 @@ import java.util.*;
  * @author luk
  * @date 2021/4/26
  */
-public class FourPage implements WebRequestInterceptor, Filter {
+public class FourPage  {
 
     public static void main(String[] args) {
         FourPage fourPage = new FourPage();
