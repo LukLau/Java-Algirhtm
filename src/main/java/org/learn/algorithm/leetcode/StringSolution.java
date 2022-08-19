@@ -207,6 +207,9 @@ public class StringSolution {
     }
 
 
+    //--魔法匹配系列//
+
+
     /**
      * 10. Regular Expression Matching
      *
@@ -215,8 +218,8 @@ public class StringSolution {
      * @return
      */
     public boolean isMatch(String s, String p) {
-        if (p.isEmpty()) {
-            return s.isEmpty();
+        if (s.isEmpty()) {
+            return p.isEmpty();
         }
         int m = s.length();
         int n = p.length();
@@ -230,18 +233,17 @@ public class StringSolution {
                 if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else if (p.charAt(j - 1) == '*') {
-//                    if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
-//                        dp[i][j] = dp[i][j - 2];
-//                    } else {
-                    dp[i][j] = dp[i][j - 2] || dp[i][j - 1] || dp[i - 1][j];
-//                    }
+                    if (p.charAt(j - 2) != '.' && s.charAt(i - 1) != p.charAt(j - 2)) {
+                        dp[i][j] = dp[i][j - 2];
+                    } else {
+                        dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
+                    }
                 }
             }
         }
         return dp[m][n];
     }
 
-    //--回文系列//
 
     /**
      * todo
@@ -299,24 +301,35 @@ public class StringSolution {
         return result;
     }
 
-    public int lengthOfLongestSubstringII(String s) {
+    public int lengthOfLongestSubstringii(String s) {
         if (s == null || s.isEmpty()) {
             return 0;
         }
 
-        int[]hash = new int[256];
+        int[] hash = new int[256];
         char[] words = s.toCharArray();
+        int result = 0;
+        int left = 0;
+        for (int i = 0; i < words.length; i++) {
+            left = Math.max(left, hash[s.charAt(i)]);
 
+            result = Math.max(result, i - left + 1);
+
+            hash[s.charAt(i)] = i + 1;
+
+        }
+        return result;
     }
 
     public String longestPalindrome(String s) {
         if (s == null || s.isEmpty()) {
             return "";
         }
+        int result = Integer.MIN_VALUE;
         int len = s.length();
-        int result = 0;
         int begin = 0;
         boolean[][] dp = new boolean[len][len];
+
         for (int i = 0; i < len; i++) {
             for (int j = 0; j <= i; j++) {
                 if (s.charAt(j) == s.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1])) {
@@ -328,7 +341,7 @@ public class StringSolution {
                 }
             }
         }
-        if (result == 0) {
+        if (result == Integer.MIN_VALUE) {
             return "";
         }
         return s.substring(begin, begin + result);

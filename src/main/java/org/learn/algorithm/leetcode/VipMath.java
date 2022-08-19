@@ -1,12 +1,47 @@
 package org.learn.algorithm.leetcode;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class VipMath {
 
     public static void main(String[] args) {
         VipMath vipMath = new VipMath();
         vipMath.getHint("1807", "7810");
+    }
+
+    // 曼哈顿距离公式 (p1, p2) = |p2.x - p1.x| + |p2.y - p1.y|
+
+    /**
+     * @param grid: a 2D grid
+     * @return: the minimize travel distance
+     */
+    public int minTotalDistance(int[][] grid) {
+        // Write your code here
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        List<Integer> row = new ArrayList<>();
+        List<Integer> columns = new ArrayList<>();
+        for (int[] tmp : grid) {
+            row.add(tmp[0]);
+            columns.add(tmp[1]);
+        }
+        Collections.sort(row);
+        Collections.sort(columns);
+        int start = 0;
+        int end = row.size() - 1;
+        int result = 0;
+        while (start < end) {
+            result += row.get(end) - row.get(start) + columns.get(end) - columns.get(start);
+            start++;
+            end--;
+
+        }
+        return result;
+
     }
 
 
