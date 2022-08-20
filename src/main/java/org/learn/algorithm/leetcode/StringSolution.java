@@ -54,7 +54,7 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.lengthOfLongestSubstringTwoDistinct("eceba");
+        solution.lengthOfLongestSubstringII("eceba");
 
     }
 
@@ -300,13 +300,24 @@ public class StringSolution {
     }
 
     public int lengthOfLongestSubstringII(String s) {
-        if (s == null || s.isEmpty()) {
+        if (s == null) {
             return 0;
         }
-
-        int[]hash = new int[256];
+        s = s.trim();
+        if (s.isEmpty()) {
+            return 0;
+        }
+        int[] hash = new int[256];
         char[] words = s.toCharArray();
-
+        int result = 0;
+        int left = 0;
+        for (int i = 0; i < words.length; i++) {
+            int tmp = s.charAt(i) - 'a';
+            left = Math.max(left, hash[tmp]);
+            result = Math.max(result, i - left + 1);
+            hash[tmp] = i + 1;
+        }
+        return result;
     }
 
     public String longestPalindrome(String s) {

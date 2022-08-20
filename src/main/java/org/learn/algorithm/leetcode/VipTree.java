@@ -236,8 +236,13 @@ public class VipTree {
 
         }
 //        intervalLongest(root,)
-        return internalDFS(root, Integer.MIN_VALUE,0);
+//        return internalDFS(root, Integer.MIN_VALUE,0);
+
+        return 0;
     }
+
+
+
 
 
 }
