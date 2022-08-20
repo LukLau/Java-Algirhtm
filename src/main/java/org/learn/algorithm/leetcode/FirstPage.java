@@ -2,6 +2,7 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
 
+import javax.print.DocFlavor;
 import java.util.*;
 
 /**
@@ -12,7 +13,9 @@ public class FirstPage {
 
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
-        page.simplifyPath("/home/");
+//        page.simplifyPath("/home/");
+
+        System.out.println(page.intToRoman(58));
     }
 
     /**
@@ -94,17 +97,16 @@ public class FirstPage {
         String[] combine = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
         LinkedList<String> result = new LinkedList<>();
         result.offer("");
-        int len = digits.length();
-        for (int i = 0; i < len; i++) {
-            int index = Character.getNumericValue(digits.charAt(i));
+        int size = digits.length();
+        for (int i = 0; i < size; i++) {
+            char digit = digits.charAt(i);
+            int index = Character.getNumericValue(digit);
+            String words = combine[index];
 
-            String content = combine[index];
-
-            while (result.peekFirst().length() == i) {
-                String prev = result.poll();
-
-                for (char t : content.toCharArray()) {
-                    result.offer(prev + t);
+            while (!result.isEmpty() && result.peek().length() == i) {
+                String poll = result.poll();
+                for (char tmp : words.toCharArray()) {
+                    result.offer(poll + tmp);
                 }
             }
         }
@@ -114,32 +116,39 @@ public class FirstPage {
     /**
      * 8. String to Integer (atoi)
      *
-     * @param str
+     * @param s
      * @return
      */
-    public int myAtoi(String str) {
-        if (str == null) {
+    public int myAtoi(String s) {
+        if (s == null) {
             return 0;
         }
-        str = str.trim();
-        if (str.isEmpty()) {
+        s = s.trim();
+        if (s.isEmpty()) {
             return 0;
         }
-        char[] words = str.toCharArray();
-        int index = 0;
+        int len = s.length();
+
         int sign = 1;
+
+        char[] words = s.toCharArray();
+
+        int index = 0;
+
         if (words[index] == '+' || words[index] == '-') {
             sign = words[index] == '+' ? 1 : -1;
             index++;
         }
         long result = 0;
         while (index < words.length && Character.isDigit(words[index])) {
-            result = result * 10 + Character.getNumericValue(words[index++]);
+            int value = Character.getNumericValue(words[index]);
+            result = result * 10 + value;
             if (result > Integer.MAX_VALUE) {
                 return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
             }
+            index++;
         }
-        return (int) (result * sign);
+        return Long.valueOf(result * sign).intValue();
     }
 
 
@@ -184,7 +193,7 @@ public class FirstPage {
         String[] two = new String[]{"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
         String[] three = new String[]{"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
         String[] four = new String[]{"", "M", "MM", "MMM"};
-        return four[num / 1000] + three[num % 1000 / 100] + two[num % 100 / 10] + one[num % 10];
+        return four[num / 1000] + three[num % 1000 / 100] + two[num / 10 % 10] + one[num % 10];
     }
 
     /**

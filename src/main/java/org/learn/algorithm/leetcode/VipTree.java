@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+import com.fasterxml.jackson.databind.ser.impl.ReadOnlyClassToSerializerMap;
 import org.learn.algorithm.datastructure.TreeNode;
 
 import java.util.*;
@@ -229,16 +230,32 @@ public class VipTree {
         if (root == null) {
             return 0;
         }
-        LinkedList<TreeNode> linkedList = new LinkedList<>();
-        linkedList.offer(root);
-        while (!linkedList.isEmpty()) {
-            TreeNode poll = linkedList.poll();
 
+        internalDFS(root, Integer.MIN_VALUE, 0);
+
+        return longestV2;
+    }
+
+    private int longestV2 = 0;
+
+    private int internalDFS(TreeNode root, int current, int val) {
+        if (root == null) {
+            return 0;
         }
-//        intervalLongest(root,)
-//        return internalDFS(root, Integer.MIN_VALUE,0);
+        if (root.val == val - 1) {
+            current = current + 1;
+        } else {
+            current = 1;
+        }
+        int sequenceAddLeft = internalDFS(root.left, current, val - 1);
+        int sequenceAddRight = internalDFS(root.right, current, val + 1);
 
-        return 0;
+        int sequenceLeft = internalDFS(root.left, current, val + 1);
+        int sequenceRight = internalDFS(root.right, current, val - 1);
+
+        longestV2 = Math.max(longestV2, Math.max(sequenceAddLeft + sequenceAddRight, sequenceLeft + sequenceRight) + 1);
+        return -1;
+
     }
 
 
