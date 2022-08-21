@@ -34,46 +34,19 @@ public class ListSolution {
         if (head == null) {
             return null;
         }
-        ListNode current = head;
-        int count = 1;
-        while (current.next != null) {
-            count++;
-            current = current.next;
-        }
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
-        ListNode fast = dummy;
-        for (int i = 0; i < count - n; i++) {
-            fast = fast.next;
-        }
-        fast.next = fast.next.next;
-        return dummy.next;
-    }
-
-
-    public ListNode removeNthFromEndII(ListNode head, int n) {
-        if (n <= 0 || head == null) {
-            return null;
-        }
         ListNode root = new ListNode(0);
-
         root.next = head;
 
         ListNode fast = root;
-
         for (int i = 0; i < n; i++) {
-            if (fast == null) {
-                return null;
-            }
             fast = fast.next;
         }
         ListNode slow = root;
         while (fast.next != null) {
-            fast = fast.next;
             slow = slow.next;
+            fast = fast.next;
         }
         slow.next = slow.next.next;
-
         return root.next;
     }
 
@@ -103,18 +76,30 @@ public class ListSolution {
         }
         ListNode root = new ListNode(0);
         root.next = head;
+
         ListNode dummy = root;
         while (dummy.next != null && dummy.next.next != null) {
-            ListNode slow = dummy.next;
             ListNode fast = dummy.next.next;
+            ListNode slow = dummy.next;
             slow.next = fast.next;
             fast.next = slow;
-
             dummy.next = fast;
 
-            dummy = slow;
+            dummy = dummy.next.next;
+
         }
         return root.next;
+    }
+
+    private ListNode reverse(ListNode start, ListNode end) {
+        ListNode prev = end;
+        while (start != end) {
+            ListNode tmp = start.next;
+            start.next = prev;
+            prev = start;
+            start = tmp;
+        }
+        return prev;
     }
 
 
