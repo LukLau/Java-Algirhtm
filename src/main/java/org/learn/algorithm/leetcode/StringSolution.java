@@ -54,7 +54,12 @@ public class StringSolution {
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
-        solution.lengthOfLongestSubstringTwoDistinct("eceba");
+//        solution.lengthOfLongestSubstringTwoDistinct("eceba");
+
+        String s = "mississippi";
+        String p = "m??*ss*?i*pi";
+
+        solution.isMatchII(s, p);
 
     }
 
@@ -254,8 +259,8 @@ public class StringSolution {
      * @return
      */
     public boolean isMatchII(String s, String p) {
-        if (s.isEmpty()) {
-            return p.isEmpty();
+        if (p.isEmpty()) {
+            return s.isEmpty();
         }
         int m = s.length();
         int n = p.length();
@@ -269,7 +274,7 @@ public class StringSolution {
                 if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?') {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else if (p.charAt(j - 1) == '*') {
-                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
                 }
             }
         }

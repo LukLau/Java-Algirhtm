@@ -19,7 +19,9 @@ public class RecursiveSolution {
 //        List<Integer> diffWaysToCompute = solution.diffWaysToCompute("2*3-4*5");
 //        System.out.println(diffWaysToCompute);
 //        solution.getFactors(8);
-        solution.combinationSum4(new int[]{1, 2, 3}, 4);
+//        solution.combinationSum4(new int[]{1, 2, 3}, 4);
+        solution.combinationSum2(new int[]{3, 1, 3, 5, 1, 1,
+                8}, 8);
     }
 
     /**
@@ -145,11 +147,11 @@ public class RecursiveSolution {
         }
         List<List<Integer>> result = new ArrayList<>();
         Arrays.sort(candidates);
-        intervalCombinationSum2(result, new ArrayList<>(), candidates, 0, target);
+        internalCombinationSum2(result, new ArrayList<>(), 0, candidates, target);
         return result;
     }
 
-    private void intervalCombinationSum2(List<List<Integer>> result, List<Integer> tmp, int[] candidates, int start, int target) {
+    private void internalCombinationSum2(List<List<Integer>> result, List<Integer> tmp, int start, int[] candidates, int target) {
         if (target == 0) {
             result.add(new ArrayList<>(tmp));
             return;
@@ -159,7 +161,7 @@ public class RecursiveSolution {
                 continue;
             }
             tmp.add(candidates[i]);
-            intervalCombinationSum2(result, tmp, candidates, i + 1, target - candidates[i]);
+            internalCombinationSum2(result, tmp, i + 1, candidates, target - candidates[i]);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -176,7 +178,6 @@ public class RecursiveSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        Arrays.sort(nums);
         boolean[] used = new boolean[nums.length];
         internalPermute(result, new ArrayList<>(), nums, used);
         return result;
@@ -191,8 +192,8 @@ public class RecursiveSolution {
             if (used[i]) {
                 continue;
             }
-            tmp.add(nums[i]);
             used[i] = true;
+            tmp.add(nums[i]);
             internalPermute(result, tmp, nums, used);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
@@ -210,31 +211,7 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> result = new ArrayList<>();
-        Arrays.sort(nums);
-        boolean[] used = new boolean[nums.length];
-        internalPermuteUnique(result, new ArrayList<>(), nums, used);
-        return result;
-    }
-
-    private void internalPermuteUnique(List<List<Integer>> result, List<Integer> tmp, int[] nums, boolean[] used) {
-        if (tmp.size() == nums.length) {
-            result.add(new ArrayList<>(tmp));
-            return;
-        }
-        for (int i = 0; i < nums.length; i++) {
-            if (used[i]) {
-                continue;
-            }
-            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
-                continue;
-            }
-            used[i] = true;
-            tmp.add(nums[i]);
-            internalPermuteUnique(result, tmp, nums, used);
-            used[i] = false;
-            tmp.remove(tmp.size() - 1);
-        }
+        return null;
     }
 
 
@@ -669,7 +646,6 @@ public class RecursiveSolution {
             intervalWalls(rooms, i, j + 1, distance + 1);
         }
     }
-
 
 
     /**
