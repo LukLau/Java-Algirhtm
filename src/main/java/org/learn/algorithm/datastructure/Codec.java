@@ -10,50 +10,55 @@ import java.util.LinkedList;
  */
 public class Codec {
 
-    private int index = -1;
+    // Encodes a tree to a single string.
 
-
-    String Serialize(TreeNode root) {
+    public String serialize(TreeNode root) {
+        if (root == null) {
+            return "#,";
+        }
         StringBuilder builder = new StringBuilder();
-        internalSerialize(root, builder);
+        dfs(builder, root);
         return builder.toString();
+
     }
 
-    private void internalSerialize(TreeNode root, StringBuilder builder) {
+    private void dfs(StringBuilder builder, TreeNode root) {
         if (root == null) {
             builder.append("#,");
             return;
         }
-        builder.append(root.val + ",");
-        internalSerialize(root.left, builder);
-        internalSerialize(root.right, builder);
+        builder.append(root.val).append(",");
+        dfs(builder, root.left);
+        dfs(builder, root.right);
     }
 
-    TreeNode Deserialize(String str) {
-        if (str == null || str.isEmpty()) {
+    // Decodes your encoded data to tree.
+
+    public TreeNode deserialize(String data) {
+        if (data == null || data.isEmpty()) {
             return null;
         }
-        String[] words = str.split(",");
+        String[] words = data.split(",");
         LinkedList<String> linkedList = new LinkedList<>();
         for (String word : words) {
             linkedList.offer(word);
         }
-        return Deserialize(linkedList);
-
+        return internalDeserialize(linkedList);
 
     }
 
-    private TreeNode Deserialize(LinkedList<String> linkedList) {
+    private TreeNode internalDeserialize(LinkedList<String> linkedList) {
         if (linkedList.isEmpty()) {
             return null;
         }
         String poll = linkedList.poll();
+
         if ("#".equals(poll)) {
             return null;
         }
         TreeNode root = new TreeNode(Integer.parseInt(poll));
-        root.left = Deserialize(linkedList);
-        root.right = Deserialize(linkedList);
+        root.left = internalDeserialize(linkedList);
+        root.right = internalDeserialize(linkedList);
         return root;
     }
 

@@ -306,6 +306,7 @@ public class StringSolution {
         return result;
     }
 
+
     public int lengthOfLongestSubstringii(String s) {
         if (s == null || s.isEmpty()) {
             return 0;
@@ -316,12 +317,10 @@ public class StringSolution {
         int result = 0;
         int left = 0;
         for (int i = 0; i < words.length; i++) {
-            left = Math.max(left, hash[s.charAt(i)]);
-
+            int tmp = s.charAt(i) - 'a';
+            left = Math.max(left, hash[tmp]);
             result = Math.max(result, i - left + 1);
-
-            hash[s.charAt(i)] = i + 1;
-
+            hash[tmp] = i + 1;
         }
         return result;
     }
