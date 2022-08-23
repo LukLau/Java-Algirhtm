@@ -1,6 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 import javax.print.attribute.UnmodifiableSetException;
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 import java.awt.font.NumericShaper;
 
 /**
@@ -16,7 +17,8 @@ public class BinarySolution {
 
     public static void main(String[] args) {
         BinarySolution solution = new BinarySolution();
-        solution.findPeakElement(new int[]{2});
+//        solution.findPeakElement(new int[]{2});
+        solution.searchInsert(new int[]{1, 3, 5, 6}, 2);
     }
 
     /**
@@ -27,17 +29,15 @@ public class BinarySolution {
      * @return
      */
     public int search(int[] nums, int target) {
-        if (nums == null || nums.length == 0) {
-            return -1;
-        }
         int left = 0;
         int right = nums.length - 1;
-        while (left < right) {
+        while (left <= right) {
             int mid = left + (right - left) / 2;
             if (nums[mid] == target) {
                 return mid;
-            } else if (nums[left] <= nums[mid]) {
-                if (target < nums[mid] && target >= nums[left]) {
+            }
+            if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && nums[left] <= target) {
                     right = mid - 1;
                 } else {
                     left = mid + 1;
@@ -48,10 +48,10 @@ public class BinarySolution {
                 } else {
                     right = mid - 1;
                 }
-
             }
         }
-        return nums[left] == target ? left : -1;
+        return -1;
+//        return nums[left] == target ? left : -1;
     }
 
     /**
@@ -103,6 +103,7 @@ public class BinarySolution {
         if (nums == null || nums.length == 0) {
             return new int[]{-1, -1};
         }
+
         int[] result = new int[]{-1, -1};
         int left = 0;
         int right = nums.length - 1;
@@ -118,9 +119,11 @@ public class BinarySolution {
             return result;
         }
         result[0] = left;
+
         right = nums.length - 1;
+
         while (left < right) {
-            int mid = left + (right - left) / 2 + 1;
+            int mid = 1 + left + (right - left) / 2;
             if (nums[mid] > target) {
                 right = mid - 1;
             } else {

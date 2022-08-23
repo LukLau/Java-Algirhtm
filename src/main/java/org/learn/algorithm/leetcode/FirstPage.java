@@ -268,10 +268,9 @@ public class FirstPage {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
-        int m = s.length();
+        char[] words = s.toCharArray();
         int result = 0;
         int left = -1;
-        char[] words = s.toCharArray();
         for (int i = 0; i < words.length; i++) {
             char tmp = words[i];
             if (tmp == '(') {
@@ -287,7 +286,6 @@ public class FirstPage {
                 } else {
                     result = Math.max(result, i - stack.peek());
                 }
-
             }
         }
         return result;

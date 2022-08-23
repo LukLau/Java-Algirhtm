@@ -1,6 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 
+import java.awt.image.DataBufferDouble;
 import java.util.*;
 
 /**
@@ -55,24 +56,22 @@ public class MathSolution {
         if (divisor == -1 && dividend == Integer.MIN_VALUE) {
             return Integer.MAX_VALUE;
         }
-        if (divisor == 0) {
-            return Integer.MAX_VALUE;
-        }
-        long result = 0;
+        int sign = ((dividend > 0 && divisor > 0) || (dividend < 0 && divisor < 0)) ? 1 : -1;
+
         long dvd = Math.abs((long) dividend);
         long dvs = Math.abs((long) divisor);
-        int sign = ((dividend > 0 && divisor > 0) || (dividend < 0 && divisor < 0)) ? 1 : -1;
+        int result = 0;
         while (dvd >= dvs) {
             long tmp = dvs;
             long multi = 1;
-            while (dvd >= (tmp << 1)) {
+            while (dvd >= tmp << 1) {
                 tmp <<= 1;
                 multi <<= 1;
             }
             dvd -= tmp;
             result += multi;
         }
-        return (int) (result * sign);
+        return result * sign;
     }
 
 
@@ -1164,7 +1163,7 @@ public class MathSolution {
 
     /**
      * https://leetcode.com/problems/find-the-duplicate-number/solution/
-     *
+     * <p>
      * 287. Find the Duplicate Number
      *
      * @param nums
@@ -1173,8 +1172,8 @@ public class MathSolution {
     public int findDuplicate(int[] nums) {
         Arrays.sort(nums);
 
-        for (int i = 1; i < nums.length ;i++) {
-            if (nums[i] ==nums[i-1]) {
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] == nums[i - 1]) {
                 return nums[i];
             }
         }

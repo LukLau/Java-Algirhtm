@@ -1,6 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import com.fasterxml.jackson.databind.ser.impl.ReadOnlyClassToSerializerMap;
 import org.learn.algorithm.datastructure.TreeNode;
 
 import java.util.*;
@@ -170,52 +169,29 @@ public class VipTree {
      */
 
 
+    private int longestConsecutive = 0;
+
     public int longestConsecutive(TreeNode root) {
         // write your code here
         if (root == null) {
             return 0;
         }
-//        LinkedList<TreeNode> linkedList = new LinkedList<>();
-//
-//        linkedList.offer(root);
-//        int result = 0;
-//        while (!linkedList.isEmpty()) {
-//
-//            TreeNode node = linkedList.poll();
-//
-//            int tmp = dfsLongestConsecutive(node, node.val);
-//
-//            result = Math.max(result, tmp);
-//
-//            if (node.left != null) {
-//                linkedList.offer(node.left);
-//            }
-//            if (node.right != null) {
-//                linkedList.offer(node.right);
-//            }
-//        }
-//        return result;
-
-        dfsLongestConsecutiveii(root, Integer.MIN_VALUE, 0);
-
+        internalConsecutiveDFS(root, 0, Integer.MIN_VALUE);
         return longestConsecutive;
     }
 
-
-    private int longestConsecutive = 0;
-
-    private void dfsLongestConsecutiveii(TreeNode root, int val, int current) {
+    private void internalConsecutiveDFS(TreeNode root, int current, int value) {
         if (root == null) {
             return;
         }
-        if (root.val == val + 1) {
+        if (root.val == value + 1) {
             current = current + 1;
         } else {
             current = 1;
         }
         longestConsecutive = Math.max(longestConsecutive, current);
-        dfsLongestConsecutiveii(root.left, root.val, current);
-        dfsLongestConsecutiveii(root.right, root.val, current);
+        internalConsecutiveDFS(root.left, current, root.val);
+        internalConsecutiveDFS(root.right, current, root.val);
     }
 
 
@@ -230,7 +206,6 @@ public class VipTree {
         if (root == null) {
             return 0;
         }
-
         internalDFS(root, Integer.MIN_VALUE, 0);
 
         return longestV2;
@@ -238,28 +213,27 @@ public class VipTree {
 
     private int longestV2 = 0;
 
-    private int internalDFS(TreeNode root, int current, int val) {
+    private void internalDFS(TreeNode root, int current, int expectedValue) {
         if (root == null) {
-            return 0;
+//            return 0;
         }
-        if (root.val == val - 1) {
-            current = current + 1;
-        } else {
-            current = 1;
+        if (root.val != expectedValue) {
+//            return 0;
         }
-        int sequenceAddLeft = internalDFS(root.left, current, val - 1);
-        int sequenceAddRight = internalDFS(root.right, current, val + 1);
+        current = current + 1;
+        longestV2 = Math.max(longestV2, current);
 
-        int sequenceLeft = internalDFS(root.left, current, val + 1);
-        int sequenceRight = internalDFS(root.right, current, val - 1);
+        internalDFS(root.left, current, expectedValue + 1);
+        internalDFS(root.right, current, expectedValue - 1);
 
-        longestV2 = Math.max(longestV2, Math.max(sequenceAddLeft + sequenceAddRight, sequenceLeft + sequenceRight) + 1);
-        return -1;
 
+        internalDFS(root.left, current, expectedValue - 1);
+        internalDFS(root.right, current, expectedValue + 1);
+
+
+//        longestV2 = Math.max(longestV2, Math.max(sequenceAddLeft + sequenceAddRight, sequenceLeft + sequenceRight) + 1);
+//        return -1;
     }
-
-
-
 
 
 }
