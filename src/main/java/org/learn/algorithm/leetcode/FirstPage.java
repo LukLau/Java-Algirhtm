@@ -337,24 +337,24 @@ public class FirstPage {
         if (height == null || height.length == 0) {
             return 0;
         }
-        int result = 0;
         int left = 0;
         int right = height.length - 1;
-        int leftSide = 0;
-        int rightSide = 0;
+        int result = 0;
+        int leftEdge = 0;
+        int rightEdge = 0;
         while (left < right) {
             if (height[left] <= height[right]) {
-                if (height[left] >= leftSide) {
-                    leftSide = height[left];
+                if (leftEdge <= height[left]) {
+                    leftEdge = height[left];
                 } else {
-                    result += leftSide - height[left];
+                    result += leftEdge - height[left];
                 }
                 left++;
             } else {
-                if (height[right] >= rightSide) {
-                    rightSide = height[right];
+                if (rightEdge <= height[right]) {
+                    rightEdge = height[right];
                 } else {
-                    result += rightSide - height[right];
+                    result += rightEdge - height[right];
                 }
                 right--;
             }
@@ -404,18 +404,19 @@ public class FirstPage {
         }
         int m = num1.length();
         int n = num2.length();
-        int[] dp = new int[m + n];
+        int[] result = new int[m + n];
         for (int i = m - 1; i >= 0; i--) {
             for (int j = n - 1; j >= 0; j--) {
-                int val = (Character.getNumericValue(num1.charAt(i)) * Character.getNumericValue(num2.charAt(j))) + dp[i + j + 1];
+                int val = (Character.getNumericValue(num1.charAt(i)) * Character.getNumericValue(num2.charAt(j))) + result[i + j + 1];
 
-                dp[i + j + 1] = val % 10;
+                result[i + j + 1] = val % 10;
 
-                dp[i + j] += val / 10;
+                result[i + j] += val / 10;
             }
         }
         StringBuilder builder = new StringBuilder();
-        for (int num : dp) {
+
+        for (int num : result) {
             if (!(num == 0 && builder.length() == 0)) {
                 builder.append(num);
             }
