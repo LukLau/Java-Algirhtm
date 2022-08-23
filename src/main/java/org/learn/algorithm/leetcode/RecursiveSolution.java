@@ -20,8 +20,9 @@ public class RecursiveSolution {
 //        System.out.println(diffWaysToCompute);
 //        solution.getFactors(8);
 //        solution.combinationSum4(new int[]{1, 2, 3}, 4);
-        solution.combinationSum2(new int[]{3, 1, 3, 5, 1, 1,
-                8}, 8);
+//        solution.combinationSum2(new int[]{3, 1, 3, 5, 1, 1,
+//                8}, 8);
+        solution.permuteUnique(new int[]{1, 1, 2});
     }
 
     /**
@@ -211,7 +212,31 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        return null;
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        internalPermuteUnique(result, new ArrayList<>(), used, nums);
+        return result;
+    }
+
+    private void internalPermuteUnique(List<List<Integer>> result, List<Integer> tmp, boolean[] used, int[] nums) {
+        if (tmp.size() == nums.length) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            used[i] = true;
+            tmp.add(nums[i]);
+            internalPermuteUnique(result, tmp, used, nums);
+            tmp.remove(tmp.size() - 1);
+            used[i] = false;
+        }
     }
 
     /**
