@@ -2,8 +2,8 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.TreeNode;
 
+import java.awt.image.Kernel;
 import java.util.*;
-import java.util.spi.CurrencyNameProvider;
 
 /**
  * 动态规划问题
@@ -210,28 +210,23 @@ public class DynamicSolution {
             return 0;
         }
         int[] dp = new int[n];
-        return intervalTotalQueens(dp, 0, n);
+        return internalTotalNQueens(dp, 0, n);
     }
 
-    private int intervalTotalQueens(int[] dp, int row, int n) {
-        int count = 0;
+    private int internalTotalNQueens(int[] dp, int row, int n) {
         if (row == n) {
             return 1;
         }
-        for (int i = 0; i < n; i++) {
-            if (isValidTotalQueens(dp, i, row, n)) {
-                dp[row] = i;
-                count += intervalTotalQueens(dp, row + 1, n);
+        int count = 0;
+        for (int j = 0; j < n; j++) {
+            if (isValidTotalQueens(dp, j, row, n)) {
+                dp[row] = j;
+                count += internalTotalNQueens(dp, row + 1, n);
                 dp[row] = -1;
             }
         }
         return count;
     }
-
-
-    // ----- //
-
-    // --编辑距离问题 //
 
     private boolean isValidTotalQueens(int[] dp, int col, int row, int n) {
         for (int i = row - 1; i >= 0; i--) {
@@ -241,6 +236,73 @@ public class DynamicSolution {
         }
         return true;
     }
+
+
+    /**
+     * 63. Unique Paths II
+     *
+     * @param obstacleGrid
+     * @return
+     */
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        if (obstacleGrid == null || obstacleGrid.length == 0) {
+            return 0;
+        }
+        int row = obstacleGrid.length;
+
+        int column = obstacleGrid[0].length;
+
+        int[] result = new int[column];
+        for (int j = 0; j < column; j++) {
+            if (obstacleGrid[0][j] == 1) {
+                result[j] = 0;
+            } else {
+                result[j] = j == 0 ? 1 : result[j - 1];
+            }
+        }
+        for (int i = 1; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                int val = obstacleGrid[i][j];
+                if (val == 1) {
+                    result[j] = 0;
+                } else if (j > 0) {
+                    result[j] += result[j - 1];
+                }
+            }
+        }
+        return result[column - 1];
+    }
+
+
+    /**
+     * 64. Minimum Path Sum
+     *
+     * @param grid
+     * @return
+     */
+    public int minPathSum(int[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        int[] dp = new int[column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (j == 0) {
+                    dp[j] += grid[i][j];
+                } else {
+                    dp[j] = Math.min(dp[j], dp[j - 1]) + grid[i][j];
+                }
+            }
+        }
+        return dp[column - 1];
+    }
+
+
+    // ----- //
+
+    // --编辑距离问题 //
 
     /**
      * 72. Edit Distance

@@ -84,13 +84,13 @@ public class MathSolution {
      */
     public double myPowII(double x, int n) {
         double result = 1.0;
-        long num = Math.abs((long) n);
-        while (num != 0) {
-            if (num % 2 != 0) {
+        long base = Math.abs((long) n);
+        while (base != 0) {
+            if (base % 2 != 0) {
                 result *= x;
             }
             x *= x;
-            num >>= 1;
+            base = base / 2;
         }
         return n < 0 ? 1 / result : result;
     }
@@ -104,8 +104,8 @@ public class MathSolution {
             return 1;
         }
         if (n < 0) {
-            n = -n;
             x = 1 / x;
+            n = -n;
         }
         return n % 2 == 0 ? internalPow(x * x, n / 2) : x * internalPow(x * x, n / 2);
     }

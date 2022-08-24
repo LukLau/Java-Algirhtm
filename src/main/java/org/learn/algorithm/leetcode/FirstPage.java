@@ -1,6 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
+import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 
 import javax.print.DocFlavor;
 import java.util.*;
@@ -15,7 +16,9 @@ public class FirstPage {
         FirstPage page = new FirstPage();
 //        page.simplifyPath("/home/");
 
-        System.out.println(page.intToRoman(58));
+//        System.out.println(page.intToRoman(58));
+//        page.insert(new int[][]{{1, 3}, {6, 9}}, new int[]{2, 5});
+        page.getPermutation(3, 3);
     }
 
     /**
@@ -491,7 +494,7 @@ public class FirstPage {
      */
     public int[][] merge(int[][] intervals) {
         if (intervals == null || intervals.length == 0) {
-            return new int[][]{};
+            return intervals;
         }
         Arrays.sort(intervals, new Comparator<int[]>() {
             @Override
@@ -502,8 +505,7 @@ public class FirstPage {
         LinkedList<int[]> result = new LinkedList<>();
         for (int[] interval : intervals) {
             if (!result.isEmpty() && result.peekLast()[1] >= interval[0]) {
-                int[] last = result.peekLast();
-                last[1] = Math.max(last[1], interval[1]);
+                result.peekLast()[1] = Math.max(result.peekLast()[1], interval[1]);
             } else {
                 result.offer(interval);
             }
@@ -512,7 +514,6 @@ public class FirstPage {
     }
 
     /**
-     * todo
      * 57. Insert Interval
      *
      * @param intervals
@@ -520,31 +521,58 @@ public class FirstPage {
      * @return
      */
     public int[][] insert(int[][] intervals, int[] newInterval) {
-        if (intervals == null || intervals.length == 0) {
+        if (intervals == null) {
             return new int[][]{};
         }
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+
         LinkedList<int[]> result = new LinkedList<>();
-        int endIndex = 0;
-        Arrays.sort(intervals, new Comparator<int[]>() {
-            @Override
-            public int compare(int[] o1, int[] o2) {
-                return o1[0] - o2[0];
-            }
-        });
-        while (endIndex < intervals.length && intervals[endIndex][1] < newInterval[0]) {
-            result.offer(intervals[endIndex]);
-            endIndex++;
+        int index = 0;
+        while (index < intervals.length && intervals[index][1] < newInterval[0]) {
+            result.offer(intervals[index++]);
         }
-        while (endIndex < intervals.length && intervals[endIndex][0] <= newInterval[1]) {
-            newInterval[0] = Math.min(newInterval[0], intervals[endIndex][0]);
-            newInterval[1] = Math.max(newInterval[1], intervals[endIndex][1]);
-            endIndex++;
+        while (index < intervals.length && intervals[index][0] <= newInterval[1]) {
+            newInterval[0] = Math.min(intervals[index][0], newInterval[0]);
+            newInterval[1] = Math.max(intervals[index][1], newInterval[1]);
+            index++;
         }
         result.offer(newInterval);
-        while (endIndex < intervals.length) {
-            result.offer(intervals[endIndex++]);
+        while (index < intervals.length) {
+            result.offer(intervals[index++]);
         }
         return result.toArray(new int[][]{});
+    }
+
+    /**
+     * 60. Permutation Sequence
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public String getPermutation(int n, int k) {
+        List<Integer> nums = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            nums.add(i);
+        }
+        int[] pos = new int[n + 1];
+        int base = 1;
+        for (int i = 1; i <= n; i++) {
+            base *= i;
+            pos[i] = base;
+        }
+        StringBuilder builder = new StringBuilder();
+        k--;
+        for (int i = n - 1; i >= 0; i--) {
+            int combine = pos[i];
+            int index = k / combine;
+
+            Integer num = nums.remove(index);
+
+            builder.append(num.toString());
+            k -= combine;
+        }
+        return builder.toString();
     }
 
     /**

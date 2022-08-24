@@ -50,7 +50,7 @@ public class GreedySolution {
         for (int i = 0; i < nums.length && i <= reach; i++) {
             reach = Math.max(reach, i + nums[i]);
         }
-        return reach >= nums.length;
+        return reach >= nums.length - 1;
     }
 
 
