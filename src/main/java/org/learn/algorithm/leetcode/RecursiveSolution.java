@@ -240,6 +240,64 @@ public class RecursiveSolution {
     }
 
     /**
+     * 51. N-Queens
+     *
+     * @param n
+     * @return
+     */
+
+    public List<List<String>> solveNQueens(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        char[][] matrix = new char[n][n];
+        for (char[] row : matrix) {
+            Arrays.fill(row, '.');
+        }
+        List<List<String>> result = new ArrayList<>();
+        internalSolveQueens(result, matrix, 0, n);
+        return result;
+    }
+
+    private void internalSolveQueens(List<List<String>> result, char[][] matrix, int row, int n) {
+        if (row == n) {
+            List<String> tmp = new ArrayList<>();
+            for (char[] queen : matrix) {
+                tmp.add(String.valueOf(queen));
+            }
+            result.add(tmp);
+            return;
+        }
+        for (int j = 0; j < n; j++) {
+            if (checkValid(matrix, j, row)) {
+                matrix[row][j] = 'Q';
+                internalSolveQueens(result, matrix, row + 1, n);
+                matrix[row][j] = '.';
+            }
+        }
+    }
+
+    private boolean checkValid(char[][] matrix, int column, int row) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (matrix[i][column] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = column - 1; i >= 0 && j >= 0; i--, j--) {
+            if (matrix[i][j] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = column + 1; i >= 0 && j < matrix[0].length; i--, j++) {
+            if (matrix[i][j] == 'Q') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
      * 77. Combinations
      *
      * @param n
@@ -275,15 +333,15 @@ public class RecursiveSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        intervalSubsets(result, new ArrayList<>(), 0, nums);
+        internalSubsets(result, new ArrayList<>(), 0, nums);
         return result;
     }
 
-    private void intervalSubsets(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
+    private void internalSubsets(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
         result.add(new ArrayList<>(tmp));
         for (int i = start; i < nums.length; i++) {
             tmp.add(nums[i]);
-            intervalSubsets(result, tmp, i + 1, nums);
+            internalSubsets(result, tmp, i + 1, nums);
             tmp.remove(tmp.size() - 1);
         }
     }

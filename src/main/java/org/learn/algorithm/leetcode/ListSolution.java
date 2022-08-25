@@ -114,22 +114,22 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        int count = 1;
         ListNode fast = head;
+        int count = 1;
+
         while (fast.next != null) {
-            count++;
             fast = fast.next;
+            count++;
         }
         fast.next = head;
         k %= count;
-        if (k != 0) {
-            for (int i = 0; i < count - k; i++) {
-                head = head.next;
-                fast = fast.next;
-            }
+        ListNode slow = head;
+        for (int i = 0; i < count - k; i++) {
+            slow = slow.next;
+            fast = fast.next;
         }
         fast.next = null;
-        return head;
+        return slow;
     }
 
 

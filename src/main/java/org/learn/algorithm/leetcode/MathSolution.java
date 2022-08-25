@@ -1,6 +1,9 @@
 package org.learn.algorithm.leetcode;
 
 
+import org.apache.tomcat.Jar;
+import org.springframework.web.servlet.mvc.method.annotation.UriComponentsBuilderMethodArgumentResolver;
+
 import java.awt.image.DataBufferDouble;
 import java.util.*;
 
@@ -18,7 +21,9 @@ public class MathSolution {
 //        solution.nthUglyNumber(10);
 //        solution.calculate("(1+(4+5+2)-3)+(6+8)");
 //        solution.calculateII("3+2*2");
-        System.out.println(solution.numberToWords(12345));
+//        System.out.println(solution.numberToWords(12345));
+
+        System.out.println(solution.fullJustifyii(new String[]{"This", "is", "an", "example", "of", "text", "justification."}, 16));
     }
 
     // 素数相关
@@ -84,13 +89,13 @@ public class MathSolution {
      */
     public double myPowII(double x, int n) {
         double result = 1.0;
-        long num = Math.abs((long) n);
-        while (num != 0) {
-            if (num % 2 != 0) {
+        long base = Math.abs((long) n);
+        while (base != 0) {
+            if (base % 2 != 0) {
                 result *= x;
             }
             x *= x;
-            num >>= 1;
+            base = base / 2;
         }
         return n < 0 ? 1 / result : result;
     }
@@ -104,8 +109,8 @@ public class MathSolution {
             return 1;
         }
         if (n < 0) {
-            n = -n;
             x = 1 / x;
+            n = -n;
         }
         return n % 2 == 0 ? internalPow(x * x, n / 2) : x * internalPow(x * x, n / 2);
     }
@@ -118,24 +123,46 @@ public class MathSolution {
      * @return
      */
     public boolean isNumber(String s) {
-        if (s == null || s.isEmpty()) {
-            return true;
+        if (s == null) {
+            return false;
         }
-        boolean seenE = true;
-        boolean seenSign = false;
-        boolean seenNumber = true;
-        boolean seenEAfterNumber = true;
+        s = s.trim();
+        if (s.isEmpty()) {
+            return false;
+        }
+        boolean seenE = false;
+        boolean seenNumber = false;
         boolean seenDigit = false;
+        boolean seenNumberAfterE = false;
         char[] words = s.toCharArray();
-        int endIndex = 0;
-        while (endIndex < words.length) {
-            char tmp = words[endIndex];
+        for (int i = 0; i < words.length; i++) {
+            char tmp = words[i];
             if (Character.isDigit(tmp)) {
                 seenNumber = true;
-                seenEAfterNumber = true;
+                seenNumberAfterE = true;
+            } else if (tmp == 'e' || tmp == 'E') {
+                if (i == 0 || seenE) {
+                    return false;
+                }
+                if (!Character.isDigit(words[i - 1])) {
+                    return false;
+                }
+                seenE = true;
+                seenNumberAfterE = false;
+            } else if (tmp == '-' || tmp == '+') {
+                if (i > 0 && !(words[i - 1] == 'e' || words[i - 1] == 'E')) {
+                    return false;
+                }
+            } else if (tmp == '.') {
+                if (seenDigit) {
+                    return false;
+                }
+                seenDigit = true;
+            } else {
+                return true;
             }
         }
-        return false;
+        return seenNumberAfterE & seenNumber;
     }
 
 
@@ -175,23 +202,26 @@ public class MathSolution {
         List<String> result = new ArrayList<>();
         int startIndex = 0;
         while (startIndex < words.length) {
-            int line = 0;
             int endIndex = startIndex;
+            int line = 0;
             while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
                 line += words[endIndex].length() + 1;
                 endIndex++;
             }
             boolean lastRow = endIndex == words.length;
-            int workCount = endIndex - startIndex;
-            StringBuilder tmp = new StringBuilder();
-            if (workCount == 1) {
-                tmp.append(words[startIndex]);
+            int wordCount = endIndex - startIndex;
+            StringBuilder builder = new StringBuilder();
+            if (wordCount == 1) {
+                builder.append(words[startIndex]);
             } else {
-                int blankCount = lastRow ? 1 : 1 + (maxWidth - line + 1) / (workCount - 1);
-                int extraBlank = lastRow ? 0 : (maxWidth - line + 1) % (workCount - 1);
-                tmp.append(constructRow(words, startIndex, endIndex, blankCount, extraBlank));
+                int blankCount = lastRow ? 1 : 1 + (maxWidth - line + 1) / (wordCount - 1);
+                int extraCount = lastRow ? 0 : (maxWidth - line + 1) % (wordCount - 1);
+                String constructRow = constructRow(words, startIndex, endIndex, blankCount, extraCount);
+
+                builder.append(constructRow);
             }
-            result.add(trimRow(tmp.toString(), maxWidth));
+            result.add(trimRow(builder.toString(), maxWidth));
+
             startIndex = endIndex;
         }
         return result;
@@ -220,6 +250,38 @@ public class MathSolution {
             }
         }
         return builder.toString();
+    }
+
+    public List<String> fullJustifyii(String[] words, int maxWidth) {
+        if (words == null || words.length == 0) {
+            return new ArrayList<>();
+        }
+        int startIndex = 0;
+        List<String> result = new ArrayList<>();
+        while (startIndex < words.length) {
+            int line = 0;
+            int index = 0;
+            while (startIndex + index < words.length && line + words[startIndex + index].length() <= maxWidth - index) {
+                line += words[startIndex + index].length();
+                index++;
+            }
+            StringBuilder builder = new StringBuilder();
+            boolean lastRow = startIndex + index == words.length;
+            for (int i = 0; i < index; i++) {
+                builder.append(words[startIndex + i]);
+                if (lastRow) {
+                    builder.append(" ");
+                } else if (i != index - 1) {
+                    int blankCount = (maxWidth - line) / (index - 1) + (i < (maxWidth - line) % (index - 1) ? 1 : 0);
+                    while (blankCount-- > 0) {
+                        builder.append(" ");
+                    }
+                }
+            }
+            result.add(trimRow(builder.toString(), maxWidth));
+            startIndex = startIndex + index;
+        }
+        return result;
     }
 
     /**
