@@ -49,17 +49,20 @@ public class StringSolution {
     }
 
 
-    // 滑动窗口系列//
     private int palindrome = 0;
 
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
 //        solution.lengthOfLongestSubstringTwoDistinct("eceba");
 
-        String s = "mississippi";
-        String p = "m??*ss*?i*pi";
+//        String s = "mississippi";
+//        String p = "m??*ss*?i*pi";
 
-        solution.isMatchII(s, p);
+//        solution.isMatchII(s, p);
+//        "ADOBECODEBANC"
+//        "ABC"
+
+        solution.minWindowii("ADOBECODEBANC","ABC");
 
     }
 
@@ -99,6 +102,7 @@ public class StringSolution {
 
     // 正则表达式//
 
+
     // 滑动窗口系列 //
 
     /**
@@ -132,6 +136,40 @@ public class StringSolution {
                     result = endIndex - begin;
                 }
                 if (hash[s.charAt(begin++)]++ == 0) {
+                    n++;
+                }
+            }
+        }
+        if (result == Integer.MAX_VALUE) {
+            return "";
+        }
+        return s.substring(head, head + result);
+    }
+
+    public String minWindowii(String s, String t) {
+        if (s == null || t == null) {
+            return "";
+        }
+        int m = s.length();
+        int n = t.length();
+        int[] hash = new int[256];
+        for (char c : t.toCharArray()) {
+            hash[c]++;
+        }
+        int result = Integer.MAX_VALUE;
+        int endIndex = 0;
+        int head = 0;
+        int beginIndex = 0;
+        while (endIndex < m) {
+            if (hash[s.charAt(endIndex++)]-- > 0) {
+                n--;
+            }
+            while (n == 0) {
+                if (endIndex - beginIndex < result) {
+                    head = beginIndex;
+                    result = endIndex - beginIndex;
+                }
+                if (hash[s.charAt(beginIndex++)]++ == 0) {
                     n++;
                 }
             }

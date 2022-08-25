@@ -287,7 +287,10 @@ public class DynamicSolution {
         int row = grid.length;
         int column = grid[0].length;
         int[] dp = new int[column];
-        for (int i = 0; i < row; i++) {
+        for (int j = 0; j < column; j++) {
+            dp[j] = grid[0][j] + (j == 0 ? 0 : dp[j - 1]);
+        }
+        for (int i = 1; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (j == 0) {
                     dp[j] += grid[i][j];
@@ -329,7 +332,7 @@ public class DynamicSolution {
                 if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = 1 + Math.min(dp[i][j - 1], Math.min(dp[i - 1][j - 1], dp[i - 1][j]));
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
                 }
             }
         }

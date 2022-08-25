@@ -333,15 +333,15 @@ public class RecursiveSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        intervalSubsets(result, new ArrayList<>(), 0, nums);
+        internalSubsets(result, new ArrayList<>(), 0, nums);
         return result;
     }
 
-    private void intervalSubsets(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
+    private void internalSubsets(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
         result.add(new ArrayList<>(tmp));
         for (int i = start; i < nums.length; i++) {
             tmp.add(nums[i]);
-            intervalSubsets(result, tmp, i + 1, nums);
+            internalSubsets(result, tmp, i + 1, nums);
             tmp.remove(tmp.size() - 1);
         }
     }

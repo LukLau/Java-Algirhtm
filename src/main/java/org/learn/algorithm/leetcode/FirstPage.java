@@ -2,6 +2,7 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
+import org.thymeleaf.expression.Strings;
 
 import javax.print.DocFlavor;
 import java.util.*;
@@ -583,26 +584,28 @@ public class FirstPage {
      */
     public String simplifyPath(String path) {
         if (path == null || path.isEmpty()) {
-            return "/";
+            return "";
         }
         String[] words = path.split("/");
-        LinkedList<String> linkedList = new LinkedList<>();
-        for (String word : words) {
-            if (word.isEmpty()) {
-                continue;
-            }
-            if ("..".equals(word) && !linkedList.isEmpty()) {
-                linkedList.pollLast();
-            } else if (!"..".equals(word) && !".".equals(word)) {
-                linkedList.offer(word);
-            }
-        }
-        String result = "";
-        for (String tmp : linkedList) {
-            result = result + "/" + tmp;
-        }
-        return result.isEmpty() ? "/" : result;
 
+        LinkedList<String> result = new LinkedList<>();
+        for (String word : words) {
+            if (word.isEmpty() || word.equals("/")) {
+                continue;
+            } else if (word.equals("..") && !result.isEmpty()) {
+                result.pollLast();
+            } else if (!word.equals("..")) {
+                result.offer(word);
+            }
+        }
+        if (result.isEmpty()) {
+            return "/";
+        }
+        String s = "";
+        for (String tmp : result) {
+            s = s + "/" + tmp;
+        }
+        return s;
     }
 
     /**
@@ -614,9 +617,8 @@ public class FirstPage {
         if (nums == null || nums.length == 0) {
             return;
         }
-        int red = 0;
         int blue = nums.length - 1;
-
+        int red = 0;
         for (int i = 0; i < nums.length; i++) {
             while (nums[i] == 2 && i < blue) {
                 swap(nums, i, blue--);
@@ -632,6 +634,8 @@ public class FirstPage {
         nums[i] = nums[j];
         nums[j] = val;
     }
+
+
 
     /**
      * 82. Remove Duplicates from Sorted List II
