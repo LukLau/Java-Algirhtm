@@ -15,7 +15,8 @@ public class FirstPage {
         FirstPage page = new FirstPage();
 //        page.simplifyPath("/home/");
 
-        System.out.println(page.intToRoman(58));
+//        System.out.println(page.intToRoman(58));
+        page.myPow(2, 10);
     }
 
     /**
@@ -482,6 +483,23 @@ public class FirstPage {
         }
         return new ArrayList<>(map.values());
     }
+
+
+    public double myPow(double x, int n) {
+        if (n == 1) {
+            return x;
+        }
+        if (n == 0) {
+            return 1;
+        }
+        if (n < 0) {
+            x = 1 / x;
+            n = -n;
+        }
+        return x % 2 == 0 ? myPow(x * x, n / 2) : x * myPow(x * x, n / 2);
+
+    }
+
 
     /**
      * 56. Merge Intervals
