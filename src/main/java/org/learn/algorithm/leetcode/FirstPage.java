@@ -20,7 +20,8 @@ public class FirstPage {
 //        System.out.println(page.intToRoman(58));
 //        page.myPow(2, 10);
         int[] heights = new int[]{2, 4};
-        page.largestRectangleArea(heights);
+//        page.largestRectangleArea(heights);
+        page.restoreIpAddresses("0000");
     }
 
     /**
@@ -755,7 +756,7 @@ public class FirstPage {
         if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
-        ArrayList<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         int len = s.length();
         for (int i = 1; i < 4 && i < len - 2; i++) {
             for (int j = i + 1; j < i + 4 && j < len - 1; j++) {
@@ -764,6 +765,7 @@ public class FirstPage {
                     String b = s.substring(i, j);
                     String c = s.substring(j, k);
                     String d = s.substring(k);
+
                     if (validIpSeq(a) && validIpSeq(b) && validIpSeq(c) && validIpSeq(d)) {
                         result.add(a + "." + b + "." + c + "." + d);
                     }
@@ -774,18 +776,19 @@ public class FirstPage {
     }
 
     private boolean validIpSeq(String s) {
-        if (s.isEmpty()) {
+        if (s == null || s.isEmpty()) {
             return false;
         }
-        int m = s.length();
-        if (m > 3) {
+        int len = s.length();
+        if (len > 3) {
+            return false;
+        }
+        if (len > 1 && s.charAt(0) == '0') {
             return false;
         }
         int value = Integer.parseInt(s);
-        if (m > 1 && s.charAt(0) == '0') {
-            return false;
-        }
-        return value <= 255;
+
+        return value >= 0 && value <= 255;
     }
 
 }

@@ -27,9 +27,10 @@ public class DynamicSolution {
 //        solution.maximalRectangle(nums);
 
 //        int[][] games = new int[][]{{0, 1, 0}, {0, 0, 1}, {1, 1, 1}, {0, 0, 0}};
-        int[][] games = new int[][]{{0, 0}};
+//        int[][] games = new int[][]{{0, 0}};
 
-        solution.gameOfLife(games);
+//        solution.gameOfLife(games);
+        solution.numDecodings("226");
 
 
     }
@@ -101,16 +102,21 @@ public class DynamicSolution {
         int[] dp = new int[m + 1];
 
         dp[0] = 1;
-        for (int i = 1; i < m; i++) {
+        for (int i = 1; i <= m; i++) {
             String firstValue = s.substring(i - 1, i);
 
             int firstNum = Integer.parseInt(firstValue);
 
-//            if (firstValue >= 1 && firstValue <= 9) {
-//                dp[i] += dp[i-1];
-//            }
-
+            if (firstNum >= 1 && firstNum <= 9) {
+                dp[i] += dp[i - 1];
+            }
+            String secondValue = i >= 2 ? s.substring(i - 2, i) : "0";
+            int secondNum = Integer.parseInt(secondValue);
+            if (secondNum >= 10 && secondNum <= 26) {
+                dp[i] += dp[i - 2];
+            }
         }
+        return dp[m];
     }
 
 
@@ -434,7 +440,7 @@ public class DynamicSolution {
      * @return
      */
     public boolean isInterleave(String s1, String s2, String s3) {
-        if (s1 == null || s2 == null || s3 == null) {
+        if (s1 == null || s2 == null) {
             return false;
         }
         int m = s1.length();
@@ -452,7 +458,7 @@ public class DynamicSolution {
         }
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                dp[i][j] = (dp[i - 1][j] && s1.charAt(i - 1) == s3.charAt(i + j - 1)) || (dp[i][j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1));
+                dp[i][j] = (s1.charAt(i - 1) == s3.charAt(i + j - 1) && dp[i - 1][j]) || (s2.charAt(j - 1) == s3.charAt(i + j - 1) && dp[i][j - 1]);
             }
         }
         return dp[m][n];
@@ -466,13 +472,13 @@ public class DynamicSolution {
      * @return
      */
     public int numDistinct(String s, String t) {
-        if (s == null || t == null) {
-            return 0;
+        if (t.isEmpty()) {
+            return s.length();
         }
         int m = s.length();
         int n = t.length();
         int[][] dp = new int[m + 1][n + 1];
-        for (int i = 1; i <= m; i++) {
+        for (int i = 0; i <= m; i++) {
             dp[i][0] = 1;
         }
         for (int i = 1; i <= m; i++) {

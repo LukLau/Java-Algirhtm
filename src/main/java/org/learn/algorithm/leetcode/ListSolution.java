@@ -2,6 +2,7 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.RandomListNode;
+import org.slf4j.event.SubstituteLoggingEvent;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -181,23 +182,27 @@ public class ListSolution {
             return head;
         }
         ListNode root = new ListNode(0);
+
         root.next = head;
 
-        ListNode slow = root;
         ListNode fast = root;
+        ListNode slow = root;
         for (int i = 0; i < left - 1; i++) {
             slow = slow.next;
         }
         for (int i = 0; i < right; i++) {
             fast = fast.next;
         }
-        ListNode need = slow.next;
+        ListNode endNode = fast.next;
+        ListNode startNode = slow.next;
 
-        slow.next = reverseNode(need, fast.next);
+        slow.next = reverseNode(startNode, endNode);
+
+        startNode.next = endNode;
 
         return root.next;
-
     }
+
 
     private ListNode reverseNode(ListNode head, ListNode tail) {
         ListNode end = tail;
