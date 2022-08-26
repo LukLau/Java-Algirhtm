@@ -309,8 +309,8 @@ public class MathSolution {
      */
     public List<Integer> grayCode(int n) {
         List<Integer> result = new ArrayList<>();
-        int count = (int) Math.pow(2, n);
-        for (int i = 0; i < count; i++) {
+        int num = (int) Math.pow(2, n);
+        for (int i = 0; i < num; i++) {
             int val = (i >> 1) ^ i;
             result.add(val);
         }

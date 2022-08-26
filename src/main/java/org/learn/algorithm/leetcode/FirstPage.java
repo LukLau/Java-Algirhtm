@@ -18,7 +18,9 @@ public class FirstPage {
 //        page.simplifyPath("/home/");
 
 //        System.out.println(page.intToRoman(58));
-        page.myPow(2, 10);
+//        page.myPow(2, 10);
+        int[] heights = new int[]{2, 4};
+        page.largestRectangleArea(heights);
     }
 
     /**
@@ -652,7 +654,6 @@ public class FirstPage {
     }
 
 
-
     /**
      * 82. Remove Duplicates from Sorted List II
      *
@@ -706,13 +707,13 @@ public class FirstPage {
         Stack<Integer> stack = new Stack<>();
         int result = 0;
         for (int i = 0; i <= heights.length; i++) {
-            int h = i == heights.length ? 0 : heights[i];
-            if (stack.isEmpty() || heights[stack.peek()] < h) {
+            int side = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] <= side) {
                 stack.push(i);
             } else {
-                int leftSide = stack.pop();
-                int width = stack.isEmpty() ? i : i - stack.peek() - 1;
-                result = Math.max(result, width * heights[leftSide]);
+                Integer pop = stack.pop();
+                int wide = stack.isEmpty() ? i : i - stack.peek() - 1;
+                result = Math.max(result, wide * heights[pop]);
                 i--;
             }
         }

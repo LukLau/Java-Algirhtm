@@ -18,7 +18,9 @@ public class BinarySolution {
     public static void main(String[] args) {
         BinarySolution solution = new BinarySolution();
 //        solution.findPeakElement(new int[]{2});
-        solution.searchInsert(new int[]{1, 3, 5, 6}, 2);
+//        solution.searchInsert(new int[]{1, 3, 5, 6}, 2);
+        int[] nums = new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 13, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+        solution.searchII(nums, 13);
     }
 
     /**
@@ -69,14 +71,16 @@ public class BinarySolution {
         int left = 0;
         int right = nums.length - 1;
         while (left < right) {
+            if (nums[left] == nums[right]) {
+                right--;
+                continue;
+            }
             int mid = left + (right - left) / 2;
             if (nums[mid] == target) {
                 return true;
             }
-            if (nums[left] == nums[right]) {
-                right--;
-            } else if (nums[left] <= nums[mid]) {
-                if (target < nums[mid] && nums[left] <= target) {
+            if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && target >= nums[left]) {
                     right = mid - 1;
                 } else {
                     left = mid + 1;

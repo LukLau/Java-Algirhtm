@@ -94,25 +94,23 @@ public class DynamicSolution {
      * @return
      */
     public int numDecodings(String s) {
-        if (s == null || s.length() == 0) {
+        if (s == null || s.isEmpty()) {
             return 0;
         }
-        int len = s.length();
-        int[] dp = new int[len + 1];
+        int m = s.length();
+        int[] dp = new int[m + 1];
+
         dp[0] = 1;
-        for (int i = 1; i <= len; i++) {
-            String first = s.substring(i - 1, i);
-            int firstValue = Integer.parseInt(first);
-            if (firstValue >= 1 && firstValue <= 9) {
-                dp[i] += dp[i - 1];
-            }
-            String second = i >= 2 ? s.substring(i - 2, i) : "0";
-            int secondValue = Integer.parseInt(second);
-            if (secondValue >= 10 && secondValue <= 26) {
-                dp[i] += dp[i - 2];
-            }
+        for (int i = 1; i < m; i++) {
+            String firstValue = s.substring(i - 1, i);
+
+            int firstNum = Integer.parseInt(firstValue);
+
+//            if (firstValue >= 1 && firstValue <= 9) {
+//                dp[i] += dp[i-1];
+//            }
+
         }
-        return dp[len];
     }
 
 
@@ -361,9 +359,9 @@ public class DynamicSolution {
             int leftSide = 0;
             int rightSide = column;
             for (int j = 0; j < column; j++) {
-                char word = matrix[i][j];
-                if (word == '1') {
-                    height[j] = height[j] + 1;
+                char tmp = matrix[i][j];
+                if (tmp == '1') {
+                    height[j]++;
                     left[j] = Math.max(left[j], leftSide);
                 } else {
                     height[j] = 0;
@@ -372,8 +370,8 @@ public class DynamicSolution {
                 }
             }
             for (int j = column - 1; j >= 0; j--) {
-                char word = matrix[i][j];
-                if (word == '1') {
+                char tmp = matrix[i][j];
+                if (tmp == '1') {
                     right[j] = Math.min(right[j], rightSide);
                 } else {
                     right[j] = column;
@@ -381,22 +379,15 @@ public class DynamicSolution {
                 }
             }
             for (int j = 0; j < column; j++) {
-                if (height[j] == 0) {
-                    continue;
-                }
-                int val = height[j] * (right[j] - left[j]);
-                if (val >= result) {
-                    System.out.println("row:" + i + " column: " + j + " result:" + val);
-                    result = val;
-                }
+                result = Math.max(result, (right[j] - left[j]) * height[j]);
             }
         }
+        return result;
         // 0 1 1 3 4
         // 2 2 3 4 5
         // --------//
         // 0 1 1 3 0
         // 4 2 4 4 5
-        return result;
     }
 
     /**
