@@ -325,15 +325,16 @@ public class MathSolution {
         int result = 0;
         for (int num : nums) {
             if (!map.containsKey(num)) {
-                Integer left = map.getOrDefault(num - 1, 0);
-                Integer right = map.getOrDefault(num + 1, 0);
+                int left = map.getOrDefault(num - 1, 0);
+                int right = map.getOrDefault(num + 1, 0);
 
-                int val = left + right + 1;
-                result = Math.max(result, val);
+                int value = left + right + 1;
+                result = Math.max(result, value);
 
-                map.put(num - left, val);
-                map.put(num + right, val);
-                map.put(num, val);
+                map.put(num - left, value);
+                map.put(num + right, value);
+                map.put(num, value);
+
             }
         }
         return result;
@@ -353,24 +354,22 @@ public class MathSolution {
         }
         int result = 0;
         for (int i = 0; i < points.length; i++) {
-            int number = 0;
-            int overlap = 0;
             Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
+            int overlap = 0;
+            int number = 0;
             for (int j = i + 1; j < points.length; j++) {
                 int x = points[j][0] - points[i][0];
                 int y = points[j][1] - points[i][1];
-
                 if (x == 0 && y == 0) {
                     overlap++;
                     continue;
                 }
                 int gcd = gcd(x, y);
-
                 x /= gcd;
                 y /= gcd;
-
                 Map<Integer, Integer> tmp = map.getOrDefault(x, new HashMap<>());
-                Integer count = tmp.getOrDefault(y, 0);
+
+                int count = tmp.getOrDefault(y, 0);
 
                 count++;
 
@@ -380,7 +379,7 @@ public class MathSolution {
 
                 number = Math.max(number, count);
             }
-            result = Math.max(result, 1 + number + overlap);
+            result = Math.max(result, 1 + overlap + number);
         }
         return result;
     }
@@ -404,10 +403,11 @@ public class MathSolution {
         int min = nums[0];
         int result = nums[0];
         for (int i = 1; i < nums.length; i++) {
-            int val = nums[i];
-            int tmpMax = Math.max(Math.max(val * max, min * val), val);
-            int tmpMin = Math.min(Math.min(val * max, min * val), val);
+            int tmpMax = Math.max(Math.max(max * nums[i], min * nums[i]), nums[i]);
+            int tmpMin = Math.min(Math.min(max * nums[i], min * nums[i]), nums[i]);
+
             result = Math.max(result, tmpMax);
+
             max = tmpMax;
             min = tmpMin;
         }
@@ -437,6 +437,7 @@ public class MathSolution {
 
 
     /**
+     * https://leetcode.com/problems/single-number-ii/discuss/43295/Detailed-explanation-and-generalization-of-the-bitwise-operation-method-for-single-numbers
      * todo
      * 137. Single Number II
      *

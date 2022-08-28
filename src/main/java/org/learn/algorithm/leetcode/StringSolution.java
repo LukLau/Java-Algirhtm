@@ -62,7 +62,8 @@ public class StringSolution {
 //        "ADOBECODEBANC"
 //        "ABC"
 
-        solution.minWindowii("ADOBECODEBANC","ABC");
+//        solution.minWindowii("ADOBECODEBANC", "ABC");
+        solution.partition("aab");
 
     }
 
@@ -457,19 +458,21 @@ public class StringSolution {
             return new ArrayList<>();
         }
         List<List<String>> result = new ArrayList<>();
-        internalPartition(result, new ArrayList<>(), s);
+        List<String> tmp = new ArrayList<>();
+        internalPartition(result, tmp, 0, s);
         return result;
     }
 
-    private void internalPartition(List<List<String>> result, List<String> tmp, String s) {
+    private void internalPartition(List<List<String>> result, List<String> tmp, int start, String s) {
         if (s.isEmpty()) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = 0; i < s.length(); i++) {
-            if (validPalindrome(s, 0, i)) {
-                tmp.add(s.substring(0, i + 1));
-                internalPartition(result, tmp, s.substring(i + 1));
+        for (int i = start; i < s.length(); i++) {
+            String substring = s.substring(start, i + 1);
+            if (validPalindrome(s.toCharArray(), start, i)) {
+                tmp.add(substring);
+                internalPartition(result, tmp, start, s.substring(i + 1));
                 tmp.remove(tmp.size() - 1);
             }
         }
@@ -503,30 +506,6 @@ public class StringSolution {
         return true;
     }
 
-    /**
-     * todo
-     * 132. Palindrome Partitioning II
-     *
-     * @param s
-     * @return
-     */
-    public int minCut(String s) {
-        if (s == null || s.isEmpty()) {
-            return 0;
-        }
-        int len = s.length();
-        int[] dp = new int[len + 1];
-        for (int i = 0; i < len; i++) {
-            int min = i;
-            for (int j = 0; j < i; j++) {
-                if (validPalindrome(s, j, i)) {
-                    min = j == 0 ? 0 : Math.min(min, 1 + dp[j - 1]);
-                }
-            }
-            dp[i] = min;
-        }
-        return dp[len - 1];
-    }
 
     /**
      * 9. Palindrome Number

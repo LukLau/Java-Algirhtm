@@ -1,6 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.Node;
+import org.learn.algorithm.datastructure.UndirectedGraphNode;
 
 import javax.print.attribute.PrintRequestAttribute;
 import javax.swing.*;
@@ -14,6 +15,39 @@ import java.util.*;
  */
 public class GraphSolution {
 
+    public static void main(String[] args) {
+        GraphSolution graphSolution = new GraphSolution();
+
+        Node root = new Node(1);
+
+        List<Node> neighbors = new ArrayList<>();
+
+        Node node2 = new Node(2);
+        Node node4 = new Node(4);
+
+
+        neighbors.add(node2);
+        neighbors.add(node4);
+
+        root.neighbors = neighbors;
+
+
+        List<Node> neighbors2 = new ArrayList<>();
+
+        neighbors2.add(root);
+        neighbors2.add(node4);
+
+        node2.neighbors = neighbors2;
+
+
+        List<Node> neighbors4 = new ArrayList<>();
+
+        neighbors4.add(root);
+        neighbors4.add(node2);
+
+        node4.neighbors = neighbors4;
+    }
+
 
     /**
      * 133. Clone Graph
@@ -21,46 +55,64 @@ public class GraphSolution {
      * @param node
      * @return
      */
+
     public Node cloneGraph(Node node) {
         if (node == null) {
             return null;
         }
-        Set<Integer> used = new HashSet<>();
+        Map<Integer, Node> map = new HashMap<>();
 
-        LinkedList<Node> linkedList = new LinkedList<>();
+        return internalCloneNode(map, node);
+    }
 
-        linkedList.offer(node);
+    private Node internalCloneNode(Map<Integer, Node> map, Node node) {
+        if (node == null) {
+            return null;
+        }
+        if (map.containsKey(node.val)) {
+            return map.get(node.val);
+        }
+        Node root = new Node(node.val);
 
-        Node root = null;
-        while (!linkedList.isEmpty()) {
-            Node prev = linkedList.poll();
-
-            if (used.contains(prev.val)) {
-                continue;
-            }
-            Node expectedNode = new Node(prev.val);
-
-            if (root == null) {
-                root = expectedNode;
-            }
-            used.add(expectedNode.val);
-
-            List<Node> prevNeighbors = prev.neighbors;
-
-            List<Node> expectedNeighbors = new ArrayList<>();
-
-            if (prevNeighbors != null && !prevNeighbors.isEmpty()) {
-                for (Node prevNeighbor : prevNeighbors) {
-                    if (prevNeighbor != null) {
-                        Node expectedNeighbor = new Node(prevNeighbor.val);
-                        expectedNeighbors.add(expectedNeighbor);
-                        linkedList.offer(prevNeighbor);
-                    }
-                }
-            }
-            expectedNode.neighbors = expectedNeighbors;
+        map.put(root.val, root);
+        for (Node neighbor : node.neighbors) {
+            root.neighbors.add(internalCloneNode(map, neighbor));
         }
         return root;
+    }
+
+
+    /**
+     * https://www.lintcode.com/problem/137/
+     *
+     * @param node: A undirected graph node
+     * @return: A undirected graph node
+     */
+    public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) {
+        // write your code here
+        if (node == null) {
+            return null;
+        }
+        Map<Integer, UndirectedGraphNode> map = new HashMap<>();
+        return internalClone(map, node);
+    }
+
+    private UndirectedGraphNode internalClone(Map<Integer, UndirectedGraphNode> map, UndirectedGraphNode root) {
+        if (root == null) {
+            return null;
+        }
+        UndirectedGraphNode node = map.get(root.label);
+
+        if (node != null) {
+            return node;
+        }
+        UndirectedGraphNode undirectedGraphNode = new UndirectedGraphNode(root.label);
+        map.put(undirectedGraphNode.label, undirectedGraphNode);
+
+        for (UndirectedGraphNode neighbor : root.neighbors) {
+            undirectedGraphNode.neighbors.add(internalClone(map, neighbor));
+        }
+        return undirectedGraphNode;
     }
 
 

@@ -30,9 +30,10 @@ public class DynamicSolution {
 //        int[][] games = new int[][]{{0, 0}};
 
 //        solution.gameOfLife(games);
-        solution.numDecodings("226");
-
-
+//        solution.numDecodings("226");
+//        System.out.println(solution.generate(5));
+//        solution.getRow(3);
+        solution.minCut("aab");
     }
 
 
@@ -503,10 +504,12 @@ public class DynamicSolution {
         for (int i = 0; i < numRows; i++) {
             List<Integer> tmp = new ArrayList<>();
             tmp.add(1);
-            for (int j = 1; j <= i - 1; j++) {
-                List<Integer> previous = result.get(i - 1);
-                int val = previous.get(j - 1) + previous.get(j);
-                tmp.add(val);
+            for (int j = i - 1; j >= 1; j--) {
+                List<Integer> prev = result.get(i - 1);
+
+                Integer value = prev.get(j) + prev.get(j - 1);
+
+                tmp.add(value);
             }
             if (i > 0) {
                 tmp.add(1);
@@ -527,14 +530,13 @@ public class DynamicSolution {
             return new ArrayList<>();
         }
         List<Integer> result = new ArrayList<>();
-
         result.add(1);
-
         for (int i = 0; i <= rowIndex; i++) {
 
             for (int j = i - 1; j >= 1; j--) {
-                int val = result.get(j) + result.get(j - 1);
-                result.set(j, val);
+                int value = result.get(j) + result.get(j - 1);
+
+                result.set(j, value);
             }
             if (i > 0) {
                 result.add(1);
@@ -554,14 +556,20 @@ public class DynamicSolution {
      */
     public int minimumTotal(List<List<Integer>> triangle) {
         if (triangle == null || triangle.isEmpty()) {
-            return Integer.MAX_VALUE;
+            return 0;
         }
         int size = triangle.size();
         for (int i = size - 2; i >= 0; i--) {
-            int currentLevel = triangle.get(i).size();
-            for (int j = 0; j < currentLevel; j++) {
-                int val = Math.min(triangle.get(i + 1).get(j), triangle.get(i + 1).get(j + 1)) + triangle.get(i).get(j);
-                triangle.get(i).set(j, val);
+            List<Integer> current = triangle.get(i);
+
+            List<Integer> prev = triangle.get(i + 1);
+
+            int currentSize = current.size();
+
+            for (int j = 0; j < currentSize; j++) {
+                int val = Math.min(prev.get(j), prev.get(j + 1)) + current.get(j);
+
+                current.set(j, val);
             }
         }
         return triangle.get(0).get(0);
@@ -590,8 +598,8 @@ public class DynamicSolution {
             }
         }
         int result = 0;
-        for (int count : dp) {
-            result += count;
+        for (int num : dp) {
+            result += num;
         }
         return result;
     }
@@ -649,35 +657,37 @@ public class DynamicSolution {
         if (prices == null || prices.length == 0) {
             return 0;
         }
-        int len = prices.length;
-        int[] left = new int[len];
+        int column = prices.length;
+        int[] leftProfit = new int[column];
+        int cost = prices[0];
         int leftResult = 0;
-        int leftCost = prices[0];
-        for (int i = 1; i < len; i++) {
-            if (prices[i] > leftCost) {
-                leftResult = Math.max(leftResult, prices[i] - leftCost);
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > cost) {
+                leftResult = Math.max(leftResult, prices[i] - cost);
             } else {
-                leftCost = prices[i];
+                cost = prices[i];
             }
-            left[i] = leftResult;
+            leftProfit[i] = leftResult;
         }
-        int[] right = new int[len + 1];
+        int[] rightProfit = new int[column + 1];
+
         int rightResult = 0;
-        int rightCost = prices[len - 1];
-        for (int i = len - 2; i >= 0; i--) {
-            if (prices[i] < rightCost) {
-                rightResult = Math.max(rightResult, rightCost - prices[i]);
+        cost = prices[column - 1];
+        for (int i = prices.length - 2; i >= 0; i--) {
+            if (prices[i] < cost) {
+                rightResult = Math.max(rightResult, cost - prices[i]);
             } else {
-                rightCost = prices[i];
+                cost = prices[i];
             }
-            right[i] = rightResult;
+            rightProfit[i] = rightResult;
         }
         int result = 0;
-        for (int i = 1; i < left.length; i++) {
-            result = Math.max(result, left[i] + right[i]);
+        for (int i = 1; i < column; i++) {
+            result = Math.max(result, leftProfit[i] + rightProfit[i + 1]);
         }
         return result;
     }
+
 
     /**
      * todo
@@ -701,6 +711,43 @@ public class DynamicSolution {
             }
         }
         return dp[k][prices.length - 1];
+    }
+
+
+    /**
+     * todo
+     * 132. Palindrome Partitioning II
+     *
+     * @param s
+     * @return
+     */
+    public int minCut(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int len = s.length();
+        int[] dp = new int[len];
+        for (int i = 0; i < len; i++) {
+            int min = i;
+            for (int j = 0; j <= i; j++) {
+                if (checkPalindrome(s, j, i)) {
+                    min = Math.min(min, j == 0 ? 0 : dp[j - 1] + 1);
+                }
+            }
+            dp[i] = min;
+        }
+        return dp[len - 1];
+    }
+
+    private boolean checkPalindrome(String s, int j, int i) {
+        while (j < i) {
+            if (s.charAt(i) != s.charAt(j)) {
+                return false;
+            }
+            i--;
+            j++;
+        }
+        return true;
     }
 
 

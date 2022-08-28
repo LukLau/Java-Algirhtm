@@ -1,6 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
+import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.RandomListNode;
 import org.slf4j.event.SubstituteLoggingEvent;
 
@@ -233,35 +234,35 @@ public class ListSolution {
      * @param head
      * @return
      */
-    public RandomListNode copyRandomList(RandomListNode head) {
+    public Node copyRandomList(Node head) {
         if (head == null) {
             return null;
         }
-        RandomListNode current = head;
+        Node current = head;
         while (current != null) {
-            RandomListNode next = current.next;
-            RandomListNode tmp = new RandomListNode(current.label);
-            current.next = tmp;
-            tmp.next = next;
-            current = next;
+            Node randomListNode = new Node(current.val);
+
+            randomListNode.next = current.next;
+
+            current.next = randomListNode;
+
+            current = randomListNode.next;
         }
         current = head;
         while (current != null) {
-            RandomListNode random = current.random;
-            if (random != null) {
-                current.next.random = random.next;
+            if (current.random != null) {
+                current.next.random = current.random.next;
             }
             current = current.next.next;
         }
-        RandomListNode copyOfHead = head.next;
         current = head;
-
+        Node copy = head.next;
         while (current.next != null) {
-            RandomListNode tmp = current.next;
+            Node tmp = current.next;
             current.next = tmp.next;
             current = tmp;
         }
-        return copyOfHead;
+        return copy;
     }
 
 
@@ -325,29 +326,30 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return;
         }
-        ListNode slow = head;
         ListNode fast = head;
+        ListNode slow = head;
         while (fast.next != null && fast.next.next != null) {
-            fast = fast.next;
+            fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode second = slow.next;
+        ListNode next = slow.next;
 
         slow.next = null;
 
-        ListNode reverse = reverse(second);
+        ListNode reverse = reverse(next);
 
-        ListNode first = head;
+        fast = head;
+        while (fast != null && reverse != null) {
+            ListNode tmp = reverse.next;
 
-        while (first != null && reverse != null) {
-            ListNode next = first.next;
-            ListNode reverseNext = reverse.next;
-            first.next = reverse;
-            reverse.next = next;
-            first = next;
-            reverse = reverseNext;
+            reverse.next = fast.next;
+
+            fast.next = reverse;
+
+            reverse = tmp;
+
+            fast = fast.next.next;
         }
-
     }
 
 }

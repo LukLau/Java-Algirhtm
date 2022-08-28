@@ -22,7 +22,8 @@ public class RecursiveSolution {
 //        solution.combinationSum4(new int[]{1, 2, 3}, 4);
 //        solution.combinationSum2(new int[]{3, 1, 3, 5, 1, 1,
 //                8}, 8);
-        solution.permuteUnique(new int[]{1, 1, 2});
+//        solution.permuteUnique(new int[]{1, 1, 2});
+        System.out.println(solution.wordBreakII("leetcode", Arrays.asList("leet", "code")));
     }
 
     /**
@@ -850,24 +851,24 @@ public class RecursiveSolution {
      * @return
      */
     public boolean wordBreak(String s, List<String> wordDict) {
-        if (s == null || s.isEmpty() || wordDict == null || wordDict.isEmpty()) {
+        if (s == null || s.isEmpty()) {
             return false;
         }
         Map<String, Boolean> map = new HashMap<>();
-        return internalWordBreak(s, wordDict, map);
+        return internalWordBreak(map, s, wordDict);
     }
 
-    private boolean internalWordBreak(String s, List<String> wordDict, Map<String, Boolean> map) {
+    private boolean internalWordBreak(Map<String, Boolean> map, String s, List<String> wordDict) {
         if (s.isEmpty()) {
             return true;
         }
         if (map.containsKey(s)) {
             return map.get(s);
         }
-        for (String prefix : wordDict) {
-            if (s.startsWith(prefix)) {
-                String remain = s.substring(prefix.length());
-                if (internalWordBreak(remain, wordDict, map)) {
+        for (String word : wordDict) {
+            if (s.startsWith(word)) {
+                String substring = s.substring(word.length());
+                if (internalWordBreak(map, substring, wordDict)) {
                     return true;
                 }
             }
@@ -887,31 +888,30 @@ public class RecursiveSolution {
         if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
-        Map<String, List<String>> map = new HashMap<>();
-        return intervalWordBreakII(s, wordDict, map);
+        return internalWordBreakII(s, wordDict);
     }
 
-    private List<String> intervalWordBreakII(String s, List<String> wordDict, Map<String, List<String>> map) {
+    private List<String> internalWordBreakII(String s, List<String> wordDict) {
         List<String> result = new ArrayList<>();
         if (s.isEmpty()) {
-            result.add("");
+            result.add(s);
             return result;
         }
-        if (map.containsKey(s)) {
-            return map.get(s);
-        }
+        for (String word : wordDict) {
+            if (s.startsWith(word)) {
+                String substring = s.substring(word.length());
 
-        for (String prefix : wordDict) {
-            if (s.startsWith(prefix)) {
-                String remain = s.substring(prefix.length());
-                List<String> breakWords = intervalWordBreakII(remain, wordDict, map);
-                for (String breakWord : breakWords) {
-                    String combineWord = prefix + (breakWord.isEmpty() ? "" : " " + breakWord);
-                    result.add(combineWord);
+                List<String> wordBreakList = internalWordBreakII(substring, wordDict);
+
+                for (String suffix : wordBreakList) {
+
+                    String tmp = word + (suffix.isEmpty() ? "" : " " + suffix);
+
+                    result.add(tmp);
+
                 }
             }
         }
-        map.put(s, result);
         return result;
     }
 

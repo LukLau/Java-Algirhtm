@@ -4,6 +4,7 @@ import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.TreeNode;
 
+import javax.swing.plaf.synth.SynthStyleFactory;
 import javax.swing.text.html.HTMLEditorKit;
 import java.util.*;
 import java.util.function.Predicate;
@@ -61,7 +62,19 @@ public class TreeSolution {
      * @return
      */
     public ListNode insertionSortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode dummy = new ListNode(0);
 
+        ListNode prev = dummy;
+
+        while (head != null) {
+            ListNode tmp = head.next;
+            if (prev.val >= head.val) {
+                prev = dummy;
+            }
+        }
         return null;
     }
 
@@ -75,16 +88,16 @@ public class TreeSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode slow = head;
         ListNode fast = head;
+        ListNode slow = head;
         while (fast.next != null && fast.next.next != null) {
-            slow = slow.next;
             fast = fast.next.next;
+            slow = slow.next;
         }
-        ListNode tmp = slow.next;
+        ListNode next = slow.next;
         slow.next = null;
         ListNode l1 = sortList(head);
-        ListNode l2 = sortList(tmp);
+        ListNode l2 = sortList(next);
         return merge(l1, l2);
     }
 
@@ -212,20 +225,20 @@ public class TreeSolution {
         if (root == null) {
             return new ArrayList<>();
         }
-        LinkedList<Integer> result = new LinkedList<>();
+        LinkedList<Integer> linkedList = new LinkedList<>();
         Stack<TreeNode> stack = new Stack<>();
         TreeNode p = root;
         while (!stack.isEmpty() || p != null) {
             if (p != null) {
+                linkedList.addFirst(p.val);
                 stack.push(p);
-                result.addFirst(p.val);
                 p = p.right;
             } else {
                 p = stack.pop();
                 p = p.left;
             }
         }
-        return result;
+        return linkedList;
     }
 
 
@@ -955,33 +968,40 @@ public class TreeSolution {
         Node current = root;
         while (current != null) {
             Node head = null;
-            Node level = null;
+            Node iteratorNode = null;
             while (current != null) {
                 if (current.left != null) {
                     if (head == null) {
                         head = current.left;
-                        level = head;
+                        iteratorNode = current.left;
                     } else {
-                        head.next = current.left;
-                        head = head.next;
+                        iteratorNode.next = current.left;
+//                        current = current.next;
+                        iteratorNode = iteratorNode.next;
                     }
                 }
                 if (current.right != null) {
                     if (head == null) {
                         head = current.right;
-                        level = head;
+                        iteratorNode = current.right;
                     } else {
-                        head.next = current.right;
-                        head = head.next;
+                        iteratorNode.next = current.right;
+                        iteratorNode = iteratorNode.next;
                     }
                 }
                 current = current.next;
             }
-            current = level;
+            current = head;
         }
         return root;
     }
 
+    /**
+     * 124. Binary Tree Maximum Path Sum
+     *
+     * @param root
+     * @return
+     */
     public int maxPathSum(TreeNode root) {
         if (root == null) {
             return 0;
@@ -994,12 +1014,18 @@ public class TreeSolution {
         if (root == null) {
             return 0;
         }
-        int left = intervalPathSum(root.left);
-        int right = intervalPathSum(root.right);
-        left = Math.max(left, 0);
-        right = Math.max(right, 0);
-        maxPathSum = Math.max(maxPathSum, root.val + left + right);
-        return Math.max(left, right) + root.val;
+        int leftValue = intervalPathSum(root.left);
+        int rightValue = intervalPathSum(root.right);
+
+        leftValue = Math.max(leftValue, 0);
+
+        rightValue = Math.max(rightValue, 0);
+
+        int val = leftValue + rightValue + root.val;
+
+        maxPathSum = Math.max(maxPathSum, val);
+
+        return Math.max(leftValue, rightValue) + root.val;
     }
 
 
@@ -1013,17 +1039,17 @@ public class TreeSolution {
         if (root == null) {
             return 0;
         }
-        return intervalSumNumbers(root, 0);
+        return internalSumNumbers(root, 0);
     }
 
-    private int intervalSumNumbers(TreeNode root, int val) {
+    private int internalSumNumbers(TreeNode root, int value) {
         if (root == null) {
             return 0;
         }
         if (root.left == null && root.right == null) {
-            return val * 10 + root.val;
+            return value * 10 + root.val;
         }
-        return intervalSumNumbers(root.left, val * 10 + root.val) + intervalSumNumbers(root.right, val * 10 + root.val);
+        return internalSumNumbers(root.left, value * 10 + root.val) + internalSumNumbers(root.right, value * 10 + root.val);
     }
 
 

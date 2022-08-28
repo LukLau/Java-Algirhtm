@@ -20,7 +20,9 @@ public class BinarySolution {
 //        solution.findPeakElement(new int[]{2});
 //        solution.searchInsert(new int[]{1, 3, 5, 6}, 2);
         int[] nums = new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 13, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-        solution.searchII(nums, 13);
+//        solution.searchII(nums, 13);
+        int[] tmp = new int[]{4, 5, 6, 7, 0, 1, 2};
+        solution.findMin(tmp);
     }
 
     /**
@@ -181,6 +183,9 @@ public class BinarySolution {
      * @return
      */
     public int findMinII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
         int start = 0;
         int end = nums.length - 1;
         while (start < end) {

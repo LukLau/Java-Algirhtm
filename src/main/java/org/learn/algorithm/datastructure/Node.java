@@ -20,8 +20,12 @@ public class Node {
         neighbors = new ArrayList<Node>();
     }
 
+    public List<Node> neighbors;
+
+
     public Node(int val) {
         this.val = val;
+        neighbors = new ArrayList<>();
     }
 
     public Node(int val, Node left, Node right, Node next) {
@@ -31,7 +35,6 @@ public class Node {
         this.next = next;
     }
 
-    public List<Node> neighbors;
 
     public Node(int _val, ArrayList<Node> _neighbors) {
         val = _val;
