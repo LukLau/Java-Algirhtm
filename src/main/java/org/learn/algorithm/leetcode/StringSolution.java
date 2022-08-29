@@ -63,8 +63,8 @@ public class StringSolution {
 //        "ABC"
 
 //        solution.minWindowii("ADOBECODEBANC", "ABC");
-        solution.partition("aab");
-
+//        solution.partition("aab");
+        solution.lengthOfLongestSubstringTwoDistinct("eceba");
     }
 
     /**
@@ -227,21 +227,26 @@ public class StringSolution {
             return 0;
         }
         int result = 0;
+
         int left = 0;
-        Map<Character, Integer> map = new HashMap<>();
+
         char[] words = s.toCharArray();
+
+        Map<Character, Integer> map = new HashMap<>();
+
         for (int i = 0; i < words.length; i++) {
-            char tmp = s.charAt(i);
-            int num = map.getOrDefault(tmp, 0);
-            map.put(tmp, num + 1);
+
+            Integer count = map.getOrDefault(words[i], 0);
+
+            map.put(words[i], count + 1);
 
             while (map.size() > 2) {
-                Integer count = map.get(s.charAt(left));
-                count--;
-                if (count == 0) {
-                    map.remove(s.charAt(left));
+                Integer side = map.get(words[left]);
+                side--;
+                if (side == 0) {
+                    map.remove(words[left]);
                 } else {
-                    map.put(s.charAt(left), count);
+                    map.put(words[left], side);
                 }
                 left++;
             }

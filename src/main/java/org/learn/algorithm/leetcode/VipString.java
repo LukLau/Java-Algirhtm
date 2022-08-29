@@ -11,6 +11,26 @@ public class VipString {
         vipString.generatePalindromes("aab");
     }
 
+
+    /**
+     * 161 One Edit Distance
+     *
+     * @param s: a string
+     * @param t: a string
+     * @return: true if they are both one edit distance apart or false
+     */
+    public boolean isOneEditDistance(String s, String t) {
+        // write your code here
+        if (s == null || t == null) {
+            return false;
+        }
+        if (s.equals(t)) {
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      * 266 Palindrome Permutation
      *
@@ -148,8 +168,6 @@ public class VipString {
             } else {
                 boolean existUnique = true;
                 for (String prefix : priorityQueue) {
-
-
 
 
                 }

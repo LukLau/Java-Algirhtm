@@ -58,12 +58,19 @@ public class VipSolution {
             return root;
         }
         TreeNode left = root.left;
-        TreeNode upsideDown = upsideDownBinaryTree(left);
+
+        TreeNode upsideDownBinaryTree = upsideDownBinaryTree(left);
+
         left.left = root.right;
+
         left.right = root;
+
         root.left = null;
         root.right = null;
-        return upsideDown;
+
+        return upsideDownBinaryTree;
+
+
         // write your code here
     }
 
