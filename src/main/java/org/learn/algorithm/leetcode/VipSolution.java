@@ -42,7 +42,8 @@ public class VipSolution {
 //        solution.verifyPreorder(new int[]{4, 3, 5, 1, 2, 3});
 //        solution.verifyPreorder(new int[]{3, 2, 1, 4});
 //        solution.verifyPreorder(new int[]{4, 2, 1, 3});
-        solution.verifyPreorderII(new int[]{4, 3, 5, 1, 2, 3});
+//        solution.verifyPreorderII(new int[]{4, 3, 5, 1, 2, 3});
+        solution.isOneEditDistance("a", "ab");
 
 
     }
@@ -94,17 +95,48 @@ public class VipSolution {
         int min = Math.min(m, n);
         for (int i = 0; i < min; i++) {
             if (s.charAt(i) != t.charAt(i)) {
-                if (m < n) {
-                    return s.substring(i).equals(t.substring(i + 1));
-                } else if (m == n) {
-                    return s.substring(i + 1).equals(t.substring(i + 1));
-                } else {
+                if (m > n) {
                     return s.substring(i + 1).equals(t.substring(i));
+                } else if (m < n) {
+                    return s.substring(i).equals(t.substring(i + 1));
+                } else {
+                    return s.substring(i + 1).equals(t.substring(i + 1));
                 }
             }
         }
-        return false;
+        return Math.abs(m - n) <= 1;
     }
+
+
+    /**
+     * https://www.lintcode.com/problem/1315
+     *
+     * @param nums: a sorted integer array without duplicates
+     * @return: the summary of its ranges
+     */
+    public List<String> summaryRanges(int[] nums) {
+        // Write your code here
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        int prev = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i - 1] + 1 != nums[i]) {
+                String range = range(prev, nums[i - 1]);
+
+                result.add(range);
+
+                prev =  nums[i];
+            }
+        }
+        return result;
+    }
+
+    private String ranges(int start, int end) {
+        return start == end ? String.valueOf(start) : start + "->" + end;
+    }
+
 
     /**
      * todo
