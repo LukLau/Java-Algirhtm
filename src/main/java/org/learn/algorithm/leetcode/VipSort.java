@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+import javax.naming.ldap.PagedResultsResponseControl;
 import java.util.Arrays;
 
 /**
@@ -9,6 +10,12 @@ import java.util.Arrays;
  * @date 2021/4/13
  */
 public class VipSort {
+
+    public static void main(String[] args) {
+        VipSort vipSort = new VipSort();
+        int[] nums = new int[]{1, 3, 100};
+        vipSort.maximumGap(nums);
+    }
 
     // 经典排序//
 
@@ -20,11 +27,16 @@ public class VipSort {
      * 164. Maximum Gap
      */
     public int maximumGap(int[] nums) {
-        if (nums == null || nums.length <= 1) {
+        if (nums == null || nums.length == 0) {
             return 0;
         }
-        int min = nums[0];
-        int max = nums[0];
+        if (nums.length < 2) return 0;
+        if (nums.length == 2) {
+            return Math.abs(nums[0] - nums[1]);
+        }
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+
         for (int num : nums) {
             if (num < min) {
                 min = num;
@@ -33,20 +45,32 @@ public class VipSort {
                 max = num;
             }
         }
-        if (min == max) {
-            return 0;
-        }
-        int gap = (int) Math.ceil((double) (max - min) / (nums.length - 1));
-        int[] minBucket = new int[nums.length];
-        int[] maxBucket = new int[nums.length];
-        Arrays.fill(minBucket, Integer.MAX_VALUE);
-        Arrays.fill(maxBucket, Integer.MIN_VALUE);
+        int bucketSide = (max - min) / nums.length + 1;
+        int bucketCount = (max - min) / bucketSide + 1;
+
+        int[] bucketMax = new int[bucketCount];
+        int[] bucketMin = new int[bucketCount];
+
+        Arrays.fill(bucketMax, Integer.MIN_VALUE);
+        Arrays.fill(bucketMin, Integer.MAX_VALUE);
         for (int num : nums) {
-            int idx = (num - min) / gap;
-            minBucket[idx] = Math.min(num, minBucket[idx]);
-            maxBucket[idx] = Math.max(num, maxBucket[idx]);
+            int index = (num - min) / bucketSide;
+            bucketMax[index] = Math.max(bucketMax[index], num);
+            bucketMin[index] = Math.min(bucketMin[index], num);
         }
-        return -1;
+        int result = bucketMax[0] - bucketMin[0];
+
+        int prev = bucketMax[0];
+
+        for (int i = 1; i < bucketMax.length; i++) {
+            if (bucketMax[i] == Integer.MIN_VALUE && bucketMax[i] == Integer.MIN_VALUE) {
+                continue;
+            }
+            result = Math.max(result, bucketMin[i] - prev);
+
+            prev = bucketMax[i];
+        }
+        return result;
     }
 
 }

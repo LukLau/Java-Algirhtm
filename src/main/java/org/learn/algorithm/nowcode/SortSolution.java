@@ -1,5 +1,7 @@
 package org.learn.algorithm.nowcode;
 
+import java.util.*;
+
 /**
  * @author luk
  */
@@ -7,11 +9,17 @@ public class SortSolution {
 
     public static void main(String[] args) {
         SortSolution solution = new SortSolution();
-        int[] nums = new int[]{5, 2, 3, 1, 4};
-        solution.heapSort(nums);
+        Random random = new Random();
+        int[] nums = new int[random.nextInt(10) + 10];
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = random.nextInt(100);
+        }
+//        solution.heapSort(nums);
+        solution.bucketSort(nums);
         for (int num : nums) {
             System.out.println(num);
         }
+
     }
 
     private void quickSortAlgorithm(int[] nums) {
@@ -120,6 +128,50 @@ public class SortSolution {
             }
         }
         nums[i] = pivot;
+    }
+
+
+    public void bucketSort(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+        for (int num : nums) {
+            if (num > max) {
+                max = num;
+            }
+            if (num < min) {
+                min = num;
+            }
+        }
+        int bucketSide = (max - min) / nums.length + 1;
+        int bucketCounts = (max - min) / bucketSide + 1;
+
+        List<List<Integer>> buckets = new ArrayList<>();
+
+        for (int i = 0; i < bucketCounts; i++) {
+            List<Integer> tmp = new ArrayList<>();
+            buckets.add(tmp);
+        }
+        for (int num : nums) {
+            int index = (num - min) / bucketSide;
+
+            buckets.get(index).add(num);
+        }
+        int index = 0;
+        for (int i = 0; i < bucketCounts; i++) {
+            List<Integer> currentBucket = buckets.get(i);
+
+            if (currentBucket != null && !currentBucket.isEmpty()) {
+                Collections.sort(currentBucket);
+            }
+            for (Integer currentItem : currentBucket) {
+                nums[index++] = currentItem;
+            }
+        }
+
+
     }
 
 }

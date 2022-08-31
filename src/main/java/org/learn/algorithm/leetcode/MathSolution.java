@@ -1,10 +1,6 @@
 package org.learn.algorithm.leetcode;
 
 
-import org.apache.tomcat.Jar;
-import org.springframework.web.servlet.mvc.method.annotation.UriComponentsBuilderMethodArgumentResolver;
-
-import java.awt.image.DataBufferDouble;
 import java.util.*;
 
 /**
@@ -517,15 +513,12 @@ public class MathSolution {
      * @param n
      * @return
      */
-    public int reverseBits(int n) {
-        int result = 0;
+    public long reverseBits(long n) {
+        long result = 0;
         for (int i = 0; i < 32; i++) {
             result <<= 1;
-            boolean remain = (n & (1 << i)) != 0;
-
-            if (remain) {
-                result++;
-            }
+            result |= (n & 1);
+            n >>= 1;
         }
         return result;
     }
@@ -557,20 +550,35 @@ public class MathSolution {
         return n > 0 && (n & (n - 1)) == 0;
     }
 
+    /**
+     * @param num: an integer
+     * @return: whether the integer is a power of 4
+     */
+    public boolean isPowerOfFour(int num) {
+        // Write your code here
+        // test = num & 0xAAAAAAAB
+        //        if num!=0 and (test==0 or num==1):
+        //            return True
+        //        else:
+        //            return False
+        return (num & (num - 1)) == 0 && num % 3 == 1;
+    }
+
 
     /**
      * 201. Bitwise AND of Numbers Range
      * todo
      *
-     * @param m
-     * @param n
+     * @param left
+     * @param right
      * @return
      */
-    public int rangeBitwiseAnd(int m, int n) {
-        while (m < n) {
-            n = n & (n - 1);
+    public int rangeBitwiseAnd(int left, int right) {
+        int result = 1;
+        for (int i = left; i <= right; i++) {
+            result &= i;
         }
-        return n;
+        return result;
     }
 
 
@@ -634,8 +642,8 @@ public class MathSolution {
      * @return
      */
     public int majorityElement(int[] nums) {
-        int candidate = nums[0];
         int count = 0;
+        int candidate = nums[0];
         for (int num : nums) {
             if (num == candidate) {
                 count++;
@@ -644,10 +652,16 @@ public class MathSolution {
             count--;
             if (count == 0) {
                 candidate = num;
-                count = 1;
+                count++;
             }
         }
-        return candidate;
+        count = 0;
+        for (int num : nums) {
+            if (num == candidate) {
+                count++;
+            }
+        }
+        return 2 * count >= nums.length ? candidate : -1;
     }
 
 
@@ -1130,9 +1144,9 @@ public class MathSolution {
         int count = 0;
         while (n / 5 != 0) {
             count += n / 5;
+            n /= 5;
         }
         return count;
-
     }
 
 

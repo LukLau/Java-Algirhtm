@@ -101,4 +101,46 @@ public class DfsSolution {
     }
 
 
+    /**
+     * 200. Number of Islands
+     *
+     * @param grid
+     * @return
+     */
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        boolean[][] used = new boolean[row][column];
+        int count = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (grid[i][j] == '1' && !used[i][j]) {
+                    internalNumIsLand(i, j, used, grid);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    private void internalNumIsLand(int i, int j, boolean[][] used, char[][] grid) {
+        if (i < 0 || i == grid.length || j < 0 || j == grid[i].length || used[i][j]) {
+            return;
+        }
+        used[i][j] = true;
+        if (grid[i][j] != '1') {
+            return;
+        }
+        internalNumIsLand(i - 1, j, used, grid);
+        internalNumIsLand(i + 1, j, used, grid);
+
+        internalNumIsLand(i, j - 1, used, grid);
+        internalNumIsLand(i, j + 1, used, grid);
+
+    }
+
+
 }

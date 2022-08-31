@@ -121,10 +121,10 @@ public class TwoPage {
         if (s == null || s.isEmpty()) {
             return 0;
         }
+        int m = s.length();
         int result = 0;
-        int len = s.length();
-        for (int i = 0; i < len; i++) {
-            result = result * 26 + (s.charAt(i) - 'A' + 1);
+        for (int i = 0; i < m; i++) {
+            result = result * 26 + ((s.charAt(i) - 'A') + 1);
         }
         return result;
     }
@@ -244,7 +244,8 @@ public class TwoPage {
 
     public static void main(String[] args) {
         TwoPage page = new TwoPage();
-        page.findRepeatedDnaSequences("AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT");
+//        page.findRepeatedDnaSequences("AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT");
+        page.titleToNumber("Z");
     }
 
 

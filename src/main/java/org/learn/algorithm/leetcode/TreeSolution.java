@@ -278,11 +278,11 @@ public class TreeSolution {
             return new ArrayList<>();
         }
         List<Integer> result = new ArrayList<>();
-        interRightSideView(result, root, 0);
+        internalRightSideView(result, 0, root);
         return result;
     }
 
-    private void interRightSideView(List<Integer> result, TreeNode root, int expected) {
+    private void internalRightSideView(List<Integer> result, int expected, TreeNode root) {
         if (root == null) {
             return;
         }
@@ -290,8 +290,8 @@ public class TreeSolution {
             result.add(root.val);
         }
         expected++;
-        interRightSideView(result, root.right, expected);
-        interRightSideView(result, root.left, expected);
+        internalRightSideView(result, expected, root.right);
+        internalRightSideView(result, expected, root.left);
     }
 
     /**

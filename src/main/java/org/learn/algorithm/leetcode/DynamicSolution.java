@@ -1,6 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.TreeNode;
+import org.springframework.boot.context.properties.bind.handler.IgnoreTopLevelConverterNotFoundBindHandler;
 
 import java.awt.image.Kernel;
 import java.util.*;
@@ -690,6 +691,7 @@ public class DynamicSolution {
 
 
     /**
+     * https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/
      * todo
      * 188. Best Time to Buy and Sell Stock IV
      * 卖股票问题iv
@@ -783,7 +785,7 @@ public class DynamicSolution {
         int robPrev = 0;
         for (int num : nums) {
             int tmp = robCurrent;
-            robCurrent = Math.max(robCurrent, robPrev + num);
+            robCurrent = Math.max(robPrev + num, robCurrent);
             robPrev = tmp;
         }
         return Math.max(robCurrent, robPrev);
@@ -930,7 +932,7 @@ public class DynamicSolution {
                 if (j == column - 1) {
                     dp[i][j] = Math.max(1, dp[i + 1][j] - dungeon[i][j]);
                 } else {
-                    dp[i][j] = Math.max(1, Math.min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j]);
+                    dp[i][j] = Math.max(1, Math.min(dp[i][j + 1], dp[i + 1][j]) - dungeon[i][j]);
                 }
             }
         }
@@ -938,10 +940,12 @@ public class DynamicSolution {
     }
 
     public int calculateMinimumHPII(int[][] dungeon) {
+        if (dungeon == null || dungeon.length == 0) {
+            return 0;
+        }
         int row = dungeon.length;
         int column = dungeon[0].length;
         int[] dp = new int[column];
-
         for (int j = column - 1; j >= 0; j--) {
             if (j == column - 1) {
                 dp[j] = Math.max(1, 1 - dungeon[row - 1][j]);
@@ -949,7 +953,6 @@ public class DynamicSolution {
                 dp[j] = Math.max(1, dp[j + 1] - dungeon[row - 1][j]);
             }
         }
-
         for (int i = row - 2; i >= 0; i--) {
             for (int j = column - 1; j >= 0; j--) {
                 if (j == column - 1) {
