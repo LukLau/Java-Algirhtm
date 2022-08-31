@@ -1,7 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import org.springframework.format.datetime.joda.MillisecondInstantPrinter;
-
 import java.util.Arrays;
 
 /**
@@ -10,7 +8,7 @@ import java.util.Arrays;
  * @author luk
  * @date 2021/4/13
  */
-public class SortSolution {
+public class VipSort {
 
     // 经典排序//
 

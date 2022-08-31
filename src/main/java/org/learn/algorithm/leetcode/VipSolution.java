@@ -43,8 +43,11 @@ public class VipSolution {
 //        solution.verifyPreorder(new int[]{3, 2, 1, 4});
 //        solution.verifyPreorder(new int[]{4, 2, 1, 3});
 //        solution.verifyPreorderII(new int[]{4, 3, 5, 1, 2, 3});
-        solution.isOneEditDistance("a", "ab");
-
+//        solution.isOneEditDistance("a", "ab");
+//        int[] tmp = new int[]{0, 2, 3, 4, 6, 8, 9};
+//        System.out.println(solution.summaryRanges(tmp));
+        int[] tmp = new int[]{2147483647};
+        solution.findMissingRanges(tmp, 0, 2147483647);
 
     }
 
@@ -127,8 +130,14 @@ public class VipSolution {
 
                 result.add(range);
 
-                prev =  nums[i];
+                prev = nums[i];
             }
+        }
+        if (prev <= nums[nums.length - 1]) {
+            String range = range(prev, nums[nums.length - 1]);
+
+            result.add(range);
+
         }
         return result;
     }
@@ -157,18 +166,16 @@ public class VipSolution {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        if (nums.length == 0) {
-            result.add(range(lower, upper));
-            return result;
-        }
         for (int i = 0; i < nums.length; i++) {
-            if (nums[i] > lower) {
-                result.add(range(lower, nums[i] - 1));
+            if (lower < nums[i]) {
+                String tmp = range(lower, nums[i] - 1);
+                result.add(tmp);
             }
             lower = (long) nums[i] + 1;
         }
         if (lower <= upper) {
-            result.add(range(lower + 1, upper));
+            String tmp = range(lower, upper);
+            result.add(tmp);
         }
         return result;
     }
