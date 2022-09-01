@@ -18,13 +18,14 @@ public class Trie {
         if (word == null || word.isEmpty()) {
             return;
         }
-        TrieNode p = root;
         char[] words = word.toCharArray();
-        for (char c : words) {
-            if (p.next[c - 'a'] == null) {
-                p.next[c - 'a'] = new TrieNode();
+        TrieNode p = root;
+        for (char tmp : words) {
+            int index = tmp - 'a';
+            if (p.next[index] == null) {
+                p.next[index] = new TrieNode();
             }
-            p = p.next[c - 'a'];
+            p = p.next[index];
         }
         p.word = word;
     }
@@ -36,6 +37,7 @@ public class Trie {
         char[] words = word.toCharArray();
 
         TrieNode p = root;
+
         for (char c : words) {
             int index = c - 'a';
             if (p.next[index] == null) {
@@ -79,12 +81,12 @@ public class Trie {
             return false;
         }
         TrieNode p = root;
-        char[] words = prefix.toCharArray();
-        for (char c : words) {
-            if (p.next[c - 'a'] == null) {
+        for (char c : prefix.toCharArray()) {
+            int index = c - 'a';
+            if (p.next[index] == null) {
                 return false;
             }
-            p = p.next[c - 'a'];
+            p = p.next[index];
         }
         return true;
     }
@@ -94,7 +96,7 @@ public class Trie {
         public String word;
 
         public TrieNode() {
-            next = new TrieNode[26];
+            this.next = new TrieNode[26];
         }
     }
 

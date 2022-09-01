@@ -21,7 +21,8 @@ public class ThreePage {
         int[] tmp = new int[]{0, 1, 2, 4, 5, 7};
 //        page.summaryRanges(tmp);
 //        page.containsNearbyDuplicate(new int[]{1, 2, 3, 1, 2, 3}, 2);
-        page.isAnagram("anagram", "nagaram");
+//        page.isAnagram("anagram", "nagaram");
+        System.out.println(page.isIsomorphic("egg","add"));
     }
 
 
@@ -79,17 +80,23 @@ public class ThreePage {
         if (s == null || t == null) {
             return false;
         }
-        Map<Character, Integer> map1 = new HashMap<>();
-        Map<Character, Integer> map2 = new HashMap<>();
         int m = s.length();
         int n = t.length();
         if (m != n) {
             return false;
         }
+        Map<Character, Integer> map1 = new HashMap<>();
+        Map<Character, Integer> map2 = new HashMap<>();
+
         for (int i = 0; i < m; i++) {
-            if (!Objects.equals(map1.put(s.charAt(i), i), map2.put(t.charAt(i), i))) {
+            int first = map1.getOrDefault(s.charAt(i), i);
+            int second = map1.getOrDefault(t.charAt(i), i);
+
+            if (first != second) {
                 return false;
             }
+            map1.put(s.charAt(i), i + 1);
+            map2.put(t.charAt(i), i + 1);
         }
         return true;
     }

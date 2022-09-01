@@ -33,13 +33,15 @@ public class MathSolution {
      */
     public int countPrimes(int n) {
         int count = 0;
-        boolean[] dp = new boolean[n];
+
+        boolean[] seen = new boolean[n];
+
         for (int i = 2; i < n; i++) {
-            if (!dp[i]) {
+            if (!seen[i]) {
                 count++;
-                for (int j = 2; j * i < n; j++) {
-                    dp[j * i] = true;
-                }
+            }
+            for (int j = 1; j * i < n; j++) {
+                seen[i * j] = true;
             }
         }
         return count;
@@ -574,11 +576,10 @@ public class MathSolution {
      * @return
      */
     public int rangeBitwiseAnd(int left, int right) {
-        int result = 1;
-        for (int i = left; i <= right; i++) {
-            result &= i;
+        while (left < right) {
+            right = right & (right - 1);
         }
-        return result;
+        return right;
     }
 
 
