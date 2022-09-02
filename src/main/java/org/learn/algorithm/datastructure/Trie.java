@@ -52,9 +52,9 @@ public class Trie {
         if (word == null || word.isEmpty()) {
             return false;
         }
-        char[] words = word.toCharArray();
+        char[] chars = word.toCharArray();
 
-        return internalSearch(root, 0, words);
+        return internalSearch(root, 0, chars);
     }
 
     private boolean internalSearch(TrieNode p, int start, char[] words) {
@@ -73,6 +73,25 @@ public class Trie {
             return false;
         }
         return internalSearch(p.next[word - 'a'], start + 1, words);
+    }
+
+    private boolean internalSearchII(TrieNode p, int start, char[] words) {
+        if (start == words.length) {
+            return p.word != null;
+        }
+        if (words[start] != '.') {
+            int index = words[start] - 'a';
+            if (p.next[index] == null) {
+                return false;
+            }
+            return internalSearch(p.next[index], start + 1, words);
+        }
+        for (int i = 0; i < p.next.length; i++) {
+            if (p.next[i] != null && internalSearch(p.next[i], start + 1, words)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

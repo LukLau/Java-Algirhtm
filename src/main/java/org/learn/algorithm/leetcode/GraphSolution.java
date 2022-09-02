@@ -18,6 +18,9 @@ import java.util.*;
  */
 public class GraphSolution {
 
+    List<List<Integer>> edges;
+    int[] indeg;
+
     public static void main(String[] args) {
         GraphSolution graphSolution = new GraphSolution();
 
@@ -50,14 +53,13 @@ public class GraphSolution {
 //
 //        node4.neighbors = neighbors4;
 
-        int numCourses = 3;
+        int numCourses = 4;
 //        int[][] matrix = new int[][]{{1, 0}, {0, 1}};
 
-        int[][] matrix = new int[][]{{1, 0}};
+        int[][] matrix = new int[][]{{1, 0}, {2, 0}, {3, 1}, {3, 2}};
 
-        graphSolution.canFinishTest(numCourses, matrix);
+        graphSolution.canFinish(numCourses, matrix);
     }
-
 
     /**
      * 133. Clone Graph
@@ -90,7 +92,6 @@ public class GraphSolution {
         }
         return root;
     }
-
 
     /**
      * https://www.lintcode.com/problem/137/
@@ -125,7 +126,6 @@ public class GraphSolution {
         return undirectedGraphNode;
     }
 
-
     /**
      * todo
      * 207. Course Schedule
@@ -135,8 +135,8 @@ public class GraphSolution {
      * @return
      */
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        if (prerequisites == null || prerequisites.length == 0) {
-            return true;
+        if (prerequisites == null) {
+            return false;
         }
         List<List<Integer>> result = new ArrayList<>();
 
@@ -144,14 +144,20 @@ public class GraphSolution {
             List<Integer> tmp = new ArrayList<>();
             result.add(tmp);
         }
-        for (int i = 0; i < prerequisites.length; i++) {
-            List<Integer> tmp = result.get(prerequisites[i][1]);
-            tmp.add(prerequisites[i][0]);
+        for (int[] prerequisite : prerequisites) {
+            List<Integer> tmp = result.get(prerequisite[1]);
+            tmp.add(prerequisite[0]);
         }
         Map<Integer, Integer> graphDegree = getGraphDegree(prerequisites);
 
         LinkedList<Integer> linkedList = new LinkedList<>();
 
+        for (int i = 0; i < numCourses; i++) {
+            if (graphDegree.containsKey(i)) {
+                continue;
+            }
+            linkedList.offer(i);
+        }
         List<Integer> nums = new ArrayList<>();
         while (!linkedList.isEmpty()) {
             Integer poll = linkedList.poll();
@@ -160,24 +166,31 @@ public class GraphSolution {
 
             List<Integer> tmp = result.get(poll);
 
-            for (Integer course : tmp) {
-                Integer count = graphDegree.getOrDefault(course, 0);
+            for (Integer num : tmp) {
+
+                int count = graphDegree.getOrDefault(num, 0);
 
                 count--;
 
-                graphDegree.put(course, count);
+                graphDegree.put(num, count);
 
                 if (count == 0) {
-
-                    linkedList.offer(course);
+                    linkedList.offer(num);
                 }
             }
         }
+        int[] tmp = new int[nums.size()];
+
+        for (int i = 0; i < nums.size(); i++) {
+            tmp[i] = nums.get(i);
+        }
+//        return tmp;
+
         return nums.size() == numCourses;
     }
 
-
     /**
+     * https://www.lintcode.com/problem/616
      * todo
      * 210. Course Schedule II
      *
@@ -186,9 +199,13 @@ public class GraphSolution {
      * @return
      */
     public int[] findOrder(int numCourses, int[][] prerequisites) {
+        if (prerequisites == null) {
+            return new int[]{};
+        }
+
+
         return null;
     }
-
 
     /**
      * todo
@@ -201,7 +218,6 @@ public class GraphSolution {
     public List<Integer> findMinHeightTrees(int n, int[][] edges) {
         return null;
     }
-
 
     /**
      * todo
@@ -234,7 +250,6 @@ public class GraphSolution {
         return -1;
     }
 
-
     /**
      * https://www.lintcode.com/problem/127/description
      *
@@ -265,7 +280,6 @@ public class GraphSolution {
         }
         result.add(graphNode);
     }
-
 
     public ArrayList<DirectedGraphNode> topSortii(ArrayList<DirectedGraphNode> graph) {
         if (graph == null || graph.isEmpty()) {
@@ -316,10 +330,6 @@ public class GraphSolution {
         return map;
     }
 
-
-    List<List<Integer>> edges;
-    int[] indeg;
-
     public boolean canFinishTest(int numCourses, int[][] prerequisites) {
         edges = new ArrayList<List<Integer>>();
         for (int i = 0; i < numCourses; ++i) {
@@ -357,9 +367,9 @@ public class GraphSolution {
         Map<Integer, Integer> map = new HashMap<>();
 
         for (int[] nodes : graph) {
-            Integer count = map.getOrDefault(nodes[1], 0);
+            Integer count = map.getOrDefault(nodes[0], 0);
 
-            map.put(nodes[1], count + 1);
+            map.put(nodes[0], count + 1);
         }
         return map;
     }

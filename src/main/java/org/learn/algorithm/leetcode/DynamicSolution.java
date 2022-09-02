@@ -34,7 +34,9 @@ public class DynamicSolution {
 //        solution.numDecodings("226");
 //        System.out.println(solution.generate(5));
 //        solution.getRow(3);
-        solution.minCut("aab");
+//        solution.minCut("aab");
+        matrix = new char[][]{{'1', '0'}};
+        solution.maximalSquare(matrix);
     }
 
 
@@ -413,10 +415,9 @@ public class DynamicSolution {
         int[][] dp = new int[row][column];
         int result = 0;
         for (int j = 0; j < column; j++) {
-            if (matrix[0][j] == '1') {
-                dp[0][j] = 1;
-                result = 1;
-            }
+            dp[0][j] = matrix[0][j] == '1' ? 1 : 0;
+            int tmp = matrix[0][j] == '1' ? 1 : 0;
+            result = Math.max(result, tmp);
         }
         for (int i = 1; i < row; i++) {
             for (int j = 0; j < column; j++) {
@@ -424,7 +425,7 @@ public class DynamicSolution {
                     if (j == 0) {
                         dp[i][j] = 1;
                     } else {
-                        dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j]), dp[i - 1][j - 1]) + 1;
+                        dp[i][j] = Math.min(dp[i - 1][j - 1], Math.min(dp[i][j - 1], dp[i - 1][j])) + 1;
                     }
                     result = Math.max(result, dp[i][j] * dp[i][j]);
                 }
@@ -432,6 +433,7 @@ public class DynamicSolution {
         }
         return result;
     }
+
 
     /**
      * 97. Interleaving String
@@ -798,16 +800,14 @@ public class DynamicSolution {
      * @return
      */
     public int robII(int[] nums) {
-        if (nums == null || nums.length == 0) {
+        if (nums == null) {
             return 0;
         }
         if (nums.length == 1) {
-            return 1;
+            return nums[0];
         }
         return Math.max(intervalRob(nums, 0, nums.length - 2), intervalRob(nums, 1, nums.length - 1));
     }
-
-    // 房子颜色问题
 
     private int intervalRob(int[] nums, int start, int end) {
         int robPrev = 0;
@@ -819,6 +819,10 @@ public class DynamicSolution {
         }
         return Math.max(robCurrent, robPrev);
     }
+
+
+    // 房子颜色问题 //
+
 
     /**
      * @param costs: n x 3 cost matrix

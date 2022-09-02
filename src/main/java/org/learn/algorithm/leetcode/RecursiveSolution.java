@@ -23,7 +23,11 @@ public class RecursiveSolution {
 //        solution.combinationSum2(new int[]{3, 1, 3, 5, 1, 1,
 //                8}, 8);
 //        solution.permuteUnique(new int[]{1, 1, 2});
-        System.out.println(solution.wordBreakII("leetcode", Arrays.asList("leet", "code")));
+//        System.out.println(solution.wordBreakII("leetcode", Arrays.asList("leet", "code")));
+        String[] wordArray = new String[]{"oath", "pea", "eat", "rain"};
+
+        List<String> result = solution.findWords(words, wordArray);
+        System.out.println(result);
     }
 
     /**
@@ -406,18 +410,18 @@ public class RecursiveSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        combineSum3(result, new ArrayList<Integer>(), 1, k, n);
+        internalCombineSum3(result, new ArrayList<>(), 1, n, k, n);
         return result;
     }
 
-    private void combineSum3(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int k, int n) {
-        if (tmp.size() == k && n == 0) {
+    private void internalCombineSum3(List<List<Integer>> result, List<Integer> tmp, int start, int n, int k, int target) {
+        if (tmp.size() == k && target == 0) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i <= 9 && i <= n; i++) {
+        for (int i = start; i <= 9 && i <= target; i++) {
             tmp.add(i);
-            combineSum3(result, tmp, i + 1, k, n - i);
+            internalCombineSum3(result, tmp, i + 1, n, k, target - i);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -539,42 +543,53 @@ public class RecursiveSolution {
         if (board == null || board.length == 0) {
             return new ArrayList<>();
         }
-        List<String> result = new ArrayList<>();
-        Trie trie = new Trie();
+        Trie wordDictionary = new Trie();
         for (String word : words) {
-            trie.insert(word);
+            wordDictionary.insert(word);
         }
+        Map<String, Boolean> prefixMap = new HashMap<>();
+        Set<String> result = new HashSet<>();
         int row = board.length;
         int column = board[0].length;
         boolean[][] used = new boolean[row][column];
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                if (trie.startsWith(String.valueOf(board[i][j]))) {
-                    internalFindWords(result, trie, i, j, board, used, "");
+                if (wordDictionary.startsWith(String.valueOf(board[i][j]))) {
+                    internalFindWords(prefixMap, used, wordDictionary, result, "", i, j, board);
                 }
             }
         }
-        return result;
-
+        return new ArrayList<>(result);
     }
 
-    private void internalFindWords(List<String> result, Trie trie, int i, int j, char[][] board, boolean[][] used, String s) {
-        if (i < 0 || i == board.length || j < 0 || j == board[i].length || used[i][j]) {
+    private void internalFindWords(Map<String, Boolean> prefixMap, boolean[][] used, Trie trie, Set<String> result, String s, int i, int j, char[][] board) {
+        if (i < 0 || i == board.length || j < 0 || j == board[i].length) {
+            return;
+        }
+        if (used[i][j]) {
             return;
         }
         s += board[i][j];
 
-        if (trie.search(s) && !result.contains(s)) {
-            result.add(s);
+        if (prefixMap.containsKey(s)) {
+            Boolean isStartWord = prefixMap.get(s);
+            if (!isStartWord) {
+                return;
+            }
         }
         if (!trie.startsWith(s)) {
+            prefixMap.put(s, false);
             return;
         }
+        if (trie.search(s)) {
+            prefixMap.put(s, true);
+            result.add(s);
+        }
         used[i][j] = true;
-        internalFindWords(result, trie, i - 1, j, board, used, s);
-        internalFindWords(result, trie, i + 1, j, board, used, s);
-        internalFindWords(result, trie, i, j - 1, board, used, s);
-        internalFindWords(result, trie, i, j + 1, board, used, s);
+        internalFindWords(prefixMap, used, trie, result, s, i - 1, j, board);
+        internalFindWords(prefixMap, used, trie, result, s, i + 1, j, board);
+        internalFindWords(prefixMap, used, trie, result, s, i, j - 1, board);
+        internalFindWords(prefixMap, used, trie, result, s, i, j + 1, board);
         used[i][j] = false;
     }
 
