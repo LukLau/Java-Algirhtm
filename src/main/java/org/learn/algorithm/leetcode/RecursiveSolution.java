@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+import org.apache.tomcat.util.descriptor.web.WebXml;
 import org.learn.algorithm.datastructure.Trie;
 
 import java.util.*;
@@ -26,8 +27,9 @@ public class RecursiveSolution {
 //        System.out.println(solution.wordBreakII("leetcode", Arrays.asList("leet", "code")));
         String[] wordArray = new String[]{"oath", "pea", "eat", "rain"};
 
-        List<String> result = solution.findWords(words, wordArray);
-        System.out.println(result);
+//        List<String> result = solution.findWords(words, wordArray);
+//        System.out.println(result);
+        System.out.println(solution.diffWaysToCompute("2-1-1"));
     }
 
     /**
@@ -937,51 +939,49 @@ public class RecursiveSolution {
      * @return
      */
     public List<Integer> diffWaysToCompute(String expression) {
-        if (expression == null || expression.length() == 0) {
+        if (expression == null || expression.isEmpty()) {
             return new ArrayList<>();
         }
-        List<String> words = new ArrayList<>();
-        char[] expressions = expression.toCharArray();
-        int index = 0;
-        while (index < expressions.length) {
-            if (Character.isDigit(expressions[index])) {
+        List<String> wordExpress = new ArrayList<>();
+        int startIndex = 0;
+        char[] words = expression.toCharArray();
+        while (startIndex < words.length) {
+            if (Character.isDigit(words[startIndex])) {
                 int tmp = 0;
-                while (index < expressions.length && Character.isDigit(expressions[index])) {
-                    tmp = tmp * 10 + Character.getNumericValue(expressions[index++]);
+                while (startIndex < words.length && Character.isDigit(words[startIndex])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[startIndex]);
+                    startIndex++;
                 }
-                words.add(String.valueOf(tmp));
+                wordExpress.add(String.valueOf(tmp));
             }
-            if (index < expressions.length && expressions[index] != ' ') {
-                words.add(String.valueOf(expressions[index]));
+            if (startIndex != words.length && !Character.isDigit(words[startIndex])) {
+                wordExpress.add(String.valueOf(words[startIndex]));
             }
-            index++;
+            startIndex++;
         }
-        return intervalDiff(0, words.size() - 1, words);
+        return internalDiffwaysToCompute(wordExpress, 0, wordExpress.size() - 1);
     }
 
-    private List<Integer> intervalDiff(int start, int end, List<String> params) {
+    private List<Integer> internalDiffwaysToCompute(List<String> wordExpress, int start, int end) {
         List<Integer> result = new ArrayList<>();
-        if (start > end) {
-            return result;
-        }
         if (start == end) {
-            result.add(Integer.parseInt(params.get(start)));
+            result.add(Integer.valueOf(wordExpress.get(start)));
             return result;
         }
         for (int i = start + 1; i <= end - 1; i = i + 2) {
-            List<Integer> leftNums = intervalDiff(start, i - 1, params);
-            List<Integer> rightNums = intervalDiff(i + 1, end, params);
-            String sign = params.get(i);
+            List<Integer> leftNums = internalDiffwaysToCompute(wordExpress, start, i - 1);
+            List<Integer> rightNums = internalDiffwaysToCompute(wordExpress, i + 1, end);
+
+            String sign = wordExpress.get(i);
+
             for (Integer leftNum : leftNums) {
                 for (Integer rightNum : rightNums) {
-                    if ("+".equals(sign)) {
+                    if (sign.equals("+")) {
                         result.add(leftNum + rightNum);
-                    } else if ("-".equals(sign)) {
+                    } else if (sign.equals("-")) {
                         result.add(leftNum - rightNum);
-                    } else if ("*".equals(sign)) {
+                    } else if (sign.equals("*")) {
                         result.add(leftNum * rightNum);
-                    } else if ("/".equals(sign)) {
-                        result.add(leftNum / rightNum);
                     }
                 }
             }

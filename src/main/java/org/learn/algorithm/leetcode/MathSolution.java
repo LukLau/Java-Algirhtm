@@ -19,7 +19,9 @@ public class MathSolution {
 //        solution.calculateII("3+2*2");
 //        System.out.println(solution.numberToWords(12345));
 
-        System.out.println(solution.fullJustifyii(new String[]{"This", "is", "an", "example", "of", "text", "justification."}, 16));
+//        System.out.println(solution.fullJustifyii(new String[]{"This", "is", "an", "example", "of", "text", "justification."}, 16));
+        solution.calculatev2("(4+5+2)-3");
+
     }
 
     // 素数相关
@@ -622,6 +624,7 @@ public class MathSolution {
 
 
     /**
+     * https://leetcode.com/problems/number-of-digit-one/solution/
      * 233. Number of Digit One
      * todo 需要数学规律
      *
@@ -677,46 +680,45 @@ public class MathSolution {
             return new ArrayList<>();
         }
         List<Integer> result = new ArrayList<>();
-        int candidateA = nums[0];
-        int candidateB = nums[0];
+        int candidateA = 0;
+        int candidateB = 0;
         int countA = 0;
         int countB = 0;
-        for (int tmp : nums) {
-            if (tmp == candidateA) {
+        for (int num : nums) {
+            if (num == candidateA) {
                 countA++;
                 continue;
             }
-            if (tmp == candidateB) {
+            if (num == candidateB) {
                 countB++;
                 continue;
             }
             if (countA == 0) {
-                candidateA = tmp;
                 countA = 1;
+                candidateA = num;
                 continue;
             }
             if (countB == 0) {
-                candidateB = tmp;
                 countB = 1;
+                candidateB = num;
                 continue;
             }
             countA--;
             countB--;
-
         }
         countA = 0;
         countB = 0;
-        for (int tmp : nums) {
-            if (tmp == candidateA) {
+        for (int num : nums) {
+            if (num == candidateA) {
                 countA++;
-            } else if (tmp == candidateB) {
+            } else if (num == candidateB) {
                 countB++;
             }
         }
-
         if (3 * countA >= nums.length) {
             result.add(candidateA);
         }
+
         if (3 * countB >= nums.length) {
             result.add(candidateB);
         }
@@ -769,15 +771,13 @@ public class MathSolution {
         if (s.isEmpty()) {
             return 0;
         }
-        char[] words = s.toCharArray();
         Stack<Integer> stack = new Stack<>();
+        char[] words = s.toCharArray();
+        int startIndex = 0;
         char sign = '+';
-        int index = 0;
-        while (index < words.length) {
-            char tmp = words[index];
-            if (tmp == '(') {
-                int endIndex = index;
-
+        while (startIndex < words.length) {
+            if (words[startIndex] == '(') {
+                int endIndex = startIndex;
                 int count = 0;
                 while (endIndex < words.length) {
                     if (words[endIndex] != '(' && words[endIndex] != ')') {
@@ -795,17 +795,20 @@ public class MathSolution {
                     }
                     endIndex++;
                 }
-                stack.push(calculate(s.substring(index + 1, endIndex)));
-                index = endIndex + 1;
-            } else if (Character.isDigit(tmp)) {
-                int value = 0;
-                while (index < words.length && Character.isDigit(words[index])) {
-                    value = value * 10 + Character.getNumericValue(words[index]);
-                    index++;
-                }
-                stack.push(value);
+                String substring = s.substring(startIndex + 1, endIndex);
+                int parseValue = calculate(substring);
+                stack.push(parseValue);
+                startIndex = endIndex + 1;
             }
-            if (index == words.length || words[index] != ' ') {
+            if (startIndex < words.length && Character.isDigit(words[startIndex])) {
+                int tmp = 0;
+                while (startIndex < words.length && Character.isDigit(words[startIndex])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[startIndex]);
+                    startIndex++;
+                }
+                stack.push(tmp);
+            }
+            if (startIndex == words.length || words[startIndex] != ' ') {
                 if (sign == '-') {
                     stack.push(-1 * stack.pop());
                 } else if (sign == '*') {
@@ -813,17 +816,59 @@ public class MathSolution {
                 } else if (sign == '/') {
                     Integer dividend = stack.pop();
                     Integer divisor = stack.pop();
+
                     stack.push(divisor / dividend);
                 }
-                if (index != words.length) {
-                    sign = words[index];
+                if (startIndex != words.length) {
+                    sign = words[startIndex];
                 }
             }
-            index++;
+            startIndex++;
         }
         int result = 0;
-        for (int tmp : stack) {
-            result += tmp;
+        for (Integer num : stack) {
+            result += num;
+        }
+        return result;
+    }
+
+    public int calculatev2(String s) {
+        if (s == null) {
+            return 0;
+        }
+        s = s.trim();
+        if (s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        int result = 0;
+        int sign = 1;
+        char[] words = s.toCharArray();
+        int startIndex = 0;
+        while (startIndex < words.length) {
+            if (Character.isDigit(words[startIndex])) {
+                int tmp = 0;
+                while (startIndex < words.length && Character.isDigit(words[startIndex])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[startIndex]);
+                    startIndex++;
+                }
+                result += tmp * sign;
+            }
+            if (startIndex < words.length && words[startIndex] != ' ') {
+                if (words[startIndex] == '+') {
+                    sign = 1;
+                } else if (words[startIndex] == '-') {
+                    sign = -1;
+                } else if (words[startIndex] == '(') {
+                    stack.push(result);
+                    stack.push(sign);
+                    result = 0;
+                    sign = 1;
+                } else if (words[startIndex] == ')') {
+                    result = result * stack.pop() + stack.pop();
+                }
+            }
+            startIndex++;
         }
         return result;
     }
@@ -850,7 +895,6 @@ public class MathSolution {
         int result = 0;
         Stack<Integer> stack = new Stack<>();
         while (index < words.length) {
-
             if (Character.isDigit(words[index])) {
                 int tmpValue = 0;
                 while (index < words.length && Character.isDigit(words[index])) {

@@ -47,7 +47,8 @@ public class VipSolution {
 //        int[] tmp = new int[]{0, 2, 3, 4, 6, 8, 9};
 //        System.out.println(solution.summaryRanges(tmp));
         int[] tmp = new int[]{2147483647};
-        solution.findMissingRanges(tmp, 0, 2147483647);
+//        solution.findMissingRanges(tmp, 0, 2147483647);
+        solution.isStrobogrammatic("69");
 
     }
 
@@ -122,22 +123,19 @@ public class VipSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        List<String> result = new ArrayList<>();
         int prev = nums[0];
+        List<String> result = new ArrayList<>();
         for (int i = 1; i < nums.length; i++) {
-            if (nums[i - 1] + 1 != nums[i]) {
-                String range = range(prev, nums[i - 1]);
+            if (nums[i - 1] + 1 < nums[i]) {
+                String tmp = ranges(prev, nums[i - 1]);
 
-                result.add(range);
+                result.add(tmp);
 
                 prev = nums[i];
             }
         }
         if (prev <= nums[nums.length - 1]) {
-            String range = range(prev, nums[nums.length - 1]);
-
-            result.add(range);
-
+            result.add(range(prev, nums[nums.length - 1]));
         }
         return result;
     }
@@ -240,10 +238,10 @@ public class VipSolution {
         int index2 = -1;
         int result = Integer.MAX_VALUE;
         for (int i = 0; i < words.length; i++) {
-            String tmp = words[i];
-            if (word1.equals(tmp)) {
+            String word = words[i];
+            if (word.equals(word1)) {
                 index1 = i;
-            } else if (word2.equals(tmp)) {
+            } else if (word.equals(word2)) {
                 index2 = i;
             }
             if (index1 != -1 && index2 != -1) {
@@ -263,22 +261,27 @@ public class VipSolution {
         if (num == null || num.isEmpty()) {
             return false;
         }
+        Map<Character, Character> numMap = getNum();
+
         String reverse = new StringBuilder(num).reverse().toString();
 
         int len = num.length();
-
-        Map<Character, Character> map = getNum();
-
         for (int i = 0; i < len; i++) {
-            char tmp = num.charAt(i);
+            char c = num.charAt(i);
 
-            if (map.getOrDefault(tmp, ' ') != reverse.charAt(i)) {
+            char lastWord = reverse.charAt(i);
+
+            Character character = numMap.get(lastWord);
+
+            if (character == null) {
+                return false;
+            }
+
+            if (c != character) {
                 return false;
             }
         }
         return true;
-
-
     }
 
     private Map<Character, Character> getNum() {
