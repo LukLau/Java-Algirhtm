@@ -47,7 +47,14 @@ public class VipSolution {
 //        int[] tmp = new int[]{0, 2, 3, 4, 6, 8, 9};
 //        System.out.println(solution.summaryRanges(tmp));
         int[] tmp = new int[]{2147483647};
-        solution.findMissingRanges(tmp, 0, 2147483647);
+//        solution.findMissingRanges(tmp, 0, 2147483647);
+//        List<String> strobogrammatic = solution.findStrobogrammatic(2);
+
+//        System.out.println(strobogrammatic);
+        solution.getStringGroup("abc");
+        solution.getStringGroup("bcd");
+        solution.getStringGroup("xyz");
+
 
     }
 
@@ -300,12 +307,42 @@ public class VipSolution {
      */
     public List<String> findStrobogrammatic(int n) {
         // write your code here
-        if (n <= 0) {
+        if (n < 0) {
             return new ArrayList<>();
         }
+        List<String> result = new ArrayList<>();
+        if (n == 0) {
+            result.add("");
+            return result;
+        }
 
-        return null;
+        internalFindString(result, "", n);
+        if (n % 2 != 0) {
+            internalFindString(result, "0", n);
+            internalFindString(result, "1", n);
+            internalFindString(result, "8", n);
+        }
+        return result;
 
+    }
+
+    private void internalFindString(List<String> result, String s, int n) {
+        if (s.length() == n) {
+            if (s.length() >= 2 && s.charAt(0) == '0') {
+                return;
+            }
+            result.add(s);
+            return;
+        }
+        if (s.length() > n) {
+            return;
+        }
+
+        internalFindString(result, "0" + s + "0", n);
+        internalFindString(result, "1" + s + "1", n);
+        internalFindString(result, "6" + s + "9", n);
+        internalFindString(result, "8" + s + "8", n);
+        internalFindString(result, "9" + s + "6", n);
     }
 
 //    private List<String> generateWords()
@@ -374,29 +411,29 @@ public class VipSolution {
             return new ArrayList<>();
         }
         Map<String, List<String>> map = new HashMap<>();
-        intervalGroup(map, strings);
-        return new ArrayList<>(map.values());
+        for (String word : strings) {
+            String group = getStringGroup(word);
 
-    }
-
-    private void intervalGroup(Map<String, List<String>> result, String[] words) {
-        for (String word : words) {
-            String shiftWords = shiftWord(word);
-            List<String> tmp = result.getOrDefault(shiftWords, new ArrayList<>());
+            List<String> tmp = map.getOrDefault(group, new ArrayList<>());
             tmp.add(word);
-            result.put(shiftWords, tmp);
+
+            map.put(group, tmp);
         }
+        return new ArrayList<>(map.values());
     }
 
-    private String shiftWord(String word) {
-        StringBuilder buffer = new StringBuilder();
-        char[] words = word.toCharArray();
-        int dist = word.charAt(0) - 'a';
-        for (char c : words) {
-            char t = (char) ((c - 'a' - dist + 26) % 26 + 'a');
-            buffer.append(t);
+    private String getStringGroup(String word) {
+        StringBuilder builder = new StringBuilder();
+        int diff = word.charAt(0) - 'a';
+        int len = word.length();
+        for (int i = 0; i < len; i++) {
+            char currentWord = word.charAt(i);
+//            char t = (char) ((c - 'a' - dist + 26) % 26 + 'a');
+            char tmp = (char) ((currentWord - 'a' - diff) % 26 + 'a');
+            builder.append(tmp);
         }
-        return buffer.toString();
+        System.out.println(builder);
+        return builder.toString();
     }
 
     /**
@@ -423,7 +460,10 @@ public class VipSolution {
         if (root == null) {
             return true;
         }
-        return root.val == val && isUnival(root.left, root.val) && isUnival(root.right, root.val);
+        if (root.val != val) {
+            return false;
+        }
+        return isUnival(root.left, root.val) && isUnival(root.right, root.val);
     }
 
     /**
@@ -436,17 +476,24 @@ public class VipSolution {
     public boolean canAttendMeetings(List<Interval> intervals) {
         // Write your code here
         if (intervals == null || intervals.isEmpty()) {
-            return false;
+            return true;
         }
         intervals.sort(Comparator.comparingInt(o -> o.start));
 
-        Integer prevEnd = null;
-
+//        Integer prevEnd = null;
+//
+//        for (Interval interval : intervals) {
+//            if (prevEnd != null && interval.start >= prevEnd) {
+//                return false;
+//            }
+//            prevEnd = interval.end;
+//        }
+        Integer prev = null;
         for (Interval interval : intervals) {
-            if (prevEnd != null && interval.start >= prevEnd) {
+            if (prev != null && interval.start >= prev) {
                 return false;
             }
-            prevEnd = interval.end;
+            prev = interval.end;
         }
         return true;
     }
