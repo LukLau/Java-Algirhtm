@@ -190,10 +190,11 @@ public class StringSolution {
      */
     public int[] maxSlidingWindow(int[] nums, int k) {
         if (nums == null || nums.length == 0) {
-            return null;
+            return new int[]{};
         }
         LinkedList<Integer> linkedList = new LinkedList<>();
-        List<Integer> result = new ArrayList<>();
+
+        List<Integer> tmp = new ArrayList<>();
         for (int i = 0; i < nums.length; i++) {
             int index = i - k + 1;
             if (!linkedList.isEmpty() && linkedList.peekFirst() < index) {
@@ -203,15 +204,15 @@ public class StringSolution {
                 linkedList.pollLast();
             }
             linkedList.offer(i);
-            if (index >= 0 && !linkedList.isEmpty()) {
-                result.add(nums[linkedList.peekFirst()]);
+            if (index >= 0) {
+                tmp.add(nums[linkedList.peekFirst()]);
             }
         }
-        int[] tmp = new int[result.size()];
-        for (int i = 0; i < result.size(); i++) {
-            tmp[i] = result.get(i);
+        int[] result = new int[tmp.size()];
+        for (int i = 0; i < tmp.size(); i++) {
+            result[i] = tmp.get(i);
         }
-        return tmp;
+        return result;
     }
 
     // 重复字符串问题 //

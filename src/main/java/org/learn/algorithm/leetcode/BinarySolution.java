@@ -1,5 +1,7 @@
 package org.learn.algorithm.leetcode;
 
+import com.sun.mail.imap.Rights;
+
 import javax.print.attribute.UnmodifiableSetException;
 import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 import java.awt.font.NumericShaper;
@@ -282,16 +284,16 @@ public class BinarySolution {
         }
         int row = matrix.length;
         int column = matrix[0].length;
-        int i = row - 1;
-        int j = 0;
-        while (i >= 0 && j < column) {
+        int j = column - 1;
+        int i = 0;
+        while (i < row && j >= 0) {
             int val = matrix[i][j];
             if (val == target) {
                 return true;
             } else if (val < target) {
-                j++;
+                i++;
             } else {
-                i--;
+                j--;
             }
         }
         return false;
@@ -299,7 +301,7 @@ public class BinarySolution {
 
     /**
      * 240. Search a 2D Matrix II
-     * todo
+     * 从右上角斜对角线看下来是一个二叉搜索树
      *
      * @param matrix
      * @param target
@@ -311,18 +313,19 @@ public class BinarySolution {
         }
         int row = matrix.length;
         int column = matrix[0].length;
-        int i = row - 1;
-        int j = 0;
-        while (i >= 0 && j < column) {
-            if (matrix[i][j] == target) {
+        int i = 0;
+        int j = column - 1;
+        while (i < row && j >= 0) {
+            int val = matrix[i][j];
+            if (val == target) {
                 return true;
-            } else if (matrix[i][j] < target) {
-                j++;
+            } else if (val < target) {
+                i++;
             } else {
-                i--;
+                j--;
             }
         }
-        return true;
+        return false;
     }
 
 }

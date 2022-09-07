@@ -742,7 +742,7 @@ public class TreeSolution {
             return root;
         }
         TreeNode left = lowestCommonAncestor(root.left, p, q);
-        TreeNode right = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
         if (left != null && right != null) {
             return root;
         } else if (left != null) {
@@ -752,13 +752,27 @@ public class TreeSolution {
         }
     }
 
+    public TreeNode lowestCommonAncestorii(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == q || root == p) {
+            return root;
+        }
+        if ((p.val < root.val && root.val < q.val) || (p.val > root.val && root.val > q.val)) {
+            return root;
+        } else if ((p.val < root.val && q.val < root.val)) {
+            return lowestCommonAncestor(root.left, p, q);
+        } else if (p.val > root.val && q.val > root.val) {
+            return lowestCommonAncestor(root.right, p, q);
+        }
+        return null;
+    }
+
 
     /**
      * NC102 在二叉树中找到两个节点的最近公共祖先
      *
      * @param root TreeNode类
-     * @param p    int整型
-     * @param q    int整型
+     * @param o1   int整型
+     * @param o2   int整型
      * @return int整型
      */
     public int lowestCommonAncestor(TreeNode root, int o1, int o2) {
