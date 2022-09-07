@@ -13,7 +13,12 @@ public class VipDynamicProgram {
 
 //        System.out.println(dynamicProgram.minCostIIFollowUp(costs));
 
-        dynamicProgram.numSquares(12);
+//        dynamicProgram.numSquares(12);
+
+        costs = new int[][]{{3, 5, 3}, {6, 17, 6}, {7, 13, 18}, {9, 10, 18}};
+
+        dynamicProgram.minCostIIFollowUp(costs);
+
 
     }
 
@@ -29,11 +34,13 @@ public class VipDynamicProgram {
             return 0;
         }
         for (int i = 1; i < costs.length; i++) {
-            costs[i][0] += Math.min(costs[i - 1][1], costs[i - 1][2]);
-            costs[i][1] += Math.min(costs[i - 1][0], costs[i - 1][2]);
-            costs[i][2] += Math.min(costs[i - 1][1], costs[i - 1][0]);
+            int prev = i - 1;
+            costs[i][0] += Math.min(costs[prev][1], costs[prev][2]);
+            costs[i][1] += Math.min(costs[prev][0], costs[prev][2]);
+            costs[i][2] += Math.min(costs[prev][0], costs[prev][1]);
         }
-        return Math.min(costs[costs.length - 1][0], Math.min(costs[costs.length - 1][2], costs[costs.length - 1][1]));
+        int lastRow = costs.length - 1;
+        return Math.min(Math.min(costs[lastRow][0], costs[lastRow][1]), costs[lastRow][2]);
     }
 
     /**
@@ -70,38 +77,48 @@ public class VipDynamicProgram {
         return result;
     }
 
+    // todo
     public int minCostIIFollowUp(int[][] costs) {
         if (costs == null || costs.length == 0) {
             return 0;
         }
-//        int row = costs.length;
+        int row = costs.length;
         int column = costs[0].length;
 
+        int firstIndex = -1;
+        int secondIndex = -1;
+        for (int i = 0; i < row; i++) {
 
-        int firstSmall = -1;
-        int secondSmall = -1;
-        for (int i = 0; i < costs.length; i++) {
-            int tmpFirst = -1;
-            int tmpSecond = -1;
+            int tmpFirstIndex = -1;
+            int tmpSecondIndex = -1;
 
             for (int j = 0; j < column; j++) {
+                int val = costs[i][j];
 
-                if (firstSmall != -1 && j != firstSmall) {
-                    costs[i][j] += costs[i - 1][firstSmall];
-                } else if (secondSmall != -1 && j != secondSmall) {
-                    costs[i][j] += costs[i - 1][secondSmall];
+                if (firstIndex != -1 && j != firstIndex) {
+                    costs[i][j] += costs[i - 1][firstIndex];
+//                    System.out.println("current row: " + i + " first val:" + costs[i][j]);
+                } else if (secondIndex != -1 && j != secondIndex) {
+                    costs[i][j] += costs[i - 1][secondIndex];
+//                    System.out.println("current row: " + i + " second val:" + costs[i][j]);
                 }
-                if (tmpFirst == -1 || costs[i][j] < costs[i][tmpFirst]) {
-                    tmpSecond = tmpFirst;
-                    tmpFirst = j;
-                } else if (tmpSecond == -1 || costs[i][j] < costs[i][tmpSecond]) {
-                    tmpSecond = j;
+
+                if (tmpFirstIndex == -1 || costs[i][tmpFirstIndex] > val) {
+                    tmpSecondIndex = tmpFirstIndex;
+                    tmpFirstIndex = j;
+                } else if (tmpSecondIndex == -1 || costs[i][tmpSecondIndex] > val) {
+                    tmpSecondIndex = j;
                 }
             }
-            firstSmall = tmpFirst;
-            secondSmall = tmpSecond;
+//            System.out.println("current row:" + i + " tmpFirst: " + tmpFirstIndex + " tmpSecond:" + tmpSecondIndex);
+//            for (int j = 0; j < column; j++) {
+//
+//            }
+            firstIndex = tmpFirstIndex;
+            secondIndex = tmpSecondIndex;
         }
-        return costs[costs.length - 1][firstSmall];
+        return costs[row - 1][firstIndex];
+//        return Math.min(costs[row - 1][firstIndex], costs[row - 1][secondIndex]);
     }
 
 

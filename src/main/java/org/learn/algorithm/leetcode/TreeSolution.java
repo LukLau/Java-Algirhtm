@@ -16,6 +16,9 @@ import java.util.function.Predicate;
  * @date 2021/4/10
  */
 public class TreeSolution {
+
+    // 二叉树遍历相关
+
     /**
      * 124. Binary Tree Maximum Path Sum
      *
@@ -23,8 +26,6 @@ public class TreeSolution {
      * @return
      */
     private int maxPathSum = Integer.MIN_VALUE;
-
-    // 判断树是不是满足标准
 
     public static void main(String[] args) {
         TreeSolution solution = new TreeSolution();
@@ -35,8 +36,57 @@ public class TreeSolution {
         root.left = left;
         root.right = new TreeNode(3);
 
+        left.right = new TreeNode(5);
+
 
         solution.binaryTreePaths(root);
+    }
+
+    /**
+     * https://www.lintcode.com/problem/1307/
+     *
+     * @param preorder: List[int]
+     * @return: return a boolean
+     */
+    public boolean verifyPreorder(int[] preorder) {
+        // write your code here
+        if (preorder == null || preorder.length == 0) {
+            return false;
+        }
+        Stack<Integer> stack = new Stack<>();
+        Integer prev = null;
+        for (int currentNodeValue : preorder) {
+            if (prev != null && currentNodeValue <= prev) {
+                return false;
+            }
+
+            while (!stack.isEmpty() && stack.peek() < currentNodeValue) {
+                prev = stack.pop();
+            }
+            stack.push(currentNodeValue);
+        }
+        return true;
+    }
+
+    // 判断树是不是满足标准
+
+    public boolean verifyPreorderii(int[] preorder) {
+        if (preorder == null || preorder.length == 0) {
+            return true;
+        }
+        int index = -1;
+        Integer prev = null;
+        for (int i = 0; i < preorder.length; i++) {
+            int val = preorder[i];
+            if (prev != null && prev <= val) {
+                return false;
+            }
+            while (index >= 0 && preorder[index] < val) {
+                prev = preorder[index--];
+            }
+            preorder[++index] = val;
+        }
+        return true;
     }
 
 
@@ -828,25 +878,21 @@ public class TreeSolution {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        internalBinaryTreePath(result, "", root);
+        internalBinaryTreePaths(result, root, "");
         return result;
     }
 
-    private void internalBinaryTreePath(List<String> result, String s, TreeNode root) {
+    private void internalBinaryTreePaths(List<String> result, TreeNode root, String s) {
         if (root == null) {
             return;
         }
-        if (s.isEmpty()) {
-            s += root.val;
-        } else {
-            s += "->" + root.val;
-        }
+        s = s.isEmpty() ? String.valueOf(root.val) : s + "->" + root.val;
         if (root.left == null && root.right == null) {
             result.add(s);
             return;
         }
-        internalBinaryTreePath(result, s, root.left);
-        internalBinaryTreePath(result, s, root.right);
+        internalBinaryTreePaths(result, root.left, s);
+        internalBinaryTreePaths(result, root.right, s);
     }
 
     // --- //

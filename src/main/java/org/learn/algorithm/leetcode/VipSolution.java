@@ -51,9 +51,15 @@ public class VipSolution {
 //        List<String> strobogrammatic = solution.findStrobogrammatic(2);
 
 //        System.out.println(strobogrammatic);
-        solution.getStringGroup("abc");
-        solution.getStringGroup("bcd");
-        solution.getStringGroup("xyz");
+//        solution.getStringGroup("abc");
+//        solution.getStringGroup("bcd");
+//        solution.getStringGroup("xyz");
+
+        Interval o1 = new Interval(0, 30);
+        Interval o2 = new Interval(5, 10);
+        Interval o3 = new Interval(15, 20);
+        List<Interval> intervals = Arrays.asList(o1, o2, o3);
+        solution.minMeetingRooms(intervals);
 
     }
 
@@ -500,6 +506,7 @@ public class VipSolution {
     }
 
     /**
+     * https://www.lintcode.com/problem/919
      * todo
      * 253
      * Meeting Rooms II
@@ -508,19 +515,21 @@ public class VipSolution {
      * @return: the minimum number of conference rooms required
      */
     public int minMeetingRooms(List<Interval> intervals) {
-        // Write your code here
         if (intervals == null || intervals.isEmpty()) {
             return 0;
         }
         intervals.sort(Comparator.comparingInt(o -> o.start));
         PriorityQueue<Integer> priorityQueue = new PriorityQueue<>();
+
         for (Interval interval : intervals) {
-            if (!priorityQueue.isEmpty() && interval.start >= priorityQueue.peek()) {
+            if (!priorityQueue.isEmpty() && priorityQueue.peek() <= interval.start) {
                 priorityQueue.poll();
             }
             priorityQueue.offer(interval.end);
         }
         return priorityQueue.size();
+
+
     }
 
     /**
