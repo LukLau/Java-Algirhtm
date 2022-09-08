@@ -377,7 +377,8 @@ public class GraphSolution {
 
     // Graph Valid Tree
     public boolean graphValidTree() {
-        return -1;
+//        return -1;
+        return false;
     }
 
 

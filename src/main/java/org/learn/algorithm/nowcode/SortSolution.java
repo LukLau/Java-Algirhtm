@@ -12,10 +12,11 @@ public class SortSolution {
         Random random = new Random();
         int[] nums = new int[random.nextInt(10) + 10];
         for (int i = 0; i < nums.length; i++) {
-            nums[i] = random.nextInt(100);
+            nums[i] = random.nextInt(50);
         }
 //        solution.heapSort(nums);
-        solution.bucketSort(nums);
+//        solution.bucketSort(nums);
+        solution.countSort(nums);
         for (int num : nums) {
             System.out.println(num);
         }
@@ -174,8 +175,34 @@ public class SortSolution {
     }
 
     public void countSort(int[] nums) {
-
-
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for (int num : nums) {
+            if (num < min) {
+                min = num;
+            }
+            if (num > max) {
+                max = num;
+            }
+        }
+        int[] tmp = new int[max - min + 1];
+        for (int num : nums) {
+            tmp[num - min]++;
+        }
+        int[] result = new int[nums.length];
+        int index = 0;
+        for (int i = 0; i < tmp.length; i++) {
+            int count = tmp[i];
+            while (count-- > 0) {
+                result[index++] = min + i;
+            }
+        }
+        System.out.println(Arrays.toString(nums));
+        System.out.println(Arrays.toString(result));
+        nums = result;
     }
 
 }

@@ -1087,6 +1087,7 @@ public class MathSolution {
         if (citations == null || citations.length == 0) {
             return 0;
         }
+
         return 0;
 
     }

@@ -123,6 +123,7 @@ public class VipDynamicProgram {
 
 
     /**
+     * https://www.lintcode.com/problem/514/solution/25649
      * todo
      * 276 Paint Fence
      *
@@ -133,9 +134,10 @@ public class VipDynamicProgram {
     public int numWays(int n, int k) {
         // write your code here
         int[][] dp = new int[n + 1][k + 1];
-        for (int i = 1; i <= k; i++) {
-            for (int j = 1; j <= n; j++) {
-//                dp[i][j] =  dp[i][j-1] +
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j < k; j++) {
+                dp[i][j] = dp[i][j - 1]
+
             }
         }
         return 0;
