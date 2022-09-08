@@ -32,7 +32,7 @@ public class EncodeSolution {
 
     }
 
-    /**
+    /*
      * @param strs: a list of strings
      * @return: encodes a list of strings to a single string.
      */
@@ -44,16 +44,18 @@ public class EncodeSolution {
         StringBuilder builder = new StringBuilder();
         int len = strs.size();
         for (int i = 0; i < len; i++) {
-            builder.append(strs.get(i));
+            String word = strs.get(i);
+
+            builder.append(word);
+
             if (i != len - 1) {
-                builder.append(len).append(",");
+                builder.append(word.length()).append("#;");
             }
         }
         return builder.toString();
-
     }
 
-    /**
+    /*
      * @param str: A string
      * @return: dcodes a single string to a list of strings
      */
@@ -62,13 +64,15 @@ public class EncodeSolution {
         if (str == null || str.isEmpty()) {
             return new ArrayList<>();
         }
+        String[] words = str.split("#;");
+
         List<String> result = new ArrayList<>();
-        String[] words = str.split(",");
+
         for (int i = 0; i < words.length; i++) {
             String word = words[i];
             if (i != words.length - 1) {
-                int lastIndex = word.lastIndexOf(String.valueOf(words.length));
-                word = word.substring(0, lastIndex);
+                int lastLen = Character.getNumericValue(word.charAt(word.length() - 1));
+                word = word.substring(0, lastLen);
             }
             result.add(word);
         }

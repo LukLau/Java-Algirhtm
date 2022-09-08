@@ -1,8 +1,6 @@
 package org.learn.algorithm.leetcode;
 
 
-import org.learn.algorithm.datastructure.ListNode;
-
 import java.util.*;
 
 /**
@@ -64,7 +62,12 @@ public class StringSolution {
 
 //        solution.minWindowii("ADOBECODEBANC", "ABC");
 //        solution.partition("aab");
-        solution.lengthOfLongestSubstringTwoDistinct("eceba");
+        String word = "aabbhijkbbhijkbbhijkkjihijkkjihijkkjihijkkjih";
+//        solution.canPermutePalindrome(word);
+//        solution.lengthOfLongestSubstringTwoDistinct("eceba");
+        word = "aaaabbc";
+        List<String> result = solution.generatePalindromes(word);
+        System.out.println(result);
     }
 
     /**
@@ -546,11 +549,13 @@ public class StringSolution {
         char[] words = s.toCharArray();
         for (char word : words) {
             Integer count = map.getOrDefault(word, 0);
-            count++;
-            map.put(word, count);
+
+            map.put(word, count + 1);
         }
         boolean existOdd = false;
+
         for (Map.Entry<Character, Integer> item : map.entrySet()) {
+
             Integer count = item.getValue();
             if (count % 2 != 0) {
                 if (existOdd) {
@@ -577,52 +582,63 @@ public class StringSolution {
         }
         Map<Character, Integer> map = new HashMap<>();
         char[] words = s.toCharArray();
-        Character oddEven = null;
         for (char word : words) {
             Integer count = map.getOrDefault(word, 0);
+
             map.put(word, count + 1);
         }
         StringBuilder builder = new StringBuilder();
+        String odd = "";
         for (Map.Entry<Character, Integer> item : map.entrySet()) {
-            Integer count = item.getValue();
-            Character key = item.getKey();
-            if (count % 2 != 0) {
-                if (oddEven != null) {
+            Integer value = item.getValue();
+            Character character = item.getKey();
+            if (value % 2 != 0) {
+                if (!odd.isEmpty()) {
                     return new ArrayList<>();
                 }
-                oddEven = key;
+                odd = character.toString();
             }
-            for (int i = 0; i < count / 2; i++) {
-                builder.append(key);
+            for (int i = 0; i < value / 2; i++) {
+                builder.append(character);
             }
         }
+        List<String> params = new ArrayList<>();
+
+        char[] evenWords = builder.toString().toCharArray();
+
+        boolean[] used = new boolean[evenWords.length];
+
+        internalGenerateWords(used, params, evenWords, 0);
+
         List<String> result = new ArrayList<>();
-        boolean[] used = new boolean[builder.toString().length()];
 
-        intervalPalindrome(oddEven, used, builder.toString().toCharArray(), new StringBuilder(), result);
 
+        for (String param : params) {
+            String reverse = new StringBuilder(param).reverse().toString();
+            String tmp = param + odd + reverse;
+
+            result.add(tmp);
+
+        }
         return result;
     }
 
-    private void intervalPalindrome(Character odd, boolean[] used, char[] words, StringBuilder builder, List<String> ans) {
-        if (builder.length() == words.length) {
-            String item = builder.toString() + (odd != null ? odd : "") + builder.reverse().toString();
-            ans.add(item);
-            builder.reverse();
+    private void internalGenerateWords(boolean[] used, List<String> result, char[] words, int start) {
+        if (start == words.length) {
+            result.add(String.valueOf(words));
             return;
         }
-        for (int i = 0; i < words.length; i++) {
-            if (i > 0 && (words[i] == words[i - 1]) && !used[i - 1]) {
+        for (int i = start; i < words.length; i++) {
+            if (i > start && words[i] == words[i - 1] && !used[i - 1]) {
                 continue;
             }
-            if (!used[i]) {
-                used[i] = true;
-                builder.append(words[i]);
-                intervalPalindrome(odd, used, words, builder, ans);
-                used[i] = false;
-                builder.deleteCharAt(builder.length() - 1);
-            }
+            used[i] = true;
+            swapItem(words, start, i);
+            internalGenerateWords(used, result, words, start + 1);
+            used[i] = false;
+            swapItem(words, start, i);
         }
+
     }
 
     private void swapItem(char[] words, int start, int end) {

@@ -10,6 +10,9 @@ public class VipGraph {
      */
     public String alienOrder(String[] words) {
         // Write your code here
+        if (words == null || words.length == 0) {
+            return "";
+        }
         return "";
     }
 

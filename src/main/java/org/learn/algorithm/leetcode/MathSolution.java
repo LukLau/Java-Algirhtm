@@ -447,7 +447,6 @@ public class MathSolution {
     public int singleNumberII(int[] nums) {
         int result = 0;
         for (int num : nums) {
-
             int count = result & (1 << num);
             count++;
             result ^= 1 << (count % 3);
