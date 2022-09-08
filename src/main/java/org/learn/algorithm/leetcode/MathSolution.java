@@ -446,12 +446,11 @@ public class MathSolution {
      */
     public int singleNumberII(int[] nums) {
         int result = 0;
-        for (int i = 0; i < 32; i++) {
-            int sum = 0;
-            for (int j = 0; j < nums.length; j++) {
-                sum += (nums[j] >> i) & 1;
-            }
-            result |= ((sum % 3) << i);
+        for (int num : nums) {
+
+            int count = result & (1 << num);
+            count++;
+            result ^= 1 << (count % 3);
         }
         return result;
     }
@@ -467,20 +466,20 @@ public class MathSolution {
         if (nums == null || nums.length == 0) {
             return new int[]{};
         }
-        int base = 0;
+        int result = 0;
         for (int num : nums) {
-            base ^= num;
+            result ^= num;
         }
-        base &= -base;
-        int[] result = new int[2];
+        result &= -result;
+        int[] answer = new int[2];
         for (int num : nums) {
-            if ((num & base) != 0) {
-                result[0] ^= num;
+            if (((num & result) == 0)) {
+                answer[0] ^= num;
             } else {
-                result[1] ^= num;
+                answer[1] ^= num;
             }
         }
-        return result;
+        return answer;
     }
 
 
