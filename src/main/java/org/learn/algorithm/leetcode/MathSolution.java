@@ -20,7 +20,9 @@ public class MathSolution {
 //        System.out.println(solution.numberToWords(12345));
 
 //        System.out.println(solution.fullJustifyii(new String[]{"This", "is", "an", "example", "of", "text", "justification."}, 16));
-        solution.calculatev2("(4+5+2)-3");
+//        solution.calculatev2("(4+5+2)-3");
+        solution.numberToWords(1111);
+
 
     }
 
@@ -1074,6 +1076,7 @@ public class MathSolution {
 
 
     /**
+     * https://leetcode.com/problems/h-index/discuss/70768/Java-bucket-sort-O(n)-solution-with-detail-explanation
      * todo
      * 274. H-Index
      *
@@ -1227,33 +1230,41 @@ public class MathSolution {
 
         int index = 0;
 
+        String tmp = "";
+
         while (num > 0) {
 
-            int remain = num % 1000;
+            if (num % 1000 != 0) {
 
-            String read = generateWord(remain, belowTwenty, moreThanTwenty);
+                int remain = num % 1000;
 
-            if (index > 0 && !read.isEmpty()) {
-                read = read + " " + moreThousand[index];
+                String read = generateWord(remain, belowTwenty, moreThanTwenty);
+
+                tmp = read + " " + moreThousand[index] + " " + tmp;
+
+//                if (index > 0 && !read.isEmpty()) {
+//                    read = read + " " + moreThousand[index];
+//                }
+//                if (!read.isEmpty()) {
+//                    result.add(read);
+//                }
             }
-            if (!read.isEmpty()) {
-                result.add(read);
-            }
-
             index++;
 
             num /= 1000;
         }
-        StringBuilder builder = new StringBuilder();
 
-        int len = result.size();
-        for (int i = len - 1; i >= 0; i--) {
-            builder.append(result.get(i));
-            if (i != 0) {
-                builder.append(" ");
-            }
-        }
-        return builder.toString();
+        return tmp.trim();
+//        StringBuilder builder = new StringBuilder();
+//
+//        int len = result.size();
+//        for (int i = len - 1; i >= 0; i--) {
+//            builder.append(result.get(i));
+//            if (i != 0) {
+//                builder.append(" ");
+//            }
+//        }
+//        return builder.toString();
     }
 
     private String generateWord(int num, String[] belowTwenty, String[] moreThanTwenty) {

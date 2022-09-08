@@ -166,10 +166,14 @@ public class SortSolution {
             if (currentBucket != null && !currentBucket.isEmpty()) {
                 Collections.sort(currentBucket);
             }
+            assert currentBucket != null;
             for (Integer currentItem : currentBucket) {
                 nums[index++] = currentItem;
             }
         }
+    }
+
+    public void countSort(int[] nums) {
 
 
     }
