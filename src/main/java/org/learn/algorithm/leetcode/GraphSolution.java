@@ -1,13 +1,9 @@
 package org.learn.algorithm.leetcode;
 
-import lombok.Value;
 import org.learn.algorithm.datastructure.DirectedGraphNode;
 import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.UndirectedGraphNode;
 
-import javax.naming.ldap.PagedResultsResponseControl;
-import javax.print.attribute.PrintRequestAttribute;
-import javax.swing.*;
 import java.util.*;
 
 /**
@@ -58,7 +54,14 @@ public class GraphSolution {
 
         int[][] matrix = new int[][]{{1, 0}, {2, 0}, {3, 1}, {3, 2}};
 
-        graphSolution.canFinish(numCourses, matrix);
+        matrix = new int[][]{{0, 1}, {1, 2}, {2, 3}, {1, 3}, {1, 4}};
+
+        matrix = new int[][]{{0, 1}, {1, 2}, {3, 2}, {4, 3}, {4, 5}, {5, 6}, {6, 7}};
+
+
+//        graphSolution.validTreeii(5, matrix);
+
+        graphSolution.validTreeiii(8, matrix);
     }
 
     /**
@@ -367,20 +370,215 @@ public class GraphSolution {
         Map<Integer, Integer> map = new HashMap<>();
 
         for (int[] nodes : graph) {
-            Integer count = map.getOrDefault(nodes[0], 0);
+            Integer count = map.getOrDefault(nodes[1], 0);
 
-            map.put(nodes[0], count + 1);
+            map.put(nodes[1], count + 1);
         }
         return map;
     }
 
 
     // Graph Valid Tree
-    public boolean graphValidTree() {
-//        return -1;
+
+    /**
+     * https://www.lintcode.com/problem/178/
+     *
+     * @return
+     */
+    /**
+     * @param n:     An integer
+     * @param edges: a list of undirected edges
+     * @return: true if it's a valid tree, or false
+     */
+    public boolean validTree(int n, int[][] edges) {
+        // write your code here
+//        if (edges == null) {
+//            return false;
+//        }
+//        if (n == 1 && edges.length == 0) {
+//            return true;
+//        }
+//        Map<Integer, Integer> graphDegree = getGraphDegree(edges);
+//        Map<Integer, List<Integer>> nodes = new HashMap<>();
+//
+//        for (int[] edge : edges) {
+//            List<Integer> tmp = nodes.getOrDefault(edge[0], new ArrayList<>());
+//            tmp.add(edge[1]);
+//            nodes.put(edge[0], tmp);
+//        }
+//        LinkedList<Integer> linkedList = new LinkedList<>();
+//        for (Map.Entry<Integer, List<Integer>> item : nodes.entrySet()) {
+//            Integer node = item.getKey();
+//            Integer count = graphDegree.getOrDefault(node, 0);
+//            if (count == 0) {
+//                linkedList.offer(node);
+//            }
+//        }
+//        List<Integer> result = new ArrayList<>();
+//        boolean[] used = new boolean[n];
+//
+//        while (!linkedList.isEmpty()) {
+//            Integer poll = linkedList.poll();
+//            System.out.println(poll);
+//            result.add(poll);
+//            List<Integer> neighbors = nodes.getOrDefault(poll, new ArrayList<>());
+//
+//            System.out.println("node: " + poll + " neighbors:" + neighbors);
+//            for (Integer neighbor : neighbors) {
+////                if (result.contains(neighbor)) {
+////                    continue;
+////                }
+//                if (used[neighbor]) {
+//                    continue;
+//                }
+//                used[neighbor] = true;
+//                Integer count = graphDegree.getOrDefault(neighbor, 0);
+//
+//                count--;
+//                graphDegree.put(neighbor, count);
+//                if (count == 0) {
+//                    linkedList.offer(neighbor);
+//
+//                }
+//            }
+//        }
+//        return result.size() == n;
         return false;
     }
 
+
+    /**
+     * 来自官方的解释
+     *
+     * @param n
+     * @param edges
+     * @return
+     */
+    public boolean validTreeii(int n, int[][] edges) {
+        if (n == 0) {
+            return false;
+        }
+        // 判断图是否是树依据上述的第二个条件
+        if (edges.length != n - 1) {
+            return false;
+        }
+
+        // set 用于去重，不包含重复元素的集合
+        Map<Integer, Set<Integer>> graph = initializeGraph(n, edges);
+
+        System.out.println("valid treeii " +  graph);
+
+        // bfs
+        // queue 里面存的是结点下标
+        Queue<Integer> queue = new LinkedList<>();
+        Set<Integer> hash = new HashSet<>();
+
+        queue.offer(0);
+        hash.add(0);     // hashset 没有 offer 用法
+        // queue 结合 while 使用来保证遍历全部结点
+        while (!queue.isEmpty()) {
+            int node = queue.poll();
+            // foreach 用法，neighbor 是变量名
+            // graph.get(node) 对应的是一个集合
+            for (Integer neighbor : graph.get(node)) {
+                // hash 表用于去除重复结点，来保证队列中没有添加重复结点
+                // 树只能从上往下遍历，但图没有方向，A 是 B 的相邻结点，B 也是A 的相邻结点，所以要去重
+                if (hash.contains(neighbor)) {
+                    continue;
+                }
+                hash.add(neighbor);
+                queue.offer(neighbor);
+            }
+        }
+
+        // 当存在 n-1 条边且有 n 个结点连通时说明图是树
+        return (hash.size() == n);
+    }
+
+    // 根据结点和边初始化一张图出来
+    private Map<Integer, Set<Integer>> initializeGraph(int n, int[][] edges) {
+        // set 的不包含重复元素特性特别重要，set 在后边代表的两点间建立边的关系
+        // 若某一点重复加了一个点两次则证明出现了环，初始化必须保证无环，算法才有意义
+        Map<Integer, Set<Integer>> graph = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            // hashset 用于存储不重复整型对象,
+            // hashmap 中的 put 方法用于关联指定值与指定键，
+            // 本行代码用于创建 n 个映射
+            graph.put(i, new HashSet<Integer>());
+        }
+
+        // 注意此处不是 n，n 代表结点数
+        // i 循环的是边数，边数小于 n，若写成 n 则在 i = n - 1 时代码会卡住，程序超时
+        for (int i = 0; i < edges.length; i++) {
+            int u = edges[i][0];
+            int v = edges[i][1];
+            graph.get(u).add(v);
+            graph.get(v).add(u);
+        }
+        // 在图中建立边的连接实际上就是建立两个整数间的不重复映射关系
+        // get() 返回指定键映射的值,即 graph 代表 hashset 数组,
+        // graph.get(v).add(u) 代表 hashset.add()
+        // u 和 v 代表边的两个端点在 graph.get(u) 中 u,v  代表索引值 i，
+        // u.add(v) 是指加一条 u 到 v 的边(graph 中下标为 u 的 set 加入
+        // 一个值为 v 的元素)，把题目提供的输入数据中的边数组进行处理
+
+        return graph;
+    }
+
+
+    public boolean validTreeiii(int n, int[][] edges) {
+        if (edges == null) {
+            return false;
+        }
+        if (edges.length != n-1) {
+            return false;
+        }
+
+        Map<Integer, Set<Integer>> graph = constructUndirectedGraph(n,edges);
+
+        System.out.println("valid treeiii " +  graph);
+        LinkedList<Integer> queue = new LinkedList<>();
+
+        Set<Integer> hash = new HashSet<>();
+
+        queue.offer(0);
+        hash.add(0);
+        while (!queue.isEmpty()) {
+            Integer poll = queue.poll();
+
+            Set<Integer> neighbors = graph.getOrDefault(poll, new HashSet<>());
+
+            for (Integer neighbor : neighbors) {
+                if (hash.contains(neighbor)) {
+                    continue;
+                }
+                hash.add(neighbor);
+                queue.offer(neighbor);
+            }
+        }
+        return hash.size() == n;
+    }
+
+
+    private Map<Integer, Set<Integer>> constructUndirectedGraph(int n, int[][] edges) {
+        Map<Integer, Set<Integer>> graph = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            // hashset 用于存储不重复整型对象,
+            // hashmap 中的 put 方法用于关联指定值与指定键，
+            // 本行代码用于创建 n 个映射
+            graph.put(i, new HashSet<>());
+        }
+
+        // 注意此处不是 n，n 代表结点数
+        // i 循环的是边数，边数小于 n，若写成 n 则在 i = n - 1 时代码会卡住，程序超时
+        for (int i = 0; i < edges.length; i++) {
+            int u = edges[i][0];
+            int v = edges[i][1];
+            graph.get(u).add(v);
+            graph.get(v).add(u);
+        }
+        return graph;
+    }
 
 
 }
