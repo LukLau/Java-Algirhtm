@@ -18,9 +18,6 @@ import java.util.*;
  */
 public class GraphSolution {
 
-    List<List<Integer>> edges;
-    int[] indeg;
-
     public static void main(String[] args) {
         GraphSolution graphSolution = new GraphSolution();
 
@@ -250,118 +247,7 @@ public class GraphSolution {
         return -1;
     }
 
-    /**
-     * https://www.lintcode.com/problem/127/description
-     *
-     * @param graph: A list of Directed graph node
-     * @return: Any topological order for the given graph.
-     */
-    public ArrayList<DirectedGraphNode> topSort(ArrayList<DirectedGraphNode> graph) {
-        // write your code here
-        if (graph == null || graph.isEmpty()) {
-            return new ArrayList<>();
-        }
-        ArrayList<DirectedGraphNode> result = new ArrayList<>();
-        Map<DirectedGraphNode, Integer> map = new HashMap<>();
-        for (DirectedGraphNode directedGraphNode : graph) {
-            internalTopSortDFS(result, map, directedGraphNode);
-        }
-        Collections.reverse(result);
-        return result;
-    }
 
-    private void internalTopSortDFS(ArrayList<DirectedGraphNode> result, Map<DirectedGraphNode, Integer> map, DirectedGraphNode graphNode) {
-        if (map.containsKey(graphNode)) {
-            return;
-        }
-        map.put(graphNode, 1);
-        for (DirectedGraphNode neighbor : graphNode.neighbors) {
-            internalTopSortDFS(result, map, neighbor);
-        }
-        result.add(graphNode);
-    }
-
-    public ArrayList<DirectedGraphNode> topSortii(ArrayList<DirectedGraphNode> graph) {
-        if (graph == null || graph.isEmpty()) {
-            return new ArrayList<>();
-        }
-        Map<DirectedGraphNode, Integer> graphNodeDegree = getGraphNodeDegree(graph);
-
-        LinkedList<DirectedGraphNode> linkedList = new LinkedList<>();
-
-        ArrayList<DirectedGraphNode> result = new ArrayList<>();
-
-        for (DirectedGraphNode directedGraphNode : graph) {
-            if (graphNodeDegree.containsKey(directedGraphNode)) {
-                continue;
-            }
-            linkedList.add(directedGraphNode);
-        }
-
-        while (!linkedList.isEmpty()) {
-            DirectedGraphNode directedGraphNode = linkedList.poll();
-
-            result.add(directedGraphNode);
-
-            for (DirectedGraphNode neighbor : directedGraphNode.neighbors) {
-
-                Integer count = graphNodeDegree.get(neighbor);
-
-                count--;
-
-                graphNodeDegree.put(neighbor, count);
-
-                if (count == 0) {
-                    linkedList.offer(neighbor);
-                }
-            }
-        }
-        return result;
-    }
-
-    private Map<DirectedGraphNode, Integer> getGraphNodeDegree(ArrayList<DirectedGraphNode> graph) {
-        Map<DirectedGraphNode, Integer> map = new HashMap<>();
-        for (DirectedGraphNode directedGraphNode : graph) {
-            for (DirectedGraphNode neighbor : directedGraphNode.neighbors) {
-                Integer inputEdge = map.getOrDefault(neighbor, 0);
-                map.put(neighbor, inputEdge + 1);
-            }
-        }
-        return map;
-    }
-
-    public boolean canFinishTest(int numCourses, int[][] prerequisites) {
-        edges = new ArrayList<List<Integer>>();
-        for (int i = 0; i < numCourses; ++i) {
-            edges.add(new ArrayList<Integer>());
-        }
-        indeg = new int[numCourses];
-        for (int[] info : prerequisites) {
-            edges.get(info[1]).add(info[0]);
-            ++indeg[info[0]];
-        }
-
-        Queue<Integer> queue = new LinkedList<Integer>();
-        for (int i = 0; i < numCourses; ++i) {
-            if (indeg[i] == 0) {
-                queue.offer(i);
-            }
-        }
-
-        int visited = 0;
-        while (!queue.isEmpty()) {
-            ++visited;
-            int u = queue.poll();
-            for (int v : edges.get(u)) {
-                --indeg[v];
-                if (indeg[v] == 0) {
-                    queue.offer(v);
-                }
-            }
-        }
-
-        return visited == numCourses;
-    }
 
     private Map<Integer, Integer> getGraphDegree(int[][] graph) {
         Map<Integer, Integer> map = new HashMap<>();
@@ -373,14 +259,6 @@ public class GraphSolution {
         }
         return map;
     }
-
-
-    // Graph Valid Tree
-    public boolean graphValidTree() {
-//        return -1;
-        return false;
-    }
-
 
 
 }
