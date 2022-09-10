@@ -11,7 +11,8 @@ public class DfsSolution {
         char[][] board = {{'A', 'B', 'C', 'E'}, {'S', 'F', 'C', 'S'}, {'A', 'D', 'E', 'E'}};
         String word = "ABCCED";
         DfsSolution dfsSolution = new DfsSolution();
-        dfsSolution.exist(board, word);
+//        dfsSolution.exist(board, word);
+        dfsSolution.addOperators("00", 0);
     }
 
 
@@ -600,6 +601,7 @@ public class DfsSolution {
 
 
     /**
+     * https://leetcode.com/problems/expression-add-operators/
      * todo
      * 282. Expression Add Operators
      *
@@ -612,27 +614,40 @@ public class DfsSolution {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        intervalAddOperators(result, 0, 0, "", num, 0, target);
+        internalOperators(result, num, "", 0, 0, target);
         return result;
     }
 
-    private void intervalAddOperators(List<String> result, int value, int start, String express, String num, int multi, int target) {
-        if (start == num.length() && value == target) {
-            result.add(express);
+    private void internalOperators(List<String> result, String num, String expression, long multi, long value, int target) {
+        if (value == target && num.isEmpty()) {
+            result.add(expression);
             return;
         }
-        for (int i = start; i < num.length(); i++) {
-            if (i > start && num.charAt(start) == '0') {
+        if (num.isEmpty()) {
+            return;
+        }
+        int len = num.length();
+        for (int i = 0; i < len; i++) {
+            String substring = num.substring(0, i + 1);
+
+            if (substring.length() > 1 && substring.charAt(0) == '0') {
                 continue;
             }
-            String tmp = num.substring(start, i + 1);
-            int v = Integer.parseInt(tmp);
-            if (start == 0) {
-                intervalAddOperators(result, target + value, i + 1, express + tmp, num, v, target);
+            long parseValue = Long.parseLong(substring);
+
+            String remain = num.substring(i + 1);
+
+            if (expression.isEmpty()) {
+                internalOperators(result, remain, substring, parseValue, parseValue, target);
             } else {
-                intervalAddOperators(result, target + value, i + 1, express + "+" + tmp, num, v, target);
-                intervalAddOperators(result, target - value, i + 1, express + "-" + tmp, num, -v, target);
-                intervalAddOperators(result, target * value, i + 1, express + "*" + tmp, num, -v, target);
+                internalOperators(result, remain, expression + "+" + substring, parseValue, value + parseValue, target);
+
+                internalOperators(result, remain, expression + "-" + substring, -parseValue, value - parseValue, target);
+
+                // 1 + 1 * 2
+                // 1 * 2 * 3
+                // 1 * 2 + 2
+                internalOperators(result, remain, expression + "*" + substring, multi * parseValue, value - multi + multi * parseValue, target);
             }
         }
     }

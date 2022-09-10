@@ -16,10 +16,13 @@ public class SortSolution {
         }
 //        solution.heapSort(nums);
 //        solution.bucketSort(nums);
-        solution.countSort(nums);
-        for (int num : nums) {
-            System.out.println(num);
-        }
+//        solution.countSort(nums);
+//        for (int num : nums) {
+//            System.out.println(num);
+//        }
+
+        nums = new int[]{0};
+        solution.hIndex(nums);
 
     }
 
@@ -200,9 +203,38 @@ public class SortSolution {
                 result[index++] = min + i;
             }
         }
-        System.out.println(Arrays.toString(nums));
-        System.out.println(Arrays.toString(result));
-        nums = result;
+        System.arraycopy(result, 0, nums, 0, result.length);
     }
+
+
+    /**
+     * https://leetcode.com/problems/h-index/
+     * <p>
+     * https://leetcode.com/problems/h-index-ii/discuss/71063/Standard-binary-search
+     *
+     * @param citations
+     * @return
+     */
+    public int hIndex(int[] citations) {
+        int[] count = new int[citations.length + 1];
+        for (int citation : citations) {
+            if (citation >= citations.length) {
+                count[citations.length]++;
+            } else {
+                count[citation]++;
+            }
+        }
+        int total = 0;
+        for (int i = count.length - 1; i >= 0; i--) {
+            total += count[i];
+            if (total >= i) {
+                return i;
+            }
+        }
+        return 0;
+
+
+    }
+
 
 }

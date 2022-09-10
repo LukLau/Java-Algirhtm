@@ -151,8 +151,6 @@ public class VipGraph {
         }
         boolean[] used = new boolean[n];
 
-        Map<Integer, List<Integer>>
-
 
         Map<Integer, Integer> graphDegree = getGraphDegree(edges);
 
@@ -174,6 +172,8 @@ public class VipGraph {
                 return false;
             }
         }
+
+        return false;
     }
 
 

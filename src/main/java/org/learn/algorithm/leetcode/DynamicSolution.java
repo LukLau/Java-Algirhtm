@@ -36,7 +36,8 @@ public class DynamicSolution {
 //        solution.getRow(3);
 //        solution.minCut("aab");
         matrix = new char[][]{{'1', '0'}};
-        solution.maximalSquare(matrix);
+//        solution.maximalSquare(matrix);
+        solution.numSquares(4);
     }
 
 
@@ -1035,14 +1036,14 @@ public class DynamicSolution {
             return 0;
         }
         int[] dp = new int[n + 1];
-        dp[0] = 0;
         dp[1] = 1;
         for (int i = 2; i <= n; i++) {
-            int tmp = i;
+            int min = i;
             for (int j = 1; j * j <= i; j++) {
-                tmp = Math.min(dp[i - j * j] + 1, tmp);
+                int previous = i - j  * j;
+                min = Math.min(1 + dp[previous], min);
             }
-            dp[i] = tmp;
+            dp[i] = min;
         }
         return dp[n];
     }
