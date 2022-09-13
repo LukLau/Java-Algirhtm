@@ -12,7 +12,12 @@ public class DfsSolution {
         String word = "ABCCED";
         DfsSolution dfsSolution = new DfsSolution();
 //        dfsSolution.exist(board, word);
-        dfsSolution.addOperators("00", 0);
+//        dfsSolution.addOperators("00", 0);
+        int[][] rooms = new int[][]{{2147483647, -1, 0, 2147483647}, {2147483647, 2147483647, 2147483647, -1},
+                {2147483647, -1, 2147483647, -1}, {0, -1, 2147483647, 2147483647}};
+
+        dfsSolution.wallsAndGates(rooms);
+
     }
 
 
@@ -338,22 +343,82 @@ public class DfsSolution {
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (rooms[i][j] == 0) {
-                    intervalWalls(rooms, i, j, 0);
+                    internalWallsAndGates(i, j, 0, rooms);
                 }
             }
         }
     }
 
-    private void intervalWalls(int[][] rooms, int i, int j, int distance) {
-        if (i < 0 || i >= rooms.length || j < 0 || j >= rooms[i].length || rooms[i][j] == -1) {
+    private void internalWallsAndGates(int i, int j, int distance, int[][] rooms) {
+        if (i < 0 || i == rooms.length || j < 0 || j == rooms[i].length) {
             return;
         }
-        if (rooms[i][j] > distance || distance == 0) {
+        if (rooms[i][j] == -1) {
+            return;
+        }
+        if (distance == 0 || rooms[i][j] > distance) {
             rooms[i][j] = distance;
-            intervalWalls(rooms, i - 1, j, distance + 1);
-            intervalWalls(rooms, i + 1, j, distance + 1);
-            intervalWalls(rooms, i, j - 1, distance + 1);
-            intervalWalls(rooms, i, j + 1, distance + 1);
+            internalWallsAndGates(i - 1, j, distance + 1, rooms);
+            internalWallsAndGates(i + 1, j, distance + 1, rooms);
+            internalWallsAndGates(i, j - 1, distance + 1, rooms);
+            internalWallsAndGates(i, j + 1, distance + 1, rooms);
+        }
+    }
+
+
+    /**
+     * 289. Game of Life
+     * https://leetcode.com/problems/game-of-life/
+     *
+     * @param board
+     */
+    public void gameOfLife(int[][] board) {
+        if (board == null || board.length == 0) {
+            return;
+        }
+        int row = board.length;
+        int column = board[0].length;
+        int[][] matrix = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                internalGameOfLine(i, j, board, matrix);
+            }
+        }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                int val = board[i][j];
+
+                if (val < 0) {
+                    board[i][j] = 0;
+                } else if (val > 0) {
+                    board[i][j] = 1;
+                }
+            }
+        }
+    }
+
+    private void internalGameOfLine(int i, int j, int[][] board, int[][] matrix) {
+        if (i < 0 || i == board.length || j < 0 || j == board[i].length) {
+            return;
+        }
+        boolean isLiveCell = board[i][j] == 1;
+
+        int liveNeighborCount = 0;
+        for (int[] row : matrix) {
+            int x = i + row[0];
+            int y = j + row[1];
+            if (x < 0 || x == board.length || y < 0 || y == board[x].length) {
+                continue;
+            }
+            if (Math.abs(board[x][y]) == 1) {
+                liveNeighborCount++;
+            }
+        }
+        if (isLiveCell && (liveNeighborCount < 2 || liveNeighborCount > 3)) {
+            board[i][j] = -1;
+        }
+        if (!isLiveCell && liveNeighborCount == 3) {
+            board[i][j] = 2;
         }
     }
 

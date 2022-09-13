@@ -540,6 +540,7 @@ public class ThreePage {
 
 
     /**
+     * https://leetcode.com/problems/bulls-and-cows/
      * todo
      * 299. Bulls and Cows
      *
@@ -548,21 +549,22 @@ public class ThreePage {
      * @return
      */
     public String getHint(String secret, String guess) {
-        int bulls = 0;
+        if (secret == null || guess == null) {
+            return "";
+        }
         int cows = 0;
-        char[] secretWords = secret.toCharArray();
-        char[] guessWords = guess.toCharArray();
+        int bulls = 0;
+        int len = secret.length();
         int[] hash = new int[10];
-        for (int i = 0; i < secretWords.length; i++) {
-            char secretWord = secretWords[i];
-            char guessWord = guessWords[i];
-            if (secretWord == guessWord) {
+
+        for (int i = 0; i < len; i++) {
+            if (secret.charAt(i) == guess.charAt(i)) {
                 bulls++;
             } else {
-                if (hash[Character.getNumericValue(secretWord)]-- > 0) {
+                if (hash[Character.getNumericValue(secret.charAt(i))]++ < 0) {
                     cows++;
                 }
-                if (hash[Character.getNumericValue(guessWord)]++ < 0) {
+                if (hash[Character.getNumericValue(guess.charAt(i))]-- > 0) {
                     cows++;
                 }
             }

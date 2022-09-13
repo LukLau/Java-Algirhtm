@@ -4,6 +4,7 @@ import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.Point;
 import org.learn.algorithm.datastructure.TreeNode;
 import org.learn.algorithm.nowcode.OftenSolution;
+import org.springframework.util.ResourceUtils;
 
 import java.awt.font.NumericShaper;
 import java.util.*;
@@ -59,7 +60,11 @@ public class VipSolution {
         Interval o2 = new Interval(5, 10);
         Interval o3 = new Interval(15, 20);
         List<Interval> intervals = Arrays.asList(o1, o2, o3);
-        solution.minMeetingRooms(intervals);
+//        solution.minMeetingRooms(intervals);
+//        List<String> generatePossibleNextMoves = solution.generatePossibleNextMoves("---+++-+++-+");
+//        System.out.println(generatePossibleNextMoves);
+        String s = "+++++";
+        solution.canWin(s);
 
     }
 
@@ -817,26 +822,31 @@ public class VipSolution {
      * @return: all the possible states of the string after one valid move
      */
     public List<String> generatePossibleNextMoves(String s) {
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        int n = s.length();
         List<String> result = new ArrayList<>();
-        if (s == null) {
-            return result;
-        }
-        int len = s.length();
-        if (len <= 1) {
-            return result;
-        }
-        int endIndex = 0;
-        while (endIndex < len) {
-            int index = s.indexOf("++", endIndex);
-            if (index == -1) {
+        int index = 0;
+        while (index < n) {
+            int beginIndex = s.indexOf("++", index);
+
+            if (beginIndex == -1) {
                 break;
             }
-            String tmp = s.substring(0, index) + "--" + s.substring(index + 2);
+            String prefix = s.substring(0, beginIndex);
+
+            String last = s.substring(beginIndex + 2);
+
+            String tmp = prefix + "--" + last;
+
+//            System.out.println("beginIndex: " + beginIndex + " new word: " + tmp);
+
             result.add(tmp);
-            endIndex = index + 1;
+
+            index = beginIndex + 1;
         }
         return result;
-        // write your code here
     }
 
     /**
@@ -848,20 +858,29 @@ public class VipSolution {
      */
     public boolean canWin(String s) {
         // write your code here
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return false;
         }
+        int index = 0;
         int len = s.length();
-        if (len < 2) {
-            return false;
-        }
-        for (int i = 0; i < len; i++) {
-            if (s.startsWith("++", i)) {
-                String t = s.substring(0, i) + "--" + s.substring(i + 2);
-                if (!canWin(t)) {
-                    return true;
-                }
+        while (index < len) {
+            int indexOf = s.indexOf("++", index);
+
+            if (indexOf == -1) {
+                return false;
             }
+            String prefix = s.substring(0, indexOf);
+
+            String last = s.substring(indexOf + 2);
+
+            String tmp = prefix + "--" + last;
+
+            if (!canWin(tmp)) {
+//                System.out.println("file index: " + index + " will success");
+                return true;
+            }
+//            System.out.println("flip index: " + index + " fail");
+            index = indexOf + 1;
         }
         return false;
     }

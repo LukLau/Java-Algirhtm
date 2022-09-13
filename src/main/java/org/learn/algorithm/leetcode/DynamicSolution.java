@@ -125,8 +125,6 @@ public class DynamicSolution {
     }
 
 
-    // 八皇后问题 //
-
     /**
      * 300. Longest Increasing Subsequence
      *
@@ -137,21 +135,24 @@ public class DynamicSolution {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-        int[] dp = new int[nums.length];
-        Arrays.fill(dp, 1);
+        int[] result = new int[nums.length];
+        Arrays.fill(result, 1);
         for (int i = 1; i < nums.length; i++) {
             for (int j = 0; j < i; j++) {
-                if (dp[i] > dp[j] && dp[i] < dp[j] + 1) {
-                    dp[i] = dp[j] + 1;
+                if (nums[j] < nums[i] && result[i] < result[j] + 1) {
+                    result[i] = result[j] + 1;
                 }
             }
         }
-        int result = 0;
-        for (int tmp : dp) {
-            result = Math.max(result, tmp);
+        int answer = 0;
+        for (int num : result) {
+            answer = Math.max(answer, num);
         }
-        return result;
+        return answer;
     }
+
+
+    // 八皇后问题 //
 
     /**
      * @param n
@@ -970,60 +971,6 @@ public class DynamicSolution {
         return dp[0];
     }
 
-
-    /**
-     * 289. Game of Life
-     *
-     * @param board
-     */
-    public void gameOfLife(int[][] board) {
-        if (board == null || board.length == 0) {
-            return;
-        }
-        int row = board.length;
-        int column = board[0].length;
-        int[][] matrix = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                internalGameOfLive(board, i, j, matrix);
-            }
-        }
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                if (board[i][j] == -1) {
-                    board[i][j] = 0;
-                } else if (board[i][j] < -1) {
-                    board[i][j] = 1;
-                }
-            }
-        }
-    }
-
-    private void internalGameOfLive(int[][] board, int currentX, int currentY, int[][] matrix) {
-        boolean currentCellLive = false;
-        if (board[currentX][currentY] == 1) {
-            currentCellLive = true;
-        }
-        int neighborLiveCount = 0;
-        for (int i = 0; i < matrix.length; i++) {
-            int x = currentX + matrix[i][0];
-            int y = currentY + matrix[i][1];
-            if (x < 0 || x >= board.length || y < 0 || y >= board[currentX].length) {
-                continue;
-            }
-            if (Math.abs(board[x][y]) == 1) {
-                neighborLiveCount++;
-            }
-        }
-        if (!currentCellLive && neighborLiveCount == 3) {
-            board[currentX][currentY] = -2;
-        }
-        if (currentCellLive && (neighborLiveCount < 2 || neighborLiveCount > 3)) {
-            board[currentX][currentY] = -1;
-        }
-    }
-
-
     /**
      * todo
      * 279. Perfect Squares
@@ -1040,7 +987,7 @@ public class DynamicSolution {
         for (int i = 2; i <= n; i++) {
             int min = i;
             for (int j = 1; j * j <= i; j++) {
-                int previous = i - j  * j;
+                int previous = i - j * j;
                 min = Math.min(1 + dp[previous], min);
             }
             dp[i] = min;

@@ -18,12 +18,16 @@ public class SwordOffer {
         TreeNode root = new TreeNode(1);
         TreeNode node2 = new TreeNode(2);
         TreeNode node3 = new TreeNode(3);
-        node2.left = new TreeNode(4);
-        node2.right = new TreeNode(5);
+//        node2.left = new TreeNode(4);
+//        node2.right = new TreeNode(5);
         root.left = node2;
-        TreeNode node6 = new TreeNode(6);
-        node3.left = node6;
+
+//        TreeNode node6 = new TreeNode(6);
+//        node3.left = node6;
         root.right = node3;
+
+        node3.left = new TreeNode(4);
+        node3.right = new TreeNode(5);
 
         offer.isCompleteTree(root);
     }
@@ -1336,12 +1340,9 @@ public class SwordOffer {
     }
 
     /**
-<<<<<<< HEAD
      * {1,2,3,5,#,7,8}
-=======
      * the tick: 无需 判断结点是否为null,再插入
      * {3,1,7,#,#,6,8}
->>>>>>> c085356f15ad630bf8b82d55adc207aa01c6908c
      *
      * @param root
      * @return

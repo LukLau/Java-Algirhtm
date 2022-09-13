@@ -1,10 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.context.request.WebRequestInterceptor;
-
-import javax.servlet.*;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -13,7 +8,7 @@ import java.util.*;
  * @author luk
  * @date 2021/4/26
  */
-public class FourPage  {
+public class FourPage {
 
     public static void main(String[] args) {
         FourPage fourPage = new FourPage();
@@ -22,8 +17,15 @@ public class FourPage  {
 //        String s = "dog cat cat dog";
 //        fourPage.wordPattern(pattern, s);
 
-        String pattern = "abab";
-        String word = "redblueredblue";
+        String pattern = "ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccdd";
+        String word = "s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s t t";
+//        fourPage.wordPattern(pattern, word);
+
+//        pattern = "abab";
+//        word = "redblueredblue";
+
+        pattern = "bdpbibletwuwbvh";
+        word = "aaaaaaaaaaaaaaa";
         fourPage.wordPatternMatch(pattern, word);
     }
 
@@ -250,23 +252,26 @@ public class FourPage  {
         if (pattern == null || s == null) {
             return false;
         }
+        Map<Character, Integer> map1 = new HashMap<>();
+        Map<String, Integer> map2 = new HashMap<>();
         String[] words = s.split(" ");
-        if (pattern.length() != words.length) {
+
+        int len = pattern.length();
+        if (words.length != len) {
             return false;
         }
-        Map<Character, Integer> word1 = new HashMap<>();
+        for (int i = 0; i < len; i++) {
+            char tmp = pattern.charAt(i);
 
-        Map<String, Integer> word2 = new HashMap<>();
+            Integer firstIndex = map1.get(tmp);
 
-        for (int i = 0; i < words.length; i++) {
-            char patternCharacter = pattern.charAt(i);
-            int index1 = word1.getOrDefault(patternCharacter, i);
-            int index2 = word2.getOrDefault(words[i], i);
-            if (index1 != index2) {
+            Integer secondIndex = map2.get(words[i]);
+
+            if (Objects.equals(firstIndex, secondIndex)) {
                 return false;
             }
-            word1.put(patternCharacter, i);
-            word2.put(words[i], i);
+            map1.put(tmp, i);
+            map2.put(words[i], i);
         }
         return true;
     }
@@ -284,48 +289,43 @@ public class FourPage  {
         if (pattern == null || str == null) {
             return false;
         }
-        int len = str.length();
-        for (int i = 1; i < len; i++) {
-            Map<Character, String> tmp = new HashMap<>();
-            if (checkValid(tmp, 0, pattern, i, str)) {
-                return true;
-            }
-        }
-        return false;
+        Map<Character, String> map = new HashMap<>();
+        Set<String> visited = new HashSet<>();
+        return internalWordPatternMatch(pattern, str, map, visited);
     }
 
-    private boolean checkValid(Map<Character, String> map, int patternStart, String pattern, int startIndex, String str) {
-        if (str.isEmpty()) {
-            return true;
-        }
+    private boolean internalWordPatternMatch(String pattern, String str, Map<Character, String> map, Set<String> visited) {
         if (pattern.isEmpty()) {
-            return false;
+            return str.isEmpty();
         }
-        String word = map.getOrDefault(pattern.charAt(patternStart), "");
-        if (!word.isEmpty()) {
-            if (str.startsWith(word)) {
-                return checkValid(map, patternStart + 1, pattern, startIndex + 1, str.substring(startIndex + 1));
-            } else {
+        String prefix = map.getOrDefault(pattern.charAt(0), "");
+
+        if (!prefix.isEmpty()) {
+            if (!str.startsWith(prefix)) {
                 return false;
             }
+            return internalWordPatternMatch(pattern.substring(1), str.substring(prefix.length()), map, visited);
         }
-        word = str.substring(0, startIndex);
+        int len = str.length();
 
-        map.put(pattern.charAt(patternStart), word);
+        for (int i = 1; i <= len; i++) {
+            String substring = str.substring(0, i);
 
-        return checkValid(map, patternStart + 1, pattern, startIndex, str.substring(startIndex));
-    }
+            if (visited.contains(substring)) {
+                continue;
+            }
+            visited.add(substring);
+            map.put(pattern.charAt(0), substring);
 
-    private boolean internalWordPattern(Map<Character, String> map, int patternStart, String pattern, int index, String str) {
-        if (str.isEmpty()) {
-            return true;
+            String remain = str.substring(i);
+
+            if (internalWordPatternMatch(pattern.substring(1), remain, map, visited)) {
+                return true;
+            }
+            visited.remove(substring);
+            map.remove(pattern.charAt(0));
         }
-        if (patternStart == pattern.length()) {
-            return false;
-        }
-        String word = map.getOrDefault(pattern.charAt(patternStart), "");
-
-
         return false;
     }
+
 }

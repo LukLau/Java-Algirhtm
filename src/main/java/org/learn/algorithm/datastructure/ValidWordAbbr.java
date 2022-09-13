@@ -2,6 +2,7 @@ package org.learn.algorithm.datastructure;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 288
@@ -12,9 +13,10 @@ import java.util.Map;
  */
 public class ValidWordAbbr {
 
-    private final Map<String, Integer> abbrMap = new HashMap<>();
+    private final Map<String, Integer> words = new HashMap<>();
 
-    private final Map<String, Integer> wordMap = new HashMap<>();
+    private final Map<String, Integer> abbrWords = new HashMap<>();
+
 
     /*
      * @param dictionary: a list of words
@@ -22,21 +24,15 @@ public class ValidWordAbbr {
     public ValidWordAbbr(String[] dictionary) {
         // do intialization if necessary
         for (String word : dictionary) {
-
-            int wordCount = wordMap.getOrDefault(word, 0);
-
-            wordMap.put(word, wordCount + 1);
-
             String abbrWord = getAbbrWord(word);
 
-//            if (!word.equals(abbrWord)) {
+            Integer originalCount = words.getOrDefault(word, 0);
 
-                int count = abbrMap.getOrDefault(abbrWord, 0);
+            words.put(word, originalCount + 1);
 
-                abbrMap.put(abbrWord, count + 1);
-//            }
+            Integer abbrWordCount = abbrWords.getOrDefault(abbrWord, 0);
 
-
+            abbrWords.put(abbrWord, abbrWordCount + 1);
         }
     }
 
@@ -45,9 +41,16 @@ public class ValidWordAbbr {
      * @return: true if its abbreviation is unique or false
      */
     public boolean isUnique(String word) {
-        String abbr = getAbbrWord(word);
-        // write your code here"
-        return wordMap.getOrDefault(word, 0).equals(abbrMap.getOrDefault(abbr, 0));
+        // write your code here
+        Integer originalCount = words.get(word);
+
+
+        String abbrWord = getAbbrWord(word);
+
+        Integer abbrWordCount = abbrWords.get(abbrWord);
+
+        return Objects.equals(originalCount, abbrWordCount);
+
     }
 
 
@@ -59,6 +62,28 @@ public class ValidWordAbbr {
         return String.valueOf(word.charAt(0)) +
                 (len - 2) +
                 word.charAt(len - 1);
+    }
+
+
+    /**
+     * https://www.lintcode.com/problem/637
+     *
+     * @param word: a non-empty string
+     * @param abbr: an abbreviation
+     * @return: true if string matches with the given abbr or false
+     */
+    public boolean validWordAbbreviation(String word, String abbr) {
+        // write your code here
+        if (word == null || abbr == null) {
+            return false;
+        }
+        int len = word.length();
+
+        for (int i = 1; i <= len; i++) {
+
+        }
+        return false;
+
     }
 
 

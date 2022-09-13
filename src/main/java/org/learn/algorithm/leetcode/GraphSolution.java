@@ -57,7 +57,8 @@ public class GraphSolution {
 
 //        graphSolution.validTreeii(5, matrix);
 
-        graphSolution.validTreeiii(8, matrix);
+        matrix = new int[][]{};
+        graphSolution.validTreeiii(1, matrix);
     }
 
     /**
@@ -411,55 +412,46 @@ public class GraphSolution {
 
 
     public boolean validTreeiii(int n, int[][] edges) {
-        if (edges == null) {
+        if (edges == null ) {
             return false;
         }
         if (edges.length != n - 1) {
             return false;
         }
+        Map<Integer, Set<Integer>> graph = constructGraph(edges);
 
-        Map<Integer, Set<Integer>> graph = constructUndirectedGraph(n, edges);
+        Set<Integer> visited = new HashSet<>();
+        LinkedList<Integer> linkedList = new LinkedList<>();
 
-        System.out.println("valid treeiii " + graph);
-        LinkedList<Integer> queue = new LinkedList<>();
+        visited.add(0);
+        linkedList.offer(0);
 
-        Set<Integer> hash = new HashSet<>();
-
-        queue.offer(0);
-        hash.add(0);
-        while (!queue.isEmpty()) {
-            Integer poll = queue.poll();
+        while (!linkedList.isEmpty()) {
+            Integer poll = linkedList.poll();
 
             Set<Integer> neighbors = graph.getOrDefault(poll, new HashSet<>());
 
             for (Integer neighbor : neighbors) {
-                if (hash.contains(neighbor)) {
+                if (visited.contains(neighbor)) {
                     continue;
                 }
-                hash.add(neighbor);
-                queue.offer(neighbor);
+                visited.add(neighbor);
+                linkedList.offer(neighbor);
             }
         }
-        return hash.size() == n;
+        return visited.size() == n;
     }
 
-
-    private Map<Integer, Set<Integer>> constructUndirectedGraph(int n, int[][] edges) {
+    private Map<Integer, Set<Integer>> constructGraph(int[][] edges) {
         Map<Integer, Set<Integer>> graph = new HashMap<>();
-        for (int i = 0; i < n; i++) {
-            // hashset 用于存储不重复整型对象,
-            // hashmap 中的 put 方法用于关联指定值与指定键，
-            // 本行代码用于创建 n 个映射
-            graph.put(i, new HashSet<>());
-        }
+        for (int[] edge : edges) {
+            Set<Integer> inputEdge = graph.getOrDefault(edge[0], new HashSet<>());
+            inputEdge.add(edge[1]);
+            graph.put(edge[0], inputEdge);
 
-        // 注意此处不是 n，n 代表结点数
-        // i 循环的是边数，边数小于 n，若写成 n 则在 i = n - 1 时代码会卡住，程序超时
-        for (int i = 0; i < edges.length; i++) {
-            int u = edges[i][0];
-            int v = edges[i][1];
-            graph.get(u).add(v);
-            graph.get(v).add(u);
+            Set<Integer> outputEdge = graph.getOrDefault(edge[1], new HashSet<>());
+            outputEdge.add(edge[0]);
+            graph.put(edge[1], outputEdge);
         }
         return graph;
     }

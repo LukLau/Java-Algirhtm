@@ -412,6 +412,43 @@ public class TreeSolution {
     }
 
     /**
+     * trick: 类似二分查询思想
+     *
+     * @param root
+     * @param p
+     * @return
+     */
+    public TreeNode inorderSuccessorii(TreeNode root, TreeNode p) {
+        if (root == null) {
+            return null;
+        }
+        if (root.val <= p.val) {
+            return inorderSuccessor(root.right, p);
+        }
+        TreeNode successor = inorderSuccessor(root.left, p);
+        if (successor == null) {
+            return root;
+        }
+        return successor;
+    }
+
+    public TreeNode inorderSuccessoriii(TreeNode root, TreeNode p) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode candidate = null;
+        while (root != null) {
+            if (p.val >= root.val) {
+                root = root.right;
+            } else {
+                candidate = root;
+                root = root.left;
+            }
+        }
+        return candidate;
+    }
+
+    /**
      * todo
      *
      * @param root
