@@ -3,10 +3,7 @@ package org.learn.algorithm.leetcode;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.Point;
 import org.learn.algorithm.datastructure.TreeNode;
-import org.learn.algorithm.nowcode.OftenSolution;
-import org.springframework.util.ResourceUtils;
 
-import java.awt.font.NumericShaper;
 import java.util.*;
 
 /**
@@ -64,8 +61,16 @@ public class VipSolution {
 //        List<String> generatePossibleNextMoves = solution.generatePossibleNextMoves("---+++-+++-+");
 //        System.out.println(generatePossibleNextMoves);
         String s = "+++++";
-        solution.canWin(s);
+//        solution.canWin(s);
 
+        char[][] images = new char[][]{{'0', '0', '1', '0' }, {'0', '1', '1', '0' }, {'0', '1', '0', '0' }};
+
+        images = new char[][]{{'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' }, {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' }, {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' },
+                {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' }, {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' }, {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' },
+                {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1' }, {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1' }, {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1' }};
+
+        int minArea = solution.minAreaii(images, 6, 11);
+        System.out.println(minArea);
     }
 
     /**
@@ -977,6 +982,7 @@ public class VipSolution {
 
 
     /**
+     * todo memory limit exceeded
      * 302
      * Smallest Rectangle Enclosing Black Pixels
      *
@@ -987,55 +993,167 @@ public class VipSolution {
      */
     public int minArea(char[][] image, int x, int y) {
         // write your code here
-        int row = image.length - 1;
-
-        int column = image[0].length - 1;
-
-        int left = getAreaEdge(image, 0, row, 0, y, true);
-        int right = getAreaEdge(image, 0, row, y, column, true);
-        int top = getAreaEdge(image, 0, column, 0, x, false);
-        int bottom = getAreaEdge(image, 0, column, x + 1, row, true);
-        return (right - left) * (bottom - top);
-    }
-
-    private int getAreaEdge(char[][] image, int i, int row, int y, int column, boolean vertical) {
-        return 0;
-    }
-
-
-    /**
-     * todo 并查集
-     * 305
-     * Number of Islands II
-     *
-     * @param n:         An integer
-     * @param m:         An integer
-     * @param operators: an array of point
-     * @return: an integer array
-     */
-    public List<Integer> numIslands2(int n, int m, Point[] operators) {
-        // write your code here
-        int[][] matrix = new int[n][m];
-        List<Integer> result = new ArrayList<>();
-        PriorityQueue<Point> queue = new PriorityQueue<>(new Comparator<Point>() {
-            @Override
-            public int compare(Point o1, Point o2) {
-                if (o1.x == o2.x) {
-                    return o1.y - o2.y;
-                }
-                return o1.x - o2.x;
-            }
-        });
-        for (Point operator : operators) {
-            if (queue.isEmpty()) {
-                queue.offer(operator);
-            } else {
-
-
-            }
-            result.add(queue.size());
+        if (image == null || image.length == 0) {
+            return 0;
         }
-        return result;
+        int left = Integer.MAX_VALUE;
+        int right = Integer.MIN_VALUE;
+        int top = Integer.MAX_VALUE;
+        int bottom = Integer.MIN_VALUE;
+        int[] params = new int[]{x, y};
+        LinkedList<int[]> linkedList = new LinkedList<>();
+        linkedList.offer(params);
+        boolean[][] visited = new boolean[image.length][image[0].length];
+        int[][] matrix = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        while (!linkedList.isEmpty()) {
+            int[] poll = linkedList.poll();
+            System.out.println(Arrays.toString(poll));
+
+            visited[poll[0]][poll[1]] = true;
+
+            left = Math.min(left, poll[1]);
+            right = Math.max(right, poll[1]);
+
+            top = Math.min(top, poll[0]);
+            bottom = Math.max(bottom, poll[0]);
+//            System.out.println("left: " + left + " right: " + right + " top: " + top + " bottom: " + bottom);
+
+
+            for (int[] direct : matrix) {
+                int tmpX = poll[0] + direct[0];
+                int tmpY = poll[1] + direct[1];
+                if (tmpX < 0 || tmpX == image.length || tmpY < 0 || tmpY == image[tmpX].length) {
+                    continue;
+                }
+                if (visited[tmpX][tmpY]) {
+                    continue;
+                }
+
+                if (image[tmpX][tmpY] != '1') {
+                    continue;
+                }
+//                System.out.println("insert new point:" + tmpX + " " + tmpY);
+                linkedList.offer(new int[]{tmpX, tmpY});
+            }
+        }
+        return (right - left + 1) * (bottom - top + 1);
+
+//        int row = image.length - 1;
+//
+//        int column = image[0].length - 1;
+//
+//        int left = getAreaEdge(image, 0, row, 0, y, true);
+//        int right = getAreaEdge(image, 0, row, y, column, true);
+//        int top = getAreaEdge(image, 0, column, 0, x, false);
+//        int bottom = getAreaEdge(image, 0, column, x + 1, row, true);
+//        return (right - left) * (bottom - top);
+    }
+
+
+    public int minAreaii(char[][] image, int x, int y) {
+        if (image == null || image.length == 0) {
+            return 0;
+        }
+        int row = image.length;
+        int column = image[0].length;
+        int top = 0;
+        int left = 0;
+        int bottom = 0;
+        int right = 0;
+        int l = 0;
+        int r = y;
+        while (l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if (checkValidColumn(image, mid)) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        if (checkValidColumn(image, l)) {
+            left = l;
+        } else {
+            left = r;
+        }
+        System.out.println("current left edge: " + left);
+
+        l = y;
+        r = column - 1;
+        while (l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if (checkValidColumn(image, mid)) {
+                l = mid;
+            } else {
+                r = mid;
+            }
+        }
+        if (checkValidColumn(image, r)) {
+            right = r;
+        } else {
+            right = l;
+        }
+
+        System.out.println("current right edge: " + right);
+
+
+        l = 0;
+        r = x;
+        while (l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if (checkValidRow(image, mid, left, right)) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        if (checkValidRow(image, l, left, right)) {
+            top = l;
+        } else {
+            top = r;
+        }
+
+        System.out.println("current top edge: " + top);
+
+        l = x;
+        r = row - 1;
+        while (l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if (checkValidRow(image, mid, left, right)) {
+                l = mid;
+            } else {
+                r = mid;
+            }
+        }
+        if (checkValidRow(image, r, left, right)) {
+            bottom = r;
+        } else {
+            bottom = l;
+        }
+        System.out.println("current bottom edge: " + bottom);
+
+        int width = (right - left) + 1;
+        int height = (bottom - top) + 1;
+
+        return width * height;
+    }
+
+    private boolean checkValidColumn(char[][] image, int column) {
+        for (int i = image.length - 1; i >= 0; i--) {
+            if (image[i][column] == '1') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean checkValidRow(char[][] image, int row, int left, int right) {
+        for (int i = left; i <= right; i++) {
+            if (image[row][i] == '1') {
+                return true;
+            }
+        }
+        return false;
     }
 
 

@@ -18,11 +18,21 @@ public class VipTree {
         TreeNode node4 = new TreeNode(4);
         TreeNode node5 = new TreeNode(5);
 
-        node3.left = node2;
-        node3.right = node4;
+//        node3.left = node2;
+//        node3.right = node4;
+//
+//        node4.right = node5;
 
-        node4.right = node5;
+        root.left = node2;
         root.right = node3;
+
+        node3.left = node4;
+        node3.right = node5;
+//        root.right = node3;
+
+        List<List<Integer>> verticalOrder = vipTree.verticalOrder(root);
+        System.out.println(verticalOrder);
+
 
 //        vipTree.longestConsecutiveii(root);
 
@@ -234,5 +244,41 @@ public class VipTree {
 //        longestV2 = Math.max(longestV2, Math.max(sequenceAddLeft + sequenceAddRight, sequenceLeft + sequenceRight) + 1);
 //        return -1;
     }
+
+
+    /**
+     * 314
+     * Binary Tree Vertical Order Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> verticalOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Map<Integer, List<Integer>> map = new TreeMap<>();
+        LinkedList<Integer> level = new LinkedList<>();
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+        level.offer(0);
+        linkedList.offer(root);
+        while (!level.isEmpty()) {
+            Integer currentLevel = level.poll();
+            TreeNode node = linkedList.poll();
+            List<Integer> tmp = map.getOrDefault(currentLevel, new ArrayList<>());
+            tmp.add(node.val);
+            map.put(currentLevel,tmp);
+            if (node.left != null) {
+                linkedList.offer(node.left);
+                level.offer(currentLevel - 1);
+            }
+            if (node.right != null) {
+                linkedList.offer(node.right);
+                level.offer(currentLevel + 1);
+            }
+        }
+        return new ArrayList<>(map.values());
+    }
+
 
 }

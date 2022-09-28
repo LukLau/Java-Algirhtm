@@ -17,7 +17,7 @@ public class DynamicSolution {
 
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
-        char[][] matrix = new char[][]{{'0', '1', '1', '0', '1'}, {'1', '1', '0', '1', '0'}, {'0', '1', '1', '1', '0'}, {'1', '1', '1', '1', '0'}, {'1', '1', '1', '1', '1'}, {'0', '0', '0', '0', '0'}};
+        char[][] matrix = new char[][]{{'0', '1', '1', '0', '1' }, {'1', '1', '0', '1', '0' }, {'0', '1', '1', '1', '0' }, {'1', '1', '1', '1', '0' }, {'1', '1', '1', '1', '1' }, {'0', '0', '0', '0', '0' }};
 //        solution.numDecodings("12");
 //        solution.maximalRectangle(matrix);
 //        List<List<Integer>> lists = solution.generate(4);
@@ -35,7 +35,7 @@ public class DynamicSolution {
 //        System.out.println(solution.generate(5));
 //        solution.getRow(3);
 //        solution.minCut("aab");
-        matrix = new char[][]{{'1', '0'}};
+        matrix = new char[][]{{'1', '0' }};
 //        solution.maximalSquare(matrix);
         solution.numSquares(4);
     }
@@ -996,8 +996,11 @@ public class DynamicSolution {
     }
 
     /**
+     * https://www.lintcode.com/problem/168/solution/27179
      * todo
      * 312. Burst Balloons
+     * explains:
+     * https://leetcode.com/problems/burst-balloons/discuss/892552/For-those-who-are-not-able-to-understand-any-solution-WITH-DIAGRAM
      *
      * @param nums: A list of integer
      * @return: An integer, maximum coins
@@ -1007,51 +1010,33 @@ public class DynamicSolution {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-        int len = nums.length;
-        int[] dp = new int[len + 2];
-        dp[0] = 1;
-        dp[len + 1] = 1;
-        for (int i = 1; i <= len; i++) {
+        nums = init(nums);
+
+        int[][] dp = new int[nums.length][nums.length];
+        for (int i = nums.length - 1; i >= 0; i--) {
+            for (int j = i + 2; j < nums.length; j++) {
+                for (int k = i + 1; k < j; k++) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i][k] + dp[k][j] + nums[i] * nums[k] * nums[j]);
+                }
+            }
         }
-        for (int i = 1; i <= len; i++) {
-            dp[i] = nums[i - 1];
-        }
-        return -1;
+        return dp[0][nums.length - 1];
+
+
     }
 
-    /**
-     * 314
-     * Binary Tree Vertical Order Traversal
-     *
-     * @param root
-     * @return
-     */
-    public List<List<Integer>> verticalOrder(TreeNode root) {
-        if (root == null) {
-            return new ArrayList<>();
+    public int[] init(int[] nums) {
+        //初始化数组，头部和尾部插入1
+        int[] temp = new int[nums.length + 2];
+        temp[0] = 1;
+        for (int i = 1; i < temp.length - 1; i++) {
+            temp[i] = nums[i - 1];
         }
-        Queue<Integer> columnQueue = new LinkedList<>();
-        Map<Integer, List<Integer>> map = new TreeMap<>();
-        columnQueue.offer(0);
-        Queue<TreeNode> nodeQueue = new LinkedList<>();
-        nodeQueue.add(root);
-        while (!nodeQueue.isEmpty()) {
-            Integer poll = columnQueue.poll();
-            TreeNode node = nodeQueue.poll();
-            List<Integer> tmp = map.getOrDefault(poll, new ArrayList<>());
-            tmp.add(node.val);
-            map.put(poll, tmp);
-            if (node.left != null) {
-                columnQueue.offer(poll - 1);
-                nodeQueue.offer(node.left);
-            }
-            if (node.right != null) {
-                columnQueue.offer(poll + 1);
-                nodeQueue.offer(node.right);
-            }
-        }
-        return new ArrayList<>(map.values());
+        temp[temp.length - 1] = 1;
+        return temp;
     }
+
+
 
     /**
      * NC138 矩阵最长递增路径

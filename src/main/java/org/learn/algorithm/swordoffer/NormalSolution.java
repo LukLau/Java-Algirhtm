@@ -27,7 +27,11 @@ public class NormalSolution {
         NormalSolution solution = new NormalSolution();
         ListNode root = new ListNode(1);
 //        solution.basicCalculate("100+100");
-        solution.minMoney(new int[]{5, 2, 3}, 20);
+//        solution.minMoney(new int[]{5, 2, 3}, 20);
+        int[] prices = new int[]{1, 2, 3, 0, 2};
+        int profit = solution.maxProfitV(prices);
+        System.out.println(profit);
+
     }
 
     /**
@@ -1943,6 +1947,58 @@ public class NormalSolution {
         }
         return dp[2][prices.length - 1];
     }
+
+    /**
+     * 309. Best Time to Buy and Sell Stock with Cooldown
+     * https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
+     * process think:
+     * https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/discuss/75931/Easiest-JAVA-solution-with-explanations
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfitV(int[] prices) {
+        if (prices == null || prices.length <= 1) {
+            return 0;
+        }
+        if (prices.length == 2) {
+            return Math.max(0, prices[1] - prices[0]);
+        }
+        int len = prices.length;
+        int[] buy = new int[len];
+        int[] sell = new int[len];
+        buy[0] = -prices[0];
+        sell[1] = Math.max(0, prices[1] - prices[0]);
+        buy[1] = Math.max(-prices[0], -prices[1]);
+        for (int i = 2; i < len; i++) {
+            buy[i] = Math.max(buy[i - 1], sell[i - 2] - prices[i]);
+            sell[i] = Math.max(sell[i - 1], buy[i - 1] + prices[i]);
+        }
+        return sell[len - 1];
+    }
+
+
+    public int maxProfitVVariant(int[] prices) {
+        if (prices == null || prices.length <= 1) {
+            return 0;
+        }
+        int b0 = -prices[0];
+        int b1 = b0;
+        int s0 = 0;
+        int s1 = 0;
+        int s2 = 0;
+        int len = prices.length;
+        for (int i = 1; i < len; i++) {
+            b0 = Math.max(b1, s2 - prices[i]);
+            s0 = Math.max(s1, b1 + prices[i]);
+
+            b1 = b0;
+            s2 = s1;
+            s1 = s0;
+        }
+        return s0;
+    }
+
 
     public int maxProfitIV(int[] prices) {
         if (prices == null || prices.length == 0) {

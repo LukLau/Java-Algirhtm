@@ -1,6 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * leetcode the four page
@@ -26,7 +27,12 @@ public class FourPage {
 
         pattern = "bdpbibletwuwbvh";
         word = "aaaaaaaaaaaaaaa";
-        fourPage.wordPatternMatch(pattern, word);
+//        fourPage.wordPatternMatch(pattern, word);
+        String validParentheses = "()())()";
+//        validParentheses = "(a)())()";
+        List<String> result = fourPage.removeInvalidParentheses(validParentheses);
+        System.out.println(result);
+
     }
 
 
@@ -37,38 +43,67 @@ public class FourPage {
      * @return
      */
     public List<String> removeInvalidParentheses(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
         LinkedList<String> linkedList = new LinkedList<>();
         linkedList.offer(s);
-        Set<String> seen = new HashSet<>();
         while (!linkedList.isEmpty()) {
-            String poll = linkedList.poll();
-            if (checkValid(poll) && !result.contains(poll)) {
-                result.add(poll);
-            }
-            if (!result.isEmpty()) {
-                continue;
-            }
-            int len = poll.length();
-            for (int i = 0; i < len; i++) {
-                char word = poll.charAt(i);
-                if (word != '(' && word != ')') {
+            int size = linkedList.size();
+            for (int i = 0; i < size; i++) {
+                String poll = linkedList.poll();
+
+                if (!seen.add(poll)) {
                     continue;
                 }
-                String tmp = poll.substring(0, i) + poll.substring(i + 1);
-                if (!seen.contains(tmp)) {
-                    linkedList.offer(tmp);
-                    seen.add(tmp);
+                if (checkValidParent(poll)) {
+                    result.add(poll);
+                    continue;
+                }
+                int len = poll.length();
+
+                for (int j = 0; j < len; j++) {
+                    char tmp = poll.charAt(j);
+                    if (tmp != '(' && tmp != ')') {
+                        continue;
+                    }
+                    String remain = "";
+                    if (j == 0) {
+                        remain = poll.substring(j + 1);
+                    } else if (j == len - 1) {
+                        remain = poll.substring(0, j);
+                    } else {
+                        remain = poll.substring(0, j) + poll.substring(j + 1);
+                    }
+
+                    linkedList.offer(remain);
                 }
             }
+            if (!result.isEmpty()) {
+                return result;
+            }
         }
-        if (result.isEmpty()) {
-            result.add("");
-        }
+        result.add("");
         return result;
+    }
+
+    private boolean checkValidParent(String s) {
+        int len = s.length();
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < len; i++) {
+            char tmp = s.charAt(i);
+            if (tmp != '(' && tmp != ')') {
+                continue;
+            }
+            if (stack.isEmpty() || tmp == '(') {
+                stack.push(i);
+            } else if (s.charAt(stack.peek()) == '(') {
+                stack.pop();
+            }
+        }
+        return stack.isEmpty();
     }
 
     private boolean checkValid(String s) {
