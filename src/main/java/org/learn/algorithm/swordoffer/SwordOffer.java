@@ -1,6 +1,7 @@
 package org.learn.algorithm.swordoffer;
 
 import org.learn.algorithm.datastructure.*;
+import org.springframework.jca.cci.object.EisOperation;
 
 import javax.imageio.metadata.IIOMetadataFormat;
 import java.util.*;
@@ -29,7 +30,11 @@ public class SwordOffer {
         node3.left = new TreeNode(4);
         node3.right = new TreeNode(5);
 
-        offer.isCompleteTree(root);
+//        offer.isCompleteTree(root);
+//        offer.minCostClimbingStairs(new int[]{2, 5, 20});
+
+        int[][] matrix = new int[][]{{1, 3, 5, 9}, {8, 1, 3, 4}, {5, 0, 6, 1}, {8, 8, 4, 0}};
+        offer.minPathSum(matrix);
     }
 
 
@@ -77,11 +82,13 @@ public class SwordOffer {
      */
     public boolean Find(int target, int[][] array) {
         if (array == null || array.length == 0) {
-            return false;
+            return true;
         }
-        int i = array.length - 1;
+        int row = array.length;
+        int column = array[0].length;
+        int i = row - 1;
         int j = 0;
-        while (i >= 0 && j < array[i].length) {
+        while (i >= 0 && j < column) {
             int val = array[i][j];
             if (val == target) {
                 return true;
@@ -545,16 +552,18 @@ public class SwordOffer {
         if (cost == null || cost.length == 0) {
             return 0;
         }
-        if (cost.length == 1) {
-            return cost[0];
+        if (cost.length <= 2) {
+            return cost.length == 1 ? cost[0] : Math.min(cost[0], cost[1]);
         }
-        int[] dp = new int[cost.length];
-        dp[0] = cost[0];
-        dp[1] = cost[1];
-        for (int i = 2; i < cost.length; i++) {
-            dp[i] = Math.min(dp[i - 1], dp[i - 2]) + cost[i];
+        int prev = 0;
+        int current = 0;
+        for (int num : cost) {
+            int tmp = current;
+            current = Math.min(current, prev) + num;
+            prev = tmp;
         }
-        return Math.min(dp[cost.length - 2], dp[cost.length - 1]);
+        return Math.min(prev, current);
+
     }
 
     public int minCostClimbingStairsII(int[] cost) {
@@ -595,7 +604,7 @@ public class SwordOffer {
                 if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
                     dp[i][j] = 1 + dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
                 }
             }
         }
@@ -629,11 +638,31 @@ public class SwordOffer {
         if (str1 == null || str2 == null) {
             return "-1";
         }
+//        int m = str1.length();
+//        int n = str2.length();
+//        int[][] dp = new int[m + 1][n + 1];
+//        int result = 0;
+//        int endIndex = -1;
+//        for (int i = 1; i <= m; i++) {
+//            for (int j = 1; j <= n; j++) {
+//                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
+//                    dp[i][j] = dp[i - 1][j - 1] + 1;
+//                    if (dp[i][j] > result) {
+//                        result = dp[i][j];
+//                        endIndex = i;
+//                    }
+//                }
+//            }
+//        }
+//        if (result == 0) {
+//            return "-1";
+//        }
+//        return str1.substring(endIndex - result, endIndex);
         int m = str1.length();
         int n = str2.length();
         int[][] dp = new int[m + 1][n + 1];
         int result = 0;
-        int endIndex = -1;
+        int endIndex = 0;
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
@@ -645,11 +674,10 @@ public class SwordOffer {
                 }
             }
         }
-        if (result == 0) {
-            return "-1";
+        if (result > 0) {
+            return str1.substring(endIndex - result, endIndex);
         }
-        return str1.substring(endIndex - result, endIndex);
-
+        return "-1";
     }
 
 
@@ -666,16 +694,20 @@ public class SwordOffer {
         }
         int row = matrix.length;
         int column = matrix[0].length;
-        int[] dp = new int[column];
+        int[][] dp = new int[row][column];
         for (int j = 0; j < column; j++) {
-            dp[j] = j == 0 ? matrix[0][j] : dp[j - 1] + matrix[0][j];
+            dp[0][j] = j == 0 ? matrix[0][0] : dp[0][j - 1] + matrix[0][j];
         }
         for (int i = 1; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                dp[j] = (j > 0 ? Math.min(dp[j], dp[j - 1]) : dp[j]) + matrix[i][j];
+                if (j == 0) {
+                    dp[i][j] = dp[i - 1][j] + matrix[i][j];
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + matrix[i][j];
+                }
             }
         }
-        return dp[column - 1];
+        return dp[row - 1][column - 1];
     }
 
 
@@ -1357,7 +1389,6 @@ public class SwordOffer {
         boolean isComplete = false;
         while (!linkedList.isEmpty()) {
             TreeNode poll = linkedList.poll();
-
             if (poll == null) {
                 isComplete = true;
                 continue;

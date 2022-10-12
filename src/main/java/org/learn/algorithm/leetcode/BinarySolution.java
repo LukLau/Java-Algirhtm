@@ -236,6 +236,9 @@ public class BinarySolution {
      * @return
      */
     public int findPeakElement(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
         int left = 0;
         int right = nums.length - 1;
         while (left < right) {
@@ -249,6 +252,26 @@ public class BinarySolution {
         return left;
     }
 
+    public int minNumberInRotateArrayii(int[] array) {
+        if (array == null || array.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = array.length - 1;
+        while (left < right) {
+            if (array[left] == array[right]) {
+                right--;
+                continue;
+            }
+            int mid = left + (right - left) / 2;
+            if (array[mid] > array[right]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return array[left];
+    }
 
     public int minNumberInRotateArray(int[] array) {
         if (array == null || array.length == 0) {

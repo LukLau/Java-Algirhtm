@@ -5,6 +5,8 @@ import org.springframework.boot.context.properties.bind.handler.IgnoreTopLevelCo
 
 import java.awt.image.Kernel;
 import java.util.*;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 动态规划问题
@@ -17,7 +19,7 @@ public class DynamicSolution {
 
     public static void main(String[] args) {
         DynamicSolution solution = new DynamicSolution();
-        char[][] matrix = new char[][]{{'0', '1', '1', '0', '1' }, {'1', '1', '0', '1', '0' }, {'0', '1', '1', '1', '0' }, {'1', '1', '1', '1', '0' }, {'1', '1', '1', '1', '1' }, {'0', '0', '0', '0', '0' }};
+        char[][] matrix = new char[][]{{'0', '1', '1', '0', '1'}, {'1', '1', '0', '1', '0'}, {'0', '1', '1', '1', '0'}, {'1', '1', '1', '1', '0'}, {'1', '1', '1', '1', '1'}, {'0', '0', '0', '0', '0'}};
 //        solution.numDecodings("12");
 //        solution.maximalRectangle(matrix);
 //        List<List<Integer>> lists = solution.generate(4);
@@ -35,7 +37,7 @@ public class DynamicSolution {
 //        System.out.println(solution.generate(5));
 //        solution.getRow(3);
 //        solution.minCut("aab");
-        matrix = new char[][]{{'1', '0' }};
+        matrix = new char[][]{{'1', '0'}};
 //        solution.maximalSquare(matrix);
         solution.numSquares(4);
     }
@@ -1035,7 +1037,6 @@ public class DynamicSolution {
         temp[temp.length - 1] = 1;
         return temp;
     }
-
 
 
     /**

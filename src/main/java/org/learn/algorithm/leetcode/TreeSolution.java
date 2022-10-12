@@ -4,10 +4,7 @@ import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.TreeNode;
 
-import javax.swing.plaf.synth.SynthStyleFactory;
-import javax.swing.text.html.HTMLEditorKit;
 import java.util.*;
-import java.util.function.Predicate;
 
 /**
  * 树的解决方案
@@ -296,24 +293,26 @@ public class TreeSolution {
         if (root == null) {
             return new int[]{};
         }
+        LinkedList<Integer> linkedList = new LinkedList<>();
         Stack<TreeNode> stack = new Stack<>();
-        LinkedList<Integer> result = new LinkedList<>();
         TreeNode p = root;
-        while (!stack.isEmpty() || p != null) {
+        while (p != null || !stack.isEmpty()) {
             if (p != null) {
-                result.addFirst(p.val);
                 stack.push(p);
+                linkedList.addFirst(p.val);
                 p = p.right;
             } else {
                 p = stack.pop();
                 p = p.left;
             }
         }
-        int[] tmp = new int[result.size()];
-        for (int i = 0; i < result.size(); i++) {
-            tmp[i] = result.get(i);
+        int[] result = new int[linkedList.size()];
+        int index = 0;
+        for (int i = 0; i < result.length; i++) {
+            result[index] = linkedList.get(index);
+            index++;
         }
-        return tmp;
+        return result;
     }
 
 
@@ -587,17 +586,17 @@ public class TreeSolution {
         if (root == null) {
             return false;
         }
-        return internalIsValid(Long.MIN_VALUE, root, Long.MAX_VALUE);
+        return internalValidBST(Integer.MIN_VALUE, root, Integer.MAX_VALUE);
     }
 
-    private boolean internalIsValid(long minValue, TreeNode root, long maxValue) {
+    private boolean internalValidBST(int minValue, TreeNode root, int maxValue) {
         if (root == null) {
             return true;
         }
-        if (root.val <= minValue || root.val >= maxValue) {
+        if (minValue >= root.val || root.val >= maxValue) {
             return false;
         }
-        return internalIsValid(minValue, root.left, root.val) && internalIsValid(root.val, root.right, maxValue);
+        return internalValidBST(minValue, root.left, root.val) && internalValidBST(root.val, root.right, maxValue);
     }
 
     /**

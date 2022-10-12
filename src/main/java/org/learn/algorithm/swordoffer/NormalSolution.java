@@ -3,6 +3,7 @@ package org.learn.algorithm.swordoffer;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
+import org.springframework.util.ResourceUtils;
 
 import java.util.*;
 import java.util.List;
@@ -30,7 +31,10 @@ public class NormalSolution {
 //        solution.minMoney(new int[]{5, 2, 3}, 20);
         int[] prices = new int[]{1, 2, 3, 0, 2};
         int profit = solution.maxProfitV(prices);
-        System.out.println(profit);
+//        System.out.println(profit);
+        int[] permute = new int[]{1, 1, 2};
+        ArrayList<ArrayList<Integer>> permuteUnique = solution.permuteUnique(permute);
+        System.out.println(permuteUnique);
 
     }
 
@@ -1088,9 +1092,9 @@ public class NormalSolution {
             fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode newNode = slow.next;
+        ListNode nextNode = slow.next;
         slow.next = null;
-        ListNode reverse = reverse(newNode);
+        ListNode reverse = reverse(nextNode);
         while (head != null && reverse != null) {
             if (head.val != reverse.val) {
                 return false;
@@ -1154,18 +1158,14 @@ public class NormalSolution {
      */
     public int minNumberDisappeared(int[] nums) {
         // write code here
-        if (nums == null || nums.length == 0) {
-            return -1;
-        }
-        for (int i = 0; i < nums.length; i++) {
-            while (nums[i] > 0 && nums[i] < nums.length && nums[i] != nums[nums[i] - 1]) {
-                swap(nums, i, nums[i] - 1);
+        for (int num : nums) {
+            while (num > 0 && num < nums.length && num != nums[num - 1]) {
+                swap(nums, num, num - 1);
             }
         }
         for (int i = 0; i < nums.length; i++) {
-            if (i + 1 != nums[i]) {
+            if (nums[i] != i + 1) {
                 return i + 1;
-
             }
         }
         return nums.length + 1;
@@ -3256,24 +3256,22 @@ public class NormalSolution {
      */
     public int[] FindNumsAppearOnce(int[] array) {
         // write code here
-        if (array == null || array.length == 0) {
-            return new int[]{};
-        }
-        int result = 0;
+        int total = 0;
         for (int num : array) {
-            result ^= num;
+            total ^= num;
         }
-        result &= -result;
-        int[] tmp = new int[2];
+        total &= -total;
+        int[] ans = new int[2];
+
         for (int num : array) {
-            if ((result & num) != 0) {
-                tmp[1] ^= num;
+            if ((num & total) != 0) {
+                ans[1] ^= num;
             } else {
-                tmp[0] ^= num;
+                ans[0] ^= num;
             }
         }
-        Arrays.sort(tmp);
-        return tmp;
+        Arrays.sort(ans);
+        return ans;
     }
 
 
@@ -3429,13 +3427,13 @@ public class NormalSolution {
             return new ArrayList<>();
         }
         Arrays.sort(num);
-        boolean[] used = new boolean[num.length];
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-        internalPermuteUnique(result, new ArrayList<>(), num, used);
+        boolean[] used = new boolean[num.length];
+        internalPermuteUnique(result, new ArrayList<>(), used, num);
         return result;
     }
 
-    private void internalPermuteUnique(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int[] num, boolean[] used) {
+    private void internalPermuteUnique(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, boolean[] used, int[] num) {
         if (tmp.size() == num.length) {
             result.add(new ArrayList<>(tmp));
             return;
@@ -3449,7 +3447,7 @@ public class NormalSolution {
             }
             used[i] = true;
             tmp.add(num[i]);
-            internalPermuteUnique(result, tmp, num, used);
+            internalPermuteUnique(result, tmp, used, num);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
         }

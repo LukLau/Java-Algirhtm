@@ -173,6 +173,16 @@ public class FourPage {
         if (s == null || s.isEmpty()) {
             return "";
         }
+        Stack<Character> stack = new Stack<>();
+
+        char[] words = s.toCharArray();
+        for (char word : words) {
+            if (stack.contains(word)) {
+                stack.remove(word);
+            }
+            stack.push(word);
+        }
+
         return "";
     }
 
