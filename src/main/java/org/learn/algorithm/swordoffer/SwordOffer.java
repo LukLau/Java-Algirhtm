@@ -1,9 +1,7 @@
 package org.learn.algorithm.swordoffer;
 
 import org.learn.algorithm.datastructure.*;
-import org.springframework.jca.cci.object.EisOperation;
 
-import javax.imageio.metadata.IIOMetadataFormat;
 import java.util.*;
 
 /**
@@ -13,7 +11,6 @@ import java.util.*;
 public class SwordOffer {
 
     public static void main(String[] args) {
-
         SwordOffer offer = new SwordOffer();
 
         TreeNode root = new TreeNode(1);
@@ -34,7 +31,12 @@ public class SwordOffer {
 //        offer.minCostClimbingStairs(new int[]{2, 5, 20});
 
         int[][] matrix = new int[][]{{1, 3, 5, 9}, {8, 1, 3, 4}, {5, 0, 6, 1}, {8, 8, 4, 0}};
-        offer.minPathSum(matrix);
+//        offer.minPathSum(matrix);
+        int[] money = new int[]{357, 322, 318, 181, 22, 158, 365};
+        int minMoney = offer.minMoney(money, 4976);
+
+        System.out.println(minMoney);
+
     }
 
 
@@ -708,6 +710,37 @@ public class SwordOffer {
             }
         }
         return dp[row - 1][column - 1];
+    }
+
+    /**
+     * BM69 把数字翻译成字符串
+     * <p>
+     * 解码
+     *
+     * @param nums string字符串 数字串
+     * @return int整型
+     */
+    public int convertStringToNum(String nums) {
+        // write code here
+        if (nums == null || nums.isEmpty()) {
+            return 0;
+        }
+        int len = nums.length();
+        int[] dp = new int[len + 1];
+        dp[0] = 1;
+        for (int i = 1; i <= len; i++) {
+            String first = nums.substring(i - 1, i);
+            int firstValue = Integer.parseInt(first);
+            if (firstValue >= 1 && firstValue <= 9) {
+                dp[i] = dp[i - 1];
+            }
+            String second = i < 2 ? "0" : nums.substring(i - 2, i);
+            int secondValue = Integer.parseInt(second);
+            if (secondValue >= 10 && secondValue <= 26) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp[len];
     }
 
 
@@ -1826,27 +1859,64 @@ public class SwordOffer {
     public int minMoney(int[] arr, int aim) {
         // write code here
         if (arr == null || arr.length == 0) {
-            return 0;
+            return -1;
         }
-        int[][] dp = new int[arr.length][aim + 1];
-        for (int j = 1; j <= aim; j++) {
-            dp[0][j] = Integer.MAX_VALUE;
-            if (j - arr[0] >= 0 && dp[0][j - arr[0]] != Integer.MAX_VALUE) {
-                dp[0][j] = 1 + dp[0][j - arr[0]];
+//        int[][] dp = new int[arr.length][aim + 1];
+//        for (int j = 1; j <= aim; j++) {
+//            dp[0][j] = Integer.MAX_VALUE;
+//            if (j - arr[0] >= 0 && dp[0][j - arr[0]] != Integer.MAX_VALUE) {
+//                dp[0][j] = 1 + dp[0][j - arr[0]];
+//            }
+//        }
+//        for (int i = 1; i < arr.length; i++) {
+//            for (int j = arr[0]; j <= aim; j++) {
+//                if (j - arr[i] >= 0 && dp[i][j - arr[i]] != Integer.MAX_VALUE) {
+//                    // 判断不使用当前种类的货币和仅使用一张当前种类的货币这两种情况下，哪一种方案使用的货币少
+//                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - arr[i]] + 1);
+//                } else {
+//                    // 不使用当前种类的货币
+//                    dp[i][j] = dp[i - 1][j];
+//                }
+//            }
+//        }
+//        return dp[arr.length - 1][aim] == Integer.MAX_VALUE ? -1 : dp[arr.length - 1][aim];
+
+        int[][] dp = new int[aim + 1][arr.length];
+        for (int i = 1; i <= aim; i++) {
+            dp[i][0] = Integer.MAX_VALUE;
+            if (i - arr[0] >= 0 && dp[i - arr[0]][0] != Integer.MAX_VALUE) {
+                dp[i][0] = 1 + dp[i - arr[0]][0];
             }
         }
-        for (int i = 1; i < arr.length; i++) {
-            for (int j = arr[0]; j <= aim; j++) {
-                if (j - arr[i] >= 0 && dp[i][j - arr[i]] != Integer.MAX_VALUE) {
-                    // 判断不使用当前种类的货币和仅使用一张当前种类的货币这两种情况下，哪一种方案使用的货币少
-                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - arr[i]] + 1);
+        for (int i = 1; i <= aim; i++) {
+            for (int j = 1; j < arr.length; j++) {
+                if (i - arr[j] >= 0 && dp[i - arr[j]][j] != Integer.MAX_VALUE) {
+                    dp[i][j] = Math.min(dp[i][j - 1], dp[i - arr[j]][j] + 1);
                 } else {
-                    // 不使用当前种类的货币
-                    dp[i][j] = dp[i - 1][j];
+                    dp[i][j] = dp[i][j - 1];
                 }
             }
         }
-        return dp[arr.length - 1][aim] == Integer.MAX_VALUE ? -1 : dp[arr.length - 1][aim];
+        return dp[aim][arr.length - 1] == Integer.MAX_VALUE ? -1 : dp[aim][arr.length - 1];
+    }
+
+    public int minMoneyIII(int[] arr, int aim) {
+        if (arr == null || arr.length == 0) {
+            return -1;
+        }
+        int[] dp = new int[aim + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+        for (int i = 1; i <= aim; i++) {
+            int min = Integer.MAX_VALUE;
+            for (int money : arr) {
+                if (i - money >= 0 && dp[i - money] != Integer.MAX_VALUE) {
+                    min = Math.min(min, dp[i - money] + 1);
+                }
+            }
+            dp[i] = min;
+        }
+        return dp[aim] == Integer.MAX_VALUE ? -1 : dp[aim];
     }
 
     public int minMoneyII(int[] arr, int aim) {
@@ -2008,16 +2078,16 @@ public class SwordOffer {
         }
         int[] dp = new int[arr.length];
         Arrays.fill(dp, 1);
+        int result = 1;
         for (int i = 1; i < arr.length; i++) {
             for (int j = 0; j < i; j++) {
-                if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+                if (arr[j] < arr[i] && dp[i] < dp[j] + 1) {
                     dp[i] = dp[j] + 1;
                 }
+                if (dp[i] > result) {
+                    result = dp[i];
+                }
             }
-        }
-        int result = 0;
-        for (int num : dp) {
-            result = Math.max(result, num);
         }
         return result;
     }
@@ -2055,16 +2125,17 @@ public class SwordOffer {
         if (A == null || A.length() == 0) {
             return 0;
         }
+        int m = A.length();
+        boolean[][] dp = new boolean[m][m];
         int result = 0;
-        int len = A.length();
-        boolean[][] dp = new boolean[len][len];
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < m; i++) {
             for (int j = 0; j <= i; j++) {
                 if (A.charAt(j) == A.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1])) {
                     dp[j][i] = true;
-                }
-                if (dp[j][i] && i - j + 1 > result) {
-                    result = i - j + 1;
+                    if (i - j + 1 > result) {
+                        result = i - j + 1;
+
+                    }
                 }
             }
         }
