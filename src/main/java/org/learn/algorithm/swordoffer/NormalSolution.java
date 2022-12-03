@@ -3,6 +3,7 @@ package org.learn.algorithm.swordoffer;
 import org.learn.algorithm.datastructure.Interval;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.TreeNode;
+import org.springframework.util.ResourceUtils;
 
 import java.util.*;
 import java.util.List;
@@ -27,7 +28,14 @@ public class NormalSolution {
         NormalSolution solution = new NormalSolution();
         ListNode root = new ListNode(1);
 //        solution.basicCalculate("100+100");
-        solution.minMoney(new int[]{5, 2, 3}, 20);
+//        solution.minMoney(new int[]{5, 2, 3}, 20);
+        int[] prices = new int[]{1, 2, 3, 0, 2};
+        int profit = solution.maxProfitV(prices);
+//        System.out.println(profit);
+        int[] permute = new int[]{1, 1, 2};
+        ArrayList<ArrayList<Integer>> permuteUnique = solution.permuteUnique(permute);
+        System.out.println(permuteUnique);
+
     }
 
     /**
@@ -1084,9 +1092,9 @@ public class NormalSolution {
             fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode newNode = slow.next;
+        ListNode nextNode = slow.next;
         slow.next = null;
-        ListNode reverse = reverse(newNode);
+        ListNode reverse = reverse(nextNode);
         while (head != null && reverse != null) {
             if (head.val != reverse.val) {
                 return false;
@@ -1150,18 +1158,14 @@ public class NormalSolution {
      */
     public int minNumberDisappeared(int[] nums) {
         // write code here
-        if (nums == null || nums.length == 0) {
-            return -1;
-        }
-        for (int i = 0; i < nums.length; i++) {
-            while (nums[i] > 0 && nums[i] < nums.length && nums[i] != nums[nums[i] - 1]) {
-                swap(nums, i, nums[i] - 1);
+        for (int num : nums) {
+            while (num > 0 && num < nums.length && num != nums[num - 1]) {
+                swap(nums, num, num - 1);
             }
         }
         for (int i = 0; i < nums.length; i++) {
-            if (i + 1 != nums[i]) {
+            if (nums[i] != i + 1) {
                 return i + 1;
-
             }
         }
         return nums.length + 1;
@@ -1943,6 +1947,58 @@ public class NormalSolution {
         }
         return dp[2][prices.length - 1];
     }
+
+    /**
+     * 309. Best Time to Buy and Sell Stock with Cooldown
+     * https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
+     * process think:
+     * https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/discuss/75931/Easiest-JAVA-solution-with-explanations
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfitV(int[] prices) {
+        if (prices == null || prices.length <= 1) {
+            return 0;
+        }
+        if (prices.length == 2) {
+            return Math.max(0, prices[1] - prices[0]);
+        }
+        int len = prices.length;
+        int[] buy = new int[len];
+        int[] sell = new int[len];
+        buy[0] = -prices[0];
+        sell[1] = Math.max(0, prices[1] - prices[0]);
+        buy[1] = Math.max(-prices[0], -prices[1]);
+        for (int i = 2; i < len; i++) {
+            buy[i] = Math.max(buy[i - 1], sell[i - 2] - prices[i]);
+            sell[i] = Math.max(sell[i - 1], buy[i - 1] + prices[i]);
+        }
+        return sell[len - 1];
+    }
+
+
+    public int maxProfitVVariant(int[] prices) {
+        if (prices == null || prices.length <= 1) {
+            return 0;
+        }
+        int b0 = -prices[0];
+        int b1 = b0;
+        int s0 = 0;
+        int s1 = 0;
+        int s2 = 0;
+        int len = prices.length;
+        for (int i = 1; i < len; i++) {
+            b0 = Math.max(b1, s2 - prices[i]);
+            s0 = Math.max(s1, b1 + prices[i]);
+
+            b1 = b0;
+            s2 = s1;
+            s1 = s0;
+        }
+        return s0;
+    }
+
 
     public int maxProfitIV(int[] prices) {
         if (prices == null || prices.length == 0) {
@@ -3200,24 +3256,22 @@ public class NormalSolution {
      */
     public int[] FindNumsAppearOnce(int[] array) {
         // write code here
-        if (array == null || array.length == 0) {
-            return new int[]{};
-        }
-        int result = 0;
+        int total = 0;
         for (int num : array) {
-            result ^= num;
+            total ^= num;
         }
-        result &= -result;
-        int[] tmp = new int[2];
+        total &= -total;
+        int[] ans = new int[2];
+
         for (int num : array) {
-            if ((result & num) != 0) {
-                tmp[1] ^= num;
+            if ((num & total) != 0) {
+                ans[1] ^= num;
             } else {
-                tmp[0] ^= num;
+                ans[0] ^= num;
             }
         }
-        Arrays.sort(tmp);
-        return tmp;
+        Arrays.sort(ans);
+        return ans;
     }
 
 
@@ -3373,13 +3427,13 @@ public class NormalSolution {
             return new ArrayList<>();
         }
         Arrays.sort(num);
-        boolean[] used = new boolean[num.length];
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-        internalPermuteUnique(result, new ArrayList<>(), num, used);
+        boolean[] used = new boolean[num.length];
+        internalPermuteUnique(result, new ArrayList<>(), used, num);
         return result;
     }
 
-    private void internalPermuteUnique(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, int[] num, boolean[] used) {
+    private void internalPermuteUnique(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, boolean[] used, int[] num) {
         if (tmp.size() == num.length) {
             result.add(new ArrayList<>(tmp));
             return;
@@ -3393,7 +3447,7 @@ public class NormalSolution {
             }
             used[i] = true;
             tmp.add(num[i]);
-            internalPermuteUnique(result, tmp, num, used);
+            internalPermuteUnique(result, tmp, used, num);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
         }

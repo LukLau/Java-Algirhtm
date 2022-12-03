@@ -2,6 +2,7 @@ package org.learn.algorithm.datastructure;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 288
@@ -12,25 +13,46 @@ import java.util.Map;
  */
 public class ValidWordAbbr {
 
-    private final Map<String, Integer> map = new HashMap<>();
+    private final Map<String, Integer> words = new HashMap<>();
 
-    private final Map<String, Integer> abbrMap = new HashMap<>();
+    private final Map<String, Integer> abbrWords = new HashMap<>();
 
-    /**
+
+    /*
      * @param dictionary: a list of words
      */
     public ValidWordAbbr(String[] dictionary) {
         // do intialization if necessary
         for (String word : dictionary) {
-            Integer count = map.getOrDefault(word, 0);
-            map.put(word, count + 1);
-
             String abbrWord = getAbbrWord(word);
 
-            Integer abbrCount = abbrMap.getOrDefault(abbrWord, 0);
-            abbrMap.put(abbrWord, abbrCount + 1);
+            Integer originalCount = words.getOrDefault(word, 0);
+
+            words.put(word, originalCount + 1);
+
+            Integer abbrWordCount = abbrWords.getOrDefault(abbrWord, 0);
+
+            abbrWords.put(abbrWord, abbrWordCount + 1);
         }
     }
+
+    /*
+     * @param word: a string
+     * @return: true if its abbreviation is unique or false
+     */
+    public boolean isUnique(String word) {
+        // write your code here
+        Integer originalCount = words.get(word);
+
+
+        String abbrWord = getAbbrWord(word);
+
+        Integer abbrWordCount = abbrWords.get(abbrWord);
+
+        return Objects.equals(originalCount, abbrWordCount);
+
+    }
+
 
     private String getAbbrWord(String word) {
         int len = word.length();
@@ -42,13 +64,40 @@ public class ValidWordAbbr {
                 word.charAt(len - 1);
     }
 
+
     /**
-     * @param word: a string
-     * @return: true if its abbreviation is unique or false
+     * https://www.lintcode.com/problem/637
+     *
+     * @param word: a non-empty string
+     * @param abbr: an abbreviation
+     * @return: true if string matches with the given abbr or false
      */
-    public boolean isUnique(String word) {
-        String abbrWord = getAbbrWord(word);
-        return map.getOrDefault(word, 0).equals(abbrMap.getOrDefault(abbrWord, 0));
+    public boolean validWordAbbreviation(String word, String abbr) {
         // write your code here
+        if (word == null || abbr == null) {
+            return false;
+        }
+        int len = word.length();
+
+        for (int i = 1; i <= len; i++) {
+
+        }
+        return false;
+
     }
+
+
+    public static void main(String[] args) {
+        String[] word = new String[]{"deer", "door", "cake", "card"};
+        ValidWordAbbr validWordAbbr = new ValidWordAbbr(word);
+
+//        System.out.println(validWordAbbr.isUnique("dear"));
+//        System.out.println(validWordAbbr.isUnique("cart"));
+        System.out.println(validWordAbbr.isUnique("cane"));
+        System.out.println(validWordAbbr.isUnique("make"));
+
+
+    }
+
+
 }

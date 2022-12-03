@@ -2,7 +2,6 @@ package org.learn.algorithm.swordoffer;
 
 import org.learn.algorithm.datastructure.*;
 
-import javax.imageio.metadata.IIOMetadataFormat;
 import java.util.*;
 
 /**
@@ -12,20 +11,32 @@ import java.util.*;
 public class SwordOffer {
 
     public static void main(String[] args) {
-
         SwordOffer offer = new SwordOffer();
-        ListNode root = new ListNode(1);
-        ListNode d2 = new ListNode(2);
-        root.next = d2;
-        ListNode d3 = new ListNode(3);
-        d2.next = d3;
-        ListNode d4 = new ListNode(4);
-        d3.next = d4;
-        d4.next = new ListNode(5);
-        offer.FindKthToTail(root, 6);
 
-//        offer.minCostClimbingStairs(new int[]{63, 63, 56, 31, 79, 86, 57, 79, 75, 68});
-        offer.maxArea(new int[]{1, 7, 3, 2, 4, 5, 8, 2, 7});
+        TreeNode root = new TreeNode(1);
+        TreeNode node2 = new TreeNode(2);
+        TreeNode node3 = new TreeNode(3);
+//        node2.left = new TreeNode(4);
+//        node2.right = new TreeNode(5);
+        root.left = node2;
+
+//        TreeNode node6 = new TreeNode(6);
+//        node3.left = node6;
+        root.right = node3;
+
+        node3.left = new TreeNode(4);
+        node3.right = new TreeNode(5);
+
+//        offer.isCompleteTree(root);
+//        offer.minCostClimbingStairs(new int[]{2, 5, 20});
+
+        int[][] matrix = new int[][]{{1, 3, 5, 9}, {8, 1, 3, 4}, {5, 0, 6, 1}, {8, 8, 4, 0}};
+//        offer.minPathSum(matrix);
+        int[] money = new int[]{357, 322, 318, 181, 22, 158, 365};
+        int minMoney = offer.minMoney(money, 4976);
+
+        System.out.println(minMoney);
+
     }
 
 
@@ -73,11 +84,13 @@ public class SwordOffer {
      */
     public boolean Find(int target, int[][] array) {
         if (array == null || array.length == 0) {
-            return false;
+            return true;
         }
-        int i = array.length - 1;
+        int row = array.length;
+        int column = array[0].length;
+        int i = row - 1;
         int j = 0;
-        while (i >= 0 && j < array[i].length) {
+        while (i >= 0 && j < column) {
             int val = array[i][j];
             if (val == target) {
                 return true;
@@ -541,16 +554,18 @@ public class SwordOffer {
         if (cost == null || cost.length == 0) {
             return 0;
         }
-        if (cost.length == 1) {
-            return cost[0];
+        if (cost.length <= 2) {
+            return cost.length == 1 ? cost[0] : Math.min(cost[0], cost[1]);
         }
-        int[] dp = new int[cost.length];
-        dp[0] = cost[0];
-        dp[1] = cost[1];
-        for (int i = 2; i < cost.length; i++) {
-            dp[i] = Math.min(dp[i - 1], dp[i - 2]) + cost[i];
+        int prev = 0;
+        int current = 0;
+        for (int num : cost) {
+            int tmp = current;
+            current = Math.min(current, prev) + num;
+            prev = tmp;
         }
-        return Math.min(dp[cost.length - 2], dp[cost.length - 1]);
+        return Math.min(prev, current);
+
     }
 
     public int minCostClimbingStairsII(int[] cost) {
@@ -591,7 +606,7 @@ public class SwordOffer {
                 if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
                     dp[i][j] = 1 + dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
                 }
             }
         }
@@ -625,11 +640,31 @@ public class SwordOffer {
         if (str1 == null || str2 == null) {
             return "-1";
         }
+//        int m = str1.length();
+//        int n = str2.length();
+//        int[][] dp = new int[m + 1][n + 1];
+//        int result = 0;
+//        int endIndex = -1;
+//        for (int i = 1; i <= m; i++) {
+//            for (int j = 1; j <= n; j++) {
+//                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
+//                    dp[i][j] = dp[i - 1][j - 1] + 1;
+//                    if (dp[i][j] > result) {
+//                        result = dp[i][j];
+//                        endIndex = i;
+//                    }
+//                }
+//            }
+//        }
+//        if (result == 0) {
+//            return "-1";
+//        }
+//        return str1.substring(endIndex - result, endIndex);
         int m = str1.length();
         int n = str2.length();
         int[][] dp = new int[m + 1][n + 1];
         int result = 0;
-        int endIndex = -1;
+        int endIndex = 0;
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
@@ -641,11 +676,10 @@ public class SwordOffer {
                 }
             }
         }
-        if (result == 0) {
-            return "-1";
+        if (result > 0) {
+            return str1.substring(endIndex - result, endIndex);
         }
-        return str1.substring(endIndex - result, endIndex);
-
+        return "-1";
     }
 
 
@@ -662,16 +696,51 @@ public class SwordOffer {
         }
         int row = matrix.length;
         int column = matrix[0].length;
-        int[] dp = new int[column];
+        int[][] dp = new int[row][column];
         for (int j = 0; j < column; j++) {
-            dp[j] = j == 0 ? matrix[0][j] : dp[j - 1] + matrix[0][j];
+            dp[0][j] = j == 0 ? matrix[0][0] : dp[0][j - 1] + matrix[0][j];
         }
         for (int i = 1; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                dp[j] = (j > 0 ? Math.min(dp[j], dp[j - 1]) : dp[j]) + matrix[i][j];
+                if (j == 0) {
+                    dp[i][j] = dp[i - 1][j] + matrix[i][j];
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + matrix[i][j];
+                }
             }
         }
-        return dp[column - 1];
+        return dp[row - 1][column - 1];
+    }
+
+    /**
+     * BM69 把数字翻译成字符串
+     * <p>
+     * 解码
+     *
+     * @param nums string字符串 数字串
+     * @return int整型
+     */
+    public int convertStringToNum(String nums) {
+        // write code here
+        if (nums == null || nums.isEmpty()) {
+            return 0;
+        }
+        int len = nums.length();
+        int[] dp = new int[len + 1];
+        dp[0] = 1;
+        for (int i = 1; i <= len; i++) {
+            String first = nums.substring(i - 1, i);
+            int firstValue = Integer.parseInt(first);
+            if (firstValue >= 1 && firstValue <= 9) {
+                dp[i] = dp[i - 1];
+            }
+            String second = i < 2 ? "0" : nums.substring(i - 2, i);
+            int secondValue = Integer.parseInt(second);
+            if (secondValue >= 10 && secondValue <= 26) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp[len];
     }
 
 
@@ -679,7 +748,7 @@ public class SwordOffer {
      * BM60 括号生成
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      *
-     * @param n int整型
+     * @param str int整型
      * @return string字符串ArrayList
      */
 
@@ -1335,50 +1404,35 @@ public class SwordOffer {
         return validBST(minValue, root.left, root.val) && validBST(root.val, root.right, maxValue);
     }
 
+    /**
+     * {1,2,3,5,#,7,8}
+     * the tick: 无需 判断结点是否为null,再插入
+     * {3,1,7,#,#,6,8}
+     *
+     * @param root
+     * @return
+     */
     public boolean isCompleteTree(TreeNode root) {
         // write code here
         if (root == null) {
-            return true;
+            return false;
         }
         LinkedList<TreeNode> linkedList = new LinkedList<>();
         linkedList.offer(root);
+        boolean isComplete = false;
         while (!linkedList.isEmpty()) {
-            int size = linkedList.size();
-            TreeNode prev = null;
-            for (int i = 0; i < size; i++) {
-                TreeNode poll = linkedList.poll();
-                if (poll.left == null && poll.right != null) {
-                    return false;
-                }
-                if (prev != null) {
-                    if (prev.right == null && poll.right != null) {
-                        return false;
-                    }
-                }
-                if (poll.left != null) {
-                    linkedList.offer(poll.left);
-                }
-                if (poll.right != null) {
-                    linkedList.offer(poll.right);
-                }
-                prev = poll;
+            TreeNode poll = linkedList.poll();
+            if (poll == null) {
+                isComplete = true;
+                continue;
             }
+            if (isComplete) {
+                return false;
+            }
+            linkedList.offer(poll.left);
+            linkedList.offer(poll.right);
         }
         return true;
-    }
-
-    private boolean isCompleteTree(TreeNode left, TreeNode right) {
-        if (left == null && right == null) {
-            return true;
-        }
-        if (left != null && right == null) {
-            return true;
-        }
-        if (left == null) {
-            return false;
-        }
-        return false;
-//        return isCompleteTree(left) &&
     }
 
 
@@ -1805,27 +1859,64 @@ public class SwordOffer {
     public int minMoney(int[] arr, int aim) {
         // write code here
         if (arr == null || arr.length == 0) {
-            return 0;
+            return -1;
         }
-        int[][] dp = new int[arr.length][aim + 1];
-        for (int j = 1; j <= aim; j++) {
-            dp[0][j] = Integer.MAX_VALUE;
-            if (j - arr[0] >= 0 && dp[0][j - arr[0]] != Integer.MAX_VALUE) {
-                dp[0][j] = 1 + dp[0][j - arr[0]];
+//        int[][] dp = new int[arr.length][aim + 1];
+//        for (int j = 1; j <= aim; j++) {
+//            dp[0][j] = Integer.MAX_VALUE;
+//            if (j - arr[0] >= 0 && dp[0][j - arr[0]] != Integer.MAX_VALUE) {
+//                dp[0][j] = 1 + dp[0][j - arr[0]];
+//            }
+//        }
+//        for (int i = 1; i < arr.length; i++) {
+//            for (int j = arr[0]; j <= aim; j++) {
+//                if (j - arr[i] >= 0 && dp[i][j - arr[i]] != Integer.MAX_VALUE) {
+//                    // 判断不使用当前种类的货币和仅使用一张当前种类的货币这两种情况下，哪一种方案使用的货币少
+//                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - arr[i]] + 1);
+//                } else {
+//                    // 不使用当前种类的货币
+//                    dp[i][j] = dp[i - 1][j];
+//                }
+//            }
+//        }
+//        return dp[arr.length - 1][aim] == Integer.MAX_VALUE ? -1 : dp[arr.length - 1][aim];
+
+        int[][] dp = new int[aim + 1][arr.length];
+        for (int i = 1; i <= aim; i++) {
+            dp[i][0] = Integer.MAX_VALUE;
+            if (i - arr[0] >= 0 && dp[i - arr[0]][0] != Integer.MAX_VALUE) {
+                dp[i][0] = 1 + dp[i - arr[0]][0];
             }
         }
-        for (int i = 1; i < arr.length; i++) {
-            for (int j = arr[0]; j <= aim; j++) {
-                if (j - arr[i] >= 0 && dp[i][j - arr[i]] != Integer.MAX_VALUE) {
-                    // 判断不使用当前种类的货币和仅使用一张当前种类的货币这两种情况下，哪一种方案使用的货币少
-                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - arr[i]] + 1);
+        for (int i = 1; i <= aim; i++) {
+            for (int j = 1; j < arr.length; j++) {
+                if (i - arr[j] >= 0 && dp[i - arr[j]][j] != Integer.MAX_VALUE) {
+                    dp[i][j] = Math.min(dp[i][j - 1], dp[i - arr[j]][j] + 1);
                 } else {
-                    // 不使用当前种类的货币
-                    dp[i][j] = dp[i - 1][j];
+                    dp[i][j] = dp[i][j - 1];
                 }
             }
         }
-        return dp[arr.length - 1][aim] == Integer.MAX_VALUE ? -1 : dp[arr.length - 1][aim];
+        return dp[aim][arr.length - 1] == Integer.MAX_VALUE ? -1 : dp[aim][arr.length - 1];
+    }
+
+    public int minMoneyIII(int[] arr, int aim) {
+        if (arr == null || arr.length == 0) {
+            return -1;
+        }
+        int[] dp = new int[aim + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+        for (int i = 1; i <= aim; i++) {
+            int min = Integer.MAX_VALUE;
+            for (int money : arr) {
+                if (i - money >= 0 && dp[i - money] != Integer.MAX_VALUE) {
+                    min = Math.min(min, dp[i - money] + 1);
+                }
+            }
+            dp[i] = min;
+        }
+        return dp[aim] == Integer.MAX_VALUE ? -1 : dp[aim];
     }
 
     public int minMoneyII(int[] arr, int aim) {
@@ -1987,16 +2078,16 @@ public class SwordOffer {
         }
         int[] dp = new int[arr.length];
         Arrays.fill(dp, 1);
+        int result = 1;
         for (int i = 1; i < arr.length; i++) {
             for (int j = 0; j < i; j++) {
-                if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+                if (arr[j] < arr[i] && dp[i] < dp[j] + 1) {
                     dp[i] = dp[j] + 1;
                 }
+                if (dp[i] > result) {
+                    result = dp[i];
+                }
             }
-        }
-        int result = 0;
-        for (int num : dp) {
-            result = Math.max(result, num);
         }
         return result;
     }
@@ -2034,16 +2125,17 @@ public class SwordOffer {
         if (A == null || A.length() == 0) {
             return 0;
         }
+        int m = A.length();
+        boolean[][] dp = new boolean[m][m];
         int result = 0;
-        int len = A.length();
-        boolean[][] dp = new boolean[len][len];
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < m; i++) {
             for (int j = 0; j <= i; j++) {
                 if (A.charAt(j) == A.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1])) {
                     dp[j][i] = true;
-                }
-                if (dp[j][i] && i - j + 1 > result) {
-                    result = i - j + 1;
+                    if (i - j + 1 > result) {
+                        result = i - j + 1;
+
+                    }
                 }
             }
         }

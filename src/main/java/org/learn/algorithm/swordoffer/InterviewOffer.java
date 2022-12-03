@@ -36,7 +36,11 @@ public class InterviewOffer {
 
         d1.next.next.next = new ListNode(5);
 
-        offer.reorderList(root);
+//        offer.reorderList(root);
+
+        int[] nums = new int[]{2, 3, 4, 2, 6, 2, 5, 1};
+        int size = 3;
+        offer.maxInWindows(nums, size);
 
     }
 
@@ -677,18 +681,18 @@ public class InterviewOffer {
         if (num == null || num.length == 0) {
             return new ArrayList<>();
         }
-        LinkedList<Integer> linkedList = new LinkedList<>();
         ArrayList<Integer> result = new ArrayList<>();
+        LinkedList<Integer> linkedList = new LinkedList<>();
         for (int i = 0; i < num.length; i++) {
             int index = i - size + 1;
+            while (!linkedList.isEmpty() && linkedList.peekFirst() < index) {
+                linkedList.pollFirst();
+            }
             while (!linkedList.isEmpty() && num[linkedList.peekLast()] <= num[i]) {
                 linkedList.pollLast();
             }
-            if (!linkedList.isEmpty() && linkedList.peekFirst() < index) {
-                linkedList.poll();
-            }
             linkedList.offer(i);
-            if (index >= 0) {
+            if (index >= 0 && !linkedList.isEmpty()) {
                 result.add(num[linkedList.peekFirst()]);
             }
         }
@@ -1338,18 +1342,21 @@ public class InterviewOffer {
         }
         Stack<Character> stack = new Stack<>();
         char[] words = s.toCharArray();
-        for (int i = 0; i < words.length; i++) {
-            char tmp = words[i];
-            if (tmp == '(') {
+        for (char word : words) {
+            if (word == '(') {
                 stack.push(')');
-            } else if (tmp == '{') {
-                stack.push('}');
-            } else if (tmp == '[') {
+            } else if (word == '[') {
                 stack.push(']');
-            } else if (!stack.isEmpty() && stack.peek() == tmp) {
-                stack.pop();
+            } else if (word == '{') {
+                stack.push('}');
+            } else if (!stack.isEmpty()) {
+                if (stack.peek() != word) {
+                    return false;
+                } else {
+                    stack.pop();
+                }
             } else {
-                return false;
+                stack.push(word);
             }
         }
         return stack.isEmpty();
@@ -1732,6 +1739,8 @@ public class InterviewOffer {
     }
 
     /**
+     * https://www.nowcoder.com/practice/c215ba61c8b1443b996351df929dc4d4?tpId=295&tqId=23457&ru=%2Fexam%2
+     * Foj&qru=%2Fta%2Fformat-top101%2Fquestion-ranking&sourceUrl=%2Fexam%2Foj
      * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
      * 返回表达式的值
      *
@@ -1748,57 +1757,27 @@ public class InterviewOffer {
             return 0;
         }
         int result = 0;
+        int sign = 1;
         char[] words = s.toCharArray();
         Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < words.length; i++) {
+            char c = words[i];
+            if (Character.isDigit(c)) {
+                stack.push(sign * Character.getNumericValue(c));
+            } else if (c == '(') {
+                stack.push(result);
+                stack.push(sign);
+                sign = 1;
+                result = 0;
+            } else if (c == ')') {
+                result = result + stack.pop() * result;
+            } else if (c == '-') {
+                sign = -1;
+            } else if (c == '+') {
+                sign = 1;
+            } else if (c == '*') {
 
-        // 1 - 2 => +1-2
-        char sign = '+';
-        int index = 0;
-        while (index <= words.length) {
-            if (index < words.length) {
-
-                // 如果碰到 1 + (2 - 3 * 5)
-                // 递归处理括号内
-                if (words[index] == '(') {
-                    int lastIndex = getLastIndex(words, index, words.length);
-                    String substring = s.substring(index + 1, lastIndex);
-                    int val = basicCalculator(substring);
-                    stack.push(val);
-                    index = lastIndex;
-                }
-                // 存储整型的数字
-                if (Character.isDigit(words[index])) {
-                    int tmp = 0;
-                    while (index < words.length && Character.isDigit(words[index])) {
-                        tmp = tmp * 10 + Character.getNumericValue(words[index]);
-                        index++;
-                    }
-                    stack.push(tmp);
-                }
             }
-            // 达到字符串末尾 或者达到下一个 符号位的时候 处理前面的表达式
-            // 1 - 2 * 3  达到-符号位时
-            if (index == words.length || ((words[index] != '(' && words[index] != ')') && words[index] != ' ')) {
-                if (sign == '+') {
-                    stack.push(stack.pop());
-                } else if (sign == '-') {
-                    stack.push(-stack.pop());
-                } else if (sign == '*') {
-                    stack.push(stack.pop() * stack.pop());
-                } else if (sign == '/') {
-                    int dividend = stack.pop();
-                    int divisor = stack.pop();
-                    stack.push(divisor / dividend);
-
-                }
-                if (index != words.length) {
-                    sign = words[index];
-                }
-            }
-            index++;
-        }
-        for (Integer tmp : stack) {
-            result += tmp;
         }
         return result;
     }

@@ -1,8 +1,12 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.TreeNode;
+import org.springframework.boot.context.properties.bind.handler.IgnoreTopLevelConverterNotFoundBindHandler;
 
+import java.awt.image.Kernel;
 import java.util.*;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 动态规划问题
@@ -18,13 +22,27 @@ public class DynamicSolution {
         char[][] matrix = new char[][]{{'0', '1', '1', '0', '1'}, {'1', '1', '0', '1', '0'}, {'0', '1', '1', '1', '0'}, {'1', '1', '1', '1', '0'}, {'1', '1', '1', '1', '1'}, {'0', '0', '0', '0', '0'}};
 //        solution.numDecodings("12");
 //        solution.maximalRectangle(matrix);
-        List<List<Integer>> lists = solution.generate(4);
-        System.out.println(lists);
+//        List<List<Integer>> lists = solution.generate(4);
+//        System.out.println(lists);
 
 //        solution.isInterleave("", "", "");
 //        char[][] nums = new char[][]{{'1', '0', '1', '0', '0'}, {'1', '0', '1', '1', '1'}, {"1", "1", "1", "1", "1"}, {"1", "0", "0", "1", "0"}}
 //        solution.maximalRectangle(nums);
+
+//        int[][] games = new int[][]{{0, 1, 0}, {0, 0, 1}, {1, 1, 1}, {0, 0, 0}};
+//        int[][] games = new int[][]{{0, 0}};
+
+//        solution.gameOfLife(games);
+//        solution.numDecodings("226");
+//        System.out.println(solution.generate(5));
+//        solution.getRow(3);
+//        solution.minCut("aab");
+        matrix = new char[][]{{'1', '0'}};
+//        solution.maximalSquare(matrix);
+        solution.numSquares(4);
     }
+
+
     // 背包系列问题
 
     /**
@@ -84,29 +102,30 @@ public class DynamicSolution {
      * @return
      */
     public int numDecodings(String s) {
-        if (s == null || s.length() == 0) {
+        if (s == null || s.isEmpty()) {
             return 0;
         }
-        int len = s.length();
-        int[] dp = new int[len + 1];
+        int m = s.length();
+        int[] dp = new int[m + 1];
+
         dp[0] = 1;
-        for (int i = 1; i <= len; i++) {
-            String first = s.substring(i - 1, i);
-            int firstValue = Integer.parseInt(first);
-            if (firstValue >= 1 && firstValue <= 9) {
+        for (int i = 1; i <= m; i++) {
+            String firstValue = s.substring(i - 1, i);
+
+            int firstNum = Integer.parseInt(firstValue);
+
+            if (firstNum >= 1 && firstNum <= 9) {
                 dp[i] += dp[i - 1];
             }
-            String second = i >= 2 ? s.substring(i - 2, i) : "0";
-            int secondValue = Integer.parseInt(second);
-            if (secondValue >= 10 && secondValue <= 26) {
+            String secondValue = i >= 2 ? s.substring(i - 2, i) : "0";
+            int secondNum = Integer.parseInt(secondValue);
+            if (secondNum >= 10 && secondNum <= 26) {
                 dp[i] += dp[i - 2];
             }
         }
-        return dp[len];
+        return dp[m];
     }
 
-
-    // 八皇后问题 //
 
     /**
      * 300. Longest Increasing Subsequence
@@ -118,21 +137,24 @@ public class DynamicSolution {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-        int[] dp = new int[nums.length];
-        Arrays.fill(dp, 1);
+        int[] result = new int[nums.length];
+        Arrays.fill(result, 1);
         for (int i = 1; i < nums.length; i++) {
             for (int j = 0; j < i; j++) {
-                if (dp[i] > dp[j] && dp[i] < dp[j] + 1) {
-                    dp[i] = dp[j] + 1;
+                if (nums[j] < nums[i] && result[i] < result[j] + 1) {
+                    result[i] = result[j] + 1;
                 }
             }
         }
-        int result = 0;
-        for (int tmp : dp) {
-            result = Math.max(result, tmp);
+        int answer = 0;
+        for (int num : result) {
+            answer = Math.max(answer, num);
         }
-        return result;
+        return answer;
     }
+
+
+    // 八皇后问题 //
 
     /**
      * @param n
@@ -200,28 +222,23 @@ public class DynamicSolution {
             return 0;
         }
         int[] dp = new int[n];
-        return intervalTotalQueens(dp, 0, n);
+        return internalTotalNQueens(dp, 0, n);
     }
 
-    private int intervalTotalQueens(int[] dp, int row, int n) {
-        int count = 0;
+    private int internalTotalNQueens(int[] dp, int row, int n) {
         if (row == n) {
             return 1;
         }
-        for (int i = 0; i < n; i++) {
-            if (isValidTotalQueens(dp, i, row, n)) {
-                dp[row] = i;
-                count += intervalTotalQueens(dp, row + 1, n);
+        int count = 0;
+        for (int j = 0; j < n; j++) {
+            if (isValidTotalQueens(dp, j, row, n)) {
+                dp[row] = j;
+                count += internalTotalNQueens(dp, row + 1, n);
                 dp[row] = -1;
             }
         }
         return count;
     }
-
-
-    // ----- //
-
-    // --编辑距离问题 //
 
     private boolean isValidTotalQueens(int[] dp, int col, int row, int n) {
         for (int i = row - 1; i >= 0; i--) {
@@ -231,6 +248,76 @@ public class DynamicSolution {
         }
         return true;
     }
+
+
+    /**
+     * 63. Unique Paths II
+     *
+     * @param obstacleGrid
+     * @return
+     */
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        if (obstacleGrid == null || obstacleGrid.length == 0) {
+            return 0;
+        }
+        int row = obstacleGrid.length;
+
+        int column = obstacleGrid[0].length;
+
+        int[] result = new int[column];
+        for (int j = 0; j < column; j++) {
+            if (obstacleGrid[0][j] == 1) {
+                result[j] = 0;
+            } else {
+                result[j] = j == 0 ? 1 : result[j - 1];
+            }
+        }
+        for (int i = 1; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                int val = obstacleGrid[i][j];
+                if (val == 1) {
+                    result[j] = 0;
+                } else if (j > 0) {
+                    result[j] += result[j - 1];
+                }
+            }
+        }
+        return result[column - 1];
+    }
+
+
+    /**
+     * 64. Minimum Path Sum
+     *
+     * @param grid
+     * @return
+     */
+    public int minPathSum(int[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        int[] dp = new int[column];
+        for (int j = 0; j < column; j++) {
+            dp[j] = grid[0][j] + (j == 0 ? 0 : dp[j - 1]);
+        }
+        for (int i = 1; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (j == 0) {
+                    dp[j] += grid[i][j];
+                } else {
+                    dp[j] = Math.min(dp[j], dp[j - 1]) + grid[i][j];
+                }
+            }
+        }
+        return dp[column - 1];
+    }
+
+
+    // ----- //
+
+    // --编辑距离问题 //
 
     /**
      * 72. Edit Distance
@@ -257,7 +344,7 @@ public class DynamicSolution {
                 if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = 1 + Math.min(dp[i][j - 1], Math.min(dp[i - 1][j - 1], dp[i - 1][j]));
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
                 }
             }
         }
@@ -286,9 +373,9 @@ public class DynamicSolution {
             int leftSide = 0;
             int rightSide = column;
             for (int j = 0; j < column; j++) {
-                char word = matrix[i][j];
-                if (word == '1') {
-                    height[j] = height[j] + 1;
+                char tmp = matrix[i][j];
+                if (tmp == '1') {
+                    height[j]++;
                     left[j] = Math.max(left[j], leftSide);
                 } else {
                     height[j] = 0;
@@ -297,8 +384,8 @@ public class DynamicSolution {
                 }
             }
             for (int j = column - 1; j >= 0; j--) {
-                char word = matrix[i][j];
-                if (word == '1') {
+                char tmp = matrix[i][j];
+                if (tmp == '1') {
                     right[j] = Math.min(right[j], rightSide);
                 } else {
                     right[j] = column;
@@ -306,22 +393,15 @@ public class DynamicSolution {
                 }
             }
             for (int j = 0; j < column; j++) {
-                if (height[j] == 0) {
-                    continue;
-                }
-                int val = height[j] * (right[j] - left[j]);
-                if (val >= result) {
-                    System.out.println("row:" + i + " column: " + j + " result:" + val);
-                    result = val;
-                }
+                result = Math.max(result, (right[j] - left[j]) * height[j]);
             }
         }
+        return result;
         // 0 1 1 3 4
         // 2 2 3 4 5
         // --------//
         // 0 1 1 3 0
         // 4 2 4 4 5
-        return result;
     }
 
     /**
@@ -337,30 +417,27 @@ public class DynamicSolution {
         int row = matrix.length;
         int column = matrix[0].length;
         int[][] dp = new int[row][column];
-
         int result = 0;
-        for (int i = 0; i < row; i++) {
-            if (matrix[i][0] == '1') {
-                dp[i][0] = 1;
-                result = 1;
-            }
-        }
         for (int j = 0; j < column; j++) {
-            if (matrix[0][j] == '1') {
-                dp[0][j] = 1;
-                result = 1;
-            }
+            dp[0][j] = matrix[0][j] == '1' ? 1 : 0;
+            int tmp = matrix[0][j] == '1' ? 1 : 0;
+            result = Math.max(result, tmp);
         }
         for (int i = 1; i < row; i++) {
-            for (int j = 1; j < column; j++) {
+            for (int j = 0; j < column; j++) {
                 if (matrix[i][j] == '1') {
-                    dp[i][j] = 1 + Math.min(dp[i - 1][j], Math.min(dp[i][j - 1], dp[i - 1][j - 1]));
+                    if (j == 0) {
+                        dp[i][j] = 1;
+                    } else {
+                        dp[i][j] = Math.min(dp[i - 1][j - 1], Math.min(dp[i][j - 1], dp[i - 1][j])) + 1;
+                    }
                     result = Math.max(result, dp[i][j] * dp[i][j]);
                 }
             }
         }
         return result;
     }
+
 
     /**
      * 97. Interleaving String
@@ -371,7 +448,7 @@ public class DynamicSolution {
      * @return
      */
     public boolean isInterleave(String s1, String s2, String s3) {
-        if (s1 == null || s2 == null || s3 == null) {
+        if (s1 == null || s2 == null) {
             return false;
         }
         int m = s1.length();
@@ -389,7 +466,7 @@ public class DynamicSolution {
         }
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                dp[i][j] = (dp[i - 1][j] && s1.charAt(i - 1) == s3.charAt(i + j - 1)) || (dp[i][j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1));
+                dp[i][j] = (s1.charAt(i - 1) == s3.charAt(i + j - 1) && dp[i - 1][j]) || (s2.charAt(j - 1) == s3.charAt(i + j - 1) && dp[i][j - 1]);
             }
         }
         return dp[m][n];
@@ -403,13 +480,13 @@ public class DynamicSolution {
      * @return
      */
     public int numDistinct(String s, String t) {
-        if (s == null || t == null) {
-            return 0;
+        if (t.isEmpty()) {
+            return s.length();
         }
         int m = s.length();
         int n = t.length();
         int[][] dp = new int[m + 1][n + 1];
-        for (int i = 1; i <= m; i++) {
+        for (int i = 0; i <= m; i++) {
             dp[i][0] = 1;
         }
         for (int i = 1; i <= m; i++) {
@@ -434,10 +511,12 @@ public class DynamicSolution {
         for (int i = 0; i < numRows; i++) {
             List<Integer> tmp = new ArrayList<>();
             tmp.add(1);
-            for (int j = 1; j <= i - 1; j++) {
-                List<Integer> previous = result.get(i - 1);
-                int val = previous.get(j - 1) + previous.get(j);
-                tmp.add(val);
+            for (int j = i - 1; j >= 1; j--) {
+                List<Integer> prev = result.get(i - 1);
+
+                Integer value = prev.get(j) + prev.get(j - 1);
+
+                tmp.add(value);
             }
             if (i > 0) {
                 tmp.add(1);
@@ -458,14 +537,13 @@ public class DynamicSolution {
             return new ArrayList<>();
         }
         List<Integer> result = new ArrayList<>();
-
         result.add(1);
-
         for (int i = 0; i <= rowIndex; i++) {
 
             for (int j = i - 1; j >= 1; j--) {
-                int val = result.get(j) + result.get(j - 1);
-                result.set(j, val);
+                int value = result.get(j) + result.get(j - 1);
+
+                result.set(j, value);
             }
             if (i > 0) {
                 result.add(1);
@@ -485,14 +563,20 @@ public class DynamicSolution {
      */
     public int minimumTotal(List<List<Integer>> triangle) {
         if (triangle == null || triangle.isEmpty()) {
-            return Integer.MAX_VALUE;
+            return 0;
         }
         int size = triangle.size();
         for (int i = size - 2; i >= 0; i--) {
-            int currentLevel = triangle.get(i).size();
-            for (int j = 0; j < currentLevel; j++) {
-                int val = Math.min(triangle.get(i + 1).get(j), triangle.get(i + 1).get(j + 1)) + triangle.get(i).get(j);
-                triangle.get(i).set(j, val);
+            List<Integer> current = triangle.get(i);
+
+            List<Integer> prev = triangle.get(i + 1);
+
+            int currentSize = current.size();
+
+            for (int j = 0; j < currentSize; j++) {
+                int val = Math.min(prev.get(j), prev.get(j + 1)) + current.get(j);
+
+                current.set(j, val);
             }
         }
         return triangle.get(0).get(0);
@@ -521,8 +605,8 @@ public class DynamicSolution {
             }
         }
         int result = 0;
-        for (int count : dp) {
-            result += count;
+        for (int num : dp) {
+            result += num;
         }
         return result;
     }
@@ -580,37 +664,40 @@ public class DynamicSolution {
         if (prices == null || prices.length == 0) {
             return 0;
         }
-        int len = prices.length;
-        int[] left = new int[len];
+        int column = prices.length;
+        int[] leftProfit = new int[column];
+        int cost = prices[0];
         int leftResult = 0;
-        int leftCost = prices[0];
-        for (int i = 1; i < len; i++) {
-            if (prices[i] > leftCost) {
-                leftResult = Math.max(leftResult, prices[i] - leftCost);
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > cost) {
+                leftResult = Math.max(leftResult, prices[i] - cost);
             } else {
-                leftCost = prices[i];
+                cost = prices[i];
             }
-            left[i] = leftResult;
+            leftProfit[i] = leftResult;
         }
-        int[] right = new int[len + 1];
+        int[] rightProfit = new int[column + 1];
+
         int rightResult = 0;
-        int rightCost = prices[len - 1];
-        for (int i = len - 2; i >= 0; i--) {
-            if (prices[i] < rightCost) {
-                rightResult = Math.max(rightResult, rightCost - prices[i]);
+        cost = prices[column - 1];
+        for (int i = prices.length - 2; i >= 0; i--) {
+            if (prices[i] < cost) {
+                rightResult = Math.max(rightResult, cost - prices[i]);
             } else {
-                rightCost = prices[i];
+                cost = prices[i];
             }
-            right[i] = rightResult;
+            rightProfit[i] = rightResult;
         }
         int result = 0;
-        for (int i = 1; i < left.length; i++) {
-            result = Math.max(result, left[i] + right[i]);
+        for (int i = 1; i < column; i++) {
+            result = Math.max(result, leftProfit[i] + rightProfit[i + 1]);
         }
         return result;
     }
 
+
     /**
+     * https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/
      * todo
      * 188. Best Time to Buy and Sell Stock IV
      * 卖股票问题iv
@@ -625,13 +712,50 @@ public class DynamicSolution {
         }
         int[][] dp = new int[k + 1][prices.length];
         for (int i = 1; i <= k; i++) {
-            int cost = -prices[0];
+            int cost = prices[0];
             for (int j = 1; j < prices.length; j++) {
-                dp[i][j] = Math.max(dp[i][j - 1], cost + prices[j]);
-                cost = Math.max(cost, dp[i - 1][j - 1] - prices[j]);
+                dp[i][j] = Math.max(dp[i][j - 1], prices[j] - cost);
+                cost = Math.min(cost, prices[j] - dp[i - 1][j - 1]);
             }
         }
         return dp[k][prices.length - 1];
+    }
+
+
+    /**
+     * todo
+     * 132. Palindrome Partitioning II
+     *
+     * @param s
+     * @return
+     */
+    public int minCut(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int len = s.length();
+        int[] dp = new int[len];
+        for (int i = 0; i < len; i++) {
+            int min = i;
+            for (int j = 0; j <= i; j++) {
+                if (checkPalindrome(s, j, i)) {
+                    min = Math.min(min, j == 0 ? 0 : dp[j - 1] + 1);
+                }
+            }
+            dp[i] = min;
+        }
+        return dp[len - 1];
+    }
+
+    private boolean checkPalindrome(String s, int j, int i) {
+        while (j < i) {
+            if (s.charAt(i) != s.charAt(j)) {
+                return false;
+            }
+            i--;
+            j++;
+        }
+        return true;
     }
 
 
@@ -680,27 +804,29 @@ public class DynamicSolution {
      * @return
      */
     public int robII(int[] nums) {
-        if (nums == null || nums.length == 0) {
+        if (nums == null) {
             return 0;
         }
         if (nums.length == 1) {
-            return 1;
+            return nums[0];
         }
-        return Math.max(intervalRob(nums, 1, nums.length - 1), intervalRob(nums, 0, nums.length - 2));
+        return Math.max(intervalRob(nums, 0, nums.length - 2), intervalRob(nums, 1, nums.length - 1));
     }
-
-    // 房子颜色问题
 
     private int intervalRob(int[] nums, int start, int end) {
         int robPrev = 0;
         int robCurrent = 0;
         for (int i = start; i <= end; i++) {
             int tmp = robCurrent;
-            robCurrent = Math.max(robPrev + nums[i], robCurrent);
+            robCurrent = Math.max(robCurrent, robPrev + nums[i]);
             robPrev = tmp;
         }
         return Math.max(robCurrent, robPrev);
     }
+
+
+    // 房子颜色问题 //
+
 
     /**
      * @param costs: n x 3 cost matrix
@@ -814,60 +940,37 @@ public class DynamicSolution {
                 if (j == column - 1) {
                     dp[i][j] = Math.max(1, dp[i + 1][j] - dungeon[i][j]);
                 } else {
-                    dp[i][j] = Math.max(1, Math.min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j]);
+                    dp[i][j] = Math.max(1, Math.min(dp[i][j + 1], dp[i + 1][j]) - dungeon[i][j]);
                 }
             }
         }
         return dp[0][0];
     }
 
-    /**
-     * 289. Game of Life
-     *
-     * @param board
-     */
-    public void gameOfLife(int[][] board) {
-        if (board == null || board.length == 0) {
-            return;
+    public int calculateMinimumHPII(int[][] dungeon) {
+        if (dungeon == null || dungeon.length == 0) {
+            return 0;
         }
-        int row = board.length;
-        int column = board[0].length;
-        int[][] matrix = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                intervalGame(i, j, board, matrix);
+        int row = dungeon.length;
+        int column = dungeon[0].length;
+        int[] dp = new int[column];
+        for (int j = column - 1; j >= 0; j--) {
+            if (j == column - 1) {
+                dp[j] = Math.max(1, 1 - dungeon[row - 1][j]);
+            } else {
+                dp[j] = Math.max(1, dp[j + 1] - dungeon[row - 1][j]);
             }
         }
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                if (board[i][j] == -1) {
-                    board[i][j] = 0;
-                } else if (board[i][j] == -2) {
-                    board[i][j] = 1;
+        for (int i = row - 2; i >= 0; i--) {
+            for (int j = column - 1; j >= 0; j--) {
+                if (j == column - 1) {
+                    dp[j] = Math.max(1, dp[j] - dungeon[i][j]);
+                } else {
+                    dp[j] = Math.max(1, Math.min(dp[j], dp[j + 1]) - dungeon[i][j]);
                 }
             }
         }
-
-    }
-
-    private void intervalGame(int i, int j, int[][] board, int[][] matrix) {
-        int liveCount = 0;
-        for (int[] item : matrix) {
-            int x = i + item[0];
-            int y = j + item[1];
-            if (x < 0 || x == board.length || y < 0 || y == board[x].length) {
-                continue;
-            }
-            if (Math.abs(board[x][y]) == 1) {
-                liveCount++;
-            }
-        }
-        if (board[i][j] == 1 && !(liveCount == 2 || liveCount == 3)) {
-            board[i][j] = -1;
-        }
-        if (board[i][j] == 0 && liveCount == 3) {
-            board[i][j] = -2;
-        }
+        return dp[0];
     }
 
     /**
@@ -882,21 +985,24 @@ public class DynamicSolution {
             return 0;
         }
         int[] dp = new int[n + 1];
-        dp[0] = 0;
         dp[1] = 1;
         for (int i = 2; i <= n; i++) {
-            int tmp = i;
+            int min = i;
             for (int j = 1; j * j <= i; j++) {
-                tmp = Math.min(dp[i - j * j] + 1, tmp);
+                int previous = i - j * j;
+                min = Math.min(1 + dp[previous], min);
             }
-            dp[i] = tmp;
+            dp[i] = min;
         }
         return dp[n];
     }
 
     /**
+     * https://www.lintcode.com/problem/168/solution/27179
      * todo
      * 312. Burst Balloons
+     * explains:
+     * https://leetcode.com/problems/burst-balloons/discuss/892552/For-those-who-are-not-able-to-understand-any-solution-WITH-DIAGRAM
      *
      * @param nums: A list of integer
      * @return: An integer, maximum coins
@@ -906,51 +1012,32 @@ public class DynamicSolution {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-        int len = nums.length;
-        int[] dp = new int[len + 2];
-        dp[0] = 1;
-        dp[len + 1] = 1;
-        for (int i = 1; i <= len; i++) {
+        nums = init(nums);
+
+        int[][] dp = new int[nums.length][nums.length];
+        for (int i = nums.length - 1; i >= 0; i--) {
+            for (int j = i + 2; j < nums.length; j++) {
+                for (int k = i + 1; k < j; k++) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i][k] + dp[k][j] + nums[i] * nums[k] * nums[j]);
+                }
+            }
         }
-        for (int i = 1; i <= len; i++) {
-            dp[i] = nums[i - 1];
-        }
-        return -1;
+        return dp[0][nums.length - 1];
+
+
     }
 
-    /**
-     * 314
-     * Binary Tree Vertical Order Traversal
-     *
-     * @param root
-     * @return
-     */
-    public List<List<Integer>> verticalOrder(TreeNode root) {
-        if (root == null) {
-            return new ArrayList<>();
+    public int[] init(int[] nums) {
+        //初始化数组，头部和尾部插入1
+        int[] temp = new int[nums.length + 2];
+        temp[0] = 1;
+        for (int i = 1; i < temp.length - 1; i++) {
+            temp[i] = nums[i - 1];
         }
-        Queue<Integer> columnQueue = new LinkedList<>();
-        Map<Integer, List<Integer>> map = new TreeMap<>();
-        columnQueue.offer(0);
-        Queue<TreeNode> nodeQueue = new LinkedList<>();
-        nodeQueue.add(root);
-        while (!nodeQueue.isEmpty()) {
-            Integer poll = columnQueue.poll();
-            TreeNode node = nodeQueue.poll();
-            List<Integer> tmp = map.getOrDefault(poll, new ArrayList<>());
-            tmp.add(node.val);
-            map.put(poll, tmp);
-            if (node.left != null) {
-                columnQueue.offer(poll - 1);
-                nodeQueue.offer(node.left);
-            }
-            if (node.right != null) {
-                columnQueue.offer(poll + 1);
-                nodeQueue.offer(node.right);
-            }
-        }
-        return new ArrayList<>(map.values());
+        temp[temp.length - 1] = 1;
+        return temp;
     }
+
 
     /**
      * NC138 矩阵最长递增路径

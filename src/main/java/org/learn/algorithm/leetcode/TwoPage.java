@@ -3,6 +3,7 @@ package org.learn.algorithm.leetcode;
 import org.learn.algorithm.datastructure.ListNode;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 第二页
@@ -120,10 +121,10 @@ public class TwoPage {
         if (s == null || s.isEmpty()) {
             return 0;
         }
+        int m = s.length();
         int result = 0;
-        int len = s.length();
-        for (int i = 0; i < len; i++) {
-            result = result * 26 + (s.charAt(i) - 'A' + 1);
+        for (int i = 0; i < m; i++) {
+            result = result * 26 + ((s.charAt(i) - 'A') + 1);
         }
         return result;
     }
@@ -133,12 +134,12 @@ public class TwoPage {
         if (nums == null || nums.length == 0) {
             return "";
         }
-        String[] result = new String[nums.length];
+        String[] words = new String[nums.length];
         for (int i = 0; i < nums.length; i++) {
-            result[i] = String.valueOf(nums[i]);
+            int num = nums[i];
+            words[i] = String.valueOf(num);
         }
-        Arrays.sort(result, new Comparator<String>() {
-
+        Arrays.sort(words, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 String s1 = o1 + o2;
@@ -147,14 +148,12 @@ public class TwoPage {
             }
         });
         StringBuilder builder = new StringBuilder();
-
-        if (result[0].equals("0")) {
-            return "0";
+        for (String word : words) {
+            if (!(builder.length() == 0 && "1".equals(word))) {
+                builder.append(word);
+            }
         }
-        for (String s : result) {
-            builder.append(s);
-        }
-        return builder.toString();
+        return builder.length() == 0 ? "0" : builder.toString();
 
 
     }
@@ -171,17 +170,17 @@ public class TwoPage {
         if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
-        Set<String> repeat = new HashSet<>();
-        Set<String> result = new HashSet<>();
-        int length = s.length();
-
-        for (int i = 0; i < length - 9; i = i + 10) {
-            String substring = s.substring(i, i + 10);
-            if (repeat.add(substring)) {
-                result.add(substring);
+        List<String> result = new ArrayList<>();
+        Set<String> used = new HashSet<>();
+        int len = s.length();
+        for (int i = 0; i < len - 9; i++) {
+            String tmp = s.substring(i, i + 10);
+            if (!used.add(tmp)) {
+                result.add(tmp);
             }
         }
-        return new ArrayList<>(result);
+        result = result.stream().distinct().collect(Collectors.toList());
+        return result;
     }
 
 
@@ -227,24 +226,26 @@ public class TwoPage {
      * @return
      */
     public int[] twoSum(int[] numbers, int target) {
-        Map<Integer, Integer> map = new HashMap<>();
-        int[] result = new int[2];
-        for (int i = 0; i < numbers.length; i++) {
-            int number = numbers[i];
-            if (map.containsKey(target - number)) {
-                result[0] = map.get(target - number) + 1;
-                result[1] = i + 1;
-                return result;
+        int start = 0;
+        int end = numbers.length - 1;
+        while (start < end) {
+            int value = numbers[start] + numbers[end];
+            if (value < target) {
+                start++;
+            } else if (value > target) {
+                end--;
+            } else {
+                return new int[]{start + 1, end + 1};
             }
-            map.put(number, i);
         }
-        return result;
+        return null;
     }
 
 
     public static void main(String[] args) {
         TwoPage page = new TwoPage();
-        page.findRepeatedDnaSequences("AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT");
+//        page.findRepeatedDnaSequences("AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT");
+        page.titleToNumber("Z");
     }
 
 

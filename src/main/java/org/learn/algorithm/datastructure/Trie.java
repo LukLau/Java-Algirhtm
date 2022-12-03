@@ -10,107 +10,114 @@ public class Trie {
 
     private final TrieNode root;
 
-    /**
-     * Initialize your data structure here.
-     */
     public Trie() {
         root = new TrieNode();
     }
 
-    /**
-     * Inserts a word into the trie.
-     */
     public void insert(String word) {
         if (word == null || word.isEmpty()) {
             return;
         }
         char[] words = word.toCharArray();
-
         TrieNode p = root;
         for (char tmp : words) {
-            if (p.next[tmp - 'a'] == null) {
-                p.next[tmp - 'a'] = new TrieNode();
+            int index = tmp - 'a';
+            if (p.next[index] == null) {
+                p.next[index] = new TrieNode();
             }
-            p = p.next[tmp - 'a'];
+            p = p.next[index];
         }
         p.word = word;
     }
 
-    /**
-     * Returns if the word is in the trie.
-     */
     public boolean search(String word) {
         if (word == null || word.isEmpty()) {
             return false;
         }
-        TrieNode p = root;
         char[] words = word.toCharArray();
-        for (char tmp : words) {
-            if (p.next[tmp - 'a'] == null) {
+
+        TrieNode p = root;
+
+        for (char c : words) {
+            int index = c - 'a';
+            if (p.next[index] == null) {
                 return false;
             }
-            p = p.next[tmp - 'a'];
+            p = p.next[index];
         }
         return word.equals(p.word);
     }
 
-    /**
-     * Returns if there is any word in the trie that starts with the given prefix.
-     */
+    public boolean searchII(String word) {
+        if (word == null || word.isEmpty()) {
+            return false;
+        }
+        char[] chars = word.toCharArray();
+
+        return internalSearch(root, 0, chars);
+    }
+
+    private boolean internalSearch(TrieNode p, int start, char[] words) {
+        if (start == words.length) {
+            return p.word != null;
+        }
+        char word = words[start];
+        if (word == '.') {
+            for (TrieNode nextTrieNode : p.next) {
+                if (nextTrieNode != null && internalSearch(nextTrieNode, start + 1, words)) {
+                    return true;
+                }
+            }
+        }
+        if (p.next[word - 'a'] == null) {
+            return false;
+        }
+        return internalSearch(p.next[word - 'a'], start + 1, words);
+    }
+
+    private boolean internalSearchII(TrieNode p, int start, char[] words) {
+        if (start == words.length) {
+            return p.word != null;
+        }
+        if (words[start] != '.') {
+            int index = words[start] - 'a';
+            if (p.next[index] == null) {
+                return false;
+            }
+            return internalSearch(p.next[index], start + 1, words);
+        }
+        for (int i = 0; i < p.next.length; i++) {
+            if (p.next[i] != null && internalSearch(p.next[i], start + 1, words)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public boolean startsWith(String prefix) {
         if (prefix == null || prefix.isEmpty()) {
             return false;
         }
         TrieNode p = root;
-        char[] prefixWords = prefix.toCharArray();
-        for (char prefixWord : prefixWords) {
-            if (p.next[prefixWord - 'a'] == null) {
+        for (char c : prefix.toCharArray()) {
+            int index = c - 'a';
+            if (p.next[index] == null) {
                 return false;
             }
-            p = p.next[prefixWord - 'a'];
+            p = p.next[index];
         }
         return true;
     }
 
-    public boolean searchV2(String word) {
-        if (word == null || word.isEmpty()) {
-            return false;
-        }
-        TrieNode p = root;
-        return intervalSearchV2(p, word);
-    }
-
-    private boolean intervalSearchV2(TrieNode p, String word) {
-        int m = word.length();
-
-        for (int i = 0; i < m; i++) {
-            char tmp = word.charAt(i);
-            if (tmp != '.') {
-                int index = tmp - 'a';
-                if (p.next[index] == null) {
-                    return false;
-                }
-                p = p.next[index];
-            } else {
-                for (TrieNode trieNode : p.next) {
-                    if (trieNode != null && intervalSearchV2(trieNode, word.substring(i + 1))) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
-        return p.word != null;
-    }
-
-
     static class TrieNode {
-        private String word;
-        private final TrieNode[] next;
+        public TrieNode[] next;
+        public String word;
 
         public TrieNode() {
-            next = new TrieNode[26];
+            this.next = new TrieNode[26];
         }
     }
 
 }
+

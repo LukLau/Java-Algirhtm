@@ -1,8 +1,7 @@
 package org.learn.algorithm.leetcode;
 
-import org.thymeleaf.expression.Strings;
-
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * leetcode the four page
@@ -14,7 +13,26 @@ public class FourPage {
 
     public static void main(String[] args) {
         FourPage fourPage = new FourPage();
-        fourPage.generateAbbreviations("word");
+//        fourPage.generateAbbreviations("word");
+//        String pattern = "abba";
+//        String s = "dog cat cat dog";
+//        fourPage.wordPattern(pattern, s);
+
+        String pattern = "ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccdd";
+        String word = "s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s s t t";
+//        fourPage.wordPattern(pattern, word);
+
+//        pattern = "abab";
+//        word = "redblueredblue";
+
+        pattern = "bdpbibletwuwbvh";
+        word = "aaaaaaaaaaaaaaa";
+//        fourPage.wordPatternMatch(pattern, word);
+        String validParentheses = "()())()";
+//        validParentheses = "(a)())()";
+        List<String> result = fourPage.removeInvalidParentheses(validParentheses);
+        System.out.println(result);
+
     }
 
 
@@ -25,38 +43,67 @@ public class FourPage {
      * @return
      */
     public List<String> removeInvalidParentheses(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
         LinkedList<String> linkedList = new LinkedList<>();
         linkedList.offer(s);
-        Set<String> seen = new HashSet<>();
         while (!linkedList.isEmpty()) {
-            String poll = linkedList.poll();
-            if (checkValid(poll) && !result.contains(poll)) {
-                result.add(poll);
-            }
-            if (!result.isEmpty()) {
-                continue;
-            }
-            int len = poll.length();
-            for (int i = 0; i < len; i++) {
-                char word = poll.charAt(i);
-                if (word != '(' && word != ')') {
+            int size = linkedList.size();
+            for (int i = 0; i < size; i++) {
+                String poll = linkedList.poll();
+
+                if (!seen.add(poll)) {
                     continue;
                 }
-                String tmp = poll.substring(0, i) + poll.substring(i + 1);
-                if (!seen.contains(tmp)) {
-                    linkedList.offer(tmp);
-                    seen.add(tmp);
+                if (checkValidParent(poll)) {
+                    result.add(poll);
+                    continue;
+                }
+                int len = poll.length();
+
+                for (int j = 0; j < len; j++) {
+                    char tmp = poll.charAt(j);
+                    if (tmp != '(' && tmp != ')') {
+                        continue;
+                    }
+                    String remain = "";
+                    if (j == 0) {
+                        remain = poll.substring(j + 1);
+                    } else if (j == len - 1) {
+                        remain = poll.substring(0, j);
+                    } else {
+                        remain = poll.substring(0, j) + poll.substring(j + 1);
+                    }
+
+                    linkedList.offer(remain);
                 }
             }
+            if (!result.isEmpty()) {
+                return result;
+            }
         }
-        if (result.isEmpty()) {
-            result.add("");
-        }
+        result.add("");
         return result;
+    }
+
+    private boolean checkValidParent(String s) {
+        int len = s.length();
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < len; i++) {
+            char tmp = s.charAt(i);
+            if (tmp != '(' && tmp != ')') {
+                continue;
+            }
+            if (stack.isEmpty() || tmp == '(') {
+                stack.push(i);
+            } else if (s.charAt(stack.peek()) == '(') {
+                stack.pop();
+            }
+        }
+        return stack.isEmpty();
     }
 
     private boolean checkValid(String s) {
@@ -126,6 +173,16 @@ public class FourPage {
         if (s == null || s.isEmpty()) {
             return "";
         }
+        Stack<Character> stack = new Stack<>();
+
+        char[] words = s.toCharArray();
+        for (char word : words) {
+            if (stack.contains(word)) {
+                stack.remove(word);
+            }
+            stack.push(word);
+        }
+
         return "";
     }
 
@@ -196,6 +253,124 @@ public class FourPage {
             s = s + word.charAt(pos);
         }
         intervalGenerate(result, 0, pos + 1, s, word);
+    }
+
+    /**
+     * 283. Move Zeroes
+     *
+     * @param nums
+     */
+    public void moveZeroes(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int zeroIndex = 0;
+//        int endIndex = nums.length - 1;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0) {
+                swap(nums, zeroIndex++, i);
+            }
+        }
+//        while (zeroIndex < endIndex) {
+//            if (nums[endIndex] != 0) {
+//                swap(nums, endIndex, zeroIndex++);
+//            }
+//            endIndex--;
+//        }
+    }
+
+    private void swap(int[] nums, int start, int end) {
+        int val = nums[start];
+        nums[start] = nums[end];
+        nums[end] = val;
+    }
+
+
+    /**
+     * 290. Word Pattern
+     *
+     * @param pattern
+     * @param s
+     * @return
+     */
+    public boolean wordPattern(String pattern, String s) {
+        if (pattern == null || s == null) {
+            return false;
+        }
+        Map<Character, Integer> map1 = new HashMap<>();
+        Map<String, Integer> map2 = new HashMap<>();
+        String[] words = s.split(" ");
+
+        int len = pattern.length();
+        if (words.length != len) {
+            return false;
+        }
+        for (int i = 0; i < len; i++) {
+            char tmp = pattern.charAt(i);
+
+            Integer firstIndex = map1.get(tmp);
+
+            Integer secondIndex = map2.get(words[i]);
+
+            if (Objects.equals(firstIndex, secondIndex)) {
+                return false;
+            }
+            map1.put(tmp, i);
+            map2.put(words[i], i);
+        }
+        return true;
+    }
+
+
+    /**
+     * 291 Word Pattern II
+     *
+     * @param pattern: a string,denote pattern string
+     * @param str:     a string, denote matching string
+     * @return: a boolean
+     */
+    public boolean wordPatternMatch(String pattern, String str) {
+        // write your code here
+        if (pattern == null || str == null) {
+            return false;
+        }
+        Map<Character, String> map = new HashMap<>();
+        Set<String> visited = new HashSet<>();
+        return internalWordPatternMatch(pattern, str, map, visited);
+    }
+
+    private boolean internalWordPatternMatch(String pattern, String str, Map<Character, String> map, Set<String> visited) {
+        if (pattern.isEmpty()) {
+            return str.isEmpty();
+        }
+        String prefix = map.getOrDefault(pattern.charAt(0), "");
+
+        if (!prefix.isEmpty()) {
+            if (!str.startsWith(prefix)) {
+                return false;
+            }
+            return internalWordPatternMatch(pattern.substring(1), str.substring(prefix.length()), map, visited);
+        }
+        int len = str.length();
+
+        for (int i = 1; i <= len; i++) {
+            String substring = str.substring(0, i);
+
+            if (visited.contains(substring)) {
+                continue;
+            }
+            visited.add(substring);
+            map.put(pattern.charAt(0), substring);
+
+            String remain = str.substring(i);
+
+            if (internalWordPatternMatch(pattern.substring(1), remain, map, visited)) {
+                return true;
+            }
+            visited.remove(substring);
+            map.remove(pattern.charAt(0));
+        }
+        return false;
     }
 
 }

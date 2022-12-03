@@ -1,6 +1,9 @@
 package org.learn.algorithm.leetcode;
 
+import com.sun.mail.imap.Rights;
+
 import javax.print.attribute.UnmodifiableSetException;
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 import java.awt.font.NumericShaper;
 
 /**
@@ -16,7 +19,12 @@ public class BinarySolution {
 
     public static void main(String[] args) {
         BinarySolution solution = new BinarySolution();
-        solution.findPeakElement(new int[]{2});
+//        solution.findPeakElement(new int[]{2});
+//        solution.searchInsert(new int[]{1, 3, 5, 6}, 2);
+        int[] nums = new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 13, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+//        solution.searchII(nums, 13);
+        int[] tmp = new int[]{4, 5, 6, 7, 0, 1, 2};
+        solution.findMin(tmp);
     }
 
     /**
@@ -27,17 +35,15 @@ public class BinarySolution {
      * @return
      */
     public int search(int[] nums, int target) {
-        if (nums == null || nums.length == 0) {
-            return -1;
-        }
         int left = 0;
         int right = nums.length - 1;
-        while (left < right) {
+        while (left <= right) {
             int mid = left + (right - left) / 2;
             if (nums[mid] == target) {
                 return mid;
-            } else if (nums[left] <= nums[mid]) {
-                if (target < nums[mid] && target >= nums[left]) {
+            }
+            if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && nums[left] <= target) {
                     right = mid - 1;
                 } else {
                     left = mid + 1;
@@ -48,10 +54,10 @@ public class BinarySolution {
                 } else {
                     right = mid - 1;
                 }
-
             }
         }
-        return nums[left] == target ? left : -1;
+        return -1;
+//        return nums[left] == target ? left : -1;
     }
 
     /**
@@ -69,14 +75,16 @@ public class BinarySolution {
         int left = 0;
         int right = nums.length - 1;
         while (left < right) {
+            if (nums[left] == nums[right]) {
+                right--;
+                continue;
+            }
             int mid = left + (right - left) / 2;
             if (nums[mid] == target) {
                 return true;
             }
-            if (nums[left] == nums[right]) {
-                right--;
-            } else if (nums[left] <= nums[mid]) {
-                if (target < nums[mid] && nums[left] <= target) {
+            if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && target >= nums[left]) {
                     right = mid - 1;
                 } else {
                     left = mid + 1;
@@ -103,6 +111,7 @@ public class BinarySolution {
         if (nums == null || nums.length == 0) {
             return new int[]{-1, -1};
         }
+
         int[] result = new int[]{-1, -1};
         int left = 0;
         int right = nums.length - 1;
@@ -118,9 +127,11 @@ public class BinarySolution {
             return result;
         }
         result[0] = left;
+
         right = nums.length - 1;
+
         while (left < right) {
-            int mid = left + (right - left) / 2 + 1;
+            int mid = 1 + left + (right - left) / 2;
             if (nums[mid] > target) {
                 right = mid - 1;
             } else {
@@ -174,6 +185,9 @@ public class BinarySolution {
      * @return
      */
     public int findMinII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
         int start = 0;
         int end = nums.length - 1;
         while (start < end) {
@@ -229,15 +243,35 @@ public class BinarySolution {
         int right = nums.length - 1;
         while (left < right) {
             int mid = left + (right - left) / 2;
-            if (nums[mid] >= nums[mid + 1]) {
-                right = mid;
-            } else {
+            if (nums[mid] < nums[mid + 1]) {
                 left = mid + 1;
+            } else {
+                right = mid;
             }
         }
         return left;
     }
 
+    public int minNumberInRotateArrayii(int[] array) {
+        if (array == null || array.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = array.length - 1;
+        while (left < right) {
+            if (array[left] == array[right]) {
+                right--;
+                continue;
+            }
+            int mid = left + (right - left) / 2;
+            if (array[mid] > array[right]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return array[left];
+    }
 
     public int minNumberInRotateArray(int[] array) {
         if (array == null || array.length == 0) {
@@ -273,16 +307,16 @@ public class BinarySolution {
         }
         int row = matrix.length;
         int column = matrix[0].length;
-        int i = row - 1;
-        int j = 0;
-        while (i >= 0 && j < column) {
+        int j = column - 1;
+        int i = 0;
+        while (i < row && j >= 0) {
             int val = matrix[i][j];
             if (val == target) {
                 return true;
             } else if (val < target) {
-                j++;
+                i++;
             } else {
-                i--;
+                j--;
             }
         }
         return false;
@@ -290,7 +324,7 @@ public class BinarySolution {
 
     /**
      * 240. Search a 2D Matrix II
-     * todo
+     * 从右上角斜对角线看下来是一个二叉搜索树
      *
      * @param matrix
      * @param target
@@ -300,8 +334,8 @@ public class BinarySolution {
         if (matrix == null || matrix.length == 0) {
             return false;
         }
-        int column = matrix[0].length;
         int row = matrix.length;
+        int column = matrix[0].length;
         int i = 0;
         int j = column - 1;
         while (i < row && j >= 0) {
@@ -314,7 +348,7 @@ public class BinarySolution {
                 j--;
             }
         }
-        return true;
+        return false;
     }
 
 }

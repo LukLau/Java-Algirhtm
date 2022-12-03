@@ -1,5 +1,9 @@
 package org.learn.algorithm.degisnPattern;
 
+import org.springframework.beans.factory.BeanClassLoaderAware;
+
+import javax.annotation.Resource;
+
 /**
  * @author luk
  * @date 2021/7/25

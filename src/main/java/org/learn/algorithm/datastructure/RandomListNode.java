@@ -6,6 +6,9 @@ package org.learn.algorithm.datastructure;
  */
 public class RandomListNode {
     public int label;
+
+    private int value;
+
     public RandomListNode next = null;
     public RandomListNode random = null;
 

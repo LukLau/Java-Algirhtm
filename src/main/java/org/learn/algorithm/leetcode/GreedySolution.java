@@ -25,7 +25,7 @@ public class GreedySolution {
         }
         int step = 0;
         int current = 0;
-        int furthest = nums[0];
+        int furthest = 0;
         for (int i = 0; i < nums.length - 1; i++) {
             furthest = Math.max(furthest, i + nums[i]);
             if (i == current) {
@@ -50,7 +50,7 @@ public class GreedySolution {
         for (int i = 0; i < nums.length && i <= reach; i++) {
             reach = Math.max(reach, i + nums[i]);
         }
-        return reach >= nums.length;
+        return reach >= nums.length - 1;
     }
 
 
@@ -65,14 +65,14 @@ public class GreedySolution {
      */
     public int canCompleteCircuit(int[] gas, int[] cost) {
         if (gas == null || cost == null) {
-            return 0;
+            return -1;
         }
-        int global = 0;
         int local = 0;
+        int global = 0;
         int index = 0;
         for (int i = 0; i < gas.length; i++) {
-            local += gas[i] - cost[i];
             global += gas[i] - cost[i];
+            local += gas[i] - cost[i];
             if (local < 0) {
                 local = 0;
                 index = i + 1;

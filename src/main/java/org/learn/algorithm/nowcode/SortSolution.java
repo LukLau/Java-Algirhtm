@@ -1,5 +1,10 @@
 package org.learn.algorithm.nowcode;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 /**
  * @author luk
  */
@@ -7,11 +12,21 @@ public class SortSolution {
 
     public static void main(String[] args) {
         SortSolution solution = new SortSolution();
-        int[] nums = new int[]{5, 2, 3, 1, 4};
-        solution.heapSort(nums);
-        for (int num : nums) {
-            System.out.println(num);
+        Random random = new Random();
+        int[] nums = new int[random.nextInt(10) + 10];
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = random.nextInt(50);
         }
+//        solution.heapSort(nums);
+//        solution.bucketSort(nums);
+//        solution.countSort(nums);
+//        for (int num : nums) {
+//            System.out.println(num);
+//        }
+
+        nums = new int[]{0};
+        solution.hIndex(nums);
+
     }
 
     private void quickSortAlgorithm(int[] nums) {
@@ -121,5 +136,108 @@ public class SortSolution {
         }
         nums[i] = pivot;
     }
+
+
+    public void bucketSort(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+        for (int num : nums) {
+            if (num > max) {
+                max = num;
+            }
+            if (num < min) {
+                min = num;
+            }
+        }
+        int bucketSide = (max - min) / nums.length + 1;
+        int bucketCounts = (max - min) / bucketSide + 1;
+
+        List<List<Integer>> buckets = new ArrayList<>();
+
+        for (int i = 0; i < bucketCounts; i++) {
+            List<Integer> tmp = new ArrayList<>();
+            buckets.add(tmp);
+        }
+        for (int num : nums) {
+            int index = (num - min) / bucketSide;
+
+            buckets.get(index).add(num);
+        }
+        int index = 0;
+        for (int i = 0; i < bucketCounts; i++) {
+            List<Integer> currentBucket = buckets.get(i);
+
+            if (currentBucket != null && !currentBucket.isEmpty()) {
+                Collections.sort(currentBucket);
+            }
+            assert currentBucket != null;
+            for (Integer currentItem : currentBucket) {
+                nums[index++] = currentItem;
+            }
+        }
+    }
+
+    public void countSort(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for (int num : nums) {
+            if (num < min) {
+                min = num;
+            }
+            if (num > max) {
+                max = num;
+            }
+        }
+        int[] tmp = new int[max - min + 1];
+        for (int num : nums) {
+            tmp[num - min]++;
+        }
+        int[] result = new int[nums.length];
+        int index = 0;
+        for (int i = 0; i < tmp.length; i++) {
+            int count = tmp[i];
+            while (count-- > 0) {
+                result[index++] = min + i;
+            }
+        }
+        System.arraycopy(result, 0, nums, 0, result.length);
+    }
+
+
+    /**
+     * https://leetcode.com/problems/h-index/
+     * <p>
+     * https://leetcode.com/problems/h-index-ii/discuss/71063/Standard-binary-search
+     *
+     * @param citations
+     * @return
+     */
+    public int hIndex(int[] citations) {
+        int[] count = new int[citations.length + 1];
+        for (int citation : citations) {
+            if (citation >= citations.length) {
+                count[citations.length]++;
+            } else {
+                count[citation]++;
+            }
+        }
+        int total = 0;
+        for (int i = count.length - 1; i >= 0; i--) {
+            total += count[i];
+            if (total >= i) {
+                return i;
+            }
+        }
+        return 0;
+
+
+    }
+
 
 }

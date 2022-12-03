@@ -8,39 +8,30 @@ package org.learn.algorithm.datastructure;
  */
 public class WordDictionary {
 
-    private final Trie trie;
+    private final Trie root;
 
-    /**
-     * Initialize your data structure here.
-     */
     public WordDictionary() {
-        trie = new Trie();
+        root = new Trie();
     }
 
     public void addWord(String word) {
         if (word == null || word.isEmpty()) {
             return;
         }
-        trie.insert(word);
+        root.insert(word);
     }
 
     public boolean search(String word) {
-        if (word == null) {
-            return false;
-        }
-        return trie.searchV2(word);
+        return root.searchII(word);
     }
 
 
     public static void main(String[] args) {
-        WordDictionary dictionary = new WordDictionary();
+        WordDictionary wordDictionary = new WordDictionary();
 
-        dictionary.addWord("a");
-        dictionary.search(".a");
-    }
+        wordDictionary.addWord("a");
 
+        wordDictionary.search("aa");
 
-    public boolean startWith(String s) {
-        return trie.startsWith(s);
     }
 }

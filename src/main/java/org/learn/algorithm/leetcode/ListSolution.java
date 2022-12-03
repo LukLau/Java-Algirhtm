@@ -1,7 +1,9 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
+import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.RandomListNode;
+import org.slf4j.event.SubstituteLoggingEvent;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -34,46 +36,19 @@ public class ListSolution {
         if (head == null) {
             return null;
         }
-        ListNode current = head;
-        int count = 1;
-        while (current.next != null) {
-            count++;
-            current = current.next;
-        }
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
-        ListNode fast = dummy;
-        for (int i = 0; i < count - n; i++) {
-            fast = fast.next;
-        }
-        fast.next = fast.next.next;
-        return dummy.next;
-    }
-
-
-    public ListNode removeNthFromEndII(ListNode head, int n) {
-        if (n <= 0 || head == null) {
-            return null;
-        }
         ListNode root = new ListNode(0);
-
         root.next = head;
 
         ListNode fast = root;
-
         for (int i = 0; i < n; i++) {
-            if (fast == null) {
-                return null;
-            }
             fast = fast.next;
         }
         ListNode slow = root;
         while (fast.next != null) {
-            fast = fast.next;
             slow = slow.next;
+            fast = fast.next;
         }
         slow.next = slow.next.next;
-
         return root.next;
     }
 
@@ -103,18 +78,30 @@ public class ListSolution {
         }
         ListNode root = new ListNode(0);
         root.next = head;
+
         ListNode dummy = root;
         while (dummy.next != null && dummy.next.next != null) {
-            ListNode slow = dummy.next;
             ListNode fast = dummy.next.next;
+            ListNode slow = dummy.next;
             slow.next = fast.next;
             fast.next = slow;
-
             dummy.next = fast;
 
-            dummy = slow;
+            dummy = dummy.next.next;
+
         }
         return root.next;
+    }
+
+    private ListNode reverse(ListNode start, ListNode end) {
+        ListNode prev = end;
+        while (start != end) {
+            ListNode tmp = start.next;
+            start.next = prev;
+            prev = start;
+            start = tmp;
+        }
+        return prev;
     }
 
 
@@ -129,22 +116,22 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        int count = 1;
         ListNode fast = head;
+        int count = 1;
+
         while (fast.next != null) {
-            count++;
             fast = fast.next;
+            count++;
         }
         fast.next = head;
         k %= count;
-        if (k != 0) {
-            for (int i = 0; i < count - k; i++) {
-                head = head.next;
-                fast = fast.next;
-            }
+        ListNode slow = head;
+        for (int i = 0; i < count - k; i++) {
+            slow = slow.next;
+            fast = fast.next;
         }
         fast.next = null;
-        return head;
+        return slow;
     }
 
 
@@ -159,24 +146,27 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        ListNode small = new ListNode(0);
-        ListNode s = small;
 
-        ListNode big = new ListNode(0);
-        ListNode b = big;
+        ListNode slowNode = new ListNode(0);
+
+        ListNode fastNode = new ListNode(0);
+
+        ListNode slow = slowNode;
+        ListNode fast = fastNode;
         while (head != null) {
             if (head.val < x) {
-                s.next = head;
-                s = s.next;
+                slow.next = head;
+
+                slow = slow.next;
             } else {
-                b.next = head;
-                b = b.next;
+                fast.next = head;
+                fast = fast.next;
             }
             head = head.next;
         }
-        b.next = null;
-        s.next = big.next;
-        return small.next;
+        fast.next = null;
+        slow.next = fastNode.next;
+        return slowNode.next;
     }
 
 
@@ -193,23 +183,27 @@ public class ListSolution {
             return head;
         }
         ListNode root = new ListNode(0);
+
         root.next = head;
 
-        ListNode slow = root;
         ListNode fast = root;
+        ListNode slow = root;
         for (int i = 0; i < left - 1; i++) {
             slow = slow.next;
         }
         for (int i = 0; i < right; i++) {
             fast = fast.next;
         }
-        ListNode need = slow.next;
+        ListNode endNode = fast.next;
+        ListNode startNode = slow.next;
 
-        slow.next = reverseNode(need, fast.next);
+        slow.next = reverseNode(startNode, endNode);
+
+        startNode.next = endNode;
 
         return root.next;
-
     }
+
 
     private ListNode reverseNode(ListNode head, ListNode tail) {
         ListNode end = tail;
@@ -240,35 +234,35 @@ public class ListSolution {
      * @param head
      * @return
      */
-    public RandomListNode copyRandomList(RandomListNode head) {
+    public Node copyRandomList(Node head) {
         if (head == null) {
             return null;
         }
-        RandomListNode current = head;
+        Node current = head;
         while (current != null) {
-            RandomListNode next = current.next;
-            RandomListNode tmp = new RandomListNode(current.label);
-            current.next = tmp;
-            tmp.next = next;
-            current = next;
+            Node randomListNode = new Node(current.val);
+
+            randomListNode.next = current.next;
+
+            current.next = randomListNode;
+
+            current = randomListNode.next;
         }
         current = head;
         while (current != null) {
-            RandomListNode random = current.random;
-            if (random != null) {
-                current.next.random = random.next;
+            if (current.random != null) {
+                current.next.random = current.random.next;
             }
             current = current.next.next;
         }
-        RandomListNode copyOfHead = head.next;
         current = head;
-
+        Node copy = head.next;
         while (current.next != null) {
-            RandomListNode tmp = current.next;
+            Node tmp = current.next;
             current.next = tmp.next;
             current = tmp;
         }
-        return copyOfHead;
+        return copy;
     }
 
 
@@ -332,29 +326,30 @@ public class ListSolution {
         if (head == null || head.next == null) {
             return;
         }
-        ListNode slow = head;
         ListNode fast = head;
+        ListNode slow = head;
         while (fast.next != null && fast.next.next != null) {
-            fast = fast.next;
+            fast = fast.next.next;
             slow = slow.next;
         }
-        ListNode second = slow.next;
+        ListNode next = slow.next;
 
         slow.next = null;
 
-        ListNode reverse = reverse(second);
+        ListNode reverse = reverse(next);
 
-        ListNode first = head;
+        fast = head;
+        while (fast != null && reverse != null) {
+            ListNode tmp = reverse.next;
 
-        while (first != null && reverse != null) {
-            ListNode next = first.next;
-            ListNode reverseNext = reverse.next;
-            first.next = reverse;
-            reverse.next = next;
-            first = next;
-            reverse = reverseNext;
+            reverse.next = fast.next;
+
+            fast.next = reverse;
+
+            reverse = tmp;
+
+            fast = fast.next.next;
         }
-
     }
 
 }

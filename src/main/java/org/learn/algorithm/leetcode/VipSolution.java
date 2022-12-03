@@ -27,7 +27,50 @@ public class VipSolution {
     public static void main(String[] args) {
         VipSolution solution = new VipSolution();
         int[] nums = new int[]{1, 3, 2};
-        solution.verifyPreorder(nums);
+//        solution.isStrobogrammatic("96801866799810896");
+//        solution.findMissingRanges(new int[]{2147483647}, 0, 2147483647);
+//        int count = solution.strobogrammaticInRangeII("50", "300");
+//        System.out.println(count);
+
+//        Interval o1 = new Interval(0, 30);
+//        Interval o2 = new Interval(5, 10);
+//        Interval o3 = new Interval(15, 20);
+//
+//        solution.minMeetingRooms(Arrays.asList(o1, o2, o3));
+//        solution.verifyPreorder(new int[]{4, 3, 5, 1, 2, 3});
+//        solution.verifyPreorder(new int[]{3, 2, 1, 4});
+//        solution.verifyPreorder(new int[]{4, 2, 1, 3});
+//        solution.verifyPreorderII(new int[]{4, 3, 5, 1, 2, 3});
+//        solution.isOneEditDistance("a", "ab");
+//        int[] tmp = new int[]{0, 2, 3, 4, 6, 8, 9};
+//        System.out.println(solution.summaryRanges(tmp));
+        int[] tmp = new int[]{2147483647};
+//        solution.findMissingRanges(tmp, 0, 2147483647);
+//        List<String> strobogrammatic = solution.findStrobogrammatic(2);
+
+//        System.out.println(strobogrammatic);
+//        solution.getStringGroup("abc");
+//        solution.getStringGroup("bcd");
+//        solution.getStringGroup("xyz");
+
+        Interval o1 = new Interval(0, 30);
+        Interval o2 = new Interval(5, 10);
+        Interval o3 = new Interval(15, 20);
+        List<Interval> intervals = Arrays.asList(o1, o2, o3);
+//        solution.minMeetingRooms(intervals);
+//        List<String> generatePossibleNextMoves = solution.generatePossibleNextMoves("---+++-+++-+");
+//        System.out.println(generatePossibleNextMoves);
+        String s = "+++++";
+//        solution.canWin(s);
+
+        char[][] images = new char[][]{{'0', '0', '1', '0' }, {'0', '1', '1', '0' }, {'0', '1', '0', '0' }};
+
+        images = new char[][]{{'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' }, {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' }, {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' },
+                {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' }, {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' }, {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' },
+                {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1' }, {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1' }, {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1' }};
+
+        int minArea = solution.minAreaii(images, 6, 11);
+        System.out.println(minArea);
     }
 
     /**
@@ -41,12 +84,19 @@ public class VipSolution {
             return root;
         }
         TreeNode left = root.left;
-        TreeNode upsideDown = upsideDownBinaryTree(left);
+
+        TreeNode upsideDownBinaryTree = upsideDownBinaryTree(left);
+
         left.left = root.right;
+
         left.right = root;
+
         root.left = null;
         root.right = null;
-        return upsideDown;
+
+        return upsideDownBinaryTree;
+
+
         // write your code here
     }
 
@@ -70,17 +120,51 @@ public class VipSolution {
         int min = Math.min(m, n);
         for (int i = 0; i < min; i++) {
             if (s.charAt(i) != t.charAt(i)) {
-                if (m < n) {
-                    return s.substring(i).equals(t.substring(i + 1));
-                } else if (m == n) {
-                    return s.substring(i + 1).equals(t.substring(i + 1));
-                } else {
+                if (m > n) {
                     return s.substring(i + 1).equals(t.substring(i));
+                } else if (m < n) {
+                    return s.substring(i).equals(t.substring(i + 1));
+                } else {
+                    return s.substring(i + 1).equals(t.substring(i + 1));
                 }
             }
         }
-        return false;
+        return Math.abs(m - n) <= 1;
     }
+
+
+    /**
+     * https://www.lintcode.com/problem/1315
+     *
+     * @param nums: a sorted integer array without duplicates
+     * @return: the summary of its ranges
+     */
+    public List<String> summaryRanges(int[] nums) {
+        // Write your code here
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        int prev = nums[0];
+        List<String> result = new ArrayList<>();
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i - 1] + 1 < nums[i]) {
+                String tmp = ranges(prev, nums[i - 1]);
+
+                result.add(tmp);
+
+                prev = nums[i];
+            }
+        }
+        if (prev <= nums[nums.length - 1]) {
+            result.add(range(prev, nums[nums.length - 1]));
+        }
+        return result;
+    }
+
+    private String ranges(int start, int end) {
+        return start == end ? String.valueOf(start) : start + "->" + end;
+    }
+
 
     /**
      * todo
@@ -93,19 +177,24 @@ public class VipSolution {
      */
     public List<String> findMissingRanges(int[] nums, int lower, int upper) {
         // write your code here
+        return internalFindMissingRanges(nums, lower, upper);
+    }
+
+    private List<String> internalFindMissingRanges(int[] nums, long lower, long upper) {
         if (nums == null) {
             return new ArrayList<>();
         }
-        long pre = lower;
         List<String> result = new ArrayList<>();
-        for (int num : nums) {
-            if (num > pre && num >= pre + 1) {
-                result.add(range(pre, num - 1));
+        for (int i = 0; i < nums.length; i++) {
+            if (lower < nums[i]) {
+                String tmp = range(lower, nums[i] - 1);
+                result.add(tmp);
             }
-            pre = ((long) num + 1);
+            lower = (long) nums[i] + 1;
         }
-        if (pre <= upper) {
-            result.add(range(pre, upper));
+        if (lower <= upper) {
+            String tmp = range(lower, upper);
+            result.add(tmp);
         }
         return result;
     }
@@ -166,7 +255,6 @@ public class VipSolution {
      * @return
      */
     public int shortestDistance(String[] words, String word1, String word2) {
-        // Write your code here
         int index1 = -1;
         int index2 = -1;
         int result = Integer.MAX_VALUE;
@@ -194,13 +282,27 @@ public class VipSolution {
         if (num == null || num.isEmpty()) {
             return false;
         }
-        char[] words = num.toCharArray();
-        Map<Character, Character> map = getNum();
-        StringBuilder builder = new StringBuilder();
-        for (char word : words) {
-            builder.append(map.get(word));
+        Map<Character, Character> numMap = getNum();
+
+        String reverse = new StringBuilder(num).reverse().toString();
+
+        int len = num.length();
+        for (int i = 0; i < len; i++) {
+            char c = num.charAt(i);
+
+            char lastWord = reverse.charAt(i);
+
+            Character character = numMap.get(lastWord);
+
+            if (character == null) {
+                return false;
+            }
+
+            if (c != character) {
+                return false;
+            }
         }
-        return builder.reverse().toString().equals(num);
+        return true;
     }
 
     private Map<Character, Character> getNum() {
@@ -230,28 +332,41 @@ public class VipSolution {
             result.add("");
             return result;
         }
-        intervalFind(result, "", n);
-        intervalFind(result, "0", n);
-        intervalFind(result, "1", n);
-        intervalFind(result, "8", n);
+
+        internalFindString(result, "", n);
+        if (n % 2 != 0) {
+            internalFindString(result, "0", n);
+            internalFindString(result, "1", n);
+            internalFindString(result, "8", n);
+        }
         return result;
+
     }
 
-    private void intervalFind(List<String> result, String s, int n) {
-        if (s.length() > n) {
-            return;
-        }
+    private void internalFindString(List<String> result, String s, int n) {
         if (s.length() == n) {
+            if (s.length() >= 2 && s.charAt(0) == '0') {
+                return;
+            }
             result.add(s);
             return;
         }
-        if (s.length() < n - 2) {
-            intervalFind(result, "0" + s + "0", n);
+        if (s.length() > n) {
+            return;
         }
-        intervalFind(result, "1" + s + "1", n);
-        intervalFind(result, "6" + s + "9", n);
-        intervalFind(result, "8" + s + "8", n);
-        intervalFind(result, "9" + s + "6", n);
+
+        internalFindString(result, "0" + s + "0", n);
+        internalFindString(result, "1" + s + "1", n);
+        internalFindString(result, "6" + s + "9", n);
+        internalFindString(result, "8" + s + "8", n);
+        internalFindString(result, "9" + s + "6", n);
+    }
+
+//    private List<String> generateWords()
+
+
+    private void intervalFind(List<String> result, String s, int n) {
+
     }
 
     /**
@@ -312,29 +427,30 @@ public class VipSolution {
         if (strings == null || strings.length == 0) {
             return new ArrayList<>();
         }
-        Map<String, List<String>> result = new HashMap<>();
-        intervalGroup(result, strings);
-        return new ArrayList<>(result.values());
-    }
+        Map<String, List<String>> map = new HashMap<>();
+        for (String word : strings) {
+            String group = getStringGroup(word);
 
-    private void intervalGroup(Map<String, List<String>> result, String[] words) {
-        for (String word : words) {
-            String shiftWord = shiftWord(word);
-            List<String> tmp = result.getOrDefault(shiftWord, new ArrayList<>());
+            List<String> tmp = map.getOrDefault(group, new ArrayList<>());
             tmp.add(word);
-            result.put(shiftWord, tmp);
+
+            map.put(group, tmp);
         }
+        return new ArrayList<>(map.values());
     }
 
-    private String shiftWord(String word) {
-        StringBuilder buffer = new StringBuilder();
-        char[] words = word.toCharArray();
-        int dist = word.charAt(0) - 'a';
-        for (char c : words) {
-            char t = (char) ((c - 'a' - dist + 26) % 26 + 'a');
-            buffer.append(t);
+    private String getStringGroup(String word) {
+        StringBuilder builder = new StringBuilder();
+        int diff = word.charAt(0) - 'a';
+        int len = word.length();
+        for (int i = 0; i < len; i++) {
+            char currentWord = word.charAt(i);
+//            char t = (char) ((c - 'a' - dist + 26) % 26 + 'a');
+            char tmp = (char) ((currentWord - 'a' - diff) % 26 + 'a');
+            builder.append(tmp);
         }
-        return buffer.toString();
+        System.out.println(builder);
+        return builder.toString();
     }
 
     /**
@@ -349,7 +465,7 @@ public class VipSolution {
             return 0;
         }
         int count = 0;
-        if (isUnivalSubTree(root, root.val)) {
+        if (isUnival(root, root.val)) {
             count++;
         }
         count += countUnivalSubtrees(root.left);
@@ -357,11 +473,14 @@ public class VipSolution {
         return count;
     }
 
-    private boolean isUnivalSubTree(TreeNode root, int val) {
+    private boolean isUnival(TreeNode root, int val) {
         if (root == null) {
             return true;
         }
-        return root.val == val && isUnivalSubTree(root.left, root.val) && isUnivalSubTree(root.right, root.val);
+        if (root.val != val) {
+            return false;
+        }
+        return isUnival(root.left, root.val) && isUnival(root.right, root.val);
     }
 
     /**
@@ -374,21 +493,30 @@ public class VipSolution {
     public boolean canAttendMeetings(List<Interval> intervals) {
         // Write your code here
         if (intervals == null || intervals.isEmpty()) {
-            return false;
+            return true;
         }
         intervals.sort(Comparator.comparingInt(o -> o.start));
-        Interval pre = intervals.get(0);
-        for (int i = 1; i < intervals.size(); i++) {
-            Interval current = intervals.get(i);
-            if (current.start < pre.end) {
+
+//        Integer prevEnd = null;
+//
+//        for (Interval interval : intervals) {
+//            if (prevEnd != null && interval.start >= prevEnd) {
+//                return false;
+//            }
+//            prevEnd = interval.end;
+//        }
+        Integer prev = null;
+        for (Interval interval : intervals) {
+            if (prev != null && interval.start >= prev) {
                 return false;
             }
-            pre = current;
+            prev = interval.end;
         }
         return true;
     }
 
     /**
+     * https://www.lintcode.com/problem/919
      * todo
      * 253
      * Meeting Rooms II
@@ -397,19 +525,21 @@ public class VipSolution {
      * @return: the minimum number of conference rooms required
      */
     public int minMeetingRooms(List<Interval> intervals) {
-        // Write your code here
         if (intervals == null || intervals.isEmpty()) {
             return 0;
         }
-        PriorityQueue<Integer> queue = new PriorityQueue<>();
         intervals.sort(Comparator.comparingInt(o -> o.start));
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>();
+
         for (Interval interval : intervals) {
-            if (!queue.isEmpty() && queue.peek() < interval.start) {
-                queue.poll();
+            if (!priorityQueue.isEmpty() && priorityQueue.peek() <= interval.start) {
+                priorityQueue.poll();
             }
-            queue.offer(interval.end);
+            priorityQueue.offer(interval.end);
         }
-        return queue.size();
+        return priorityQueue.size();
+
+
     }
 
     /**
@@ -423,25 +553,58 @@ public class VipSolution {
         if (preorder == null || preorder.length == 0) {
             return false;
         }
-        return intervalVerifyPreorder(Integer.MIN_VALUE, Integer.MAX_VALUE, 0, preorder.length - 1, preorder);
+        Stack<Integer> stack = new Stack<>();
+        Integer prev = null;
+        for (int i = 0; i < preorder.length; i++) {
+            int val = preorder[i];
+
+            if (prev != null && prev >= val) {
+                return false;
+            }
+            while (!stack.isEmpty() && preorder[stack.peek()] < val) {
+                prev = preorder[stack.pop()];
+            }
+            stack.push(i);
+        }
+        return true;
     }
 
-    private boolean intervalVerifyPreorder(int minValue, int maxValue, int start, int end, int[] preorder) {
-        if (start > end) {
+    public boolean verifyPreorderII(int[] preorder) {
+        if (preorder == null || preorder.length == 0) {
             return true;
         }
-        int val = preorder[start], i = 0;
-        if (val <= minValue || val >= maxValue) {
-            return false;
-        }
-        for (i = start + 1; i <= end; ++i) {
-            if (preorder[i] >= val) {
-                break;
+        int index = -1;
+        Integer prev = null;
+        for (int i = 0; i < preorder.length; i++) {
+            int val = preorder[i];
+            if (prev != null && prev >= val) {
+                return false;
             }
+            while (index >= 0 && preorder[index] < val) {
+                prev = preorder[index--];
+            }
+            preorder[++index] = val;
         }
-        return intervalVerifyPreorder(minValue, val, start + 1, i - 1, preorder) &&
-                intervalVerifyPreorder(val, maxValue, i, end, preorder);
+        return true;
     }
+
+    private boolean internalVerifyPreorder(int start, int end, int[] preorder) {
+        if (start == end) {
+            return true;
+        }
+        int tmp = start + 1;
+        while (tmp < end && preorder[tmp] < preorder[start]) {
+            tmp++;
+        }
+        int mid = tmp;
+        while (mid < end && preorder[mid] > preorder[mid]) {
+            mid++;
+        }
+
+
+        return false;
+    }
+
 
     /**
      * todo
@@ -664,26 +827,31 @@ public class VipSolution {
      * @return: all the possible states of the string after one valid move
      */
     public List<String> generatePossibleNextMoves(String s) {
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        int n = s.length();
         List<String> result = new ArrayList<>();
-        if (s == null) {
-            return result;
-        }
-        int len = s.length();
-        if (len <= 1) {
-            return result;
-        }
-        int endIndex = 0;
-        while (endIndex < len) {
-            int index = s.indexOf("++", endIndex);
-            if (index == -1) {
+        int index = 0;
+        while (index < n) {
+            int beginIndex = s.indexOf("++", index);
+
+            if (beginIndex == -1) {
                 break;
             }
-            String tmp = s.substring(0, index) + "--" + s.substring(index + 2);
+            String prefix = s.substring(0, beginIndex);
+
+            String last = s.substring(beginIndex + 2);
+
+            String tmp = prefix + "--" + last;
+
+//            System.out.println("beginIndex: " + beginIndex + " new word: " + tmp);
+
             result.add(tmp);
-            endIndex = index + 1;
+
+            index = beginIndex + 1;
         }
         return result;
-        // write your code here
     }
 
     /**
@@ -695,20 +863,29 @@ public class VipSolution {
      */
     public boolean canWin(String s) {
         // write your code here
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return false;
         }
+        int index = 0;
         int len = s.length();
-        if (len < 2) {
-            return false;
-        }
-        for (int i = 0; i < len; i++) {
-            if (s.startsWith("++", i)) {
-                String t = s.substring(0, i) + "--" + s.substring(i + 2);
-                if (!canWin(t)) {
-                    return true;
-                }
+        while (index < len) {
+            int indexOf = s.indexOf("++", index);
+
+            if (indexOf == -1) {
+                return false;
             }
+            String prefix = s.substring(0, indexOf);
+
+            String last = s.substring(indexOf + 2);
+
+            String tmp = prefix + "--" + last;
+
+            if (!canWin(tmp)) {
+//                System.out.println("file index: " + index + " will success");
+                return true;
+            }
+//            System.out.println("flip index: " + index + " fail");
+            index = indexOf + 1;
         }
         return false;
     }
@@ -805,6 +982,7 @@ public class VipSolution {
 
 
     /**
+     * todo memory limit exceeded
      * 302
      * Smallest Rectangle Enclosing Black Pixels
      *
@@ -815,55 +993,167 @@ public class VipSolution {
      */
     public int minArea(char[][] image, int x, int y) {
         // write your code here
-        int row = image.length - 1;
-
-        int column = image[0].length - 1;
-
-        int left = getAreaEdge(image, 0, row, 0, y, true);
-        int right = getAreaEdge(image, 0, row, y, column, true);
-        int top = getAreaEdge(image, 0, column, 0, x, false);
-        int bottom = getAreaEdge(image, 0, column, x + 1, row, true);
-        return (right - left) * (bottom - top);
-    }
-
-    private int getAreaEdge(char[][] image, int i, int row, int y, int column, boolean vertical) {
-        return 0;
-    }
-
-
-    /**
-     * todo 并查集
-     * 305
-     * Number of Islands II
-     *
-     * @param n:         An integer
-     * @param m:         An integer
-     * @param operators: an array of point
-     * @return: an integer array
-     */
-    public List<Integer> numIslands2(int n, int m, Point[] operators) {
-        // write your code here
-        int[][] matrix = new int[n][m];
-        List<Integer> result = new ArrayList<>();
-        PriorityQueue<Point> queue = new PriorityQueue<>(new Comparator<Point>() {
-            @Override
-            public int compare(Point o1, Point o2) {
-                if (o1.x == o2.x) {
-                    return o1.y - o2.y;
-                }
-                return o1.x - o2.x;
-            }
-        });
-        for (Point operator : operators) {
-            if (queue.isEmpty()) {
-                queue.offer(operator);
-            } else {
-
-
-            }
-            result.add(queue.size());
+        if (image == null || image.length == 0) {
+            return 0;
         }
-        return result;
+        int left = Integer.MAX_VALUE;
+        int right = Integer.MIN_VALUE;
+        int top = Integer.MAX_VALUE;
+        int bottom = Integer.MIN_VALUE;
+        int[] params = new int[]{x, y};
+        LinkedList<int[]> linkedList = new LinkedList<>();
+        linkedList.offer(params);
+        boolean[][] visited = new boolean[image.length][image[0].length];
+        int[][] matrix = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        while (!linkedList.isEmpty()) {
+            int[] poll = linkedList.poll();
+            System.out.println(Arrays.toString(poll));
+
+            visited[poll[0]][poll[1]] = true;
+
+            left = Math.min(left, poll[1]);
+            right = Math.max(right, poll[1]);
+
+            top = Math.min(top, poll[0]);
+            bottom = Math.max(bottom, poll[0]);
+//            System.out.println("left: " + left + " right: " + right + " top: " + top + " bottom: " + bottom);
+
+
+            for (int[] direct : matrix) {
+                int tmpX = poll[0] + direct[0];
+                int tmpY = poll[1] + direct[1];
+                if (tmpX < 0 || tmpX == image.length || tmpY < 0 || tmpY == image[tmpX].length) {
+                    continue;
+                }
+                if (visited[tmpX][tmpY]) {
+                    continue;
+                }
+
+                if (image[tmpX][tmpY] != '1') {
+                    continue;
+                }
+//                System.out.println("insert new point:" + tmpX + " " + tmpY);
+                linkedList.offer(new int[]{tmpX, tmpY});
+            }
+        }
+        return (right - left + 1) * (bottom - top + 1);
+
+//        int row = image.length - 1;
+//
+//        int column = image[0].length - 1;
+//
+//        int left = getAreaEdge(image, 0, row, 0, y, true);
+//        int right = getAreaEdge(image, 0, row, y, column, true);
+//        int top = getAreaEdge(image, 0, column, 0, x, false);
+//        int bottom = getAreaEdge(image, 0, column, x + 1, row, true);
+//        return (right - left) * (bottom - top);
+    }
+
+
+    public int minAreaii(char[][] image, int x, int y) {
+        if (image == null || image.length == 0) {
+            return 0;
+        }
+        int row = image.length;
+        int column = image[0].length;
+        int top = 0;
+        int left = 0;
+        int bottom = 0;
+        int right = 0;
+        int l = 0;
+        int r = y;
+        while (l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if (checkValidColumn(image, mid)) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        if (checkValidColumn(image, l)) {
+            left = l;
+        } else {
+            left = r;
+        }
+        System.out.println("current left edge: " + left);
+
+        l = y;
+        r = column - 1;
+        while (l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if (checkValidColumn(image, mid)) {
+                l = mid;
+            } else {
+                r = mid;
+            }
+        }
+        if (checkValidColumn(image, r)) {
+            right = r;
+        } else {
+            right = l;
+        }
+
+        System.out.println("current right edge: " + right);
+
+
+        l = 0;
+        r = x;
+        while (l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if (checkValidRow(image, mid, left, right)) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        if (checkValidRow(image, l, left, right)) {
+            top = l;
+        } else {
+            top = r;
+        }
+
+        System.out.println("current top edge: " + top);
+
+        l = x;
+        r = row - 1;
+        while (l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if (checkValidRow(image, mid, left, right)) {
+                l = mid;
+            } else {
+                r = mid;
+            }
+        }
+        if (checkValidRow(image, r, left, right)) {
+            bottom = r;
+        } else {
+            bottom = l;
+        }
+        System.out.println("current bottom edge: " + bottom);
+
+        int width = (right - left) + 1;
+        int height = (bottom - top) + 1;
+
+        return width * height;
+    }
+
+    private boolean checkValidColumn(char[][] image, int column) {
+        for (int i = image.length - 1; i >= 0; i--) {
+            if (image[i][column] == '1') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean checkValidRow(char[][] image, int row, int left, int right) {
+        for (int i = left; i <= right; i++) {
+            if (image[row][i] == '1') {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -946,6 +1236,49 @@ public class VipSolution {
             }
         }
         return new ArrayList<>(map.values());
+    }
+
+    public int strobogrammaticInRangeII(String low, String high) {
+        int m = low.length();
+        int n = high.length();
+        int count = 0;
+        for (int i = m; i <= n; i++) {
+            count += internalStrobogrammatic("", i, low, high);
+            count += internalStrobogrammatic("0", i, low, high);
+            count += internalStrobogrammatic("1", i, low, high);
+            count += internalStrobogrammatic("8", i, low, high);
+
+        }
+        return count;
+    }
+
+    private int internalStrobogrammatic(String s, int len, String low, String high) {
+        int n = high.length();
+        int wordLen = s.length();
+        if (wordLen > n) {
+            return 0;
+        }
+        int count = 0;
+        if (s.length() == len) {
+            if (s.charAt(0) == '0') {
+                return 0;
+            }
+            if (s.length() == low.length() && low.compareTo(s) > 0) {
+                return 0;
+            }
+            if (s.length() == high.length() && high.compareTo(s) < 0) {
+                return 0;
+            }
+
+            count++;
+            System.out.println(s);
+        }
+        count += internalStrobogrammatic("0" + s + "0", len, low, high);
+        count += internalStrobogrammatic("1" + s + "1", len, low, high);
+        count += internalStrobogrammatic("6" + s + "9", len, low, high);
+        count += internalStrobogrammatic("8" + s + "8", len, low, high);
+        count += internalStrobogrammatic("9" + s + "6", len, low, high);
+        return count;
     }
 
 

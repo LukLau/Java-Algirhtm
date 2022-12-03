@@ -1,9 +1,9 @@
 package org.learn.algorithm.leetcode;
 
-import org.learn.algorithm.datastructure.WordDictionary;
+import org.apache.tomcat.util.descriptor.web.WebXml;
+import org.learn.algorithm.datastructure.Trie;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * @author luk
@@ -14,7 +14,24 @@ public class RecursiveSolution {
 
     public static void main(String[] args) {
         RecursiveSolution solution = new RecursiveSolution();
-        System.out.println(solution.getPermutation(3, 3));
+        char[][] words = new char[][]{{'o', 'a', 'b', 'n'}, {'o', 't', 'a', 'e'}, {'a', 'h', 'k', 'r'}, {'a', 'f', 'l', 'v'}};
+        String[] tmp = new String[]{"oa", "oaa"};
+//        solution.findWords(words, tmp);
+//        List<Integer> diffWaysToCompute = solution.diffWaysToCompute("2*3-4*5");
+//        System.out.println(diffWaysToCompute);
+//        solution.getFactors(8);
+//        solution.combinationSum4(new int[]{1, 2, 3}, 4);
+//        solution.combinationSum2(new int[]{3, 1, 3, 5, 1, 1,
+//                8}, 8);
+//        solution.permuteUnique(new int[]{1, 1, 2});
+//        System.out.println(solution.wordBreakII("leetcode", Arrays.asList("leet", "code")));
+        String[] wordArray = new String[]{"oath", "pea", "eat", "rain"};
+
+//        List<String> result = solution.findWords(words, wordArray);
+//        System.out.println(result);
+//        System.out.println(solution.diffWaysToCompute("2-1-1"));
+        List<List<Integer>> factors = solution.getFactors(8);
+        System.out.println(factors);
     }
 
     /**
@@ -140,11 +157,11 @@ public class RecursiveSolution {
         }
         List<List<Integer>> result = new ArrayList<>();
         Arrays.sort(candidates);
-        intervalCombinationSum2(result, new ArrayList<>(), candidates, 0, target);
+        internalCombinationSum2(result, new ArrayList<>(), 0, candidates, target);
         return result;
     }
 
-    private void intervalCombinationSum2(List<List<Integer>> result, List<Integer> tmp, int[] candidates, int start, int target) {
+    private void internalCombinationSum2(List<List<Integer>> result, List<Integer> tmp, int start, int[] candidates, int target) {
         if (target == 0) {
             result.add(new ArrayList<>(tmp));
             return;
@@ -154,7 +171,7 @@ public class RecursiveSolution {
                 continue;
             }
             tmp.add(candidates[i]);
-            intervalCombinationSum2(result, tmp, candidates, i + 1, target - candidates[i]);
+            internalCombinationSum2(result, tmp, i + 1, candidates, target - candidates[i]);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -171,7 +188,6 @@ public class RecursiveSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        Arrays.sort(nums);
         boolean[] used = new boolean[nums.length];
         internalPermute(result, new ArrayList<>(), nums, used);
         return result;
@@ -186,8 +202,8 @@ public class RecursiveSolution {
             if (used[i]) {
                 continue;
             }
-            tmp.add(nums[i]);
             used[i] = true;
+            tmp.add(nums[i]);
             internalPermute(result, tmp, nums, used);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
@@ -208,11 +224,11 @@ public class RecursiveSolution {
         List<List<Integer>> result = new ArrayList<>();
         Arrays.sort(nums);
         boolean[] used = new boolean[nums.length];
-        internalPermuteUnique(result, new ArrayList<>(), nums, used);
+        internalPermuteUnique(result, new ArrayList<>(), used, nums);
         return result;
     }
 
-    private void internalPermuteUnique(List<List<Integer>> result, List<Integer> tmp, int[] nums, boolean[] used) {
+    private void internalPermuteUnique(List<List<Integer>> result, List<Integer> tmp, boolean[] used, int[] nums) {
         if (tmp.size() == nums.length) {
             result.add(new ArrayList<>(tmp));
             return;
@@ -226,10 +242,67 @@ public class RecursiveSolution {
             }
             used[i] = true;
             tmp.add(nums[i]);
-            internalPermuteUnique(result, tmp, nums, used);
-            used[i] = false;
+            internalPermuteUnique(result, tmp, used, nums);
             tmp.remove(tmp.size() - 1);
+            used[i] = false;
         }
+    }
+
+    /**
+     * 51. N-Queens
+     *
+     * @param n
+     * @return
+     */
+
+    public List<List<String>> solveNQueens(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        char[][] matrix = new char[n][n];
+        for (char[] row : matrix) {
+            Arrays.fill(row, '.');
+        }
+        List<List<String>> result = new ArrayList<>();
+        internalSolveQueens(result, matrix, 0, n);
+        return result;
+    }
+
+    private void internalSolveQueens(List<List<String>> result, char[][] matrix, int row, int n) {
+        if (row == n) {
+            List<String> tmp = new ArrayList<>();
+            for (char[] queen : matrix) {
+                tmp.add(String.valueOf(queen));
+            }
+            result.add(tmp);
+            return;
+        }
+        for (int j = 0; j < n; j++) {
+            if (checkValid(matrix, j, row)) {
+                matrix[row][j] = 'Q';
+                internalSolveQueens(result, matrix, row + 1, n);
+                matrix[row][j] = '.';
+            }
+        }
+    }
+
+    private boolean checkValid(char[][] matrix, int column, int row) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (matrix[i][column] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = column - 1; i >= 0 && j >= 0; i--, j--) {
+            if (matrix[i][j] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = column + 1; i >= 0 && j < matrix[0].length; i--, j++) {
+            if (matrix[i][j] == 'Q') {
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -269,15 +342,15 @@ public class RecursiveSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        intervalSubsets(result, new ArrayList<>(), 0, nums);
+        internalSubsets(result, new ArrayList<>(), 0, nums);
         return result;
     }
 
-    private void intervalSubsets(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
+    private void internalSubsets(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
         result.add(new ArrayList<>(tmp));
         for (int i = start; i < nums.length; i++) {
             tmp.add(nums[i]);
-            intervalSubsets(result, tmp, i + 1, nums);
+            internalSubsets(result, tmp, i + 1, nums);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -341,20 +414,44 @@ public class RecursiveSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        combineSum3(result, new ArrayList<Integer>(), 1, k, n);
+        internalCombineSum3(result, new ArrayList<>(), 1, n, k, n);
         return result;
     }
 
-    private void combineSum3(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int k, int n) {
-        if (tmp.size() == k && n == 0) {
+    private void internalCombineSum3(List<List<Integer>> result, List<Integer> tmp, int start, int n, int k, int target) {
+        if (tmp.size() == k && target == 0) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i <= n; i++) {
+        for (int i = start; i <= 9 && i <= target; i++) {
             tmp.add(i);
-            combineSum3(result, tmp, i + 1, k, n - i);
+            internalCombineSum3(result, tmp, i + 1, n, k, target - i);
             tmp.remove(tmp.size() - 1);
         }
+    }
+
+    /**
+     * 377. Combination Sum IV
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int combinationSum4(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int[] result = new int[target + 1];
+        result[0] = 1;
+
+        for (int i = 1; i <= target; i++) {
+            for (int j = 0; j < nums.length; j++) {
+                if (i - nums[j] >= 0) {
+                    result[i] += result[i - nums[j]];
+                }
+            }
+        }
+        return result[target];
     }
 
 
@@ -370,473 +467,27 @@ public class RecursiveSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        intervalGetFactors(result, new ArrayList<>(), 2, n / 2, n);
+        internalGetFactors(result, new ArrayList<>(), 2, n / 2, 1, n);
         return result;
     }
 
-    private void intervalGetFactors(List<List<Integer>> result, List<Integer> tmp, int start, int end, int n) {
-        if (n == 1) {
+    private void internalGetFactors(List<List<Integer>> result, List<Integer> tmp, int start, int end, int value, int expectedValue) {
+        if (value == expectedValue) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i <= end; i++) {
-            if (n % i != 0) {
+        if (value > expectedValue) {
+            return;
+        }
+        for (int i = start; i <= end && value * i <= expectedValue; i++) {
+            if (expectedValue % i != 0) {
                 continue;
             }
             tmp.add(i);
-            intervalGetFactors(result, tmp, i, end, n / i);
+            internalGetFactors(result, tmp, i, end, value * i, expectedValue);
             tmp.remove(tmp.size() - 1);
         }
     }
 
 
-    // --DFS/BFS //
-
-
-    /**
-     * 79. Word Search
-     *
-     * @param board
-     * @param word
-     * @return
-     */
-    public boolean exist(char[][] board, String word) {
-        if (board == null || board.length == 0) {
-            return false;
-        }
-        int row = board.length;
-
-        int column = board[0].length;
-        boolean[][] used = new boolean[row][column];
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                if (board[i][j] == word.charAt(0) && validExist(used, i, j, 0, board, word)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean validExist(boolean[][] used, int i, int j, int k, char[][] board, String word) {
-        if (k == word.length()) {
-            return true;
-        }
-        if (i < 0 || i == board.length || j < 0 || j == board[i].length
-                || used[i][j] || board[i][j] != word.charAt(k)) {
-            return false;
-        }
-        used[i][j] = true;
-        if (validExist(used, i - 1, j, k + 1, board, word) ||
-                validExist(used, i + 1, j, k + 1, board, word) ||
-                validExist(used, i, j - 1, k + 1, board, word) ||
-                validExist(used, i, j + 1, k + 1, board, word)) {
-            return true;
-        }
-        used[i][j] = false;
-        return false;
-
-    }
-
-
-    /**
-     * todo
-     * 212. Word Search II
-     *
-     * @param board
-     * @param words
-     * @return
-     */
-    public List<String> findWords(char[][] board, String[] words) {
-        if (board == null || board.length == 0) {
-            return new ArrayList<>();
-        }
-        WordDictionary wordDictionary = new WordDictionary();
-        for (String word : words) {
-            wordDictionary.addWord(word);
-        }
-        int row = board.length;
-
-        int column = board[0].length;
-
-        boolean[][] used = new boolean[row][column];
-
-        List<String> result = new ArrayList<>();
-
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                intervalDfs(result, used, i, j, wordDictionary, "", board);
-            }
-        }
-        return result;
-    }
-
-    private void intervalDfs(List<String> result, boolean[][] used, int i, int j, WordDictionary wordDictionary, String s, char[][] board) {
-        if (i < 0 || i >= used.length || j <= 0 || j >= used[i].length) {
-            return;
-        }
-        s += board[i][j];
-        if (!wordDictionary.startWith(s)) {
-            return;
-        }
-        if (wordDictionary.search(s)) {
-            result.add(s);
-        }
-        used[i][j] = true;
-        intervalDfs(result, used, i - 1, j, wordDictionary, s, board);
-        intervalDfs(result, used, i + 1, j, wordDictionary, s, board);
-        intervalDfs(result, used, i, j - 1, wordDictionary, s, board);
-        intervalDfs(result, used, i, j + 1, wordDictionary, s, board);
-        used[i][j] = false;
-    }
-
-
-    /**
-     * 130. Surrounded Regions
-     *
-     * @param board
-     */
-    public void solve(char[][] board) {
-        if (board == null || board.length == 0) {
-            return;
-        }
-        int row = board.length;
-        int column = board[0].length;
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                if (board[i][j] == 'O') {
-                    internalSurroundedRegion(board, i, j);
-                }
-            }
-        }
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                char tmp = board[i][j];
-
-                if (tmp == 'o') {
-                    if (i == 0 || i == row - 1 || j == 0 || j == column - 1) {
-                        board[i][j] = 'O';
-                    } else {
-                        board[i][j] = 'X';
-                    }
-                }
-            }
-        }
-    }
-
-    private void internalSurroundedRegion(char[][] board, int i, int j) {
-        if (i < 0 || i == board.length || j < 0 || j == board[i].length || board[i][j] == 'X' || board[i][j] == 'o') {
-            return;
-        }
-        board[i][j] = 'o';
-        internalSurroundedRegion(board, i - 1, j);
-        internalSurroundedRegion(board, i + 1, j);
-        internalSurroundedRegion(board, i, j - 1);
-        internalSurroundedRegion(board, i, j + 1);
-    }
-
-    /**
-     * 200. Number of Islands
-     *
-     * @param grid
-     * @return
-     */
-    public int numIslands(char[][] grid) {
-        if (grid == null || grid.length == 0) {
-            return 0;
-        }
-        int row = grid.length;
-        int column = grid[0].length;
-        int count = 0;
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                if (grid[i][j] == '1') {
-                    count++;
-                    intervalIslands(grid, i, j);
-                }
-            }
-        }
-        return count;
-    }
-
-
-    /**
-     * https://leetcode.cn/problems/parse-lisp-expression/solution/lisp-yu-fa-jie-xi-by-leetcode-solution-zycb/
-     * todo
-     * 736. Lisp 语法解析
-     *
-     * @param expression
-     * @return
-     */
-    public int evaluate(String expression) {
-        return -1;
-
-    }
-
-
-    private void intervalIslands(char[][] grid, int i, int j) {
-        if (i < 0 || i == grid.length || j < 0 || j == grid[i].length) {
-            return;
-        }
-        if (grid[i][j] == '0') {
-            return;
-        }
-        grid[i][j] = '0';
-        intervalIslands(grid, i - 1, j);
-        intervalIslands(grid, i + 1, j);
-        intervalIslands(grid, i, j - 1);
-        intervalIslands(grid, i, j + 1);
-    }
-
-    /**
-     * 286
-     * Walls and Gates
-     *
-     * @param rooms: m x n 2D grid
-     * @return: nothing
-     */
-    public void wallsAndGates(int[][] rooms) {
-        if (rooms == null || rooms.length == 0) {
-            return;
-        }
-        int row = rooms.length;
-        int column = rooms[0].length;
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                if (rooms[i][j] == 0) {
-                    intervalWalls(rooms, i, j, 0);
-                }
-            }
-        }
-    }
-
-    private void intervalWalls(int[][] rooms, int i, int j, int distance) {
-        if (i < 0 || i >= rooms.length || j < 0 || j >= rooms[i].length || rooms[i][j] == -1) {
-            return;
-        }
-        if (rooms[i][j] > distance || distance == 0) {
-            rooms[i][j] = distance;
-            intervalWalls(rooms, i - 1, j, distance + 1);
-            intervalWalls(rooms, i + 1, j, distance + 1);
-            intervalWalls(rooms, i, j - 1, distance + 1);
-            intervalWalls(rooms, i, j + 1, distance + 1);
-        }
-    }
-
-    // ---- //
-
-
-    /**
-     * todo timeout
-     * 87. Scramble String
-     *
-     * @param s1
-     * @param s2
-     * @return
-     */
-    public boolean isScramble(String s1, String s2) {
-        if (s1 == null || s2 == null) {
-            return false;
-        }
-        int m = s1.length();
-        int n = s2.length();
-        if (m != n) {
-            return false;
-        }
-        int[] hash = new int[256];
-        for (int i = 0; i < m; i++) {
-            hash[s1.charAt(i) - 'a']++;
-            hash[s2.charAt(i) - 'a']--;
-        }
-        for (int num : hash) {
-            if (num != 0) {
-                return false;
-            }
-        }
-        if (s1.equals(s2)) {
-            return true;
-        }
-        for (int i = 1; i < m; i++) {
-            if (isScramble(s1.substring(0, i), s2.substring(0, i)) && isScramble(s1.substring(i), s2.substring(i))) {
-                return true;
-            }
-            if (isScramble(s1.substring(i), s2.substring(0, m - i)) && isScramble(s1.substring(0, i), s2.substring(m - i))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * 139. Word Break
-     *
-     * @param s
-     * @param wordDict
-     * @return
-     */
-    public boolean wordBreak(String s, List<String> wordDict) {
-        if (s == null || s.isEmpty()) {
-            return false;
-        }
-        Map<String, Boolean> map = new HashMap<>();
-        return intervalWordBreak(map, s, wordDict);
-    }
-
-    private boolean intervalWordBreak(Map<String, Boolean> map, String s, List<String> wordDict) {
-        if (map.containsKey(s)) {
-            return map.get(s);
-        }
-        if (s.isEmpty()) {
-            return true;
-        }
-        for (String word : wordDict) {
-            int index = s.indexOf(word);
-            if (index != 0) {
-                continue;
-            }
-            if (intervalWordBreak(map, s.substring(word.length()), wordDict)) {
-                return true;
-            }
-        }
-        map.put(s, false);
-        return false;
-    }
-
-
-    /**
-     * 140. Word Break II
-     *
-     * @param s
-     * @param wordDict
-     * @return
-     */
-    public List<String> wordBreakII(String s, List<String> wordDict) {
-        if (s == null || s.isEmpty()) {
-            return new ArrayList<>();
-        }
-        Map<String, List<String>> map = new HashMap<>();
-        return intervalWordBreakII(map, s, wordDict);
-    }
-
-    private List<String> intervalWordBreakII(Map<String, List<String>> map, String s, List<String> wordDict) {
-        if (map.containsKey(s)) {
-            return map.get(s);
-        }
-        List<String> result = new ArrayList<>();
-        if (s.isEmpty()) {
-            result.add(s);
-            return result;
-        }
-        for (String word : wordDict) {
-            int index = s.indexOf(word);
-            if (index != 0) {
-                continue;
-            }
-            List<String> tmpList = intervalWordBreakII(map, s.substring(word.length()), wordDict);
-            for (String tmp : tmpList) {
-                String s1 = word + (tmp.isEmpty() ? "" : " " + tmp);
-                result.add(s1);
-            }
-        }
-        map.put(s, result);
-        return result;
-    }
-
-
-    /**
-     * 241. Different Ways to Add Parentheses
-     *
-     * @param expression
-     * @return
-     */
-    public List<Integer> diffWaysToCompute(String expression) {
-        if (expression == null || expression.isEmpty()) {
-            return new ArrayList<>();
-        }
-        int start = 0;
-        int len = expression.length();
-        int tmp = 0;
-        List<String> params = new ArrayList<>();
-        while (start < len) {
-            if (Character.isDigit(expression.charAt(start))) {
-                while (start < len && Character.isDigit(expression.charAt(start))) {
-                    tmp = tmp * 10 + Character.getNumericValue(expression.charAt(start));
-                    start++;
-                }
-                params.add(String.valueOf(tmp));
-                tmp = 0;
-            }
-            if (start != len) {
-                params.add(String.valueOf(expression.charAt(start)));
-            }
-            start++;
-        }
-        return intervalDiff(0, params.size() - 1, params);
-    }
-
-    private List<Integer> intervalDiff(int start, int end, List<String> params) {
-        List<Integer> result = new ArrayList<>();
-        if (start == end) {
-            result.add(Integer.parseInt(params.get(start)));
-        }
-        for (int i = start + 1; i <= end - 1; i = i + 2) {
-            List<Integer> leftNodes = intervalDiff(start, i - 1, params);
-            List<Integer> rightNodes = intervalDiff(i + 1, end, params);
-            String sign = params.get(i);
-            for (Integer left : leftNodes) {
-                for (Integer rightNode : rightNodes) {
-                    if ("+".equals(sign)) {
-                        result.add(left + rightNode);
-                    } else if ("-".equals(sign)) {
-                        result.add(left - rightNode);
-                    } else if ("*".equals(sign)) {
-                        result.add(left * rightNode);
-                    } else {
-                        result.add(left / rightNode);
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-
-    /**
-     * todo
-     * 282. Expression Add Operators
-     *
-     * @param num
-     * @param target
-     * @return
-     */
-    public List<String> addOperators(String num, int target) {
-        if (num == null || num.isEmpty()) {
-            return new ArrayList<>();
-        }
-        List<String> result = new ArrayList<>();
-        intervalAddOperators(result, 0, 0, "", num, 0, target);
-        return result;
-    }
-
-    private void intervalAddOperators(List<String> result, int value, int start, String express, String num, int multi, int target) {
-        if (start == num.length() && value == target) {
-            result.add(express);
-            return;
-        }
-        for (int i = start; i < num.length(); i++) {
-            if (i > start && num.charAt(start) == '0') {
-                continue;
-            }
-            String tmp = num.substring(start, i + 1);
-            int v = Integer.parseInt(tmp);
-            if (start == 0) {
-                intervalAddOperators(result, target + value, i + 1, express + tmp, num, v, target);
-            } else {
-                intervalAddOperators(result, target + value, i + 1, express + "+" + tmp, num, v, target);
-                intervalAddOperators(result, target - value, i + 1, express + "-" + tmp, num, -v, target);
-                intervalAddOperators(result, target * value, i + 1, express + "*" + tmp, num, -v, target);
-            }
-        }
-    }
 }
