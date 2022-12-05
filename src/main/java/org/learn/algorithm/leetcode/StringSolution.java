@@ -271,8 +271,8 @@ public class StringSolution {
      * @return
      */
     public boolean isMatch(String s, String p) {
-        if (s.isEmpty()) {
-            return p.isEmpty();
+        if (p.isEmpty()) {
+            return s.isEmpty();
         }
         int m = s.length();
         int n = p.length();
@@ -286,10 +286,10 @@ public class StringSolution {
                 if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else if (p.charAt(j - 1) == '*') {
-                    if (p.charAt(j - 2) != '.' && s.charAt(i - 1) != p.charAt(j - 2)) {
+                    if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
                         dp[i][j] = dp[i][j - 2];
                     } else {
-                        dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
+                        dp[i][j] = dp[i][j - 1] || dp[i - 1][j] || dp[i][j - 2];
                     }
                 }
             }
@@ -315,14 +315,14 @@ public class StringSolution {
         boolean[][] dp = new boolean[m + 1][n + 1];
         dp[0][0] = true;
         for (int j = 1; j <= n; j++) {
-            dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j - 1];
+            dp[0][j] = p.charAt(j - 1) == '*';
         }
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?') {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else if (p.charAt(j - 1) == '*') {
-                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
                 }
             }
         }
@@ -340,16 +340,16 @@ public class StringSolution {
             return 0;
         }
         Map<Character, Integer> map = new HashMap<>();
+        char[] words = s.toCharArray();
+
         int left = 0;
         int result = 0;
-        char[] words = s.toCharArray();
         for (int i = 0; i < words.length; i++) {
             if (map.containsKey(words[i])) {
                 left = Math.max(left, map.get(words[i]) + 1);
             }
-            result = Math.max(result, i - left + 1);
             map.put(words[i], i);
-
+            result = Math.max(result, i - left + 1);
         }
         return result;
     }
@@ -359,16 +359,18 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-
         int[] hash = new int[256];
-        char[] words = s.toCharArray();
         int result = 0;
         int left = 0;
+        char[] words = s.toCharArray();
+
+
         for (int i = 0; i < words.length; i++) {
-            int tmp = s.charAt(i) - 'a';
-            left = Math.max(left, hash[tmp]);
+            left = Math.max(left, hash[words[i]]);
+
             result = Math.max(result, i - left + 1);
-            hash[tmp] = i + 1;
+
+            hash[words[i]] = i + 1;
         }
         return result;
     }
@@ -377,26 +379,26 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return "";
         }
-        int result = Integer.MIN_VALUE;
         int len = s.length();
+        int result = 0;
         int begin = 0;
         boolean[][] dp = new boolean[len][len];
-
         for (int i = 0; i < len; i++) {
             for (int j = 0; j <= i; j++) {
-                if (s.charAt(j) == s.charAt(i) && (i - j <= 2 || dp[j + 1][i - 1])) {
+                if (s.charAt(j) == s.charAt(i) && ((i - j < 2 || dp[j + 1][i - 1]))) {
                     dp[j][i] = true;
-                }
-                if (dp[j][i] && i - j + 1 > result) {
-                    result = i - j + 1;
-                    begin = j;
+
+                    if (i - j + 1 > result) {
+                        result = i - j + 1;
+                        begin = j;
+                    }
                 }
             }
         }
-        if (result == Integer.MIN_VALUE) {
-            return "";
+        if (result != 0) {
+            return s.substring(begin, begin + result);
         }
-        return s.substring(begin, begin + result);
+        return "";
     }
 
 

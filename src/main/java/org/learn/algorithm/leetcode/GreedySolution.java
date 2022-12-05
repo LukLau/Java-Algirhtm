@@ -24,11 +24,11 @@ public class GreedySolution {
             return 0;
         }
         int step = 0;
+        int furthest = nums[0];
         int current = 0;
-        int furthest = 0;
         for (int i = 0; i < nums.length - 1; i++) {
             furthest = Math.max(furthest, i + nums[i]);
-            if (i == current) {
+            if (current == i) {
                 step++;
                 current = furthest;
             }

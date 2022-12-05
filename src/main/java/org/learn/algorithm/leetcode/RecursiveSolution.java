@@ -3,6 +3,7 @@ package org.learn.algorithm.leetcode;
 import org.apache.tomcat.util.descriptor.web.WebXml;
 import org.learn.algorithm.datastructure.Trie;
 
+import javax.swing.table.TableModel;
 import java.util.*;
 
 /**
@@ -187,14 +188,15 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> result = new ArrayList<>();
         boolean[] used = new boolean[nums.length];
-        internalPermute(result, new ArrayList<>(), nums, used);
+        List<List<Integer>> result = new ArrayList<>();
+        internalPermute(result, new ArrayList<>(), used, nums);
         return result;
     }
 
-    private void internalPermute(List<List<Integer>> result, List<Integer> tmp, int[] nums, boolean[] used) {
+    private void internalPermute(List<List<Integer>> result, List<Integer> tmp, boolean[] used, int[] nums) {
         if (tmp.size() == nums.length) {
+
             result.add(new ArrayList<>(tmp));
             return;
         }
@@ -204,7 +206,7 @@ public class RecursiveSolution {
             }
             used[i] = true;
             tmp.add(nums[i]);
-            internalPermute(result, tmp, nums, used);
+            internalPermute(result, tmp, used, nums);
             used[i] = false;
             tmp.remove(tmp.size() - 1);
         }
@@ -234,17 +236,17 @@ public class RecursiveSolution {
             return;
         }
         for (int i = 0; i < nums.length; i++) {
-            if (used[i]) {
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
                 continue;
             }
-            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+            if (used[i]) {
                 continue;
             }
             used[i] = true;
             tmp.add(nums[i]);
             internalPermuteUnique(result, tmp, used, nums);
-            tmp.remove(tmp.size() - 1);
             used[i] = false;
+            tmp.remove(tmp.size() - 1);
         }
     }
 

@@ -21,7 +21,13 @@ public class MathSolution {
 
 //        System.out.println(solution.fullJustifyii(new String[]{"This", "is", "an", "example", "of", "text", "justification."}, 16));
 //        solution.calculatev2("(4+5+2)-3");
-        solution.numberToWords(1111);
+//        solution.numberToWords(1111);
+
+//        solution.isNumber("2e0");
+
+        String[] words = new String[]{"This", "is", "an", "example", "of", "text", "justification."};
+        int width = 16;
+        solution.fullJustifyii(words,width);
 
 
     }
@@ -132,39 +138,41 @@ public class MathSolution {
         if (s.isEmpty()) {
             return false;
         }
-        boolean seenE = false;
         boolean seenNumber = false;
+        boolean seenE = false;
         boolean seenDigit = false;
         boolean seenNumberAfterE = false;
         char[] words = s.toCharArray();
-        for (int i = 0; i < words.length; i++) {
-            char tmp = words[i];
-            if (Character.isDigit(tmp)) {
+        int index = 0;
+        while (index < words.length) {
+            char current = words[index];
+            if (Character.isDigit(current)) {
                 seenNumber = true;
                 seenNumberAfterE = true;
-            } else if (tmp == 'e' || tmp == 'E') {
-                if (i == 0 || seenE) {
+            } else if (Character.toLowerCase(current) == 'e') {
+                if (seenE || !seenNumber) {
                     return false;
                 }
-                if (!Character.isDigit(words[i - 1])) {
+                if (index == 0) {
                     return false;
                 }
                 seenE = true;
                 seenNumberAfterE = false;
-            } else if (tmp == '-' || tmp == '+') {
-                if (i > 0 && !(words[i - 1] == 'e' || words[i - 1] == 'E')) {
+            } else if (current == '-' || current == '+') {
+                if (index > 0 && Character.toLowerCase(words[index - 1]) != 'e') {
                     return false;
                 }
-            } else if (tmp == '.') {
-                if (seenDigit) {
+            } else if (current == '.') {
+                if (seenDigit || seenE) {
                     return false;
                 }
                 seenDigit = true;
             } else {
-                return true;
+                return false;
             }
+            index++;
         }
-        return seenNumberAfterE & seenNumber;
+        return seenNumber && seenNumberAfterE;
     }
 
 
@@ -258,30 +266,34 @@ public class MathSolution {
         if (words == null || words.length == 0) {
             return new ArrayList<>();
         }
-        int startIndex = 0;
         List<String> result = new ArrayList<>();
+        int startIndex = 0;
         while (startIndex < words.length) {
+            int gap = 0;
             int line = 0;
-            int index = 0;
-            while (startIndex + index < words.length && line + words[startIndex + index].length() <= maxWidth - index) {
-                line += words[startIndex + index].length();
-                index++;
+            while (startIndex + gap < words.length && line + words[startIndex + gap].length() <= maxWidth - gap) {
+                line += words[startIndex + gap].length();
+                gap++;
             }
             StringBuilder builder = new StringBuilder();
-            boolean lastRow = startIndex + index == words.length;
-            for (int i = 0; i < index; i++) {
+            boolean lastRow = startIndex + gap == words.length;
+            for (int i = 0; i < gap; i++) {
                 builder.append(words[startIndex + i]);
                 if (lastRow) {
                     builder.append(" ");
-                } else if (i != index - 1) {
-                    int blankCount = (maxWidth - line) / (index - 1) + (i < (maxWidth - line) % (index - 1) ? 1 : 0);
+                } else {
+                    int blankCount = (maxWidth - line) / (gap - 1) + (i < (maxWidth - line) % (gap - 1) ? 1 : 0);
+
                     while (blankCount-- > 0) {
                         builder.append(" ");
                     }
                 }
             }
-            result.add(trimRow(builder.toString(), maxWidth));
-            startIndex = startIndex + index;
+            String comfortableRow = trimRow(builder.toString(), maxWidth);
+
+            builder.append(comfortableRow);
+
+            startIndex += gap;
         }
         return result;
     }

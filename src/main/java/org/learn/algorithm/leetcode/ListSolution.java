@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.RandomListNode;
@@ -36,20 +37,19 @@ public class ListSolution {
         if (head == null) {
             return null;
         }
-        ListNode root = new ListNode(0);
-        root.next = head;
-
-        ListNode fast = root;
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode fast = dummy;
+        ListNode slow = fast;
         for (int i = 0; i < n; i++) {
             fast = fast.next;
         }
-        ListNode slow = root;
         while (fast.next != null) {
             slow = slow.next;
             fast = fast.next;
         }
         slow.next = slow.next.next;
-        return root.next;
+        return dummy.next;
     }
 
 
@@ -61,8 +61,30 @@ public class ListSolution {
      */
     public ListNode mergeKLists(ListNode[] lists) {
         if (lists == null || lists.length == 0) {
+            return null;
         }
-        return null;
+        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
+        for (ListNode list : lists) {
+            if (list != null) {
+                priorityQueue.offer(list);
+            }
+        }
+        ListNode root = null;
+        ListNode dummy = null;
+        while (!priorityQueue.isEmpty()) {
+            ListNode poll = priorityQueue.poll();
+            if (root == null) {
+                root = poll;
+                dummy = poll;
+            } else {
+                dummy.next = poll;
+                dummy = dummy.next;
+            }
+            if (poll.next != null) {
+                priorityQueue.offer(poll.next);
+            }
+        }
+        return root;
     }
 
 
@@ -113,22 +135,23 @@ public class ListSolution {
      * @return
      */
     public ListNode rotateRight(ListNode head, int k) {
-        if (head == null || head.next == null) {
-            return head;
+        if (head == null) {
+            return null;
         }
         ListNode fast = head;
         int count = 1;
-
         while (fast.next != null) {
             fast = fast.next;
             count++;
         }
         fast.next = head;
-        k %= count;
         ListNode slow = head;
-        for (int i = 0; i < count - k; i++) {
-            slow = slow.next;
-            fast = fast.next;
+        k %= count;
+        if (k != 0) {
+            for (int i = 0; i < count - k; i++) {
+                fast = fast.next;
+                slow = slow.next;
+            }
         }
         fast.next = null;
         return slow;

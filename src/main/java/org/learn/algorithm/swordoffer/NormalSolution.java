@@ -396,10 +396,10 @@ public class NormalSolution {
         if (count == k) {
             current = reverseKGroup(current, k);
             while (count-- > 0) {
-                ListNode tmp = head.next;
+                ListNode next = head.next;
                 head.next = current;
                 current = head;
-                head = tmp;
+                head = next;
             }
             head = current;
         }
@@ -410,21 +410,20 @@ public class NormalSolution {
         if (head == null || head.next == null) {
             return head;
         }
-        int count = 0;
         ListNode current = head;
-        while (current != null && count != k) {
-            count++;
+        int count = 0;
+        while (count != k) {
+            if (current == null) {
+                return head;
+            }
             current = current.next;
+            count++;
         }
-        if (count != k) {
-            return head;
-        }
-        ListNode reverseListNode = reverseListNode(head, current);
+        ListNode reverse = reverse(head, current);
 
+        head.next = reverseKGroup(current, k);
 
-        head.next = reverseKGroupV2(current, k);
-
-        return reverseListNode;
+        return reverse;
     }
 
     private ListNode reverse(ListNode start, ListNode end) {

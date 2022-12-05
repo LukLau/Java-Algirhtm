@@ -1,10 +1,7 @@
 package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.ListNode;
-import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
-import org.thymeleaf.expression.Strings;
 
-import javax.print.DocFlavor;
 import java.util.*;
 
 /**
@@ -100,23 +97,23 @@ public class FirstPage {
         if (digits == null || digits.isEmpty()) {
             return new ArrayList<>();
         }
-        String[] combine = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
-        LinkedList<String> result = new LinkedList<>();
-        result.offer("");
-        int size = digits.length();
-        for (int i = 0; i < size; i++) {
-            char digit = digits.charAt(i);
-            int index = Character.getNumericValue(digit);
-            String words = combine[index];
+        String[] words = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        LinkedList<String> linkedList = new LinkedList<>();
+        linkedList.offer("");
+        char[] charArray = digits.toCharArray();
+        for (int i = 0; i < charArray.length; i++) {
+            char word = charArray[i];
+            int index = Character.getNumericValue(word);
 
-            while (!result.isEmpty() && result.peek().length() == i) {
-                String poll = result.poll();
-                for (char tmp : words.toCharArray()) {
-                    result.offer(poll + tmp);
+            String letter = words[index];
+            while (!linkedList.isEmpty() && linkedList.peekFirst().length() == i) {
+                String prefix = linkedList.pollFirst();
+                for (char c : letter.toCharArray()) {
+                    linkedList.offer(prefix + c);
                 }
             }
         }
-        return result;
+        return linkedList;
     }
 
     /**
@@ -133,28 +130,23 @@ public class FirstPage {
         if (s.isEmpty()) {
             return 0;
         }
-        int len = s.length();
-
-        int sign = 1;
-
         char[] words = s.toCharArray();
 
         int index = 0;
-
+        int sign = 1;
         if (words[index] == '+' || words[index] == '-') {
             sign = words[index] == '+' ? 1 : -1;
             index++;
         }
-        long result = 0;
+        Long result = 0L;
         while (index < words.length && Character.isDigit(words[index])) {
-            int value = Character.getNumericValue(words[index]);
-            result = result * 10 + value;
+            result = result * 10 + Character.getNumericValue(words[index]);
             if (result > Integer.MAX_VALUE) {
                 return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
             }
             index++;
         }
-        return Long.valueOf(result * sign).intValue();
+        return result.intValue() * sign;
     }
 
 
@@ -274,12 +266,12 @@ public class FirstPage {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
-        char[] words = s.toCharArray();
         int result = 0;
         int left = -1;
+        char[] words = s.toCharArray();
         for (int i = 0; i < words.length; i++) {
-            char tmp = words[i];
-            if (tmp == '(') {
+            char word = words[i];
+            if (word == '(') {
                 stack.push(i);
             } else {
                 if (!stack.isEmpty()) {
@@ -301,15 +293,12 @@ public class FirstPage {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        Stack<Integer> stack = new Stack<>();
-
         char[] words = s.toCharArray();
 
-        int m = s.length();
+        Stack<Integer> stack = new Stack<>();
 
         for (int i = 0; i < words.length; i++) {
             if (stack.isEmpty() || words[i] == '(') {
-
                 stack.push(i);
             } else {
                 if (words[stack.peek()] == '(') {
@@ -320,17 +309,18 @@ public class FirstPage {
             }
         }
         if (stack.isEmpty()) {
-            return s.length();
+            return words.length;
         }
         int result = 0;
-        int end = s.length();
-        while (!stack.isEmpty()) {
-            Integer pop = stack.pop();
-            result = Math.max(result, end - pop - 1);
-            end = pop;
+        int edge = words.length;
+        while (!stack.empty()) {
+            result = Math.max(result, edge - 1 - stack.peek());
+
+            edge = stack.pop();
         }
-        result = Math.max(result, end);
+        result = Math.max(result, edge);
         return result;
+
     }
 
     /**
@@ -343,21 +333,21 @@ public class FirstPage {
         if (height == null || height.length == 0) {
             return 0;
         }
+        int result = 0;
         int left = 0;
         int right = height.length - 1;
-        int result = 0;
         int leftEdge = 0;
         int rightEdge = 0;
         while (left < right) {
             if (height[left] <= height[right]) {
-                if (leftEdge <= height[left]) {
+                if (height[left] >= leftEdge) {
                     leftEdge = height[left];
                 } else {
                     result += leftEdge - height[left];
                 }
                 left++;
             } else {
-                if (rightEdge <= height[right]) {
+                if (height[right] >= rightEdge) {
                     rightEdge = height[right];
                 } else {
                     result += rightEdge - height[right];
@@ -505,6 +495,19 @@ public class FirstPage {
 
     }
 
+    public double myPowii(double x, int n) {
+        long abs = Math.abs((long) n);
+        double p = 1;
+        while (abs != 0) {
+            if (abs % 2 != 0) {
+                p *= x;
+            }
+            x *= x;
+            abs >>= 1;
+        }
+        return n < 0 ? 1 / p : p;
+    }
+
 
     /**
      * 56. Merge Intervals
@@ -514,23 +517,20 @@ public class FirstPage {
      */
     public int[][] merge(int[][] intervals) {
         if (intervals == null || intervals.length == 0) {
-            return intervals;
+            return new int[][]{};
         }
-        Arrays.sort(intervals, new Comparator<int[]>() {
-            @Override
-            public int compare(int[] o1, int[] o2) {
-                return o1[0] - o2[0];
-            }
-        });
-        LinkedList<int[]> result = new LinkedList<>();
-        for (int[] interval : intervals) {
-            if (!result.isEmpty() && result.peekLast()[1] >= interval[0]) {
-                result.peekLast()[1] = Math.max(result.peekLast()[1], interval[1]);
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        LinkedList<int[]> linkedList = new LinkedList<>();
+        linkedList.offer(intervals[0]);
+        for (int i = 1; i < intervals.length; i++) {
+            if (linkedList.peekLast()[1] < intervals[i][0]) {
+                linkedList.offer(intervals[i]);
             } else {
-                result.offer(interval);
+                int[] last = linkedList.peekLast();
+                last[1] = Math.max(last[1], intervals[i][1]);
             }
         }
-        return result.toArray(new int[][]{});
+        return linkedList.toArray(new int[][]{});
     }
 
     /**
@@ -541,26 +541,22 @@ public class FirstPage {
      * @return
      */
     public int[][] insert(int[][] intervals, int[] newInterval) {
-        if (intervals == null) {
-            return new int[][]{};
-        }
         Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
-
-        LinkedList<int[]> result = new LinkedList<>();
+        LinkedList<int[]> linkedList = new LinkedList<>();
         int index = 0;
         while (index < intervals.length && intervals[index][1] < newInterval[0]) {
-            result.offer(intervals[index++]);
+            linkedList.offer(intervals[index++]);
         }
         while (index < intervals.length && intervals[index][0] <= newInterval[1]) {
-            newInterval[0] = Math.min(intervals[index][0], newInterval[0]);
-            newInterval[1] = Math.max(intervals[index][1], newInterval[1]);
+            newInterval[1] = Math.max(newInterval[1], intervals[index][1]);
+            newInterval[0] = Math.min(newInterval[0], intervals[index][0]);
             index++;
         }
-        result.offer(newInterval);
+        linkedList.offer(newInterval);
         while (index < intervals.length) {
-            result.offer(intervals[index++]);
+            linkedList.offer(intervals[index++]);
         }
-        return result.toArray(new int[][]{});
+        return linkedList.toArray(new int[][]{});
     }
 
     /**
@@ -571,28 +567,23 @@ public class FirstPage {
      * @return
      */
     public String getPermutation(int n, int k) {
-        List<Integer> nums = new ArrayList<>();
-        for (int i = 1; i <= n; i++) {
-            nums.add(i);
-        }
-        int[] pos = new int[n + 1];
-        int base = 1;
-        for (int i = 1; i <= n; i++) {
-            base *= i;
-            pos[i] = base;
-        }
-        StringBuilder builder = new StringBuilder();
-        k--;
-        for (int i = n - 1; i >= 0; i--) {
-            int combine = pos[i];
-            int index = k / combine;
-
-            Integer num = nums.remove(index);
-
-            builder.append(num.toString());
-            k -= combine;
-        }
-        return builder.toString();
+//        List<Integer> nums = new ArrayList<>();
+//        for (int i = 1; i <=n;i++) {
+//            nums.add(i);
+//        }
+//        int[] params = new int[n+1];
+//        params[0] = 1;
+//        params[1] = 1;
+//        int base = 1;
+//        for (int i = 2; i<=n;i++) {
+//            base *=i;
+//            params[i] = base;
+//        }
+//        k--;
+//        while (k != 0) {
+//            int index = k
+//        }
+        return "";
     }
 
     /**

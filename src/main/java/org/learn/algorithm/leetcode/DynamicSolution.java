@@ -305,7 +305,7 @@ public class DynamicSolution {
         for (int i = 1; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (j == 0) {
-                    dp[j] += grid[i][j];
+                    dp[j] = dp[j] + grid[i][j];
                 } else {
                     dp[j] = Math.min(dp[j], dp[j - 1]) + grid[i][j];
                 }
