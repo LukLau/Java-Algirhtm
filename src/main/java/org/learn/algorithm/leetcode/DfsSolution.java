@@ -4,6 +4,7 @@ package org.learn.algorithm.leetcode;
 import org.learn.algorithm.datastructure.Trie;
 
 import java.util.*;
+import java.util.concurrent.Executors;
 
 public class DfsSolution {
 
@@ -13,8 +14,7 @@ public class DfsSolution {
         DfsSolution dfsSolution = new DfsSolution();
 //        dfsSolution.exist(board, word);
 //        dfsSolution.addOperators("00", 0);
-        int[][] rooms = new int[][]{{2147483647, -1, 0, 2147483647}, {2147483647, 2147483647, 2147483647, -1},
-                {2147483647, -1, 2147483647, -1}, {0, -1, 2147483647, 2147483647}};
+        int[][] rooms = new int[][]{{2147483647, -1, 0, 2147483647}, {2147483647, 2147483647, 2147483647, -1}, {2147483647, -1, 2147483647, -1}, {0, -1, 2147483647, 2147483647}};
 
         dfsSolution.wallsAndGates(rooms);
 
@@ -37,16 +37,15 @@ public class DfsSolution {
         boolean[][] used = new boolean[row][column];
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                if (board[i][j] == word.charAt(0) && checkValidExist(used, i, j, board, 0, word)) {
+                if (checkValidExist(used, i, j, board, 0, word)) {
                     return true;
                 }
             }
-        }
-        return false;
+        } return false;
     }
 
     private boolean checkValidExist(boolean[][] used, int i, int j, char[][] board, int start, String word) {
-        if (start >= word.length()) {
+        if (start == word.length()) {
             return true;
         }
         if (i < 0 || i == board.length || j < 0 || j == board[i].length || used[i][j]) {
@@ -56,10 +55,10 @@ public class DfsSolution {
             return false;
         }
         used[i][j] = true;
-        if (checkValidExist(used, i - 1, j, board, start + 1, word) ||
-                checkValidExist(used, i + 1, j, board, start + 1, word) ||
-                checkValidExist(used, i, j - 1, board, start + 1, word) ||
-                checkValidExist(used, i, j + 1, board, start + 1, word)) {
+        if (checkValidExist(used, i - 1, j, board, start + 1, word)
+                || checkValidExist(used, i + 1, j, board, start + 1, word)
+                || checkValidExist(used, i, j - 1, board, start + 1, word)
+                || checkValidExist(used, i, j + 1, board, start + 1, word)) {
             return true;
         }
         used[i][j] = false;
@@ -131,15 +130,11 @@ public class DfsSolution {
         if (k == word.length()) {
             return true;
         }
-        if (i < 0 || i == board.length || j < 0 || j == board[i].length
-                || used[i][j] || board[i][j] != word.charAt(k)) {
+        if (i < 0 || i == board.length || j < 0 || j == board[i].length || used[i][j] || board[i][j] != word.charAt(k)) {
             return false;
         }
         used[i][j] = true;
-        if (validExist(used, i - 1, j, k + 1, board, word) ||
-                validExist(used, i + 1, j, k + 1, board, word) ||
-                validExist(used, i, j - 1, k + 1, board, word) ||
-                validExist(used, i, j + 1, k + 1, board, word)) {
+        if (validExist(used, i - 1, j, k + 1, board, word) || validExist(used, i + 1, j, k + 1, board, word) || validExist(used, i, j - 1, k + 1, board, word) || validExist(used, i, j + 1, k + 1, board, word)) {
             return true;
         }
         used[i][j] = false;

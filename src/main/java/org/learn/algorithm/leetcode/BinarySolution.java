@@ -24,7 +24,9 @@ public class BinarySolution {
         int[] nums = new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 13, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 //        solution.searchII(nums, 13);
         int[] tmp = new int[]{4, 5, 6, 7, 0, 1, 2};
-        solution.findMin(tmp);
+//        solution.findMin(tmp);
+        int[] searchRange = new int[]{5, 7, 7, 8, 8, 10};
+        solution.searchRange(searchRange, 8);
     }
 
     /**
@@ -37,7 +39,7 @@ public class BinarySolution {
     public int search(int[] nums, int target) {
         int left = 0;
         int right = nums.length - 1;
-        while (left <= right) {
+        while (left < right) {
             int mid = left + (right - left) / 2;
             if (nums[mid] == target) {
                 return mid;
@@ -56,8 +58,7 @@ public class BinarySolution {
                 }
             }
         }
-        return -1;
-//        return nums[left] == target ? left : -1;
+        return nums[left] == target ? left : -1;
     }
 
     /**
@@ -82,9 +83,8 @@ public class BinarySolution {
             int mid = left + (right - left) / 2;
             if (nums[mid] == target) {
                 return true;
-            }
-            if (nums[left] <= nums[mid]) {
-                if (target < nums[mid] && target >= nums[left]) {
+            } else if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && nums[left] <= target) {
                     right = mid - 1;
                 } else {
                     left = mid + 1;
@@ -108,11 +108,10 @@ public class BinarySolution {
      * @return
      */
     public int[] searchRange(int[] nums, int target) {
-        if (nums == null || nums.length == 0) {
-            return new int[]{-1, -1};
-        }
-
         int[] result = new int[]{-1, -1};
+        if (nums == null || nums.length == 0) {
+            return result;
+        }
         int left = 0;
         int right = nums.length - 1;
         while (left < right) {
@@ -127,11 +126,9 @@ public class BinarySolution {
             return result;
         }
         result[0] = left;
-
         right = nums.length - 1;
-
         while (left < right) {
-            int mid = 1 + left + (right - left) / 2;
+            int mid = left + (right - left) / 2 + 1;
             if (nums[mid] > target) {
                 right = mid - 1;
             } else {
@@ -307,16 +304,16 @@ public class BinarySolution {
         }
         int row = matrix.length;
         int column = matrix[0].length;
-        int j = column - 1;
-        int i = 0;
-        while (i < row && j >= 0) {
+        int i = row - 1;
+        int j = 0;
+        while (i >= 0 && j < column) {
             int val = matrix[i][j];
             if (val == target) {
                 return true;
             } else if (val < target) {
-                i++;
+                j++;
             } else {
-                j--;
+                i--;
             }
         }
         return false;

@@ -2,6 +2,7 @@ package org.learn.algorithm.leetcode;
 
 import org.learn.algorithm.datastructure.TreeNode;
 import org.springframework.boot.context.properties.bind.handler.IgnoreTopLevelConverterNotFoundBindHandler;
+import org.springframework.boot.web.reactive.context.ReactiveWebApplicationContext;
 
 import java.awt.image.Kernel;
 import java.util.*;
@@ -327,8 +328,11 @@ public class DynamicSolution {
      * @return
      */
     public int minDistance(String word1, String word2) {
-        if (word1 == null || word2 == null) {
+        if (word1 == null && word2 == null) {
             return 0;
+        }
+        if (word1 == null || word2 == null) {
+            return word1 == null ? word2.length() : word1.length();
         }
         int m = word1.length();
         int n = word2.length();
@@ -344,7 +348,7 @@ public class DynamicSolution {
                 if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]);
                 }
             }
         }
@@ -364,32 +368,32 @@ public class DynamicSolution {
         }
         int row = matrix.length;
         int column = matrix[0].length;
-        int result = 0;
         int[] left = new int[column];
         int[] height = new int[column];
         int[] right = new int[column];
         Arrays.fill(right, column);
+        int result = 0;
         for (int i = 0; i < row; i++) {
-            int leftSide = 0;
-            int rightSide = column;
+            int leftEdge = 0;
+            int rightEdge = column;
             for (int j = 0; j < column; j++) {
                 char tmp = matrix[i][j];
                 if (tmp == '1') {
                     height[j]++;
-                    left[j] = Math.max(left[j], leftSide);
+                    left[j] = Math.max(left[j], leftEdge);
                 } else {
                     height[j] = 0;
-                    left[j] = leftSide;
-                    leftSide = j + 1;
+                    left[j] = leftEdge;
+                    leftEdge = j + 1;
                 }
             }
             for (int j = column - 1; j >= 0; j--) {
                 char tmp = matrix[i][j];
                 if (tmp == '1') {
-                    right[j] = Math.min(right[j], rightSide);
+                    right[j] = Math.min(right[j], rightEdge);
                 } else {
                     right[j] = column;
-                    rightSide = j;
+                    rightEdge = j;
                 }
             }
             for (int j = 0; j < column; j++) {

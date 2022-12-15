@@ -27,7 +27,7 @@ public class MathSolution {
 
         String[] words = new String[]{"This", "is", "an", "example", "of", "text", "justification."};
         int width = 16;
-        solution.fullJustifyii(words,width);
+        solution.fullJustifyii(words, width);
 
 
     }
@@ -214,7 +214,7 @@ public class MathSolution {
         while (startIndex < words.length) {
             int endIndex = startIndex;
             int line = 0;
-            while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
+            while (endIndex < words.length && line + words[startIndex + endIndex].length() <= maxWidth) {
                 line += words[endIndex].length() + 1;
                 endIndex++;
             }
@@ -281,9 +281,8 @@ public class MathSolution {
                 builder.append(words[startIndex + i]);
                 if (lastRow) {
                     builder.append(" ");
-                } else {
+                } else if (i != gap - 1) {
                     int blankCount = (maxWidth - line) / (gap - 1) + (i < (maxWidth - line) % (gap - 1) ? 1 : 0);
-
                     while (blankCount-- > 0) {
                         builder.append(" ");
                     }
@@ -291,7 +290,7 @@ public class MathSolution {
             }
             String comfortableRow = trimRow(builder.toString(), maxWidth);
 
-            builder.append(comfortableRow);
+            result.add(comfortableRow);
 
             startIndex += gap;
         }
@@ -322,13 +321,7 @@ public class MathSolution {
      * @return
      */
     public List<Integer> grayCode(int n) {
-        List<Integer> result = new ArrayList<>();
-        int num = (int) Math.pow(2, n);
-        for (int i = 0; i < num; i++) {
-            int val = (i >> 1) ^ i;
-            result.add(val);
-        }
-        return result;
+        List<Integer> result  = new ArrayList<>();
     }
 
     public int longestConsecutive(int[] nums) {

@@ -65,9 +65,12 @@ public class StringSolution {
         String word = "aabbhijkbbhijkbbhijkkjihijkkjihijkkjihijkkjih";
 //        solution.canPermutePalindrome(word);
 //        solution.lengthOfLongestSubstringTwoDistinct("eceba");
-        word = "aaaabbc";
-        List<String> result = solution.generatePalindromes(word);
-        System.out.println(result);
+//        word = "aaaabbc";
+//        List<String> result = solution.generatePalindromes(word);
+//        System.out.println(result);
+        String s = "ADOBECODEBANC";
+        String t = "ABC";
+        solution.minWindow(s, t);
     }
 
     /**
@@ -121,27 +124,28 @@ public class StringSolution {
             return "";
         }
         int[] hash = new int[256];
-        int n = t.length();
-        for (int i = 0; i < n; i++) {
-            hash[t.charAt(i)]++;
+        int count = t.length();
+        int m = s.length();
+        for (char c : t.toCharArray()) {
+            hash[c]++;
         }
         int result = Integer.MAX_VALUE;
         int begin = 0;
         int head = 0;
-        int endIndex = 0;
-        char[] words = s.toCharArray();
-        while (endIndex < words.length) {
-            if (hash[words[endIndex++]]-- > 0) {
-                n--;
+        int end = 0;
+        while (end < m) {
+            if (hash[s.charAt(end++)]-- > 0) {
+                count--;
             }
-            while (n == 0) {
-                if (endIndex - begin < result) {
+            while (count == 0) {
+                if (end - begin < result) {
+                    result = end - begin;
                     head = begin;
-                    result = endIndex - begin;
                 }
                 if (hash[s.charAt(begin++)]++ == 0) {
-                    n++;
+                    count++;
                 }
+
             }
         }
         if (result == Integer.MAX_VALUE) {
