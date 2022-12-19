@@ -367,8 +367,9 @@ public class RecursiveSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> result = new ArrayList<>();
         Arrays.sort(nums);
+//        boolean[] used = new boolean[nums.length];
+        List<List<Integer>> result = new ArrayList<>();
         internalSubsetsWithDup(result, new ArrayList<>(), 0, nums);
         return result;
     }

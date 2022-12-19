@@ -767,19 +767,19 @@ public class FirstPage {
     }
 
     private boolean validIpSeq(String s) {
-        if (s == null || s.isEmpty()) {
+        if (s.isEmpty()) {
             return false;
         }
-        int len = s.length();
-        if (len > 3) {
+        if (s.length() > 3) {
             return false;
         }
-        if (len > 1 && s.charAt(0) == '0') {
-            return false;
-        }
-        int value = Integer.parseInt(s);
+        int num = Integer.parseInt(s);
 
-        return value >= 0 && value <= 255;
+        if (s.length() > 1 && s.charAt(0) == '0') {
+            return false;
+        }
+
+        return num >= 0 && num <= 255;
     }
 
 }

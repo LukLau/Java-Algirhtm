@@ -27,7 +27,8 @@ public class MathSolution {
 
         String[] words = new String[]{"This", "is", "an", "example", "of", "text", "justification."};
         int width = 16;
-        solution.fullJustifyii(words, width);
+//        solution.fullJustifyii(words, width);
+        solution.grayCode(2);
 
 
     }
@@ -321,7 +322,13 @@ public class MathSolution {
      * @return
      */
     public List<Integer> grayCode(int n) {
-        List<Integer> result  = new ArrayList<>();
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < Math.pow(2, n); i++) {
+            int num = (i >> 1) ^ i;
+
+            result.add(num);
+        }
+        return result;
     }
 
     public int longestConsecutive(int[] nums) {

@@ -1,10 +1,7 @@
 package org.learn.algorithm.leetcode;
 
-import org.apache.logging.log4j.message.ReusableMessage;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Node;
-import org.learn.algorithm.datastructure.RandomListNode;
-import org.slf4j.event.SubstituteLoggingEvent;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -199,27 +196,25 @@ public class ListSolution {
      * @return
      */
     public ListNode reverseBetween(ListNode head, int left, int right) {
-        if (head == null || head.next == null) {
-            return head;
+        if (head == null) {
+            return null;
         }
         ListNode root = new ListNode(0);
-
         root.next = head;
-
-        ListNode fast = root;
         ListNode slow = root;
         for (int i = 0; i < left - 1; i++) {
             slow = slow.next;
         }
+        ListNode fast = root;
         for (int i = 0; i < right; i++) {
             fast = fast.next;
         }
-        ListNode endNode = fast.next;
-        ListNode startNode = slow.next;
+        ListNode start = slow.next;
+        ListNode end = fast.next;
 
-        slow.next = reverseNode(startNode, endNode);
+        slow.next = reverseNode(start, end);
 
-        startNode.next = endNode;
+        start.next = end;
 
         return root.next;
     }

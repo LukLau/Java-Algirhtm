@@ -40,7 +40,8 @@ public class DynamicSolution {
 //        solution.minCut("aab");
         matrix = new char[][]{{'1', '0'}};
 //        solution.maximalSquare(matrix);
-        solution.numSquares(4);
+//        solution.numSquares(4);
+        solution.numDecodings("12");
     }
 
 
@@ -106,25 +107,23 @@ public class DynamicSolution {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        int m = s.length();
-        int[] dp = new int[m + 1];
-
+        int len = s.length();
+        int[] dp = new int[len + 1];
         dp[0] = 1;
-        for (int i = 1; i <= m; i++) {
-            String firstValue = s.substring(i - 1, i);
+        for (int i = 1; i <= len; i++) {
+            String firstWord = s.substring(i - 1, i);
 
-            int firstNum = Integer.parseInt(firstValue);
-
-            if (firstNum >= 1 && firstNum <= 9) {
+            int firstValue = Integer.parseInt(firstWord);
+            if (firstValue >= 1 && firstValue <= 9) {
                 dp[i] += dp[i - 1];
             }
-            String secondValue = i >= 2 ? s.substring(i - 2, i) : "0";
-            int secondNum = Integer.parseInt(secondValue);
-            if (secondNum >= 10 && secondNum <= 26) {
+            String secondWord = i >= 2 ? s.substring(i - 2, i) : "0";
+            int second = Integer.parseInt(secondWord);
+            if (second >= 10 && second <= 26) {
                 dp[i] += dp[i - 2];
             }
         }
-        return dp[m];
+        return dp[len];
     }
 
 
@@ -484,21 +483,10 @@ public class DynamicSolution {
      * @return
      */
     public int numDistinct(String s, String t) {
-        if (t.isEmpty()) {
-            return s.length();
+        if (s == null) {
+            return 1;
         }
         int m = s.length();
-        int n = t.length();
-        int[][] dp = new int[m + 1][n + 1];
-        for (int i = 0; i <= m; i++) {
-            dp[i][0] = 1;
-        }
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                dp[i][j] = dp[i - 1][j] + (s.charAt(i - 1) == t.charAt(j - 1) ? dp[i - 1][j - 1] : 0);
-            }
-        }
-        return dp[m][n];
     }
 
     /**

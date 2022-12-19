@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+import org.graalvm.compiler.nodes.calc.LeftShiftNode;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.TreeNode;
@@ -27,16 +28,21 @@ public class TreeSolution {
     public static void main(String[] args) {
         TreeSolution solution = new TreeSolution();
 
-        TreeNode root = new TreeNode(1);
-        TreeNode left = new TreeNode(2);
+//        TreeNode root = new TreeNode(1);
+//        TreeNode left = new TreeNode(2);
 //        left.left = new TreeNode(4);
-        root.left = left;
-        root.right = new TreeNode(3);
+//        root.left = left;
+//        root.right = new TreeNode(3);
+//
+//        left.right = new TreeNode(5);
 
-        left.right = new TreeNode(5);
+        TreeNode root = new TreeNode(Integer.MIN_VALUE);
+
+        root.right = new TreeNode(Integer.MAX_VALUE);
 
 
-        solution.binaryTreePaths(root);
+//        solution.binaryTreePaths(root);
+        solution.isValidBSTV2(root);
     }
 
     /**
@@ -87,18 +93,41 @@ public class TreeSolution {
     }
 
 
-    // 排序系列//
-
     public int minDepth(TreeNode root) {
         if (root == null) {
             return 0;
+        }
+        if (root.left == null) {
+            return 1 + minDepth(root.right);
+        }
+        if (root.right == null) {
+            return 1 + minDepthii(root.left);
         }
         int left = minDepth(root.left);
 
         int right = minDepth(root.right);
 
-        return 1 + Math.min(left, right);
+        return Math.min(left, right) + 1;
     }
+
+
+    public int minDepthii(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null && root.right == null) {
+            return 1;
+        }
+        if (root.left == null || root.right == null) {
+            return root.left == null ? 1 + minDepth(root.right) : 1 + minDepth(root.left);
+        }
+        int left = minDepth(root.left);
+        int right = minDepth(root.right);
+        return Math.min(left, right) + 1;
+    }
+
+    // 排序系列//
+
 
     /**
      * 类似于归并排序
@@ -203,25 +232,24 @@ public class TreeSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        LinkedList<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+        linkedList.offer(root);
         boolean leftToRight = true;
-        while (!queue.isEmpty()) {
-            int size = queue.size();
+        while (!linkedList.isEmpty()) {
+            int size = linkedList.size();
             LinkedList<Integer> tmp = new LinkedList<>();
             for (int i = 0; i < size; i++) {
-                TreeNode poll = queue.poll();
-
+                TreeNode node = linkedList.poll();
+                if (node.left != null) {
+                    linkedList.offer(node.left);
+                }
+                if (node.right != null) {
+                    linkedList.offer(node.right);
+                }
                 if (leftToRight) {
-                    tmp.offerLast(poll.val);
+                    tmp.addLast(node.val);
                 } else {
-                    tmp.offerFirst(poll.val);
-                }
-                if (poll.left != null) {
-                    queue.offer(poll.left);
-                }
-                if (poll.right != null) {
-                    queue.offer(poll.right);
+                    tmp.addFirst(node.val);
                 }
             }
             result.add(tmp);
@@ -240,15 +268,20 @@ public class TreeSolution {
         if (root == null) {
             return new ArrayList<>();
         }
+        LinkedList<List<Integer>> result = new LinkedList<>();
         LinkedList<TreeNode> linkedList = new LinkedList<>();
         linkedList.offer(root);
-        List<List<Integer>> result = new ArrayList<>();
         while (!linkedList.isEmpty()) {
+
             int size = linkedList.size();
+
             List<Integer> tmp = new ArrayList<>();
+
             for (int i = 0; i < size; i++) {
                 TreeNode poll = linkedList.poll();
+
                 tmp.add(poll.val);
+
                 if (poll.left != null) {
                     linkedList.offer(poll.left);
                 }
@@ -256,7 +289,7 @@ public class TreeSolution {
                     linkedList.offer(poll.right);
                 }
             }
-            result.add(tmp);
+            result.addFirst(tmp);
         }
         return result;
     }
@@ -507,27 +540,32 @@ public class TreeSolution {
 
     private List<TreeNode> internalGenerateTress(int start, int end) {
         List<TreeNode> result = new ArrayList<>();
-        if (start == end) {
-            result.add(new TreeNode(start));
-            return result;
-        }
         if (start > end) {
             result.add(null);
             return result;
         }
+        if (start == end) {
+            TreeNode node = new TreeNode(start);
+            result.add(node);
+            return result;
+        }
         for (int i = start; i <= end; i++) {
             List<TreeNode> leftNodes = internalGenerateTress(start, i - 1);
+
             List<TreeNode> rightNodes = internalGenerateTress(i + 1, end);
+
             for (TreeNode leftNode : leftNodes) {
                 for (TreeNode rightNode : rightNodes) {
-                    TreeNode root = new TreeNode(i);
-                    root.left = leftNode;
-                    root.right = rightNode;
-                    result.add(root);
+                    TreeNode node = new TreeNode(i);
+                    node.left = leftNode;
+                    node.right = rightNode;
+
+                    result.add(node);
                 }
             }
         }
         return result;
+
     }
 
 
@@ -586,14 +624,15 @@ public class TreeSolution {
         if (root == null) {
             return false;
         }
-        return internalValidBST(Integer.MIN_VALUE, root, Integer.MAX_VALUE);
+
+        return internalValidBST(Long.MIN_VALUE, root, Long.MAX_VALUE);
     }
 
-    private boolean internalValidBST(int minValue, TreeNode root, int maxValue) {
+    private boolean internalValidBST(long minValue, TreeNode root, long maxValue) {
         if (root == null) {
             return true;
         }
-        if (minValue >= root.val || root.val >= maxValue) {
+        if (root.val <= minValue || root.val >= maxValue) {
             return false;
         }
         return internalValidBST(minValue, root.left, root.val) && internalValidBST(root.val, root.right, maxValue);
@@ -609,12 +648,11 @@ public class TreeSolution {
             return;
         }
         Stack<TreeNode> stack = new Stack<>();
-
         TreeNode p = root;
-        TreeNode prev = null;
-
         TreeNode first = null;
         TreeNode second = null;
+
+        TreeNode prev = null;
         while (!stack.isEmpty() || p != null) {
             while (p != null) {
                 stack.push(p);
@@ -622,21 +660,23 @@ public class TreeSolution {
             }
             p = stack.pop();
 
-            if (prev != null) {
-                if (first == null && prev.val >= p.val) {
+            if (prev != null && prev.val >= p.val) {
+                if (first == null) {
                     first = prev;
                 }
-                if (first != null && prev.val >= p.val) {
+                if (first != null) {
                     second = p;
                 }
             }
+
             prev = p;
+
             p = p.right;
         }
         if (first != null) {
-            int tmp = first.val;
+            int val = first.val;
             first.val = second.val;
-            second.val = tmp;
+            second.val = val;
         }
     }
 
@@ -654,6 +694,9 @@ public class TreeSolution {
     }
 
     private TreeNode internalSortedArrayToBST(int[] nums, int start, int end) {
+        if (start == end) {
+            return new TreeNode(nums[start]);
+        }
         if (start > end) {
             return null;
         }
@@ -663,7 +706,6 @@ public class TreeSolution {
         root.right = internalSortedArrayToBST(nums, mid + 1, end);
         return root;
     }
-
 
     // 同一颗树//
 
@@ -719,6 +761,7 @@ public class TreeSolution {
         return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
     }
 
+
     /**
      * 101. Symmetric Tree
      *
@@ -760,10 +803,10 @@ public class TreeSolution {
         if (preorder == null || inorder == null) {
             return null;
         }
-        return intervalBuildTree(0, preorder, 0, inorder.length - 1, inorder);
+        return internalBuildPreIteratorTree(0, preorder, 0, inorder.length - 1, inorder);
     }
 
-    private TreeNode intervalBuildTree(int preStart, int[] preorder, int inStart, int inEnd, int[] inorder) {
+    private TreeNode internalBuildPreIteratorTree(int preStart, int[] preorder, int inStart, int inEnd, int[] inorder) {
         if (preStart >= preorder.length || inStart > inEnd) {
             return null;
         }
@@ -775,8 +818,8 @@ public class TreeSolution {
                 break;
             }
         }
-        root.left = intervalBuildTree(preStart + 1, preorder, inStart, index - 1, inorder);
-        root.right = intervalBuildTree(preStart + index - inStart + 1, preorder, index + 1, inEnd, inorder);
+        root.left = internalBuildPreIteratorTree(preStart + 1, preorder, inStart, index - 1, inorder);
+        root.right = internalBuildPreIteratorTree(preStart + index - inStart + 1, preorder, index + 1, inEnd, inorder);
         return root;
     }
 
@@ -788,13 +831,13 @@ public class TreeSolution {
      * @return
      */
     public TreeNode buildTreeII(int[] inorder, int[] postorder) {
-        if (inorder == null || inorder.length == 0 || postorder == null || postorder.length == 0) {
+        if (inorder == null || postorder == null) {
             return null;
         }
-        return internalBuildTreeii(0, inorder.length - 1, inorder, 0, postorder.length - 1, postorder);
+        return internalBuildPostIteratorTree(0, inorder.length - 1, inorder, 0, postorder.length - 1, postorder);
     }
 
-    private TreeNode internalBuildTreeii(int inStart, int inEnd, int[] inorder, int postStart, int postEnd, int[] postorder) {
+    private TreeNode internalBuildPostIteratorTree(int inStart, int inEnd, int[] inorder, int postStart, int postEnd, int[] postorder) {
         if (inStart > inEnd || postStart > postEnd) {
             return null;
         }
@@ -806,8 +849,8 @@ public class TreeSolution {
                 break;
             }
         }
-        root.left = internalBuildTreeii(inStart, index - 1, inorder, postStart, postStart + index - inStart - 1, postorder);
-        root.right = internalBuildTreeii(index + 1, inEnd, inorder, postStart + index - inStart, postEnd - 1, postorder);
+        root.left = internalBuildPostIteratorTree(inStart, index - 1, inorder, postStart, postStart + index - inStart - 1, postorder);
+        root.right = internalBuildPostIteratorTree(index + 1, inEnd, inorder, postStart + index - inStart, postEnd - 1, postorder);
         return root;
     }
 
@@ -976,26 +1019,25 @@ public class TreeSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        internalPathSum(result, new ArrayList<>(), root, targetSum);
+        internalPathSum(root, targetSum, result, new ArrayList<>());
         return result;
     }
 
-    private void internalPathSum(List<List<Integer>> result, List<Integer> tmp, TreeNode root, int targetSum) {
-        if (root == null) {
-            return;
-        }
+    private void internalPathSum(TreeNode root, int targetSum, List<List<Integer>> result, List<Integer> tmp) {
         tmp.add(root.val);
-        if (root.left == null && root.right == null && root.val == targetSum) {
+        if (root.val == targetSum && root.left == null && root.right == null) {
             result.add(new ArrayList<>(tmp));
-        }
-        if (root.left != null) {
-            internalPathSum(result, tmp, root.left, targetSum - root.val);
-        }
-        if (root.right != null) {
-            internalPathSum(result, tmp, root.right, targetSum - root.val);
+        } else {
+            if (root.left != null) {
+                internalPathSum(root.left, targetSum - root.val, result, tmp);
+            }
+            if (root.right != null) {
+                internalPathSum(root.right, targetSum - root.val, result, tmp);
+            }
         }
         tmp.remove(tmp.size() - 1);
     }
+
 
     /**
      * 114. Flatten Binary Tree to Linked List
@@ -1007,23 +1049,39 @@ public class TreeSolution {
             return;
         }
         Stack<TreeNode> stack = new Stack<>();
-        TreeNode p = root;
+
+        stack.push(root);
         TreeNode prev = null;
-        stack.push(p);
         while (!stack.isEmpty()) {
-            TreeNode pop = stack.pop();
-            if (pop.right != null) {
-                stack.push(pop.right);
+            TreeNode node = stack.pop();
+
+            if (node.right != null) {
+                stack.push(node.right);
             }
-            if (pop.left != null) {
-                stack.push(pop.left);
+            if (node.left != null) {
+                stack.push(node.left);
             }
+
             if (prev != null) {
-                prev.right = pop;
+                prev.right = node;
                 prev.left = null;
             }
-            prev = pop;
+            prev = node;
         }
+    }
+
+
+    private TreeNode flattenPrev = null;
+
+    public void flattenii(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        flatten(root.right);
+        flatten(root.left);
+        root.right = flattenPrev;
+        flattenPrev = root;
+        root.left = null;
     }
 
     /**
