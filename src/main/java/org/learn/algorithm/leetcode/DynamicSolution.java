@@ -1,5 +1,6 @@
 package org.learn.algorithm.leetcode;
 
+import io.netty.util.internal.ResourcesUtil;
 import org.learn.algorithm.datastructure.TreeNode;
 import org.springframework.boot.context.properties.bind.handler.IgnoreTopLevelConverterNotFoundBindHandler;
 import org.springframework.boot.web.reactive.context.ReactiveWebApplicationContext;
@@ -41,7 +42,11 @@ public class DynamicSolution {
         matrix = new char[][]{{'1', '0'}};
 //        solution.maximalSquare(matrix);
 //        solution.numSquares(4);
-        solution.numDecodings("12");
+//        solution.numDecodings("12");
+//        solution.generate(5);
+        int[] profit = new int[]{7, 1, 5, 3, 6, 4};
+
+        solution.maxProfit(profit);
     }
 
 
@@ -487,6 +492,17 @@ public class DynamicSolution {
             return 1;
         }
         int m = s.length();
+        int n = t.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                dp[i][j] = dp[i - 1][j] + (s.charAt(i - 1) == t.charAt(j - 1) ? dp[i - 1][j - 1] : 0);
+            }
+        }
+        return dp[m][n];
     }
 
     /**
@@ -500,20 +516,17 @@ public class DynamicSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        for (int i = 0; i < numRows; i++) {
-            List<Integer> tmp = new ArrayList<>();
+
+        List<Integer> tmp = new ArrayList<>();
+        for (int i = 1; i <= numRows; i++) {
+            for (int j = i - 2; j >= 1; j--) {
+                List<Integer> previous = result.get(i - 2);
+                int sum = previous.get(j - 1) + previous.get(j);
+                tmp.set(j, sum);
+            }
             tmp.add(1);
-            for (int j = i - 1; j >= 1; j--) {
-                List<Integer> prev = result.get(i - 1);
 
-                Integer value = prev.get(j) + prev.get(j - 1);
-
-                tmp.add(value);
-            }
-            if (i > 0) {
-                tmp.add(1);
-            }
-            result.add(tmp);
+            result.add(new ArrayList<>(tmp));
         }
         return result;
     }
@@ -529,17 +542,19 @@ public class DynamicSolution {
             return new ArrayList<>();
         }
         List<Integer> result = new ArrayList<>();
+
         result.add(1);
-        for (int i = 0; i <= rowIndex; i++) {
+
+        for (int i = 1; i <= rowIndex; i++) {
 
             for (int j = i - 1; j >= 1; j--) {
-                int value = result.get(j) + result.get(j - 1);
+                int tmp = result.get(j - 1) + result.get(j);
 
-                result.set(j, value);
+                result.set(j, tmp);
             }
-            if (i > 0) {
-                result.add(1);
-            }
+
+            result.add(1);
+
         }
         return result;
     }
@@ -616,10 +631,11 @@ public class DynamicSolution {
         int result = 0;
         int cost = prices[0];
         for (int i = 1; i < prices.length; i++) {
-            if (prices[i] > cost) {
-                result = Math.max(result, prices[i] - cost);
+            int price = prices[i];
+            if (price > cost) {
+                result = Math.max(result, price - cost);
             } else {
-                cost = prices[i];
+                cost = price;
             }
         }
         return result;

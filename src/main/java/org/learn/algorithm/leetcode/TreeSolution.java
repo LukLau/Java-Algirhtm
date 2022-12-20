@@ -1,6 +1,5 @@
 package org.learn.algorithm.leetcode;
 
-import org.graalvm.compiler.nodes.calc.LeftShiftNode;
 import org.learn.algorithm.datastructure.ListNode;
 import org.learn.algorithm.datastructure.Node;
 import org.learn.algorithm.datastructure.TreeNode;
@@ -1117,30 +1116,29 @@ public class TreeSolution {
      */
     public Node connectII(Node root) {
         if (root == null) {
-            return null;
+            return root;
         }
         Node current = root;
         while (current != null) {
             Node head = null;
-            Node iteratorNode = null;
+            Node tmp = null;
             while (current != null) {
                 if (current.left != null) {
                     if (head == null) {
                         head = current.left;
-                        iteratorNode = current.left;
+                        tmp = head;
                     } else {
-                        iteratorNode.next = current.left;
-//                        current = current.next;
-                        iteratorNode = iteratorNode.next;
+                        tmp.next = current.left;
+                        tmp = tmp.next;
                     }
                 }
                 if (current.right != null) {
                     if (head == null) {
                         head = current.right;
-                        iteratorNode = current.right;
+                        tmp = head;
                     } else {
-                        iteratorNode.next = current.right;
-                        iteratorNode = iteratorNode.next;
+                        tmp.next = current.right;
+                        tmp = tmp.next;
                     }
                 }
                 current = current.next;
