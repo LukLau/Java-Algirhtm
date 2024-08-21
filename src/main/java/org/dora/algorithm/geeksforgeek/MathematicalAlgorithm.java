@@ -131,6 +131,9 @@ public class MathematicalAlgorithm {
 
     // -------位运算 Bits -----------//
 
+
+    Map<Node, Node> cloneMap = new HashMap<>();
+
     /**
      * 133. Clone Graph
      *
@@ -138,7 +141,21 @@ public class MathematicalAlgorithm {
      * @return
      */
     public Node cloneGraph(Node node) {
-        return null;
+        if (node == null) {
+            return null;
+        }
+
+        if (cloneMap.containsKey(node)) {
+            return cloneMap.get(node);
+        }
+        Node newNode = new Node(node.val);
+
+        for (Node neighbor : node.neighbors) {
+            newNode.neighbors.add(cloneGraph(neighbor));
+        }
+        cloneMap.put(node, newNode);
+
+        return newNode;
     }
 
     /**

@@ -2,6 +2,7 @@ package org.dora.algorithm.geeksforgeek;
 
 import org.dora.algorithm.datastructe.ListNode;
 import org.dora.algorithm.datastructe.TreeNode;
+import org.dora.algorithm.datastructe.WordDictionary;
 
 import java.util.*;
 
@@ -103,6 +104,34 @@ public class SerialQuestion {
             }
         }
         return result;
+    }
+
+
+    /**
+     * todo
+     * 309. Best Time to Buy and Sell Stock with Cooldown
+     * @param prices
+     * @return
+     */
+    public int maxProfitWithColdDown(int[] prices) {
+        if (prices == null || prices.length <= 1) {
+            return 0;
+        }
+        if (prices.length == 2) {
+            return Math.max(0, prices[1] - prices[0]);
+        }
+        int[] sell = new int[prices.length];
+        int[] buy = new int[prices.length];
+        buy[0] = -prices[0];
+        buy[1] = Math.max(-prices[1], -prices[0]);
+        sell[1] = Math.max(0, prices[1] - prices[0]);
+        for (int i = 2; i < prices.length; i++) {
+//            buy[i] = Math.max(buy[i - 1], sell[i - 2] - prices[i]);
+//            sell[i] = Math.max(sell[i - 1], buy[i - 1] + prices[i]);
+            buy[i] = Math.max(sell[i - 2] - prices[i], buy[i - 1]);
+            sell[i] = Math.max(sell[i - 1], buy[i - 1] + prices[i]);
+        }
+        return sell[prices.length - 1];
     }
 
 

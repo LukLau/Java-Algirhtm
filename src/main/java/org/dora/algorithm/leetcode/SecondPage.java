@@ -1,10 +1,13 @@
 package org.dora.algorithm.leetcode;
 
+import javafx.scene.layout.Priority;
 import org.dora.algorithm.datastructe.ListNode;
 import org.dora.algorithm.datastructe.Node;
 import org.dora.algorithm.datastructe.Point;
 import org.dora.algorithm.datastructe.TreeNode;
+import sun.util.resources.cldr.ka.LocaleNames_ka;
 
+import java.rmi.dgc.DGC;
 import java.util.*;
 
 /**
@@ -16,7 +19,21 @@ public class SecondPage {
     public static void main(String[] args) {
         SecondPage secondPage = new SecondPage();
 
+        int[] prices = new int[]{6, 1, 3, 2, 4, 7};
 
+
+//        int[][] dungeon = new int[][]{{-2, -3, 3}, {-5, -10, 1}, {10, 30, -5}};
+        int[][] dungeon = new int[][]{{1}, {-1}};
+
+//        secondPage.calculateMinimumHP(dungeon);
+
+        int[][] courses = new int[][]{{0, 1}};
+
+//        secondPage.findOrder(2, courses);
+        int[] kth = new int[]{3, 2, 1, 5, 6, 4};
+        secondPage.findKthLargest(kth, 2);
+
+//        secondPage.maxProfitIV(2, prices);
     }
 
     /**
@@ -595,6 +612,32 @@ public class SecondPage {
         }
         return result;
     }
+
+    public int maxProfitIV(int k, int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int[][] result = new int[k + 1][prices.length];
+
+//        int firstCost = prices[0];
+//        int firstProfit = 0;
+//        for (int i = 1; i < prices.length; i++) {
+//            if (prices[i] > firstCost) {
+//                firstProfit = Math.max(firstProfit, prices[i] - firstCost);
+//            }
+//            firstCost = prices[i];
+//            result[1][i] = firstProfit;
+//        }
+        for (int i = 1; i <= k; i++) {
+            int cost = -prices[0];
+            for (int j = 1; j < prices.length; j++) {
+                result[i][j] = Math.max(result[i][j - 1], cost + prices[j]);
+                cost = Math.max(cost, result[i - 1][j - 1] - prices[j]);
+            }
+        }
+        return result[k][prices.length - 1];
+    }
+
 
     /**
      * 125. Valid Palindrome
@@ -1636,55 +1679,105 @@ public class SecondPage {
             return 0;
         }
         int row = dungeon.length;
-
         int column = dungeon[0].length;
-
-        /**
-         * 动态规划题目
-         * dp[i][j] = Math.max(1, Math.min(dp[i+1][j], dp[i][j+1]) - dungeon[i][j])
-         * 当数据元素 大于0 的时候 不必要做任何操作
-         * 所以需从底向上规划
-         */
-//        int[][] dp = new int[row][column];
-//
-//        for (int i = row - 1; i >= 0; i--) {
-//            for (int j = column - 1; j >= 0; j--) {
-//                if (i == row - 1 && j == column - 1) {
-//                    dp[i][j] = Math.max(1, 1 - dungeon[i][j]);
-//                } else if (i == row - 1) {
-//                    dp[i][j] = Math.max(1, dp[i][j + 1] - dungeon[i][j]);
-//                } else if (j == column - 1) {
-//                    dp[i][j] = Math.max(1, dp[i + 1][j] - dungeon[i][j]);
-//                } else {
-//                    dp[i][j] = Math.max(1, Math.min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j]);
-//                }
-//            }
-//        }
-//        return dp[0][0];
-
-        /**
-         *
-         * 方案二 将二维度dp 优化成 一维dp
-         */
-
-        int[] dp = new int[column];
-
-        dp[column - 1] = Math.max(1, 1 - dungeon[row - 1][column - 1]);
-
-        for (int j = column - 2; j >= 0; j--) {
-            dp[j] = Math.max(1, dp[j + 1] - dungeon[row - 1][j + 1]);
+        int[][] result = new int[row][column];
+        for (int j = column - 1; j >= 0; j--) {
+            if (j == column - 1) {
+                result[row - 1][j] = Math.max(1, 1 - dungeon[row - 1][j]);
+            } else {
+                result[row - 1][j] = Math.max(1, result[row - 1][j + 1] - dungeon[row - 1][j]);
+            }
         }
-
         for (int i = row - 2; i >= 0; i--) {
             for (int j = column - 1; j >= 0; j--) {
                 if (j == column - 1) {
-                    dp[j] = Math.max(1, dp[j] - dungeon[i][j]);
+                    result[i][j] = Math.max(1, result[i + 1][j] - dungeon[i][j]);
                 } else {
-                    dp[j] = Math.max(1, Math.min(dp[j], dp[j + 1]) - dungeon[i][j]);
+                    result[i][j] = Math.max(1, Math.min(result[i + 1][j], result[i][j + 1]) - dungeon[i][j]);
                 }
             }
         }
-        return dp[0];
+        return result[0][0];
+    }
+
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        Map<Integer, List<Integer>> outputMap = new HashMap<>();
+        int[] degrees = new int[numCourses];
+        for (int[] prerequisite : prerequisites) {
+            int left = prerequisite[0];
+            int right = prerequisite[1];
+            List<Integer> rightEdge = outputMap.getOrDefault(right, new ArrayList<>());
+
+            rightEdge.add(left);
+            outputMap.put(right, rightEdge);
+            degrees[left]++;
+        }
+        LinkedList<Integer> linkedList = new LinkedList<>();
+
+        for (int i = 0; i < degrees.length; i++) {
+            int degree = degrees[i];
+            if (degree == 0) {
+                linkedList.offer(i);
+            }
+        }
+        List<Integer> result = new ArrayList<>();
+
+        while (!linkedList.isEmpty()) {
+            Integer currentPoll = linkedList.poll();
+
+            result.add(currentPoll);
+
+            List<Integer> neighbors = outputMap.getOrDefault(currentPoll, new ArrayList<>());
+
+            for (Integer neighbor : neighbors) {
+                degrees[neighbor]--;
+                if (degrees[neighbor] == 0) {
+                    linkedList.offer(neighbor);
+                }
+            }
+        }
+        return result.size() == numCourses;
+    }
+
+
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        if (prerequisites == null) {
+            return new int[]{};
+        }
+        int[] degrees = new int[numCourses];
+        Map<Integer, List<Integer>> result = new HashMap<>();
+
+        for (int[] prerequisite : prerequisites) {
+            int output = prerequisite[0];
+            int input = prerequisite[1];
+
+            List<Integer> tmp = result.getOrDefault(input, new ArrayList<>());
+            tmp.add(output);
+            result.put(input, tmp);
+            degrees[output]++;
+        }
+        LinkedList<Integer> linkedList = new LinkedList<>();
+        for (int i = 0; i < degrees.length; i++) {
+            if (degrees[i] == 0) {
+                linkedList.offer(i);
+            }
+        }
+        int index = 0;
+        int[] answer = new int[numCourses];
+        while (!linkedList.isEmpty()) {
+            Integer poll = linkedList.poll();
+            answer[index++] = poll;
+
+            List<Integer> neighbors = result.getOrDefault(poll, new ArrayList<>());
+
+            for (Integer neighbor : neighbors) {
+                degrees[neighbor]--;
+                if (degrees[neighbor] == 0) {
+                    linkedList.offer(neighbor);
+                }
+            }
+        }
+        return index == answer.length ? answer : new int[]{};
     }
 
 
@@ -1896,6 +1989,20 @@ public class SecondPage {
         this.verify(grid, i + 1, j);
         this.verify(grid, i, j - 1);
         this.verify(grid, i, j + 1);
+    }
+
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>();
+
+        for (int num : nums) {
+            if (priorityQueue.isEmpty() || priorityQueue.size() < k) {
+                priorityQueue.offer(num);
+            } else if (num > priorityQueue.peek()) {
+                priorityQueue.poll();
+                priorityQueue.offer(num);
+            }
+        }
+        return priorityQueue.peek();
     }
 
 

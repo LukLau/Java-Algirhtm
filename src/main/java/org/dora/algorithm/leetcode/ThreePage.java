@@ -14,6 +14,15 @@ public class ThreePage {
 
     public static void main(String[] args) {
         ThreePage threePage = new ThreePage();
+
+//        String calculate = "1+(1-1)";
+//        threePage.calculate(calculate);
+        String calculateII = " 3+5 / 2 ";
+//        threePage.calculateII(calculateII);
+        int[] slideWindows = new int[]{1, 3, -1, -3, 5, 3, 6, 7};
+
+        int[] result = threePage.maxSlidingWindow(slideWindows, 3);
+        Arrays.stream(result).peek(System.out::println);
     }
 
     /**
@@ -281,42 +290,26 @@ public class ThreePage {
         if (k <= 0 || n <= 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> ans = new ArrayList<>();
-        this.combinationSum3(ans, new ArrayList<Integer>(), 1, k, n);
-        return ans;
+        List<List<Integer>> result = new ArrayList<>();
+        internalCombinationSum3(result, new ArrayList<>(), 1, k, n);
+        return result;
     }
 
-    private void combinationSum3(List<List<Integer>> ans, List<Integer> tmp, int start, int k, int n) {
-        if (tmp.size() == k && n == 0) {
-            ans.add(new ArrayList<>(tmp));
+    private void internalCombinationSum3(List<List<Integer>> result, List<Integer> tmp, int index, int k, int n) {
+        if (tmp.size() > k || n < 0) {
             return;
         }
-        for (int i = start; i <= 9 && i <= n; i++) {
+        if (tmp.size() == k && n == 0) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = index; i <= 9 && i <= n; i++) {
             tmp.add(i);
-            this.combinationSum3(ans, tmp, i + 1, k, n - i);
+            internalCombinationSum3(result, tmp, i + 1, k, n - i);
             tmp.remove(tmp.size() - 1);
         }
     }
 
-    /**
-     * 217. Contains Duplicate
-     *
-     * @param nums
-     * @return
-     */
-    public boolean containsDuplicate(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return false;
-        }
-        HashSet<Integer> set = new HashSet<>();
-        for (int num : nums) {
-            if (set.contains(num)) {
-                return true;
-            }
-            set.add(num);
-        }
-        return false;
-    }
 
     /**
      * 219. Contains Duplicate II
@@ -406,36 +399,52 @@ public class ThreePage {
             return 0;
         }
         s = s.trim();
-        if (s.length() == 0) {
+        if (s.isEmpty()) {
             return 0;
         }
-        int sign = 1;
-        Stack<Integer> stack = new Stack<>();
+        int startIndex = 0;
+        int len = s.length();
+        char[] words = s.toCharArray();
         int result = 0;
-        int index = 0;
-        while (index < s.length()) {
-
-            int tmp = 0;
-            if (Character.isDigit(s.charAt(index))) {
-                while (index < s.length() && Character.isDigit(s.charAt(index))) {
-                    tmp = tmp * 10 + s.charAt(index) - '0';
-                    index++;
+        int sign = 1;
+        while (startIndex < len) {
+            if (words[startIndex] == '(') {
+                int endIndex = startIndex;
+                int count = 0;
+                while (endIndex < words.length) {
+                    if (Character.isDigit(words[endIndex])) {
+                        endIndex++;
+                        continue;
+                    }
+                    if (words[endIndex] == '(') {
+                        count++;
+                    }
+                    if (words[endIndex] == ')') {
+                        count--;
+                    }
+                    if (count == 0) {
+                        break;
+                    }
+                    endIndex++;
                 }
-                result += sign * tmp;
+                result += sign * calculate(s.substring(startIndex + 1, endIndex));
+                startIndex = endIndex + 1;
+            }
+            if (startIndex < words.length) {
+                if (Character.isDigit(words[startIndex])) {
+                    int tmp = 0;
+                    while (startIndex < words.length && Character.isDigit(words[startIndex])) {
+                        tmp = tmp * 10 + Character.getNumericValue(words[startIndex++]);
+                    }
+                    result += sign * tmp;
+                } else if (words[startIndex] == '+' || words[startIndex] == '-') {
+                    sign = words[startIndex] == '+' ? 1 : -1;
+                    startIndex++;
+                } else {
+                    startIndex++;
+                }
             } else {
-                if (s.charAt(index) == '+') {
-                    sign = 1;
-                } else if (s.charAt(index) == '-') {
-                    sign = -1;
-                } else if (s.charAt(index) == '(') {
-                    stack.push(result);
-                    stack.push(sign);
-                    result = 0;
-                    sign = 1;
-                } else if (s.charAt(index) == ')') {
-                    result = stack.pop() * result + stack.pop();
-                }
-                index++;
+                break;
             }
         }
         return result;
@@ -472,41 +481,51 @@ public class ThreePage {
             return 0;
         }
         s = s.trim();
-
-        if (s.length() == 0) {
+        if (s.isEmpty()) {
             return 0;
         }
-        char sign = '+';
-
         Stack<Integer> stack = new Stack<>();
-
-        int result = 0;
-
-        for (int i = 0; i < s.length(); i++) {
-            if (Character.isDigit(s.charAt(i))) {
-                result = result * 10 + s.charAt(i) - '0';
+        char[] words = s.toCharArray();
+        int index = 0;
+        int sign = 1;
+        char prefix = '+';
+        if (words[index] == '+' || words[index] == '-') {
+            prefix = words[index];
+            sign = words[index++] == '+' ? 1 : -1;
+        }
+        while (index < words.length) {
+            if (words[index] == ' ') {
+                index++;
+                continue;
             }
-
-            if ((!Character.isDigit(s.charAt(i)) && s.charAt(i) != ' ') || i == s.length() - 1) {
-                if (sign == '+') {
-                    stack.push(result);
-                } else if (sign == '-') {
-                    stack.push(-result);
-                } else if (sign == '*') {
-                    stack.push(stack.pop() * result);
-                } else if (sign == '/') {
-                    stack.push(stack.pop() / result);
+            if (Character.isDigit(words[index])) {
+                int tmp = 0;
+                while (index < words.length && Character.isDigit(words[index])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[index++]);
                 }
-                result = 0;
-                sign = s.charAt(i);
+                stack.push(tmp);
+            }
+            if (prefix == '-' || prefix == '+') {
+                sign = prefix == '-' ? -1 : 1;
+                stack.push(sign * stack.pop());
+            } else if (prefix == '*') {
+                Integer secondItem = stack.pop();
+                Integer firstItem = stack.pop();
+                stack.push(firstItem * secondItem);
+            } else if (prefix == '/') {
+                Integer secondItem = stack.pop();
+                Integer firstItem = stack.pop();
+                stack.push(firstItem / secondItem);
+            }
+            if (index < words.length && !Character.isDigit(words[index])) {
+                prefix = words[index++];
             }
         }
-
-        result = 0;
-        for (Integer num : stack) {
-            result += num;
+        int answer = 0;
+        for (Integer number : stack) {
+            answer += number;
         }
-        return result;
+        return answer;
 
     }
 
@@ -522,23 +541,27 @@ public class ThreePage {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        List<String> ans = new ArrayList<>();
+        int lower = nums[0];
+        List<String> result = new ArrayList<>();
         for (int i = 0; i < nums.length; i++) {
-            int right = i;
-            while (right + 1 < nums.length && nums[right + 1] == nums[right] + 1) {
-                right++;
-            }
-            if (right > i) {
-                String value = nums[i] + "->" + nums[right];
-                ans.add(value);
-                i = right;
-            } else {
-                String value = nums[i] + "";
-                ans.add(value);
-
+            if (i > 0 && nums[i] != nums[i - 1] + 1) {
+                String range = getRange(lower, nums[i - 1]);
+                result.add(range);
+                lower = nums[i];
             }
         }
-        return ans;
+        String range = getRange(lower, nums[nums.length - 1]);
+        if (range != null) {
+            result.add(range);
+        }
+        return result;
+    }
+
+    private String getRange(int start, int end) {
+        if (start > end) {
+            return null;
+        }
+        return start == end ? String.valueOf(start) : start + "->" + end;
     }
 
 
@@ -595,6 +618,21 @@ public class ThreePage {
             ans.add(candidateB);
         }
         return ans;
+    }
+
+
+    public int countDigitOne(int n) {
+        int count = 0;
+        for (int i = 1; i <= n; i++) {
+            String numberValue = String.valueOf(i);
+            char[] words = numberValue.toCharArray();
+            for (char word : words) {
+                if (word == '1') {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
 
@@ -684,16 +722,16 @@ public class ThreePage {
      * @return
      */
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-
-        if (root == null || p == root || q == root) {
+        if (root == null || root == p || root == q) {
             return root;
         }
-        if (p.val < root.val && q.val < root.val) {
-            return this.lowestCommonAncestor(root.left, p, q);
-        } else if (p.val > root.val && q.val > root.val) {
-            return this.lowestCommonAncestor(root.right, p, q);
+        if ((p.val < root.val && (root.val < q.val)) || (q.val < root.val && root.val < p.val)) {
+            return root;
+        } else if ((p.val < root.val && q.val < root.val)) {
+            return lowestCommonAncestorTree(root.left, p, q);
         } else {
-            return null;
+            return lowestCommonAncestorTree(root.right, p, q);
+
         }
     }
 
@@ -782,9 +820,28 @@ public class ThreePage {
      */
     public int[] maxSlidingWindow(int[] nums, int k) {
         if (nums == null || nums.length == 0) {
-
+            return new int[]{};
         }
-        return nums;
+        LinkedList<Integer> linkedList = new LinkedList<>();
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            int index = i - k + 1;
+            while (!linkedList.isEmpty() && nums[linkedList.peekLast()] <= nums[i]) {
+                linkedList.pollLast();
+            }
+            linkedList.add(i);
+            while (index >= 0 && linkedList.peekFirst() < index) {
+                linkedList.pollFirst();
+            }
+            if (index >= 0) {
+                result.add(nums[linkedList.peekFirst()]);
+            }
+        }
+        int[] answer = new int[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            answer[i] = result.get(i);
+        }
+        return answer;
     }
 
     /**

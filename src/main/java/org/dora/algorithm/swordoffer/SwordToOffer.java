@@ -1,9 +1,12 @@
 package org.dora.algorithm.swordoffer;
 
+import org.dora.algorithm.datastructe.Interval;
 import org.dora.algorithm.datastructe.ListNode;
 import org.dora.algorithm.datastructe.TreeLinkNode;
 import org.dora.algorithm.datastructe.TreeNode;
+import sun.plugin2.ipc.IPCFactory;
 
+import java.nio.channels.NonWritableChannelException;
 import java.util.*;
 
 /**
@@ -22,9 +25,262 @@ public class SwordToOffer {
 
     public static void main(String[] args) {
         SwordToOffer swordToOffer = new SwordToOffer();
-        swordToOffer.StrToInt("-123");
-        swordToOffer.isNumeric(new char[]{'-', '.', '1', '2', '3'});
+//        swordToOffer.StrToInt("-123");
+//        swordToOffer.isNumeric(new char[]{'-', '.', '1', '2', '3'});
+        TreeNode root = new TreeNode(0);
+        root.left = new TreeNode(1);
+        root.right = new TreeNode(2);
+//        String serialize = swordToOffer.Serialize(root);
+//        System.out.println(serialize);
+//        swordToOffer.isValid("()");
+        int[] unique = new int[]{2, 2, -1};
+//        System.out.println(swordToOffer.permuteUnique(unique).toString());
+        char[][] grid = {{'1', '1', '0', '0', '0'}, {'0', '1', '0', '1', '1'}, {'0', '0', '0', '1', '1'}, {'0', '0', '0', '0', '0'}, {'0', '0', '1', '1', '1'}};
+
+//        System.out.println(swordToOffer.gridNum(grid));
+        int[] lcs = new int[]{1, 6, 4, 7, 5, 3, 2};
+//        swordToOffer.LISiii(lcs);
+        int[] minMoney = new int[]{5, 2, 3};
+//        swordToOffer.minMoney(minMoney, 20);
+//        System.out.println(swordToOffer.restoreIpAddresses("101023"));
+//        swordToOffer.trans("h i ", 16);
+//        swordToOffer.bigNumSum("1258994789086810959258888307221656691275942378416703768", "7007001981958278066472683068554254815482631701142544497");
+
+//        int result = swordToOffer.minmumNumberOfHost(2, preside);
+//        System.out.println(result);
     }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param root TreeNode类
+     * @return int整型一维数组
+     */
+    public int[] postorderTraversal(TreeNode root) {
+        // write code here
+        if (root == null) {
+            return null;
+        }
+        LinkedList<Integer> linkedList = new LinkedList<>();
+
+        Stack<TreeNode> stack = new Stack<>();
+        while (!stack.isEmpty() || root != null) {
+            if (root != null) {
+                linkedList.addFirst(root.val);
+                stack.push(root);
+                root = root.right;
+            } else {
+                root = stack.pop();
+                root = root.left;
+            }
+        }
+        int[] result = new int[linkedList.size()];
+        for (int i = 0; i < linkedList.size(); i++) {
+            result[i] = linkedList.get(i);
+        }
+        return result;
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param root TreeNode类
+     * @return int整型
+     */
+    public int maxDepth(TreeNode root) {
+        // write code here
+        if (root == null) {
+            return 0;
+        }
+        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+    }
+
+    public TreeNode Convert(TreeNode pRootOfTree) {
+        if (pRootOfTree == null) {
+            return null;
+        }
+        if (pRootOfTree.left == null && pRootOfTree.right == null) {
+            return pRootOfTree;
+        }
+        TreeNode convert = Convert(pRootOfTree.left);
+        if (convert != null) {
+            convert.right = pRootOfTree;
+        }
+        pRootOfTree.left = convert;
+
+        TreeNode convertRight = Convert(pRootOfTree.right);
+
+        pRootOfTree.right = convertRight;
+        if (convertRight != null) {
+            convertRight.left = pRootOfTree;
+        }
+        return convert;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param root TreeNode类
+     * @param p    int整型
+     * @param q    int整型
+     * @return int整型
+     */
+    public int lowestCommonAncestor(TreeNode root, int p, int q) {
+        // write code here
+        if (root == null) {
+            return -1;
+        }
+        if (root.val == p || root.val == q) {
+            return root.val;
+        }
+        if ((p < root.val && root.val < q) || (q < root.val && root.val < p)) {
+            return root.val;
+        } else if (root.val > p) {
+            return lowestCommonAncestor(root.left, p, q);
+        } else {
+            return lowestCommonAncestor(root.right, p, q);
+        }
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param root TreeNode类
+     * @param o1   int整型
+     * @param o2   int整型
+     * @return int整型
+     */
+    public int lowestCommonAncestorii(TreeNode root, int o1, int o2) {
+        // write code here
+        if (root == null) {
+            return -1;
+        }
+        if (root.val == o1 || root.val == o2) {
+            return root.val;
+        }
+        int left = lowestCommonAncestor(root.left, o1, o2);
+        int right = lowestCommonAncestor(root.right, o1, o2);
+        if (left != -1 && right != -1) {
+            return root.val;
+        } else if (left == -1) {
+            return right;
+        } else {
+            return left;
+        }
+
+
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param t1 TreeNode类
+     * @param t2 TreeNode类
+     * @return TreeNode类
+     */
+    public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+        // write code here
+        if (t1 == null && t2 == null) {
+            return null;
+        }
+        if (t1 == null || t2 == null) {
+            return t1 == null ? t2 : t1;
+        }
+        t1.val = t1.val + t2.val;
+
+        t1.left = mergeTrees(t1.left, t2.left);
+
+        t1.right = mergeTrees(t1.right, t2.right);
+
+        return t1;
+
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param root TreeNode类
+     * @return bool布尔型
+     */
+    public boolean isValidBST(TreeNode root) {
+        // write code here
+        if (root == null) {
+            return true;
+        }
+        return isValidBST(Integer.MIN_VALUE, root, Integer.MAX_VALUE);
+    }
+
+    private boolean isValidBST(int minValue, TreeNode root, int maxValue) {
+        if (root == null) {
+            return true;
+        }
+        if (root.val < minValue || root.val > maxValue) {
+            return false;
+        }
+        return isValidBST(minValue, root.left, root.val) && isValidBST(root.val, root.right, maxValue);
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param root TreeNode类
+     * @return bool布尔型
+     */
+    public boolean isCompleteTree(TreeNode root) {
+        // write code here
+        if (root == null) {
+            return true;
+        }
+        if (root.left == null && root.right == null) {
+            return true;
+        }
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+        linkedList.addFirst(root);
+        boolean isComplete = false;
+        while (!linkedList.isEmpty()) {
+            TreeNode poll = linkedList.poll();
+            if (poll == null) {
+                isComplete = true;
+                continue;
+            }
+            if (isComplete) {
+                return false;
+            }
+            linkedList.add(poll.left);
+            linkedList.add(poll.right);
+        }
+        return true;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param pRoot TreeNode类
+     * @return bool布尔型
+     */
+    public boolean IsBalanced_Solution(TreeNode pRoot) {
+        // write code here
+        if (pRoot == null) {
+            return true;
+        }
+        if (pRoot.left == null && pRoot.right == null) {
+            return true;
+        }
+        int left = maxDepth(pRoot.left);
+        int right = maxDepth(pRoot.right);
+
+        if (Math.abs(left - right) > 1) {
+            return false;
+        }
+        return IsBalanced_Solution(pRoot.left) && IsBalanced_Solution(pRoot.right);
+
+
+    }
+
 
     /**
      * 二维数组的查找
@@ -109,20 +365,20 @@ public class SwordToOffer {
         return this.buildPreBinaryTree(0, pre, 0, in.length - 1, in);
     }
 
-    private TreeNode buildPreBinaryTree(int preStart, int[] preorder, int inStart, int inEnd, int[] inOrder) {
-        if (preStart >= preorder.length || inStart > inEnd) {
+    private TreeNode buildPreBinaryTree(int preIndex, int[] pre, int inStart, int inEnd, int[] in) {
+        if (preIndex >= pre.length || inStart > inEnd) {
             return null;
         }
-        TreeNode root = new TreeNode(preorder[preStart]);
+        TreeNode root = new TreeNode(pre[preIndex]);
         int index = 0;
         for (int i = inStart; i <= inEnd; i++) {
-            if (root.val == inOrder[i]) {
+            if (in[i] == root.val) {
                 index = i;
                 break;
             }
         }
-        root.left = this.buildPreBinaryTree(preStart + 1, preorder, inStart, index - 1, inOrder);
-        root.right = this.buildPreBinaryTree(preStart + index - inStart + 1, preorder, index + 1, inEnd, inOrder);
+        root.left = buildPreBinaryTree(preIndex + 1, pre, inStart, index - 1, in);
+        root.right = buildPreBinaryTree(preIndex + index - inStart + 1, pre, index + 1, inEnd, in);
         return root;
     }
 
@@ -264,7 +520,9 @@ public class SwordToOffer {
     }
 
     private void swapNum(int[] array, int j, int i) {
-
+        int tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
     }
 
     /**
@@ -628,37 +886,37 @@ public class SwordToOffer {
         tmp.remove(tmp.size() - 1);
     }
 
-    /**
-     * 二叉搜索树与双向链表
-     *
-     * @param pRootOfTree
-     * @return
-     */
-    public TreeNode Convert(TreeNode pRootOfTree) {
-        if (pRootOfTree == null) {
-            return null;
-        }
-        Stack<TreeNode> stack = new Stack<>();
-        TreeNode prev = null;
-        TreeNode p = null;
-        while (!stack.isEmpty() || pRootOfTree != null) {
-            while (pRootOfTree != null) {
-                stack.push(pRootOfTree);
-                pRootOfTree = pRootOfTree.left;
-            }
-            pRootOfTree = stack.pop();
-            if (prev == null) {
-                prev = pRootOfTree;
-                p = prev;
-            } else {
-                prev.right = pRootOfTree;
-                pRootOfTree.left = prev;
-                prev = pRootOfTree;
-            }
-            pRootOfTree = pRootOfTree.right;
-        }
-        return p;
-    }
+//    /**
+//     * 二叉搜索树与双向链表
+//     *
+//     * @param pRootOfTree
+//     * @return
+//     */
+//    public TreeNode Convert(TreeNode pRootOfTree) {
+//        if (pRootOfTree == null) {
+//            return null;
+//        }
+//        Stack<TreeNode> stack = new Stack<>();
+//        TreeNode prev = null;
+//        TreeNode p = null;
+//        while (!stack.isEmpty() || pRootOfTree != null) {
+//            while (pRootOfTree != null) {
+//                stack.push(pRootOfTree);
+//                pRootOfTree = pRootOfTree.left;
+//            }
+//            pRootOfTree = stack.pop();
+//            if (prev == null) {
+//                prev = pRootOfTree;
+//                p = prev;
+//            } else {
+//                prev.right = pRootOfTree;
+//                pRootOfTree.left = prev;
+//                prev = pRootOfTree;
+//            }
+//            pRootOfTree = pRootOfTree.right;
+//        }
+//        return p;
+//    }
 
     /**
      * 字符串排列
@@ -701,30 +959,6 @@ public class SwordToOffer {
         char tmp = array[i];
         array[i] = array[k];
         array[k] = tmp;
-    }
-
-    /**
-     * 数组中出现次数超过一半的数字
-     *
-     * @param array
-     * @return
-     */
-    public int MoreThanHalfNum_Solution(int[] array) {
-        if (array == null || array.length == 0) {
-            return -1;
-        }
-        HashMap<Integer, Integer> map = new HashMap<>();
-        for (int num : array) {
-            int count = map.getOrDefault(num, 0);
-            map.put(num, ++count);
-        }
-        for (int num : array) {
-            int size = map.get(num);
-            if (size * 2 > array.length) {
-                return num;
-            }
-        }
-        return -1;
     }
 
     /**
@@ -901,24 +1135,6 @@ public class SwordToOffer {
             return 0;
         }
         return 1 + Math.max(this.TreeDepth(root.left), this.TreeDepth(root.right));
-    }
-
-    /**
-     * 判断是否是平衡二叉树
-     *
-     * @param root
-     * @return
-     */
-    public boolean IsBalanced_Solution(TreeNode root) {
-        if (root == null) {
-            return true;
-        }
-        int leftDepth = this.TreeDepth(root.left);
-        int rightDepth = this.TreeDepth(root.right);
-        if (Math.abs(leftDepth - rightDepth) <= 1) {
-            return this.IsBalanced_Solution(root.left) && this.IsBalanced_Solution(root.right);
-        }
-        return false;
     }
 
     /**
@@ -1398,30 +1614,28 @@ public class SwordToOffer {
      * @return
      */
     public ArrayList<Integer> maxInWindows(int[] num, int size) {
-        if (num == null || num.length == 0 || num.length < size) {
+        if (num == null || num.length == 0 || size == 0) {
             return new ArrayList<>();
         }
-        ArrayList<Integer> ans = new ArrayList<>();
         LinkedList<Integer> linkedList = new LinkedList<>();
+
+        ArrayList<Integer> result = new ArrayList<>();
         for (int i = 0; i < num.length; i++) {
-            int begin = i - size + 1;
+            int index = i - size + 1;
 
-            if (linkedList.isEmpty()) {
-                linkedList.addLast(i);
-            } else if (begin > linkedList.peekFirst()) {
-                linkedList.pollFirst();
-            }
-
-            while (!linkedList.isEmpty() && num[linkedList.peekLast()] <= num[i]) {
+            while (!linkedList.isEmpty() && num[linkedList.peekLast()] < num[i]) {
                 linkedList.pollLast();
             }
             linkedList.add(i);
-            if (begin >= 0) {
-                ans.add(num[linkedList.peekFirst()]);
+
+            while (!linkedList.isEmpty() && linkedList.peekFirst() < index) {
+                linkedList.poll();
+            }
+            if (index >= 0) {
+                result.add(num[linkedList.peekFirst()]);
             }
         }
-        return ans;
-
+        return result;
     }
 
     /**
@@ -1462,10 +1676,7 @@ public class SwordToOffer {
         }
 
         used[i][j] = true;
-        boolean veiry = this.verifyPath(matrix, used, i - 1, j, k + 1, str) ||
-                this.verifyPath(matrix, used, i + 1, j, k + 1, str) ||
-                this.verifyPath(matrix, used, i, j - 1, k + 1, str) ||
-                this.verifyPath(matrix, used, i, j + 1, k + 1, str);
+        boolean veiry = this.verifyPath(matrix, used, i - 1, j, k + 1, str) || this.verifyPath(matrix, used, i + 1, j, k + 1, str) || this.verifyPath(matrix, used, i, j - 1, k + 1, str) || this.verifyPath(matrix, used, i, j + 1, k + 1, str);
         if (veiry) {
             return true;
         }
@@ -1681,6 +1892,832 @@ public class SwordToOffer {
             }
         }
         return true;
+    }
+
+    public String Serialize(TreeNode root) {
+        StringBuilder stringBuilder = new StringBuilder();
+        internalSerialize(root, stringBuilder);
+        return stringBuilder.toString();
+    }
+
+    private void internalSerialize(TreeNode root, StringBuilder builder) {
+        if (root == null) {
+            builder.append("#,");
+            return;
+        }
+        builder.append(root.val);
+        builder.append(",");
+        internalSerialize(root.left, builder);
+        internalSerialize(root.right, builder);
+    }
+
+    public TreeNode Deserialize(String str) {
+        if (str == null || str.isEmpty()) {
+            return null;
+        }
+        LinkedList<String> linkedList = new LinkedList<>();
+        String[] items = str.split(",");
+        if (items.length == 0) {
+            return null;
+        }
+        Collections.addAll(linkedList, items);
+        return internalDeserialize(linkedList);
+    }
+
+    private TreeNode internalDeserialize(LinkedList<String> linkedList) {
+        if (linkedList.isEmpty()) {
+            return null;
+        }
+        String poll = linkedList.poll();
+        if (poll.equals("#")) {
+            return null;
+        }
+        TreeNode node = new TreeNode(Integer.parseInt(poll));
+        node.left = internalDeserialize(linkedList);
+        node.right = internalDeserialize(linkedList);
+        return node;
+    }
+
+    private final Stack<Integer> minStack = new Stack<>();
+    private final Stack<Integer> normalStack = new Stack<>();
+
+    public void push(int node) {
+        normalStack.push(node);
+        if (minStack.isEmpty() || node <= minStack.peek()) {
+            minStack.push(node);
+        }
+    }
+
+    public void pop() {
+        Integer pop = normalStack.pop();
+
+        if (minStack.isEmpty()) {
+            return;
+        }
+        if (minStack.peek().equals(pop)) {
+            minStack.pop();
+        }
+    }
+
+    public int top() {
+        return normalStack.peek();
+    }
+
+    public int min() {
+        return minStack.peek();
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param s string字符串
+     * @return bool布尔型
+     */
+    public boolean isValid(String s) {
+        // write code here
+        if (s == null || s.isEmpty()) {
+            return true;
+        }
+        Stack<Character> stack = new Stack<>();
+        char[] words = s.toCharArray();
+        for (char word : words) {
+            if (word == '[') {
+                stack.push(']');
+            } else if (word == '{') {
+                stack.push('}');
+            } else if (word == '(') {
+                stack.push(')');
+            } else if (stack.isEmpty() || stack.peek() != word) {
+                return false;
+            } else {
+                stack.pop();
+            }
+        }
+        return stack.isEmpty();
+    }
+
+
+    private final PriorityQueue<Integer> big = new PriorityQueue<>();
+    private final PriorityQueue<Integer> small = new PriorityQueue<>(Comparator.reverseOrder());
+
+    public void Insert(Integer num) {
+        small.offer(num);
+        big.offer(small.poll());
+        if (big.size() > small.size()) {
+            small.offer(big.poll());
+        }
+    }
+
+
+    public Double GetMedian() {
+        if (small.size() > big.size()) {
+            return small.peek() / 1.0;
+        }
+        return (small.peek() + big.peek()) / 2.0;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * 返回表达式的值
+     *
+     * @param s string字符串 待计算的表达式
+     * @return int整型
+     */
+    public int express(String s) {
+        // write code here
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        char[] words = s.toCharArray();
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < words.length; i++) {
+            char tmp = words[i];
+
+            if (tmp == '(') {
+                int end = i;
+                int count = 0;
+                while (end < words.length) {
+                    if (words[end] == '(') {
+                        count++;
+                    } else if (words[end] == ')') {
+                        count--;
+                    } else {
+                        end++;
+                        continue;
+                    }
+                    if (count == 0) {
+                        break;
+                    }
+                    end++;
+                }
+                String remain = s.substring(i + 1, end);
+
+                int express = express(remain);
+                stack.push(express);
+            } else {
+
+            }
+        }
+        return -1;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param numbers int整型一维数组
+     * @return int整型
+     */
+    public int MoreThanHalfNum_Solution(int[] numbers) {
+        // write code here
+        int base = numbers[0];
+        int count = 0;
+        for (int number : numbers) {
+            if (number == base) {
+                count++;
+                continue;
+            }
+            count--;
+            if (count == 0) {
+                count = 1;
+                base = number;
+            }
+        }
+        return base;
+//        count = 0;
+//        for (int number : numbers) {
+//            if (number == base) {
+//                count++;
+//            }
+//        }
+//        return
+
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param nums int整型一维数组
+     * @return int整型一维数组
+     */
+    public int[] FindNumsAppearOnce(int[] nums) {
+        // write code here
+        int multi = 0;
+        for (int number : nums) {
+            multi ^= number;
+        }
+        multi &= -multi;
+        int[] result = new int[2];
+        for (int number : nums) {
+            if ((number & multi) != 0) {
+                result[0] ^= number;
+            } else {
+                result[1] ^= number;
+
+            }
+        }
+        return result;
+    }
+
+    public int minNumberDisappeared(int[] nums) {
+        // write code here
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+                swapNum(nums, i, nums[i] - 1);
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+
+            }
+        }
+        return num.length + 1;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param num int整型一维数组
+     * @return int整型ArrayList<ArrayList <>>
+     */
+    public ArrayList<ArrayList<Integer>> permute(int[] num) {
+        // write code here
+        if (num == null || num.length == 0) {
+            return new ArrayList<>();
+        }
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+//        Arrays.sort(num);
+        boolean[] used = new boolean[num.length];
+        internalPermute(result, new ArrayList<>(), used, num);
+        return result;
+    }
+
+    private void internalPermute(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, boolean[] used, int[] num) {
+        if (tmp.size() == num.length) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = 0; i < num.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            used[i] = true;
+            tmp.add(num[i]);
+            internalPermute(result, tmp, used, num);
+            used[i] = false;
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    /**
+     * todo
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param num int整型一维数组
+     * @return int整型ArrayList<ArrayList <>>
+     */
+    public ArrayList<ArrayList<Integer>> permuteUnique(int[] num) {
+        // write code here
+        if (num == null || num.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(num);
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        boolean[] used = new boolean[num.length];
+        internalPermuteUnique(result, new ArrayList<>(), used, 0, num);
+        return result;
+    }
+
+    private void internalPermuteUnique(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> tmp, boolean[] used, int index, int[] num) {
+//        if (index >= num.length - 1) {
+//            ArrayList<Integer> sub = new ArrayList<>();
+//            for (int member : num) {
+//                sub.add(member);
+//            }
+//            result.add(sub);
+//            return;
+//        }
+//        for (int i = index; i < num.length; i++) {
+//            if (i > index && num[i] == num[index]) {
+//                continue;
+//            }
+//            if (index > 0 && num[index] == num[index - 1]) {
+//                continue;
+//            }
+//            swapNum(num, i, index);
+//            internalPermuteUnique(result, tmp, used, index + 1, num);
+//            swapNum(num, i, index);
+//        }
+        if (tmp.size() == num.length) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = 0; i < num.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            if (i > 0 && num[i] == num[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            tmp.add(num[i]);
+            used[i] = true;
+            internalPermuteUnique(result, tmp, used, index, num);
+            used[i] = false;
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * 判断岛屿数量
+     *
+     * @param grid char字符型二维数组
+     * @return int整型
+     */
+    public int gridNum(char[][] grid) {
+        // write code here
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int count = 0;
+        int row = grid.length;
+        int column = grid[0].length;
+        boolean[][] used = new boolean[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (used[i][j]) {
+                    continue;
+                }
+                if (grid[i][j] == '1') {
+                    count++;
+                    internalGrid(grid, i, j, used);
+                }
+            }
+        }
+        return count;
+    }
+
+    private void internalGrid(char[][] grid, int i, int j, boolean[][] used) {
+        if (i < 0 || i == grid.length || j < 0 || j == grid[0].length) {
+            return;
+        }
+        if (used[i][j]) {
+            return;
+        }
+        used[i][j] = true;
+        if (grid[i][j] == '0') {
+            return;
+        }
+        internalGrid(grid, i - 1, j, used);
+        internalGrid(grid, i + 1, j, used);
+        internalGrid(grid, i, j - 1, used);
+        internalGrid(grid, i, j + 1, used);
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * 最少货币数
+     *
+     * @param arr int整型一维数组 the array
+     * @param aim int整型 the target
+     * @return int整型
+     */
+    public int minMoney(int[] arr, int aim) {
+        // write code here
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int[][] dp = new int[arr.length][aim + 1];
+        for (int j = 1; j <= aim; j++) {
+            dp[0][j] = Integer.MAX_VALUE;// 无法凑出数值为j的钱
+            if (j - arr[0] >= 0 && dp[0][j - arr[0]] != Integer.MAX_VALUE) {
+                dp[0][j] = dp[0][j - arr[0]] + 1;// 仅使用第一种类型的货币
+            }
+        }
+        for (int j = 1; j <= aim; j++) {
+            for (int i = 1; i < arr.length; i++) {
+                if (j - arr[i] >= 0 && dp[i][j - arr[i]] != Integer.MAX_VALUE) {
+                    dp[i][j] = Math.min(dp[i - 1][j], 1 + dp[i][j - arr[i]]);
+                } else {
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+        return dp[arr.length - 1][aim] == Integer.MAX_VALUE ? -1 : dp[arr.length - 1][aim];
+    }
+
+    public int minMoneyii(int[] arr, int aim) {
+        if (arr == null || arr.length == 0) {
+            return -1;
+        }
+        int[] dp = new int[aim + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+        for (int i = 1; i <= aim; i++) {
+            int min = Integer.MAX_VALUE;
+            for (int money : arr) {
+                if (i - money >= 0 && dp[i - money] != Integer.MAX_VALUE) {
+                    min = Math.min(min, dp[i - money]);
+                }
+            }
+            dp[i] = min;
+        }
+        return dp[aim] == Integer.MAX_VALUE ? -1 : dp[aim];
+    }
+
+
+    /**
+     * BM71 最长上升子序列(一)
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * 给定数组的最长严格上升子序列的长度。
+     *
+     * @param arr int整型一维数组 给定的数组
+     * @return int整型
+     */
+    public int LISiii(int[] arr) {
+        // write code here
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[arr.length];
+        Arrays.fill(dp, 1);
+        int result = 0;
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (arr[j] < arr[i] && dp[j] + 1 > dp[i]) {
+                    dp[i] = dp[j] + 1;
+
+                    result = Math.max(result, dp[i]);
+                }
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param A string字符串
+     * @return int整型
+     */
+    public int getLongestPalindrome(String A) {
+        // write code here
+        if (A == null || A.isEmpty()) {
+            return 0;
+        }
+        int len = A.length();
+        boolean[][] dp = new boolean[len][len];
+        int result = 0;
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (A.charAt(j) == A.charAt(i) && ((i - j <= 2) || dp[j + 1][i - 1])) {
+
+                    dp[j][i] = true;
+                    result = Math.max(result, i - j) + 1;
+
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param s string字符串
+     * @return string字符串ArrayList
+     */
+    public ArrayList<String> restoreIpAddresses(String s) {
+        // write code here
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        int len = s.length();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 1; i < 4 && i < len - 2; i++) {
+            for (int j = i + 1; j < j + 4 && j < len - 1; j++) {
+                for (int k = j + 1; k < k + 4 && k < len; k++) {
+                    String a = s.substring(0, i);
+                    String b = s.substring(i, j);
+                    String c = s.substring(j, k);
+                    String d = s.substring(k);
+                    if (checkIsValidIp(a) && checkIsValidIp(b) && checkIsValidIp(c) && checkIsValidIp(d)) {
+                        result.add(a + "." + b + "." + c + "." + d);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean checkIsValidIp(String s) {
+        if (s == null || s.isEmpty()) {
+            return false;
+        }
+        if (s.length() > 1 && s.charAt(0) == '0') {
+            return false;
+        }
+        int num = Integer.parseInt(s);
+
+        return num >= 0 && num <= 255;
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param str1 string字符串
+     * @param str2 string字符串
+     * @return int整型
+     */
+    public int editDistance(String str1, String str2) {
+        // write code here
+        int m = str1.length();
+        int n = str2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.min(1 + Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param nums int整型一维数组
+     * @return int整型
+     */
+    public int rob(int[] nums) {
+        // write code here
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int prev = 0;
+        int current = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int tmp = Math.max(prev + nums[i], current);
+            prev = current;
+            current = tmp;
+        }
+        return Math.max(current, prev);
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param nums int整型一维数组
+     * @return int整型
+     */
+    public int robii(int[] nums) {
+        // write code here
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        return Math.max(internalRob(nums, 0, nums.length - 2), internalRob(nums, 1, nums.length - 1));
+    }
+
+    private int internalRob(int[] tmp, int start, int end) {
+        if (start > end) {
+            return 0;
+        }
+        int prev = 0;
+        int current = tmp[start];
+        for (int i = start + 1; i <= end; i++) {
+            int val = Math.max(prev + tmp[i], current);
+            prev = current;
+            current = val;
+        }
+        return Math.max(current, prev);
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param s string字符串
+     * @param n int整型
+     * @return string字符串
+     */
+    public String trans(String s, int n) {
+        // write code here
+        int len = s.length();
+        char[] words = s.toCharArray();
+
+        int index = 0;
+        StringBuilder stringBuilder = new StringBuilder();
+        while (index < words.length) {
+            char current = words[index];
+
+            if (current == ' ') {
+                index++;
+                continue;
+            }
+
+            if (Character.isLowerCase(current)) {
+                words[index] = Character.toUpperCase(current);
+//                    tmpBuilder.append(Character.toUpperCase(current));
+            } else {
+                words[index] = (Character.toLowerCase(current));
+            }
+            index++;
+        }
+        s = String.valueOf(words);
+        String[] tmp = s.split(" ", -1);
+        StringBuilder builder = new StringBuilder();
+        for (int i = tmp.length - 1; i >= 0; i--) {
+            builder.append(tmp[i]);
+            if (i > 0) {
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param strs string字符串一维数组
+     * @return string字符串
+     */
+    public String longestCommonPrefix(String[] strs) {
+        // write code here
+        if (strs == null || strs.length == 0) {
+            return "";
+        }
+        String prefix = strs[0];
+        for (int i = 1; i < strs.length; i++) {
+            while (strs[i].indexOf(prefix) != 0) {
+                prefix = prefix.substring(0, prefix.length() - 1);
+
+            }
+        }
+        return prefix;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * 计算两个数之和
+     *
+     * @param s string字符串 表示第一个整数
+     * @param t string字符串 表示第二个整数
+     * @return string字符串
+     */
+    public String bigNumSum(String s, String t) {
+        // write code here
+        int m = s.length();
+        int n = t.length();
+        int carry = 0;
+        StringBuilder builder = new StringBuilder();
+        while (m >= 0 || n >= 0 || carry > 0) {
+            int val1 = (m <= 0 ? 0 : Character.getNumericValue(s.charAt(m - 1)));
+            int val2 = (n <= 0 ? 0 : Character.getNumericValue(t.charAt(n - 1)));
+            int tmp = carry + val2 + val1;
+
+            int tail = tmp % 10;
+
+            carry = tmp / 10;
+
+            builder.append(tail);
+
+            m--;
+            n--;
+        }
+
+        String result = builder.reverse().toString();
+
+        if (result.charAt(0) == '0' && result.length() > 1) {
+            return result.substring(1);
+        }
+        return result;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param str string字符串 待判断的字符串
+     * @return bool布尔型
+     */
+    public boolean judgePaindrome(String str) {
+        // write code here
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        int start = 0;
+        int end = str.length() - 1;
+        while (start < end) {
+            if (str.charAt(start) != str.charAt(end)) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param intervals Interval类ArrayList
+     * @return Interval类ArrayList
+     */
+    public ArrayList<Interval> merge(ArrayList<Interval> intervals) {
+        // write code here
+        if (intervals == null || intervals.isEmpty()) {
+            return new ArrayList<>();
+        }
+        LinkedList<Interval> result = new LinkedList<>();
+        intervals.sort(Comparator.comparingInt(o -> o.start));
+        for (Interval interval : intervals) {
+
+            if (result.isEmpty() || result.getLast().end < interval.start) {
+                result.add(interval);
+            } else {
+                Interval last = result.getLast();
+                last.end = Math.max(last.end, interval.end);
+            }
+        }
+        return new ArrayList<>(result);
+    }
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * @param arr int整型一维数组 the array
+     * @return int整型
+     */
+    public int maxLength(int[] arr) {
+        // write code here
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        int left = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < arr.length; i++) {
+            if (map.containsKey(arr[i])) {
+                left = Math.max(left, map.get(arr[i]) + 1);
+            }
+            map.put(arr[i], i);
+
+            result = Math.max(result, i - left + 1);
+        }
+        return result;
+    }
+
+
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * <p>
+     * 计算成功举办活动需要多少名主持人
+     * BM96 主持人调度（二）
+     *
+     * @param n        int整型 有n个活动
+     * @param startEnd int整型二维数组 startEnd[i][0]用于表示第i个活动的开始时间，startEnd[i][1]表示第i个活动的结束时间
+     * @return int整型
+     */
+    public int minmumNumberOfHost(int n, int[][] startEnd) {
+        // write code here
+
+        if (startEnd == null || startEnd.length == 0) {
+            return 0;
+        }
+        Arrays.sort(startEnd, Comparator.comparingInt(o -> o[0]));
+
+        PriorityQueue<Integer> result = new PriorityQueue<>(Integer::compareTo);
+
+        for (int[] current : startEnd) {
+            if (!result.isEmpty() && result.peek() <= current[0]) {
+                result.poll();
+            }
+            result.offer(current[1]);
+        }
+        return result.size();
 
     }
 
