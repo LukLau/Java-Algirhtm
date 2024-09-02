@@ -1,5 +1,6 @@
 package org.dora.algorithm.solution.v2;
 
+import javafx.scene.transform.Rotate;
 import org.dora.algorithm.datastructe.*;
 
 import java.util.*;
@@ -75,7 +76,7 @@ public class ThreeHundred {
         root.left = two;
         root.right = three;
 
-        threeHundred.rob(root);
+        threeHundred.countBits(2);
     }
 
     /**
@@ -1214,34 +1215,52 @@ public class ThreeHundred {
         if (root == null) {
             return 0;
         }
-        int previousValue = 0;
-        int currentValue = 0;
+        Map<TreeNode, Integer> map = new HashMap<>();
 
-        LinkedList<TreeNode> linkedList = new LinkedList<>();
-        linkedList.offer(root);
+        return internalRob(map, root);
+    }
 
-        int level = 0;
-        while (!linkedList.isEmpty()) {
-            int size = linkedList.size();
+    private int internalRob(Map<TreeNode, Integer> map, TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null && root.right == null) {
+            return root.val;
+        }
+        if (map.containsKey(root)) {
+            return map.get(root);
+        }
+        int value = 0;
 
-            for (int i = 0; i < size; i++) {
-                TreeNode node = linkedList.poll();
+        if (root.left != null) {
+            value += rob(root.left.left) + rob(root.left.right);
+        }
+        if (root.right != null) {
+            value += rob(root.right.left) + rob(root.right.right);
+        }
+        int result = Math.max(root.val + value, internalRob(map, root.left) + internalRob(map, root.right));
 
-                if (node.left != null) {
-                    linkedList.offer(node.left);
-                }
-                if (node.right != null) {
-                    linkedList.offer(node.right);
-                }
-                if (level % 2 == 0) {
-                    previousValue += node.val;
-                } else {
-                    currentValue += node.val;
+        map.put(root, result);
+
+        return result;
+    }
+
+
+    public int[] countBits(int n) {
+        if (n == 0) {
+            return new int[]{};
+        }
+        int[] result = new int[n + 1];
+        for (int i = 0; i <= n; i++) {
+            int count = 0;
+            for (int j = 0; j < 32; j++) {
+                if ((i & (1 << j)) != 0) {
+                    count++;
                 }
             }
-            level++;
+            result[i] = count;
         }
-        return Math.max(currentValue, previousValue);
+        return result;
     }
 
 
